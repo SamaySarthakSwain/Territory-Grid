@@ -109,12 +109,12 @@ Branch: `phase-5-player-dashboard`
 
 ## Phase 6: Firestore Security Rules & Hardening
 Branch: `phase-6-security-rules`
-- [ ] Author strict `firestore.rules` enforcing least-privilege role boundaries
-- [ ] Atomic batch validation with `getAfter` verifying exact score and clue index increments
-- [ ] Anti-cheat protections: client score tampering, role escalation, premature check-ins, out-of-order clues
-- [ ] Automated security rules test suite (`@firebase/rules-unit-testing`)
-- [ ] Verification on Firebase Local Emulator Suite
-- [ ] Deployment configuration
+- [x] Author strict `firestore.rules` enforcing least-privilege role boundaries
+- [x] Atomic batch validation with `getAfter` verifying exact score and clue index increments
+- [x] Anti-cheat protections: client score tampering, role escalation, premature check-ins, out-of-order clues
+- [x] Automated security rules test suite (`@firebase/rules-unit-testing`)
+- [x] Verification on Firebase Local Emulator Suite
+- [x] Deployment configuration
 
 ---
 

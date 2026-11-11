@@ -22,4 +22,6 @@ shots/
 keystore.properties
 .kotlin/
 stitch_territory_grid_scavenger_hunt/
+node_modules/
+**/node_modules/
 

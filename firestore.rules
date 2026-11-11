@@ -1,21 +1,218 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Initial development rules - strictly replaced and hardened in Phase 6
+
+    // =========================================================================
+    // GLOBAL SECURITY INVARIANTS & DEFAULT DENY
+    // =========================================================================
+    // Explicit default deny at root for any unspecified collection or path
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // =========================================================================
+    // CORE HELPER FUNCTIONS
+    // =========================================================================
+
+    // Verify whether the request is from an authenticated user
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Retrieve user document data map from users/{uid}
+    function getUser(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
+    }
+
+    // Check if authenticated user holds the ADMIN role
+    // Supports token custom claims or verified users collection document
+    function isAdmin() {
+      return isSignedIn() && (
+        ('role' in request.auth.token && request.auth.token.role == 'ADMIN') ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         getUser(request.auth.uid).role == 'ADMIN')
+      );
+    }
+
+    // Check if authenticated user holds the MEMBER role
+    function isMember() {
+      return isSignedIn() && (
+        ('role' in request.auth.token && request.auth.token.role == 'MEMBER') ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         getUser(request.auth.uid).role == 'MEMBER')
+      );
+    }
+
+    // Check if authenticated user holds the PLAYER role
+    function isPlayer() {
+      return isSignedIn() && (
+        ('role' in request.auth.token && request.auth.token.role == 'PLAYER') ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         getUser(request.auth.uid).role == 'PLAYER')
+      );
+    }
+
+    // Check if game status is currently in PLAYER_PHASE
+    function isPlayerPhase() {
+      return exists(/databases/$(database)/documents/game/state) &&
+             get(/databases/$(database)/documents/game/state).data.status == 'PLAYER_PHASE';
+    }
+
+    // =========================================================================
+    // DOMAIN VALIDATOR FUNCTIONS (Validator Function Pattern)
+    // =========================================================================
+
+    // Strict schema & type validation for users/{userId}
+    function isValidUser(data) {
+      return data.keys().hasOnly(['name', 'email', 'role', 'teamId', 'zoneId', 'createdAt'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.email is string && data.email.size() > 3 && data.email.size() <= 150
+        && data.role is string && data.role in ['ADMIN', 'MEMBER', 'PLAYER']
+        && (!('teamId' in data) || data.teamId == null || (data.teamId is string && data.teamId.size() <= 50))
+        && (!('zoneId' in data) || data.zoneId == null || (data.zoneId is string && data.zoneId.size() <= 50))
+        && (!('createdAt' in data) || data.createdAt == null || data.createdAt is timestamp);
+    }
+
+    // Strict schema & type validation for game/state
+    function isValidGameState(data) {
+      return data.keys().hasOnly(['status', 'startedAt', 'endedAt', 'pausedAt', 'totalPausedMs'])
+        && data.status is string && data.status in ['LOBBY', 'MEMBER_PHASE', 'PLAYER_PHASE', 'PAUSED', 'ENDED']
+        && (!('startedAt' in data) || data.startedAt == null || data.startedAt is timestamp)
+        && (!('endedAt' in data) || data.endedAt == null || data.endedAt is timestamp)
+        && (!('pausedAt' in data) || data.pausedAt == null || data.pausedAt is timestamp)
+        && (!('totalPausedMs' in data) || data.totalPausedMs is int || data.totalPausedMs is float);
+    }
+
+    // Strict schema & type validation for teams/{teamId}
+    function isValidTeam(data) {
+      return data.keys().hasOnly(['name', 'score', 'cards', 'clueOrder', 'currentClueIndex', 'visitedZones', 'updatedAt'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.score is int && data.score >= 0
+        && data.cards is list && data.cards.size() <= 100
+        && data.clueOrder is list && data.clueOrder.size() <= 100
+        && data.currentClueIndex is int && data.currentClueIndex >= 0
+        && data.visitedZones is list && data.visitedZones.size() <= 100
+        && (!('updatedAt' in data) || data.updatedAt == null || data.updatedAt is timestamp);
+    }
+
+    // Strict schema & type validation for clues/{clueId}
+    function isValidClue(data) {
+      return data.keys().hasOnly(['text', 'zoneId', 'zoneLabel'])
+        && data.text is string && data.text.size() > 0 && data.text.size() <= 500
+        && data.zoneId is string && data.zoneId.size() > 0 && data.zoneId.size() <= 50
+        && data.zoneLabel is string && data.zoneLabel.size() > 0 && data.zoneLabel.size() <= 100;
+    }
+
+    // Strict schema & type validation for checkins/{checkinId}
+    function isValidCheckin(data) {
+      return data.keys().hasOnly(['teamId', 'zoneId', 'memberId', 'cone', 'cardRank', 'cardSuit', 'points', 'timestamp'])
+        && data.teamId is string && data.teamId.size() > 0 && data.teamId.size() <= 50
+        && data.zoneId is string && data.zoneId.size() > 0 && data.zoneId.size() <= 50
+        && data.memberId is string && data.memberId.size() > 0 && data.memberId.size() <= 100
+        && data.cone is string && data.cone in ['RED', 'YELLOW', 'GREEN']
+        && data.cardRank is int && data.cardRank >= 1 && data.cardRank <= 13
+        && data.cardSuit is string && data.cardSuit.size() > 0 && data.cardSuit.size() <= 20
+        && data.points is int && data.points >= 11 && data.points <= 28
+        && (!('timestamp' in data) || data.timestamp == null || data.timestamp is timestamp);
+    }
+
+    // =========================================================================
+    // AUTHORIZATION & ATOMIC BATCH VALIDATORS
+    // =========================================================================
+
+    // Verifies Member batch update on teams/{teamId}
+    function memberCanUpdateTeam(teamId) {
+      return isMember()
+        && isPlayerPhase()
+        && ('zoneId' in getUser(request.auth.uid))
+        && getUser(request.auth.uid).zoneId != null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['score', 'cards', 'visitedZones', 'currentClueIndex', 'updatedAt'])
+        && existsAfter(/databases/$(database)/documents/checkins/$(teamId + '_' + getUser(request.auth.uid).zoneId))
+        && request.resource.data.score == resource.data.score + getAfter(/databases/$(database)/documents/checkins/$(teamId + '_' + getUser(request.auth.uid).zoneId)).data.points
+        && request.resource.data.currentClueIndex == resource.data.currentClueIndex + 1;
+    }
+
+    // Verifies Member creation of checkins/{checkinId}
+    function memberCanCreateCheckin(checkinId) {
+      return isMember()
+        && isPlayerPhase()
+        && ('zoneId' in getUser(request.auth.uid))
+        && request.auth.uid == request.resource.data.memberId
+        && request.resource.data.zoneId == getUser(request.auth.uid).zoneId
+        && checkinId == (request.resource.data.teamId + '_' + request.resource.data.zoneId);
+    }
+
+    // Verifies that a Player reads strictly their own team's currently active clue document
+    function isPlayerActiveClue(clueId) {
+      return isPlayer()
+        && ('teamId' in getUser(request.auth.uid))
+        && getUser(request.auth.uid).teamId != null
+        && exists(/databases/$(database)/documents/teams/$(getUser(request.auth.uid).teamId))
+        && get(/databases/$(database)/documents/teams/$(getUser(request.auth.uid).teamId)).data.currentClueIndex >= 0
+        && get(/databases/$(database)/documents/teams/$(getUser(request.auth.uid).teamId)).data.currentClueIndex < get(/databases/$(database)/documents/teams/$(getUser(request.auth.uid).teamId)).data.clueOrder.size()
+        && clueId == get(/databases/$(database)/documents/teams/$(getUser(request.auth.uid).teamId)).data.clueOrder[get(/databases/$(database)/documents/teams/$(getUser(request.auth.uid).teamId)).data.currentClueIndex];
+    }
+
+    // =========================================================================
+    // COLLECTION ACCESS RULES
+    // =========================================================================
+
+    // --- USERS COLLECTION ---
+    // Read: User can read their own document, or Admin can read any document
+    // Write: Only Admin can create, update, or delete user documents
     match /users/{userId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if isAdmin() && isValidUser(request.resource.data);
+      allow update: if isAdmin() && isValidUser(request.resource.data)
+                    && (!('createdAt' in resource.data) || request.resource.data.createdAt == resource.data.createdAt);
+      allow delete: if isAdmin();
     }
+
+    // --- GAME STATE ---
+    // Read: Any signed-in user
+    // Write: Only Admin can write or update game/state
     match /game/state {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn();
+      allow create, update: if isAdmin() && isValidGameState(request.resource.data);
+      allow delete: if isAdmin();
     }
+
+    // --- TEAMS COLLECTION ---
+    // Read: Any signed-in user (Leaderboard & Player dashboards)
+    // Create / Delete: Only Admin
+    // Update: Admin can fully update; Players can NEVER write; Members only via verified batch during PLAYER_PHASE
     match /teams/{teamId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn();
+      allow create: if isAdmin() && isValidTeam(request.resource.data);
+      allow update: if (isAdmin() || memberCanUpdateTeam(teamId)) && isValidTeam(request.resource.data);
+      allow delete: if isAdmin();
     }
+
+    // --- CLUES COLLECTION ---
+    // Read: Admin and Member can read all clues; Player can read ONLY their active clue
+    // Write: Only Admin
     match /clues/{clueId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn() && (
+        isAdmin() ||
+        isMember() ||
+        isPlayerActiveClue(clueId)
+      );
+      allow create: if isAdmin() && isValidClue(request.resource.data);
+      allow update: if isAdmin() && isValidClue(request.resource.data);
+      allow delete: if isAdmin();
     }
+
+    // --- CHECKINS COLLECTION ---
+    // Read: Any signed-in user
+    // Create: Admin, OR Member when station and batch criteria match during PLAYER_PHASE
+    // Update: False (check-ins are immutable once committed)
+    // Delete: Only Admin (for Grid Reset & Undo Check-in operations)
     match /checkins/{checkinId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn();
+      allow create: if (isAdmin() || memberCanCreateCheckin(checkinId)) && isValidCheckin(request.resource.data);
+      allow update: if false;
+      allow delete: if isAdmin();
     }
   }
 }
