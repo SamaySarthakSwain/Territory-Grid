@@ -70,7 +70,33 @@
     <string name="recent_checkpoint_logs">Recent Checkpoint Logs</string>
     <string name="confirm_submission_title">Confirm Station Transmission</string>
     <string name="confirm_submission_body">Awarding %1$d PTS (%2$s Cone + %3$s) to %4$s at %5$s.</string>
+    <string name="confirm_submission_warning">This will commit an irreversible point award and advance the squad\'s mission directive.</string>
     <string name="transmit">Transmit</string>
+    <string name="member_no_zone_assigned">NO GRID ZONE ASSIGNED. Field Marshals must be assigned to an active checkpoint by the Game Master before logging arrivals.</string>
+    <string name="member_phase_locked">CHECK-INS LOCKED: Mission status is %s. Submissions permitted only during PLAYER_PHASE.</string>
+    <string name="due_at_this_zone">DUE AT THIS ZONE</string>
+    <string name="targeting_zone">Targeting: %s</string>
+    <string name="team_already_checked_in">Already checked in at this zone</string>
+    <string name="team_finished_all_clues">All clues completed</string>
+    <string name="team_not_due_here">Directive targets a different station</string>
+    <string name="select_team_prompt">Select arrived team...</string>
+    <string name="nfc_active">NFC SENSOR ACTIVE</string>
+    <string name="verified_locked">Player Card Verified &amp; Locked</string>
+    <string name="transmitting_cipher">Transmitting Cipher...</string>
+    <string name="beacon_verified_awarded">BEACON VERIFIED &amp; POINTS AWARDED!</string>
+    <string name="retry">Retry</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="failed_badge">FAILED</string>
+    <string name="pending_badge">PENDING</string>
+    <string name="no_recent_logs">No recent check-in telemetry logged for this checkpoint.</string>
+    <string name="live_feed">Live Feed</string>
+    <string name="gps_locked">GPS Locked</string>
+    <string name="station_telemetry_logged">Logged</string>
+    <string name="station_telemetry_queue">Queue</string>
+    <string name="station_telemetry_latency">Latency</string>
+    <string name="dynamic_card_cycle">Cycle: %1$ds / 30s</string>
+    <string name="value_pts">Value: +%1$d Pts</string>
+    <string name="allocating_summary">Allocating %1$d PTS (%2$d Cone + %3$d Card) directly to %4$s upon transmission.</string>
 
     <!-- Player -->
     <string name="player_dashboard">Player Dashboard</string>

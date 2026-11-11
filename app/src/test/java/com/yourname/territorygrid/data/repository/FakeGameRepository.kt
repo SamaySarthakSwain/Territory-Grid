@@ -45,4 +45,8 @@ class FakeGameRepository : GameRepository {
         _gameState.value = GameState(status = GameStatus.LOBBY)
         return Result.success(Unit)
     }
+
+    fun setGameState(status: GameStatus) {
+        _gameState.value = GameState(status = status)
+    }
 }

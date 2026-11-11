@@ -59,4 +59,11 @@ object TacticalColors {
     val SurfaceContainerHigh = SurfaceHigh
     val SurfaceContainerHighest = SurfaceHighest
     val BorderSubtle = OutlineVariant
+    val NeonCyan = PrimaryContainer
+    val NeonGreen = TacticalGreen
+    val NeonMagenta = SecondaryContainer
+    val RedGlow = ConeRed
+    val GoldAlert = WarningAmber
+    val CardBorder = OutlineVariant
+    val BackgroundDark = Background
 }

@@ -42,6 +42,21 @@ class FakeCheckinRepository : CheckinRepository {
         return Result.success(Unit)
     }
 
+    override fun dismissSubmission(documentId: String) {
+        _recentSubmissions.value = _recentSubmissions.value.filter { it.documentId != documentId }
+    }
+
+    override suspend fun retrySubmission(checkin: Checkin): Result<Unit> {
+        return submitCheckin(
+            teamId = checkin.teamId,
+            zoneId = checkin.zoneId,
+            memberId = checkin.memberId,
+            cone = ConeColor.fromString(checkin.cone),
+            card = PlayingCard(checkin.cardRank, checkin.cardSuit, checkin.zoneId),
+            points = checkin.points
+        )
+    }
+
     fun setCheckins(list: List<Checkin>) {
         _allCheckins.value = list
         _recentSubmissions.value = list

@@ -17,4 +17,6 @@ interface CheckinRepository {
         points: Int
     ): Result<Unit>
     suspend fun undoCheckin(checkin: Checkin, card: PlayingCard): Result<Unit>
+    fun dismissSubmission(documentId: String)
+    suspend fun retrySubmission(checkin: Checkin): Result<Unit>
 }

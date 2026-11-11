@@ -73,18 +73,18 @@ Branch: `phase-3-admin-control`
 
 ## Phase 4: Member Check-in & Scoring
 Branch: `phase-4-member-checkin`
-- [ ] Zone validation from `users.zoneId` (protective blocking banner if missing)
-- [ ] Step 1: Arrived team dropdown highlighting teams due at this zone; blocks invalid/finished/duplicate teams
-- [ ] Step 2: Cone color selector (Red +10, Yellow +12, Green +15)
-- [ ] Step 3: Card rank grid (A..K) + Suit selector (♠ ♥ ♦ ♣)
-- [ ] Dynamic points breakdown preview: `POINTS = CONE + CARD = TOTAL`
-- [ ] Submission allowed only in `PLAYER_PHASE`
-- [ ] Mandatory pre-flight Confirmation Dialog
-- [ ] Non-negotiable atomic WriteBatch execution
-- [ ] Application-scoped coroutine submission tracking (`PENDING`, `SYNCED`, `FAILED`)
-- [ ] Success burst animation, haptic confirmation, form auto-reset
-- [ ] Recent submissions feed with retry/dismiss actions
-- [ ] Unit tests for check-in validator and batch builder
+- [x] Zone validation from `users.zoneId` (protective blocking banner if missing)
+- [x] Step 1: Arrived team dropdown highlighting teams due at this zone; blocks invalid/finished/duplicate teams
+- [x] Step 2: Cone color selector (Red +10, Yellow +12, Green +15)
+- [x] Step 3: Card rank grid (A..K) + Suit selector (♠ ♥ ♦ ♣)
+- [x] Dynamic points breakdown preview: `POINTS = CONE + CARD = TOTAL`
+- [x] Submission allowed only in `PLAYER_PHASE`
+- [x] Mandatory pre-flight Confirmation Dialog
+- [x] Non-negotiable atomic WriteBatch execution
+- [x] Application-scoped coroutine submission tracking (`PENDING`, `SYNCED`, `FAILED`)
+- [x] Success burst animation, haptic confirmation, form auto-reset
+- [x] Recent submissions feed with retry/dismiss actions
+- [x] Unit tests for check-in validator and batch builder
 
 ---
 

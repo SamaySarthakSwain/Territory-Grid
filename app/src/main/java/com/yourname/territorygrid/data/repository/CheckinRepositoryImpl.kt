@@ -147,4 +147,21 @@ class CheckinRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override fun dismissSubmission(documentId: String) {
+        _recentSubmissions.value = _recentSubmissions.value.filter { it.documentId != documentId }
+    }
+
+    override suspend fun retrySubmission(checkin: Checkin): Result<Unit> {
+        val cone = ConeColor.fromString(checkin.cone)
+        val card = PlayingCard(checkin.cardRank, checkin.cardSuit, checkin.zoneId)
+        return submitCheckin(
+            teamId = checkin.teamId,
+            zoneId = checkin.zoneId,
+            memberId = checkin.memberId,
+            cone = cone,
+            card = card,
+            points = checkin.points
+        )
+    }
 }
