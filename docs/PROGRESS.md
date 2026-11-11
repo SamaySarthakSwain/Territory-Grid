@@ -1,0 +1,142 @@
+# Territory Grid: Implementation Progress Tracker
+
+## Setup Checklist
+- [x] Create `AGENTS.md` with complete stack, data model, scoring, and 10 non-negotiable rules
+- [x] Create `docs/PROGRESS.md` checklist
+- [x] Extract and organize Stitch design assets into `design_refs/` and `assets/`
+- [x] Verify toolchain (`java`, `gradlew`, `adb`, `git`, `node`, `firebase-tools`)
+- [x] Create helper scripts in `scripts/` (`build`, `install_run`, `logs`, `shot`, `reset_app`) and `docs/DEV_LOOP.md`
+- [x] Produce `docs/DESIGN_SPEC.md` from all PNGs, HTML, and design tokens
+- [x] Produce `docs/ARCHITECTURE.md` with package tree, navigation, UiState, repositories, and edge cases
+- [ ] Present comprehensive plan and receive user approval
+
+---
+
+## Phase 1: Foundation
+Branch: `phase-1-foundation`
+- [ ] Version catalog (`gradle/libs.versions.toml`) configuration
+- [ ] Root `build.gradle.kts` and `app/build.gradle.kts` setup with Hilt, Compose, Firebase, Navigation
+- [ ] Application class (`TerritoryGridApp`) with `@HiltAndroidApp`
+- [ ] `MainActivity` with edge-to-edge support and portrait lock
+- [ ] Tactical Dark Theme (`Color.kt`, `Type.kt`, `Shape.kt`, `Spacing.kt`, `Theme.kt`)
+- [ ] Typography bundling (Space Grotesk & Inter) in `res/font`
+- [ ] Core component library with `@Preview`:
+  - [ ] `NeonButton` (Primary, Secondary, Danger with haptic feedback)
+  - [ ] `GlassCard` (Luminescent glassmorphism, chamfered corners, subtle border stroke)
+  - [ ] `GlowingScoreRing` (Animated sweep and numeric counter)
+  - [ ] `HexGridBackground` (Lightweight Canvas, subtle coordinate motion)
+  - [ ] `PlayingCardTile` (Front, back, 3D flip animation)
+  - [ ] `ConeChip` (Red, Yellow, Green with score badge)
+  - [ ] `StatusChip` (Tactical telemetry status indicators)
+  - [ ] `NeonTextField` (Tactical cyber well with focus reticle)
+  - [ ] `TopHudBar` (Status telemetry, battery/wifi, role pill, profile)
+  - [ ] `BottomNavBar` (Hunt, Cards, Rank, Control with cyan neon indicator)
+  - [ ] `OfflineBanner` & `PendingSyncBadge`
+  - [ ] `LoadingOverlay`, `ErrorState`, `EmptyState`
+  - [ ] `ScanlineDivider`
+  - [ ] `ConfirmDialog`
+- [ ] Debug-only `ComponentGalleryScreen`
+- [ ] Build & preview verification (`./gradlew assembleDebug`)
+
+---
+
+## Phase 2: Data and Authentication
+Branch: `phase-2-data-auth`
+- [ ] Domain models (`User`, `Team`, `Clue`, `GameState`, `Checkin`, `PlayingCard`, `ConeColor`, `Role`)
+- [ ] Pure `calculatePoints(cardRank, coneColor)` with comprehensive unit tests
+- [ ] Tolerant Firestore mappers (resilient to missing/null fields)
+- [ ] `FirebaseModule` (Hilt injection for FirebaseAuth, FirebaseFirestore with offline cache, secondary FirebaseApp)
+- [ ] `AuthRepository` with `AuthState` (`Loading`, `SignedOut`, `SignedIn`, `Error`) & live role change flow
+- [ ] `GameRepository` with StateFlow snapshot listeners
+- [ ] Role-based navigation graph with route guards and session invalidation handling
+- [ ] Tactical Splash screen with auto-routing
+- [ ] Login screen matching `design_refs/screens/login.png` with validation and cybernetic error messages
+- [ ] Unit tests for mappers and auth state logic
+
+---
+
+## Phase 3: Admin Panel
+Branch: `phase-3-admin-control`
+- [ ] State machine transitions (`LOBBY` -> `MEMBER_PHASE` -> `PLAYER_PHASE` <-> `PAUSED` -> `ENDED`, Reset to `LOBBY`)
+- [ ] Server-timestamp driven mission clock with pause duration calculation
+- [ ] Reset Grid modal requiring typing `RESET`, batch deletes check-ins (≤400 per batch), zeroes team scores
+- [ ] Team CRUD operations
+- [ ] Clue order generator (randomized shuffle per team, starting station rotation, preview modal)
+- [ ] Account management via secondary `FirebaseApp` (create Member with `zoneId`, Player with `teamId`, strong password generator, clipboard copy)
+- [ ] Clue CRUD with duplicate zone warning
+- [ ] Live Leaderboard with score descending and tie-break by earliest `updatedAt`
+- [ ] Check-in history list with atomic Undo batch
+- [ ] Bottom navigation: Control, Teams, People, Clues, Live
+- [ ] Visual verification against `admin_panel.png`
+
+---
+
+## Phase 4: Member Check-in & Scoring
+Branch: `phase-4-member-checkin`
+- [ ] Zone validation from `users.zoneId` (protective blocking banner if missing)
+- [ ] Step 1: Arrived team dropdown highlighting teams due at this zone; blocks invalid/finished/duplicate teams
+- [ ] Step 2: Cone color selector (Red +10, Yellow +12, Green +15)
+- [ ] Step 3: Card rank grid (A..K) + Suit selector (♠ ♥ ♦ ♣)
+- [ ] Dynamic points breakdown preview: `POINTS = CONE + CARD = TOTAL`
+- [ ] Submission allowed only in `PLAYER_PHASE`
+- [ ] Mandatory pre-flight Confirmation Dialog
+- [ ] Non-negotiable atomic WriteBatch execution
+- [ ] Application-scoped coroutine submission tracking (`PENDING`, `SYNCED`, `FAILED`)
+- [ ] Success burst animation, haptic confirmation, form auto-reset
+- [ ] Recent submissions feed with retry/dismiss actions
+- [ ] Unit tests for check-in validator and batch builder
+
+---
+
+## Phase 5: Player Experience
+Branch: `phase-5-player-dashboard`
+- [ ] Player bottom navigation: Hunt, Cards, Leaderboard
+- [ ] **Hunt Screen**:
+  - [ ] Team header, live rank, active hunt zone
+  - [ ] `GlowingScoreRing` with animated score transitions
+  - [ ] Pulsing `Active Mission Directive` clue card
+  - [ ] Phase states: Lobby waiting, Member phase waiting, Paused overlay, Game ended screen, All clues completed
+  - [ ] `+N Points` celebration banner with haptic feedback
+- [ ] **Cards Screen**:
+  - [ ] Collected card deck grid with 3D flip-in presentation
+- [ ] **Leaderboard Screen**:
+  - [ ] Holographic podium (Gold #1, Silver #2, Bronze #3)
+  - [ ] Contender grid with delta trackers
+  - [ ] Pinned sticky bottom row highlighting user's team
+- [ ] Unit tests for rank calculations, tie breaks, and score deltas
+
+---
+
+## Phase 6: Firestore Security Rules & Hardening
+Branch: `phase-6-security-rules`
+- [ ] Author strict `firestore.rules` enforcing least-privilege role boundaries
+- [ ] Atomic batch validation with `getAfter` verifying exact score and clue index increments
+- [ ] Anti-cheat protections: client score tampering, role escalation, premature check-ins, out-of-order clues
+- [ ] Automated security rules test suite (`@firebase/rules-unit-testing`)
+- [ ] Verification on Firebase Local Emulator Suite
+- [ ] Deployment configuration
+
+---
+
+## Phase 7: Polish, Performance & Accessibility
+Branch: `phase-7-polish`
+- [ ] Smooth screen transitions and micro-interactions (<600ms)
+- [ ] GPU-efficient glow using `drawBehind` and layered translucent paths (zero `Modifier.blur`)
+- [ ] Haptic feedback and `ToneGenerator` audio cues gated by settings
+- [ ] Settings screen (Lite mode toggle, audio toggle, haptics toggle, sign-out, version display)
+- [ ] Lite mode (static background, disabled canvas animation for battery preservation)
+- [ ] Accessibility: WCAG AA color contrast, 48dp touch targets, dynamic type scaling up to 130%, explicit content descriptions
+- [ ] Portrait orientation lock and configuration change resilience (`rememberSaveable` / ViewModel state)
+- [ ] ProGuard / R8 rules for Hilt and Firebase serialization
+- [ ] Pixel-perfect visual comparison against Stitch PNGs
+
+---
+
+## Phase 8: QA & Release
+Branch: `phase-8-qa-release`
+- [ ] Comprehensive test documentation (`docs/TEST_PLAN.md`)
+- [ ] Debug-only "Seed Demo Data" utility (4 teams, 10 clues, test accounts)
+- [ ] Game Master event execution manual (`docs/EVENT_SETUP.md`)
+- [ ] Admin Leaderboard text export via Android Sharesheet
+- [ ] End-to-end lint, static analysis, and test pass
+- [ ] Release APK assembly

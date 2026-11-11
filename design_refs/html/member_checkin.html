@@ -1,0 +1,411 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "secondary-fixed": "#ffd9e3", "on-secondary-fixed": "#3e001e", "primary": "#c3f5ff", "secondary-container": "#e1037d", "primary-fixed-dim": "#00daf3", "surface": "#0f131d", "on-primary-container": "#00626e", "on-tertiary-fixed": "#022100", "secondary-fixed-dim": "#ffb0c9", "surface-container-low": "#171c25", "surface-container-highest": "#31353f", "on-secondary-fixed-variant": "#8e004c", "on-primary": "#00363d", "primary-fixed": "#9cf0ff", "surface-variant": "#31353f", "on-secondary": "#640034", "on-primary-fixed-variant": "#004f58", "primary-container": "#00e5ff", "background": "#0f131d", "on-background": "#dfe2f0", "on-primary-fixed": "#001f24", "tertiary-container": "#2cf100", "inverse-primary": "#006875", "surface-container-high": "#262a34", "tertiary": "#baffa2", "on-tertiary": "#053900", "on-secondary-container": "#fffbff", "error-container": "#93000a", "on-surface": "#dfe2f0", "on-surface-variant": "#bac9cc", "inverse-on-surface": "#2c303b", "surface-bright": "#353944", "outline-variant": "#3b494c", "on-error-container": "#ffdad6", "secondary": "#ffb0c9", "outline": "#849396", "surface-container": "#1b2029", "inverse-surface": "#dfe2f0", "on-tertiary-container": "#0e6800", "surface-tint": "#00daf3", "on-error": "#690005", "error": "#ffb4ab", "surface-container-lowest": "#0a0e17", "on-tertiary-fixed-variant": "#095300", "tertiary-fixed-dim": "#2ae500", "tertiary-fixed": "#79ff5b", "surface-dim": "#0f131d" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "gutter": "1rem", "space-md": "1rem", "space-sm": "0.5rem", "space-xl": "2rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "margin": "1rem" }, fontFamily: { "headline-md": ["Space Grotesk"], "body-md": ["Inter"], "body-lg": ["Inter"], "headline-sm": ["Space Grotesk"], "label-lg": ["Space Grotesk"], "label-md": ["Space Grotesk"], "headline-xl": ["Space Grotesk"], "body-sm": ["Inter"], "label-sm": ["Space Grotesk"], "headline-xl-mobile": ["Space Grotesk"], "headline-lg": ["Space Grotesk"] }, fontSize: { "headline-md": ["22px", { lineHeight: "28px", letterSpacing: "0.01em", fontWeight: "600" }], "body-md": ["14px", { lineHeight: "20px", letterSpacing: "0em", fontWeight: "400" }], "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "0em", fontWeight: "400" }], "headline-sm": ["18px", { lineHeight: "24px", letterSpacing: "0.02em", fontWeight: "600" }], "label-lg": ["14px", { lineHeight: "18px", letterSpacing: "0.08em", fontWeight: "700" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.1em", fontWeight: "600" }], "headline-xl": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "700" }], "body-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "400" }], "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.12em", fontWeight: "600" }], "headline-xl-mobile": ["30px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "700" }], "headline-lg": ["28px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;background-color:#0f131d;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,229,255,0.08)] pt-safe"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Territory Grid Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrBzgMT_rz5cfiPGGPLEnK_ourwFTlz2hn-iaheybDqfIUyxn-MJUYQX3C_hDmj05IY-jdhJVUUfxsMHmtOFKhzrliw2tBc6k7ZsWy4ybtgyLB9shs4C_rgrM-ShNMoeKjcVyarg0BBrlbHFG1DDbWdCaexOOnNgG5lcEW5q7agl-oAlYBp51s0vTVMwyZah3wSMImZBrYsWexDu77Cq9GE7Eh1mTAINM2StVbluXYgG"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-wider uppercase leading-none drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">Territory Grid</span><div class="flex items-center gap-space-xs mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Checkpoint Log</span></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-space-xs bg-surface-container-high px-space-sm py-0.5 rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span><span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Marshal</span></div><div class="flex items-center gap-1 text-on-surface-variant px-1"><span class="material-symbols-outlined text-[16px] text-tertiary">wifi</span><span class="material-symbols-outlined text-[16px] text-primary-container">battery_charging_full</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-20 bg-surface min-h-screen"><div class="flex flex-col w-full px-gutter pb-6 gap-space-md">
+<!-- Tactical Hero / Field Marshal Status Card -->
+<div class="relative w-full rounded-xl bg-surface-container-high p-space-md overflow-hidden shadow-xl">
+<div class="absolute -right-10 -bottom-10 w-36 h-36 bg-tertiary-container/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+<div class="flex items-center justify-between relative z-10">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-12 h-12 rounded-xl bg-surface-container-highest flex items-center justify-center text-tertiary-fixed shadow-md flex-shrink-0">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface tracking-wide uppercase truncate">Field Marshal</span>
+<span class="w-2 h-2 rounded-full bg-tertiary-container animate-ping"></span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider uppercase">Validate • Log • Advance</span>
+</div>
+</div>
+<div class="flex flex-col items-end flex-shrink-0 pl-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-widest uppercase">Grid Zone</span>
+<span class="font-headline-sm text-headline-sm text-primary tracking-wider">SEC-04</span>
+</div>
+</div>
+<!-- Quick Station Telemetry Bar -->
+<div class="grid grid-cols-3 gap-2 mt-space-md pt-space-sm border-t border-outline-variant/30">
+<div class="flex flex-col items-center bg-surface-container-low/60 rounded p-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Logged</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">14/18</span>
+</div>
+<div class="flex flex-col items-center bg-surface-container-low/60 rounded p-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Queue</span>
+<span class="font-headline-sm text-headline-sm text-tertiary">2 Teams</span>
+</div>
+<div class="flex flex-col items-center bg-surface-container-low/60 rounded p-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Latency</span>
+<span class="font-headline-sm text-headline-sm text-primary">12ms</span>
+</div>
+</div>
+</div>
+<!-- STEP 1: Select Arrived Team -->
+<div class="relative w-full rounded-xl bg-surface-container p-space-md shadow-lg flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20 text-primary font-label-sm text-label-sm">01</span>
+<label class="font-label-md text-label-md text-on-surface uppercase tracking-wider" for="team-selector">Team Arrived at Checkpoint</label>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">sensors</span> GPS Locked
+      </span>
+</div>
+<div class="relative w-full mt-1">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+</div>
+<select class="w-full h-12 bg-surface-container-lowest text-on-surface font-body-lg text-body-lg pl-10 pr-10 rounded-lg appearance-none focus:outline-none focus:bg-surface-container-high transition-colors" id="team-selector" onchange="updateSummary()">
+<option selected="" value="Team Explorers">Team Explorers (Rank #1 • 342 pts)</option>
+<option value="Team Titans">Team Titans (Rank #2 • 318 pts)</option>
+<option value="Dream Squad">Dream Squad (Rank #3 • 295 pts)</option>
+<option value="Code Warriors">Code Warriors (Rank #4 • 248 pts)</option>
+<option value="Innovators">Innovators (Rank #5 • 220 pts)</option>
+</select>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+<!-- STEP 2: Cone Color / Target Beacon Selector -->
+<div class="relative w-full rounded-xl bg-surface-container p-space-md shadow-lg flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20 text-primary font-label-sm text-label-sm">02</span>
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Cone Color / Beacon Verified</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed uppercase tracking-wider" id="beacon-status">Yellow Selected</span>
+</div>
+<!-- 3-State Interactive Beacon Tiles -->
+<div class="grid grid-cols-3 gap-space-sm mt-1">
+<!-- RED CONE -->
+<button class="cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-lowest transition-all duration-200" onclick="selectCone('red', 10, this)" type="button">
+<div class="w-8 h-8 rounded-full bg-error-container/40 flex items-center justify-center text-error mb-1">
+<span class="material-symbols-outlined text-[22px]">change_history</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Red</span>
+<span class="font-label-sm text-label-sm text-error uppercase font-bold mt-0.5">+10 PTS</span>
+</button>
+<!-- YELLOW CONE (Selected Default) -->
+<button class="cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-high shadow-[0_0_16px_rgba(255,214,0,0.35)] transition-all duration-200" onclick="selectCone('yellow', 12, this)" type="button">
+<div class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-[14px] font-bold">check</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary-fixed mb-1">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">change_history</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-secondary-fixed leading-tight">Yellow</span>
+<span class="font-label-sm text-label-sm text-secondary-fixed uppercase font-bold mt-0.5">+12 PTS</span>
+</button>
+<!-- GREEN CONE -->
+<button class="cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-lowest transition-all duration-200" onclick="selectCone('green', 15, this)" type="button">
+<div class="w-8 h-8 rounded-full bg-tertiary-container/30 flex items-center justify-center text-tertiary mb-1">
+<span class="material-symbols-outlined text-[22px]">change_history</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Green</span>
+<span class="font-label-sm text-label-sm text-tertiary uppercase font-bold mt-0.5">+15 PTS</span>
+</button>
+</div>
+</div>
+<!-- STEP 3: Scanned Holographic Playing Card -->
+<div class="relative w-full rounded-xl bg-surface-container p-space-md shadow-lg flex flex-col gap-space-md"><div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20 text-primary font-label-sm text-label-sm">03</span>
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Scan Player Card (NFC / QR Scanner)</span>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-highest px-2.5 py-1 rounded-full">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="material-symbols-outlined text-[14px] text-primary">contactless</span>
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">NFC Sensor Active</span>
+</div>
+</div>
+
+<!-- Scanner Viewfinder & Live Holographic Dynamic Card Stream -->
+<div class="relative w-full rounded-xl bg-surface-container-lowest p-space-sm overflow-hidden border border-outline-variant/30 flex flex-col items-center gap-3">
+<!-- Top Scanner Status HUD Bar -->
+<div class="flex items-center justify-between w-full px-2 pt-1 z-10">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-tertiary text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm text-tertiary uppercase font-bold tracking-wider">Player Card Verified &amp; Locked</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-secondary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px] animate-pulse">timer</span>
+<span>Cycle: 18s / 30s</span>
+</div>
+</div>
+
+<!-- Central Scanner Viewfinder Area -->
+<div class="relative w-full py-2 flex items-center justify-center">
+<!-- Scanner Viewfinder Reticle Corners -->
+<div class="absolute w-56 h-64 border border-primary/20 rounded-xl pointer-events-none flex flex-col justify-between p-1.5">
+<div class="flex justify-between w-full">
+<div class="w-4 h-4 border-t-2 border-l-2 border-primary"></div>
+<div class="w-4 h-4 border-t-2 border-r-2 border-primary"></div>
+</div>
+<!-- Horizontal laser scan bar -->
+<div class="w-full h-0.5 bg-gradient-to-r from-transparent via-primary-container to-transparent shadow-[0_0_8px_rgba(0,229,255,0.8)] animate-pulse"></div>
+<div class="flex justify-between w-full">
+<div class="w-4 h-4 border-b-2 border-l-2 border-primary"></div>
+<div class="w-4 h-4 border-b-2 border-r-2 border-primary"></div>
+</div>
+</div>
+
+<!-- Center Holographic Dynamic Card -->
+<div class="relative w-44 h-60 rounded-xl bg-surface-container-low flex flex-col justify-between p-4 shadow-[0_0_24px_rgba(0,229,255,0.3)] transition-all duration-300 z-10" id="hologram-card">
+<div class="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-primary/5 rounded-xl pointer-events-none"></div>
+<!-- Top Pip -->
+<div class="flex items-center justify-between relative z-10">
+<div class="flex flex-col items-center">
+<span class="font-headline-lg text-headline-lg text-primary leading-none font-bold" id="card-rank-top">K</span>
+<span class="font-headline-sm text-headline-sm text-primary leading-none" id="card-suit-top">♠</span>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-high text-primary uppercase tracking-widest font-bold">DYNAMIC</span>
+</div>
+<!-- Center Tactical Suit Display -->
+<div class="flex flex-col items-center justify-center relative z-10 my-auto">
+<div class="relative w-20 h-20 rounded-full bg-surface-container flex items-center justify-center shadow-inner">
+<span class="font-headline-xl text-headline-xl text-primary drop-shadow-[0_0_12px_rgba(0,229,255,0.7)] leading-none select-none" id="card-center-suit">♠</span>
+<span class="material-symbols-outlined absolute -top-1 -right-1 text-[16px] text-tertiary">lock</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold mt-2 tracking-wider" id="card-value-label">Value: +13 Pts</span>
+</div>
+<!-- Bottom Pip (Inverted) -->
+<div class="flex items-center justify-between relative z-10 rotate-180">
+<div class="flex flex-col items-center">
+<span class="font-headline-lg text-headline-lg text-primary leading-none font-bold" id="card-rank-bot">K</span>
+<span class="font-headline-sm text-headline-sm text-primary leading-none" id="card-suit-bot">♠</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">SYNC-30S</span>
+</div>
+</div>
+</div>
+
+<!-- Bottom Dynamic Card Live Scan Telemetry -->
+<div class="w-full flex flex-col gap-1.5 px-2 pb-1 z-10">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant uppercase tracking-wider">Scanned Dynamic Card:</span>
+<span class="text-primary font-bold tracking-wide">K♠ (Valid: 18s remaining in 30s cycle)</span>
+</div>
+<!-- 30-second cycle progress track -->
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full shadow-[0_0_8px_rgba(44,241,0,0.6)] w-3/5 transition-all duration-300"></div>
+</div>
+</div>
+</div>
+
+<!-- Quick Manual Suit & Rank Override Controls -->
+<div class="flex flex-col gap-2 pt-1 border-t border-outline-variant/30">
+<div class="flex justify-between items-center gap-1">
+<button class="suit-btn flex-1 py-1 rounded bg-surface-container-high text-primary font-headline-sm text-headline-sm text-center" onclick="setSuit('♠', 'text-primary')" type="button">♠</button>
+<button class="suit-btn flex-1 py-1 rounded bg-surface-container-lowest text-secondary font-headline-sm text-headline-sm text-center" onclick="setSuit('♥', 'text-secondary')" type="button">♥</button>
+<button class="suit-btn flex-1 py-1 rounded bg-surface-container-lowest text-secondary font-headline-sm text-headline-sm text-center" onclick="setSuit('♦', 'text-secondary')" type="button">♦</button>
+<button class="suit-btn flex-1 py-1 rounded bg-surface-container-lowest text-primary font-headline-sm text-headline-sm text-center" onclick="setSuit('♣', 'text-primary')" type="button">♣</button>
+</div>
+<div class="grid grid-cols-7 gap-1">
+<button class="rank-btn py-1 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('7', 7)" type="button">7</button>
+<button class="rank-btn py-1 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('8', 8)" type="button">8</button>
+<button class="rank-btn py-1 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('9', 9)" type="button">9</button>
+<button class="rank-btn py-1 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('10', 10)" type="button">10</button>
+<button class="rank-btn py-1 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('J', 11)" type="button">J</button>
+<button class="rank-btn py-1 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('Q', 12)" type="button">Q</button>
+<button class="rank-btn py-1 rounded bg-primary-container text-on-primary-container font-label-md text-label-md text-center font-bold" onclick="setRank('K', 13)" type="button">K</button>
+</div>
+</div></div>
+<!-- Live Award Calculation Display -->
+<div class="relative w-full rounded-xl bg-surface-container-high p-space-md overflow-hidden shadow-2xl flex flex-col items-center text-center gap-1">
+<div class="flex items-center gap-1.5 text-secondary-fixed">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+<span class="font-label-lg text-label-lg uppercase tracking-widest">Points to be Awarded</span>
+</div>
+<div class="flex items-baseline justify-center gap-2 mt-1">
+<span class="font-headline-lg text-headline-lg text-on-surface tracking-tight" id="formula-breakdown">12 + 13 =</span>
+<span class="font-headline-xl-mobile text-headline-xl-mobile text-tertiary font-bold drop-shadow-[0_0_12px_rgba(44,241,0,0.6)]" id="total-points">25</span>
+<span class="font-label-md text-label-md text-tertiary uppercase font-bold tracking-wider">PTS</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant" id="summary-meta">Allocating 25 PTS (12 Cone + 13 Card) directly to Team Explorers upon transmission.</span>
+</div>
+<!-- Primary Confirmation Action Button -->
+<button class="relative w-full h-14 rounded-xl bg-tertiary-container text-on-tertiary-container flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(44,241,0,0.45)] hover:shadow-[0_0_32px_rgba(44,241,0,0.7)] active:scale-[0.98] transition-all" id="transmit-btn" onclick="triggerSubmission()" type="button">
+<span class="material-symbols-outlined text-[24px] font-bold">verified</span>
+<span class="font-label-lg text-label-lg uppercase tracking-wider font-bold">Transmit &amp; Unlock Next Clue</span>
+</button>
+<!-- Recent Submissions Mini Log -->
+<div class="flex flex-col gap-2 mt-1">
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Recent Checkpoint Logs</span>
+<span class="font-label-sm text-label-sm text-primary uppercase">Live Feed</span>
+</div>
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Code Warriors</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Green Cone + Q♥</span>
+<span class="font-label-md text-label-md text-tertiary font-bold">+27 PTS</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Team Titans</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Red Cone + 10♠</span>
+<span class="font-label-md text-label-md text-tertiary font-bold">+20 PTS</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  let state = {
+    coneColor: 'yellow',
+    conePoints: 12,
+    cardRank: 'K',
+    cardSuit: '♠',
+    suitColorClass: 'text-primary',
+    cardPoints: 13,
+    cardDeckIndex: 6
+  };
+
+  const deck = [
+    { rank: '7', suit: '♠', points: 7, suitClass: 'text-primary' },
+    { rank: '8', suit: '♥', points: 8, suitClass: 'text-secondary' },
+    { rank: '9', suit: '♦', points: 9, suitClass: 'text-secondary' },
+    { rank: '10', suit: '♣', points: 10, suitClass: 'text-primary' },
+    { rank: 'J', suit: '♦', points: 11, suitClass: 'text-secondary' },
+    { rank: 'Q', suit: '♥', points: 12, suitClass: 'text-secondary' },
+    { rank: 'K', suit: '♠', points: 13, suitClass: 'text-primary' }
+  ];
+
+  function selectCone(color, points, el) {
+    state.coneColor = color;
+    state.conePoints = points;
+    
+    // Clear all cone button states
+    document.querySelectorAll('.cone-btn').forEach(btn => {
+      btn.classList.remove('bg-surface-container-high', 'shadow-[0_0_16px_rgba(255,214,0,0.35)]', 'shadow-[0_0_16px_rgba(255,59,59,0.35)]', 'shadow-[0_0_16px_rgba(44,241,0,0.35)]');
+      btn.classList.add('bg-surface-container-lowest');
+      const badge = btn.querySelector('.absolute.-top-1\\.5');
+      if (badge) badge.remove();
+    });
+
+    // Add selected indicator & glow
+    el.classList.remove('bg-surface-container-lowest');
+    el.classList.add('bg-surface-container-high');
+
+    const badge = document.createElement('div');
+    badge.className = 'absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center shadow-md';
+    
+    if (color === 'red') {
+      el.classList.add('shadow-[0_0_16px_rgba(255,59,59,0.35)]');
+      badge.classList.add('bg-error', 'text-on-error');
+      document.getElementById('beacon-status').textContent = 'Red Selected';
+      document.getElementById('beacon-status').className = 'font-label-sm text-label-sm text-error uppercase tracking-wider';
+    } else if (color === 'yellow') {
+      el.classList.add('shadow-[0_0_16px_rgba(255,214,0,0.35)]');
+      badge.classList.add('bg-secondary-fixed', 'text-on-secondary-fixed');
+      document.getElementById('beacon-status').textContent = 'Yellow Selected';
+      document.getElementById('beacon-status').className = 'font-label-sm text-label-sm text-secondary-fixed uppercase tracking-wider';
+    } else {
+      el.classList.add('shadow-[0_0_16px_rgba(44,241,0,0.35)]');
+      badge.classList.add('bg-tertiary-container', 'text-on-tertiary-container');
+      document.getElementById('beacon-status').textContent = 'Green Selected';
+      document.getElementById('beacon-status').className = 'font-label-sm text-label-sm text-tertiary uppercase tracking-wider';
+    }
+
+    badge.innerHTML = '<span class="material-symbols-outlined text-[14px] font-bold">check</span>';
+    el.appendChild(badge);
+
+    updateSummary();
+  }
+
+  function updateCardDisplay() {
+    document.getElementById('card-rank-top').textContent = state.cardRank;
+    document.getElementById('card-rank-bot').textContent = state.cardRank;
+    document.getElementById('card-suit-top').textContent = state.cardSuit;
+    document.getElementById('card-suit-bot').textContent = state.cardSuit;
+    document.getElementById('card-center-suit').textContent = state.cardSuit;
+    
+    // Update colors
+    const suitEls = [
+      document.getElementById('card-suit-top'),
+      document.getElementById('card-suit-bot'),
+      document.getElementById('card-center-suit')
+    ];
+    suitEls.forEach(el => {
+      el.className = el.className.replace(/text-(primary|secondary)/g, '');
+      el.classList.add(state.suitColorClass);
+    });
+
+    document.getElementById('card-value-label').textContent = 'Value: +' + state.cardPoints + ' Pts';
+    updateSummary();
+  }
+
+  function setSuit(suit, colorClass) {
+    state.cardSuit = suit;
+    state.suitColorClass = colorClass;
+    updateCardDisplay();
+  }
+
+  function setRank(rank, points) {
+    state.cardRank = rank;
+    state.cardPoints = points;
+    
+    document.querySelectorAll('.rank-btn').forEach(btn => {
+      if (btn.textContent.trim() === rank) {
+        btn.className = 'rank-btn py-1 rounded bg-primary-container text-on-primary-container font-label-md text-label-md text-center font-bold';
+      } else {
+        btn.className = 'rank-btn py-1 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center';
+      }
+    });
+
+    updateCardDisplay();
+  }
+
+  function cycleCard(dir) {
+    state.cardDeckIndex = (state.cardDeckIndex + dir + deck.length) % deck.length;
+    const card = deck[state.cardDeckIndex];
+    state.cardRank = card.rank;
+    state.cardSuit = card.suit;
+    state.cardPoints = card.points;
+    state.suitColorClass = card.suitClass;
+    
+    setRank(card.rank, card.points);
+    updateCardDisplay();
+  }
+
+  function updateSummary() {
+    const total = state.conePoints + state.cardPoints;
+    document.getElementById('formula-breakdown').textContent = state.conePoints + ' + ' + state.cardPoints + ' =';
+    document.getElementById('total-points').textContent = total;
+
+    const team = document.getElementById('team-selector').value;
+    document.getElementById('summary-meta').textContent = 'Adding to ' + team + ' • Zone SEC-04';
+  }
+
+  function triggerSubmission() {
+    const btn = document.getElementById('transmit-btn');
+    const prevText = btn.innerHTML;
+    
+    btn.innerHTML = '<span class="material-symbols-outlined text-[24px] animate-spin">refresh</span><span class="font-label-lg text-label-lg uppercase font-bold">Transmitting Cipher...</span>';
+    btn.classList.add('opacity-80', 'pointer-events-none');
+
+    setTimeout(() => {
+      btn.innerHTML = '<span class="material-symbols-outlined text-[24px]">task_alt</span><span class="font-label-lg text-label-lg uppercase font-bold">Beacon Verified & Points Awarded!</span>';
+      btn.classList.remove('opacity-80', 'bg-tertiary-container', 'text-on-tertiary-container');
+      btn.classList.add('bg-primary-container', 'text-on-primary-container');
+      
+      setTimeout(() => {
+        btn.innerHTML = prevText;
+        btn.classList.remove('pointer-events-none', 'bg-primary-container', 'text-on-primary-container');
+        btn.classList.add('bg-tertiary-container', 'text-on-tertiary-container');
+      }, 2500);
+    }, 1200);
+  }
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_16px_rgba(0,229,255,0.06)]" data-active-classes="text-primary-container drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] font-bold"><div class="flex justify-around items-center h-20 px-gutter"><a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" data-path="player-dashboard" href="#"><span class="material-symbols-outlined text-[24px]">radar</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Hunt</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-16 transition-colors text-primary-container drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] font-bold" data-path="checkpoint-log" href="#"><span class="material-symbols-outlined text-[24px]">style</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Cards</span></a><a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" data-path="leaderboard" href="#"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Rank</span></a><a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" data-path="admin-control-panel" href="#"><span class="material-symbols-outlined text-[24px]">tune</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Control</span></a></div></nav>
+
+</body></html>
