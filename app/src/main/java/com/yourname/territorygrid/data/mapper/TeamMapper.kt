@@ -29,6 +29,7 @@ fun DocumentSnapshot.toTeam(): Team {
         clueOrder = clueOrderList,
         currentClueIndex = clueIndexNum,
         visitedZones = visitedZonesList,
+        isApproved = getBoolean("isApproved") ?: false,
         updatedAt = getTimestamp("updatedAt")
     )
 }

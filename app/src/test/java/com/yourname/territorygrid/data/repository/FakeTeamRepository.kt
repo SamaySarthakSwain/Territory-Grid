@@ -50,6 +50,13 @@ class FakeTeamRepository : TeamRepository {
         return Result.success(Unit)
     }
 
+    override suspend fun approveTeam(teamId: String): Result<Unit> {
+        _teams.value = _teams.value.map {
+            if (it.id == teamId) it.copy(isApproved = true) else it
+        }
+        return Result.success(Unit)
+    }
+
     override suspend fun deleteTeam(teamId: String): Result<Unit> {
         _teams.value = _teams.value.filter { it.id != teamId }
         return Result.success(Unit)

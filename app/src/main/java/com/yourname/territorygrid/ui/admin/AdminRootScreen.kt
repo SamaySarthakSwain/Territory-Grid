@@ -469,17 +469,6 @@ private fun ControlTabContent(
                     leadingIcon = { Icon(Icons.Default.Shuffle, contentDescription = null) },
                     modifier = Modifier.fillMaxWidth()
                 )
-
-                if (com.yourname.territorygrid.BuildConfig.DEBUG) {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    NeonButton(
-                        text = "SEED DEMO OPERATIONAL DATA",
-                        onClick = viewModel::seedDemoData,
-                        variant = NeonButtonVariant.SECONDARY,
-                        leadingIcon = { Icon(Icons.Default.Sync, contentDescription = null) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
             }
         }
 
@@ -599,12 +588,47 @@ private fun TeamsTabContent(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = team.name,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = TacticalColors.TextPrimary,
-                                    fontWeight = FontWeight.Bold
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Text(
+                                        text = team.name,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = TacticalColors.TextPrimary,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    // Approval badge
+                                    if (team.isApproved) {
+                                        Text(
+                                            text = "✓ APPROVED",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = TacticalColors.TacticalGreen,
+                                            fontSize = 9.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier
+                                                .background(
+                                                    TacticalColors.TacticalGreen.copy(alpha = 0.15f),
+                                                    RoundedCornerShape(4.dp)
+                                                )
+                                                .padding(horizontal = 4.dp, vertical = 2.dp)
+                                        )
+                                    } else {
+                                        Text(
+                                            text = "⏳ PENDING",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = TacticalColors.WarningAmber,
+                                            fontSize = 9.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier
+                                                .background(
+                                                    TacticalColors.WarningAmber.copy(alpha = 0.15f),
+                                                    RoundedCornerShape(4.dp)
+                                                )
+                                                .padding(horizontal = 4.dp, vertical = 2.dp)
+                                        )
+                                    }
+                                }
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = "Score: ${team.score} PTS • Cards: ${team.cards.size} • Progress: Step ${team.currentClueIndex}/${team.clueOrder.size}",
@@ -624,12 +648,27 @@ private fun TeamsTabContent(
                                 }
                             }
 
-                            IconButton(onClick = { viewModel.confirmDeleteTeam(team) }) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete squad",
-                                    tint = TacticalColors.Error
-                                )
+                            // Action buttons column
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                // Approve button — only show if not yet approved
+                                if (!team.isApproved) {
+                                    NeonButton(
+                                        text = "APPROVE",
+                                        onClick = { viewModel.approveTeam(team.id) },
+                                        variant = NeonButtonVariant.SUCCESS,
+                                        modifier = Modifier.height(32.dp)
+                                    )
+                                }
+                                IconButton(onClick = { viewModel.confirmDeleteTeam(team) }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete squad",
+                                        tint = TacticalColors.Error
+                                    )
+                                }
                             }
                         }
                     }

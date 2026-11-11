@@ -29,6 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
@@ -53,6 +54,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -156,10 +158,9 @@ fun LoginScreen(
             // 2. Brand Identity Hero
             Box(
                 modifier = Modifier
-                    .size(88.dp)
-                    .clickable { onNavigateToGallery() } // Secret access to gallery
+                    .size(80.dp)
+                    .clickable { onNavigateToGallery() }
                     .drawBehind {
-                        // Cyan ambient aura
                         drawCircle(
                             brush = Brush.radialGradient(
                                 colors = listOf(
@@ -172,27 +173,20 @@ fun LoginScreen(
                     },
                 contentAlignment = Alignment.Center
             ) {
-                // Tactical Emblem Frame
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val w = size.width
                     val h = size.height
                     val tickLen = 14f
 
-                    // 4-corner reticle marks
-                    // Top-Left
                     drawLine(TacticalColors.PrimaryContainer, Offset(0f, 0f), Offset(tickLen, 0f), strokeWidth = 2.5f)
                     drawLine(TacticalColors.PrimaryContainer, Offset(0f, 0f), Offset(0f, tickLen), strokeWidth = 2.5f)
-                    // Top-Right
                     drawLine(TacticalColors.PrimaryContainer, Offset(w, 0f), Offset(w - tickLen, 0f), strokeWidth = 2.5f)
                     drawLine(TacticalColors.PrimaryContainer, Offset(w, 0f), Offset(w, tickLen), strokeWidth = 2.5f)
-                    // Bottom-Left
                     drawLine(TacticalColors.PrimaryContainer, Offset(0f, h), Offset(tickLen, h), strokeWidth = 2.5f)
                     drawLine(TacticalColors.PrimaryContainer, Offset(0f, h), Offset(0f, h - tickLen), strokeWidth = 2.5f)
-                    // Bottom-Right
                     drawLine(TacticalColors.PrimaryContainer, Offset(w, h), Offset(w - tickLen, h), strokeWidth = 2.5f)
                     drawLine(TacticalColors.PrimaryContainer, Offset(w, h), Offset(w, h - tickLen), strokeWidth = 2.5f)
 
-                    // Concentric radar rings
                     drawCircle(
                         color = TacticalColors.PrimaryContainer.copy(alpha = 0.25f),
                         radius = w * 0.38f,
@@ -212,7 +206,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Title
             Text(
                 text = buildAnnotatedString {
                     append("TERRITORY ")
@@ -234,448 +227,306 @@ fun LoginScreen(
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            // Subtitle Pills: EXPLORE • HUNT • SCORE • WIN
-            Row(
-                modifier = Modifier.padding(top = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Text("EXPLORE", style = MaterialTheme.typography.labelSmall, color = TacticalColors.TextSecondary)
-                Box(Modifier.size(3.dp).background(TacticalColors.PrimaryContainer, CircleShape))
-                Text("HUNT", style = MaterialTheme.typography.labelSmall, color = TacticalColors.SecondaryContainer)
-                Box(Modifier.size(3.dp).background(TacticalColors.SecondaryContainer, CircleShape))
-                Text("SCORE", style = MaterialTheme.typography.labelSmall, color = TacticalColors.ConeYellow)
-                Box(Modifier.size(3.dp).background(TacticalColors.ConeYellow, CircleShape))
-                Text("WIN", style = MaterialTheme.typography.labelSmall, color = TacticalColors.ConeGreen)
-            }
-
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 3. Cyber Matrix Terminal Card
-            GlassCard(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            // 3. Conditional Mode: Portal Chooser vs. Dedicated Login Form
+            if (state.mode == LoginScreenMode.PORTAL_CHOOSER) {
+                // STARTUP PORTAL SELECTION
                 Column(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    // Terminal Header
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(TacticalColors.SurfaceLowest, RoundedCornerShape(4.dp))
-                            .padding(horizontal = 10.dp, vertical = 6.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    Text(
+                        text = "SELECT OPERATIONAL PORTAL",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TacticalColors.PrimaryContainer,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.5.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    // 1. Admin Portal
+                    PortalSelectionCard(
+                        title = "ADMIN COMMAND PORTAL",
+                        clearance = "LEVEL 5 // GAME MASTER",
+                        description = "Mission clock, phase transitions, squad approvals & live telemetry.",
+                        icon = Icons.Default.Shield,
+                        accentColor = TacticalColors.SecondaryContainer,
+                        onClick = { viewModel.selectPortal(Role.ADMIN) }
+                    )
+
+                    // 2. Field Marshal Portal
+                    PortalSelectionCard(
+                        title = "FIELD MARSHAL PORTAL",
+                        clearance = "SECTOR ARBITER // STATION CHECKPOINT",
+                        description = "Checkpoint cone verification and card draw scoring arbitration.",
+                        icon = Icons.Default.Security,
+                        accentColor = TacticalColors.ConeGreen,
+                        onClick = { viewModel.selectPortal(Role.MEMBER) }
+                    )
+
+                    // 3. Player Squad Portal
+                    PortalSelectionCard(
+                        title = "PLAYER SQUAD PORTAL",
+                        clearance = "COMPETITOR SQUAD // RECON HUD",
+                        description = "Active directive navigation, score ring and card inventory.",
+                        icon = Icons.Default.SportsEsports,
+                        accentColor = TacticalColors.PrimaryContainer,
+                        onClick = { viewModel.selectPortal(Role.PLAYER) }
+                    )
+                }
+            } else {
+                // DEDICATED LOGIN TERMINAL FOR SELECTED PORTAL
+                GlassCard(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(14.dp)
                     ) {
+                        // Back to Portal Chooser Button
                         Row(
+                            modifier = Modifier
+                                .clickable { viewModel.returnToPortalChooser() }
+                                .padding(vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = null,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back",
                                 tint = TacticalColors.PrimaryContainer,
-                                modifier = Modifier.size(14.dp)
+                                modifier = Modifier.size(16.dp)
                             )
                             Text(
-                                text = stringResource(R.string.gateway_header),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = TacticalColors.TextSecondary,
-                                letterSpacing = 1.sp
-                            )
-                        }
-                        Text(
-                            text = stringResource(R.string.port_number),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = TacticalColors.ConeGreen,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    // Role Quick-Selector Chip Matrix
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "ASSIGNMENT ROLE",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = TacticalColors.TextSecondary,
-                                letterSpacing = 1.sp
-                            )
-                            Text(
-                                text = state.roleDescriptor,
+                                text = "CHANGE OPERATIONAL PORTAL",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = TacticalColors.PrimaryContainer,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.sp
                             )
                         }
 
+                        // Terminal Header
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(TacticalColors.SurfaceLowest, RoundedCornerShape(6.dp))
-                                .padding(4.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                .background(TacticalColors.SurfaceLowest, RoundedCornerShape(4.dp))
+                                .padding(horizontal = 10.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // Player
-                            RoleChipButton(
-                                title = "PLAYER",
-                                isSelected = state.selectedRoleHint == Role.PLAYER,
-                                activeColor = TacticalColors.PrimaryContainer,
-                                activeTextColor = TacticalColors.Background,
-                                icon = Icons.Default.SportsEsports,
-                                modifier = Modifier.weight(1f),
-                                onClick = { viewModel.onRoleHintSelected(Role.PLAYER) }
-                            )
-
-                            // Marshal (Member)
-                            RoleChipButton(
-                                title = "MARSHAL",
-                                isSelected = state.selectedRoleHint == Role.MEMBER,
-                                activeColor = TacticalColors.ConeGreen,
-                                activeTextColor = TacticalColors.Background,
-                                icon = Icons.Default.Security,
-                                modifier = Modifier.weight(1f),
-                                onClick = { viewModel.onRoleHintSelected(Role.MEMBER) }
-                            )
-
-                            // Admin
-                            RoleChipButton(
-                                title = "ADMIN",
-                                isSelected = state.selectedRoleHint == Role.ADMIN,
-                                activeColor = TacticalColors.SecondaryContainer,
-                                activeTextColor = TacticalColors.TextPrimary,
-                                icon = Icons.Default.Shield,
-                                modifier = Modifier.weight(1f),
-                                onClick = { viewModel.onRoleHintSelected(Role.ADMIN) }
-                            )
-                        }
-                    }
-
-                    // Input 1: Tactical Callsign / Email
-                    NeonTextField(
-                        value = state.email,
-                        onValueChange = { viewModel.onEmailChanged(it) },
-                        label = stringResource(R.string.callsign_label),
-                        placeholder = "agent@recon.grid or CALLSIGN",
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = null,
-                                tint = TacticalColors.PrimaryContainer,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        },
-                        trailingIcon = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Lock,
+                                    contentDescription = null,
+                                    tint = when (state.selectedRole) {
+                                        Role.ADMIN -> TacticalColors.SecondaryContainer
+                                        Role.MEMBER -> TacticalColors.ConeGreen
+                                        else -> TacticalColors.PrimaryContainer
+                                    },
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Text(
+                                    text = state.portalHeaderTitle,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = TacticalColors.TextPrimary,
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = 1.sp
+                                )
+                            }
                             Text(
-                                text = stringResource(R.string.required_badge),
+                                text = state.roleDescriptor,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = TacticalColors.PrimaryFixed,
                                 fontSize = 9.sp
                             )
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                        }
 
-                    // Input 2: Cryptographic Access Key
-                    NeonTextField(
-                        value = state.pass,
-                        onValueChange = { viewModel.onPasswordChanged(it) },
-                        label = stringResource(R.string.access_key_label),
-                        placeholder = stringResource(R.string.access_key_hint),
-                        visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = null,
-                                tint = TacticalColors.PrimaryContainer,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        },
-                        trailingIcon = {
-                            IconButton(onClick = { viewModel.onTogglePasswordVisibility() }) {
-                                Icon(
-                                    imageVector = if (state.isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                                    contentDescription = "Toggle password visibility",
-                                    tint = TacticalColors.TextSecondary,
-                                    modifier = Modifier.size(18.dp)
+                        // Specific hint for Admin
+                        if (state.selectedRole == Role.ADMIN) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(TacticalColors.SecondaryContainer.copy(alpha = 0.15f), RoundedCornerShape(4.dp))
+                                    .border(1.dp, TacticalColors.SecondaryContainer.copy(alpha = 0.4f), RoundedCornerShape(4.dp))
+                                    .padding(8.dp)
+                            ) {
+                                Text(
+                                    text = "Game Master Clearance: ID = samay | Access Key = samay",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = TacticalColors.TextPrimary,
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    // Active Mission Zone Telemetry
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(TacticalColors.SurfaceLowest, RoundedCornerShape(6.dp))
-                            .padding(horizontal = 10.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text(
-                                text = state.missionZoneHint,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = TacticalColors.TextPrimary,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = stringResource(R.string.auto_locks_beacon),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = TacticalColors.TextSecondary,
-                                fontSize = 10.sp
-                            )
                         }
-                        Box(
-                            modifier = Modifier
-                                .background(TacticalColors.ConeGreen.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
-                                .border(1.dp, TacticalColors.ConeGreen.copy(alpha = 0.5f), RoundedCornerShape(4.dp))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.synced_badge),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = TacticalColors.ConeGreen,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
 
-                    // Friendly Tactical Error Alert
-                    AnimatedVisibility(
-                        visible = state.errorMessage != null,
-                        enter = fadeIn(),
-                        exit = fadeOut()
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(TacticalColors.ErrorContainer.copy(alpha = 0.25f), RoundedCornerShape(6.dp))
-                                .border(1.dp, TacticalColors.Error, RoundedCornerShape(6.dp))
-                                .padding(10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Warning,
-                                contentDescription = null,
-                                tint = TacticalColors.Error,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Text(
-                                text = state.errorMessage.orEmpty(),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = TacticalColors.Error,
-                                fontSize = 11.sp
-                            )
-                        }
-                    }
-
-                    // Primary Submit Button
-                    NeonButton(
-                        text = state.actionButtonLabel,
-                        onClick = { viewModel.submitLogin() },
-                        variant = when (state.selectedRoleHint) {
-                            Role.PLAYER -> NeonButtonVariant.PRIMARY
-                            Role.MEMBER -> NeonButtonVariant.SUCCESS
-                            Role.ADMIN -> NeonButtonVariant.DANGER
-                        },
-                        isLoading = state.isLoading,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.PlayArrow,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    // Fast Deployment Divider
-                    ScanlineDivider(modifier = Modifier.padding(vertical = 4.dp))
-
-                    // Quick Team Passcode Access Shortcut
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(TacticalColors.SurfaceLowest, RoundedCornerShape(6.dp))
-                            .padding(horizontal = 10.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Security,
-                            contentDescription = null,
-                            tint = TacticalColors.SecondaryContainer,
-                            modifier = Modifier.size(18.dp)
+                        // Input 1: Callsign / ID
+                        NeonTextField(
+                            value = state.email,
+                            onValueChange = { viewModel.onEmailChanged(it) },
+                            label = if (state.selectedRole == Role.ADMIN) "Admin ID / Callsign" else stringResource(R.string.callsign_label),
+                            placeholder = if (state.selectedRole == Role.ADMIN) "samay" else "callsign or user@recon.grid",
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = null,
+                                    tint = TacticalColors.PrimaryContainer,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        Box(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.squad_token_hint),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = TacticalColors.TextSecondary,
-                                fontSize = 12.sp
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .background(TacticalColors.SecondaryContainer, RoundedCornerShape(4.dp))
-                                .clickable {
-                                    viewModel.onEmailChanged("player1@recon.grid")
-                                    viewModel.onPasswordChanged("recon123")
-                                    viewModel.onRoleHintSelected(Role.PLAYER)
+
+                        // Input 2: Access Key
+                        NeonTextField(
+                            value = state.pass,
+                            onValueChange = { viewModel.onPasswordChanged(it) },
+                            label = stringResource(R.string.access_key_label),
+                            placeholder = if (state.selectedRole == Role.ADMIN) "samay" else stringResource(R.string.access_key_hint),
+                            visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Lock,
+                                    contentDescription = null,
+                                    tint = TacticalColors.PrimaryContainer,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            },
+                            trailingIcon = {
+                                IconButton(onClick = { viewModel.onTogglePasswordVisibility() }) {
+                                    Icon(
+                                        imageVector = if (state.isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                        contentDescription = "Toggle password visibility",
+                                        tint = TacticalColors.TextSecondary,
+                                        modifier = Modifier.size(18.dp)
+                                    )
                                 }
-                                .padding(horizontal = 10.dp, vertical = 4.dp)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Error Banner
+                        AnimatedVisibility(
+                            visible = state.errorMessage != null,
+                            enter = fadeIn(),
+                            exit = fadeOut()
                         ) {
-                            Text(
-                                text = stringResource(R.string.join),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = TacticalColors.TextPrimary,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(TacticalColors.ErrorContainer.copy(alpha = 0.25f), RoundedCornerShape(6.dp))
+                                    .border(1.dp, TacticalColors.Error, RoundedCornerShape(6.dp))
+                                    .padding(10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Warning,
+                                    contentDescription = null,
+                                    tint = TacticalColors.Error,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Text(
+                                    text = state.errorMessage.orEmpty(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = TacticalColors.Error,
+                                    fontSize = 11.sp
+                                )
+                            }
                         }
+
+                        // Submit Button
+                        NeonButton(
+                            text = state.actionButtonLabel,
+                            onClick = { viewModel.submitLogin() },
+                            variant = when (state.selectedRole) {
+                                Role.PLAYER -> NeonButtonVariant.PRIMARY
+                                Role.MEMBER -> NeonButtonVariant.SUCCESS
+                                Role.ADMIN -> NeonButtonVariant.DANGER
+                                null -> NeonButtonVariant.PRIMARY
+                            },
+                            isLoading = state.isLoading,
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.PlayArrow,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
                 }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 4. Live Intel Telemetry Snippet (3 Cards)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                TelemetryStatCard(
-                    title = stringResource(R.string.active_teams),
-                    value = "08",
-                    valueColor = TacticalColors.PrimaryContainer,
-                    modifier = Modifier.weight(1f)
-                )
-                TelemetryStatCard(
-                    title = stringResource(R.string.field_cones),
-                    value = "14/14",
-                    valueColor = TacticalColors.ConeGreen,
-                    modifier = Modifier.weight(1f)
-                )
-                TelemetryStatCard(
-                    title = stringResource(R.string.match_timer),
-                    value = "45:32",
-                    valueColor = TacticalColors.SecondaryContainer,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // 5. Tactical Footer
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Box(Modifier.size(4.dp).background(TacticalColors.ConeGreen, CircleShape))
-                    Text(
-                        text = "ADMIN • MARSHAL • PLAYER",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = TacticalColors.TextSecondary,
-                        letterSpacing = 1.sp
-                    )
-                    Box(Modifier.size(4.dp).background(TacticalColors.ConeGreen, CircleShape))
-                }
-                Text(
-                    text = stringResource(R.string.security_protocol),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = TacticalColors.TextSecondary.copy(alpha = 0.6f),
-                    fontSize = 9.sp,
-                    letterSpacing = 1.sp
-                )
             }
         }
     }
 }
 
 @Composable
-private fun RoleChipButton(
+private fun PortalSelectionCard(
     title: String,
-    isSelected: Boolean,
-    activeColor: Color,
-    activeTextColor: Color,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    modifier: Modifier = Modifier,
+    clearance: String,
+    description: String,
+    icon: ImageVector,
+    accentColor: Color,
     onClick: () -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(4.dp))
-            .background(if (isSelected) activeColor else TacticalColors.SurfaceContainerHigh)
+    GlassCard(
+        modifier = Modifier
+            .fillMaxWidth()
             .clickable { onClick() }
-            .padding(vertical = 8.dp, horizontal = 4.dp),
-        contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = if (isSelected) activeTextColor else TacticalColors.TextSecondary,
-                modifier = Modifier.size(16.dp)
-            )
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelSmall,
-                color = if (isSelected) activeTextColor else TacticalColors.TextSecondary,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                fontSize = 10.sp
-            )
-        }
-    }
-}
+            Box(
+                modifier = Modifier
+                    .size(52.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(accentColor.copy(alpha = 0.15f))
+                    .border(1.dp, accentColor.copy(alpha = 0.5f), RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = accentColor,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
 
-@Composable
-private fun TelemetryStatCard(
-    title: String,
-    value: String,
-    valueColor: Color,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(6.dp))
-            .background(TacticalColors.SurfaceContainerLow.copy(alpha = 0.8f))
-            .border(1.dp, TacticalColors.BorderSubtle, RoundedCornerShape(6.dp))
-            .padding(vertical = 8.dp, horizontal = 4.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelSmall,
-                color = TacticalColors.TextSecondary,
-                fontSize = 9.sp,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = value,
-                style = MaterialTheme.typography.headlineSmall,
-                color = valueColor,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = clearance,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = accentColor,
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = TacticalColors.TextPrimary,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TacticalColors.TextSecondary,
+                    fontSize = 11.sp
+                )
+            }
         }
     }
 }

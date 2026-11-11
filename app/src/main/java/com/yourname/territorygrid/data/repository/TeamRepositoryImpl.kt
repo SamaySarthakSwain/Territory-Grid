@@ -70,6 +70,7 @@ class TeamRepositoryImpl @Inject constructor(
                 "clueOrder" to clueOrder,
                 "currentClueIndex" to 0,
                 "visitedZones" to emptyList<String>(),
+                "isApproved" to false,
                 "updatedAt" to FieldValue.serverTimestamp()
             )
             docRef.set(teamData).await()
@@ -109,6 +110,18 @@ class TeamRepositoryImpl @Inject constructor(
             }
 
             batch.commit().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun approveTeam(teamId: String): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            firestore.collection("teams").document(teamId).update(
+                "isApproved", true,
+                "updatedAt", FieldValue.serverTimestamp()
+            ).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

@@ -31,10 +31,17 @@ data class PlayerUiState(
     val recentPointsDelta: Int? = null,
     val showPointsDeltaBanner: Boolean = false,
     val errorMessage: String? = null,
-    val infoMessage: String? = null
+    val infoMessage: String? = null,
+    // Self-registration
+    val showRegisterTeamDialog: Boolean = false,
+    val registerTeamName: String = "",
+    val isRegistering: Boolean = false
 ) {
     val hasNoTeamAssigned: Boolean
         get() = userProfile?.teamId.isNullOrBlank()
+
+    val isTeamPendingApproval: Boolean
+        get() = team != null && !team.isApproved
 
     val isLobbyPhase: Boolean
         get() = gameState.status == GameStatus.LOBBY

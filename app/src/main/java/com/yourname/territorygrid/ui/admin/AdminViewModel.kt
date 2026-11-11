@@ -420,47 +420,15 @@ class AdminViewModel @Inject constructor(
         _uiState.update { it.copy(errorMessage = null, infoMessage = null) }
     }
 
-    fun seedDemoData() {
+    fun approveTeam(teamId: String) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            try {
-                val demoClues = listOf(
-                    Triple("Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!", "ZONE_01", "Sector A: Library Arch"),
-                    Triple("Search the courtyard perimeter behind the ancient bronze solar obelisk.", "ZONE_02", "Sector B: Solar Obelisk"),
-                    Triple("Ascend the terrace staircase overlooking the historic clocktower.", "ZONE_03", "Sector C: Clocktower Terrace"),
-                    Triple("Investigate the botanical garden glasshouse south perimeter.", "ZONE_04", "Sector D: Glasshouse"),
-                    Triple("Cross the pedestrian skybridge connecting engineering labs 1 & 2.", "ZONE_05", "Sector E: Skybridge"),
-                    Triple("Look beneath the concrete amphitheater canopy seating.", "ZONE_06", "Sector F: Amphitheater"),
-                    Triple("Find the water fountain basin near the science auditorium.", "ZONE_07", "Sector G: Science Basin"),
-                    Triple("Check the shaded colonnade behind student center pavilion.", "ZONE_08", "Sector H: Student Pavilion"),
-                    Triple("Locate the red telecom antenna pylon on north concourse.", "ZONE_09", "Sector I: North Pylon"),
-                    Triple("Scan the perimeter fence surrounding the athletic turf field.", "ZONE_10", "Sector J: Turf Perimeter")
+            val result = teamRepository.approveTeam(teamId)
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    infoMessage = if (result.isSuccess) "Squad clearance authorized. Team is approved to play." else "Failed to approve squad: ${result.exceptionOrNull()?.localizedMessage}"
                 )
-
-                val clueIds = mutableListOf<String>()
-                for ((text, zoneId, label) in demoClues) {
-                    val res = clueRepository.createClue(text, zoneId, label)
-                    res.getOrNull()?.let { clueIds.add(it) }
-                }
-
-                val demoTeams = listOf("Team Titans", "Team Explorers", "Dream Squad", "Code Warriors")
-                for (teamName in demoTeams) {
-                    teamRepository.createTeam(teamName, clueIds.shuffled())
-                }
-
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        infoMessage = "Demo operational data seeded: 10 clues and 4 teams created."
-                    )
-                }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "Failed to seed demo data: ${e.localizedMessage}"
-                    )
-                }
             }
         }
     }

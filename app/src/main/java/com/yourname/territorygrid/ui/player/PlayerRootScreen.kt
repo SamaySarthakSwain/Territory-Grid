@@ -48,6 +48,7 @@ import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -84,6 +85,7 @@ import com.yourname.territorygrid.ui.components.GlowingScoreRing
 import com.yourname.territorygrid.ui.components.HexGridBackground
 import com.yourname.territorygrid.ui.components.NeonButton
 import com.yourname.territorygrid.ui.components.NeonButtonVariant
+import com.yourname.territorygrid.ui.components.NeonTextField
 import com.yourname.territorygrid.ui.components.PlayingCardTile
 import com.yourname.territorygrid.ui.components.TopHudBar
 import com.yourname.territorygrid.ui.theme.TacticalColors
@@ -142,7 +144,8 @@ fun PlayerRootScreen(
                         HuntTabScreen(
                             uiState = uiState,
                             onNavigateToCards = { viewModel.selectTab(PlayerTab.CARDS) },
-                            onNavigateToLeaderboard = { viewModel.selectTab(PlayerTab.LEADERBOARD) }
+                            onNavigateToLeaderboard = { viewModel.selectTab(PlayerTab.LEADERBOARD) },
+                            onRegisterSquad = { viewModel.openRegisterTeamDialog() }
                         )
                     }
                     PlayerTab.CARDS -> {
@@ -191,6 +194,63 @@ fun PlayerRootScreen(
                         "cards" -> viewModel.selectTab(PlayerTab.CARDS)
                         "rank" -> viewModel.selectTab(PlayerTab.LEADERBOARD)
                     }
+                }
+            )
+        }
+
+        if (uiState.showRegisterTeamDialog) {
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissRegisterTeamDialog() },
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(Icons.Default.Bolt, contentDescription = null, tint = TacticalColors.NeonCyan)
+                        Text(
+                            text = "REGISTER YOUR SQUAD",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = TacticalColors.NeonCyan
+                        )
+                    }
+                },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            text = "Enter your squad callsign. The Game Master must approve it before play begins.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TacticalColors.TextSecondary
+                        )
+                        NeonTextField(
+                            value = uiState.registerTeamName,
+                            onValueChange = viewModel::onRegisterTeamNameChanged,
+                            label = "SQUAD CALLSIGN",
+                            hint = "e.g. Phoenix Recon"
+                        )
+                        val err = uiState.errorMessage
+                        if (!err.isNullOrBlank()) {
+                            Text(
+                                text = err,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TacticalColors.Error
+                            )
+                        }
+                    }
+                },
+                confirmButton = {
+                    NeonButton(
+                        text = if (uiState.isRegistering) "REGISTERING..." else "DEPLOY SQUAD",
+                        onClick = viewModel::submitRegisterTeam,
+                        variant = NeonButtonVariant.PRIMARY,
+                        enabled = !uiState.isRegistering && uiState.registerTeamName.isNotBlank()
+                    )
+                },
+                dismissButton = {
+                    NeonButton(
+                        text = "CANCEL",
+                        onClick = viewModel::dismissRegisterTeamDialog,
+                        variant = NeonButtonVariant.SECONDARY
+                    )
                 }
             )
         }
@@ -280,7 +340,8 @@ private fun PlayerSubHeader(
 private fun HuntTabScreen(
     uiState: PlayerUiState,
     onNavigateToCards: () -> Unit,
-    onNavigateToLeaderboard: () -> Unit
+    onNavigateToLeaderboard: () -> Unit,
+    onRegisterSquad: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -303,11 +364,68 @@ private fun HuntTabScreen(
         when {
             uiState.hasNoTeamAssigned -> {
                 item {
-                    PhaseWarningCard(
-                        title = stringResource(R.string.no_team_assigned_title),
-                        description = stringResource(R.string.no_team_assigned_desc),
-                        accentColor = TacticalColors.RedGlow
-                    )
+                    GlassCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Shield,
+                                contentDescription = null,
+                                tint = TacticalColors.NeonCyan,
+                                modifier = Modifier.size(40.dp)
+                            )
+                            Text(
+                                text = "NO SQUAD ASSIGNED",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = TacticalColors.TextPrimary,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "You are not assigned to a squad. Register your squad to enter the grid, or wait for the Game Master to assign you.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TacticalColors.TextSecondary,
+                                textAlign = TextAlign.Center
+                            )
+                            NeonButton(
+                                text = "REGISTER SQUAD",
+                                onClick = onRegisterSquad,
+                                variant = NeonButtonVariant.PRIMARY,
+                                leadingIcon = { Icon(Icons.Default.Bolt, contentDescription = null) }
+                            )
+                        }
+                    }
+                }
+            }
+            uiState.isTeamPendingApproval -> {
+                item {
+                    GlassCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Timer,
+                                contentDescription = null,
+                                tint = TacticalColors.GoldAlert,
+                                modifier = Modifier.size(40.dp)
+                            )
+                            Text(
+                                text = "AWAITING CLEARANCE",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = TacticalColors.GoldAlert,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Squad \"${uiState.team?.name}\" is registered and awaiting Game Master approval. Hold position.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TacticalColors.TextSecondary,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
             }
             uiState.isGamePaused -> {

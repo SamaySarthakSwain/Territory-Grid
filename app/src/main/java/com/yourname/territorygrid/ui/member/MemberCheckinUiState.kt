@@ -14,7 +14,8 @@ enum class TeamArrivalStatus {
     READY,
     NOT_DUE,
     ALREADY_CHECKED_IN,
-    FINISHED
+    FINISHED,
+    NOT_APPROVED
 }
 
 data class TeamEligibility(
@@ -90,6 +91,7 @@ data class MemberCheckinUiState(
         get() {
             val elig = selectedTeamEligibility ?: return TeamArrivalStatus.NONE_SELECTED
             return when {
+                !elig.team.isApproved -> TeamArrivalStatus.NOT_APPROVED
                 elig.isFinished -> TeamArrivalStatus.FINISHED
                 elig.alreadyCheckedIn -> TeamArrivalStatus.ALREADY_CHECKED_IN
                 elig.isDueHere -> TeamArrivalStatus.READY
@@ -108,6 +110,7 @@ data class MemberCheckinUiState(
             hasNoZoneAssigned -> "No checkpoint zone assigned. Contact Game Master."
             !isPhaseAllowed -> "Check-ins locked: Mission is currently in ${gameState.status.name}."
             selectedTeamId == null -> "Select the arrived team to proceed."
+            arrivalStatus == TeamArrivalStatus.NOT_APPROVED -> "Squad not yet approved by Game Master. Cannot score unapproved squads."
             arrivalStatus == TeamArrivalStatus.FINISHED -> "Team has completed all grid directives."
             arrivalStatus == TeamArrivalStatus.ALREADY_CHECKED_IN -> "Team has already completed checkpoint for this zone."
             arrivalStatus == TeamArrivalStatus.NOT_DUE -> {

@@ -113,4 +113,55 @@ class PlayerViewModel @Inject constructor(
     fun clearMessages() {
         _uiState.update { it.copy(errorMessage = null, infoMessage = null) }
     }
+
+    // ── Self-registration ──────────────────────────────────────────────────────
+
+    fun openRegisterTeamDialog() {
+        _uiState.update { it.copy(showRegisterTeamDialog = true, registerTeamName = "", errorMessage = null) }
+    }
+
+    fun dismissRegisterTeamDialog() {
+        _uiState.update { it.copy(showRegisterTeamDialog = false, registerTeamName = "", isRegistering = false) }
+    }
+
+    fun onRegisterTeamNameChanged(name: String) {
+        _uiState.update { it.copy(registerTeamName = name, errorMessage = null) }
+    }
+
+    fun submitRegisterTeam() {
+        val name = _uiState.value.registerTeamName.trim()
+        if (name.isBlank()) {
+            _uiState.update { it.copy(errorMessage = "Squad name cannot be empty.") }
+            return
+        }
+        val uid = authRepository.currentUserId ?: run {
+            _uiState.update { it.copy(errorMessage = "Not signed in.") }
+            return
+        }
+        _uiState.update { it.copy(isRegistering = true, errorMessage = null) }
+        viewModelScope.launch {
+            val result = teamRepository.createTeam(name, emptyList())
+            if (result.isSuccess) {
+                val teamId = result.getOrThrow()
+                // Link the player to their new (pending) team
+                authRepository.updateUserAssignment(uid, teamId, null)
+                _uiState.update {
+                    it.copy(
+                        isRegistering = false,
+                        showRegisterTeamDialog = false,
+                        registerTeamName = "",
+                        infoMessage = "Squad registered! Waiting for Game Master approval before play begins."
+                    )
+                }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        isRegistering = false,
+                        errorMessage = result.exceptionOrNull()?.localizedMessage ?: "Registration failed. Try again."
+                    )
+                }
+            }
+        }
+    }
+
 }

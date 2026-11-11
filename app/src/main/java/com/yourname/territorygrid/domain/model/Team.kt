@@ -10,6 +10,7 @@ data class Team(
     val clueOrder: List<String> = emptyList(),
     val currentClueIndex: Int = 0,
     val visitedZones: List<String> = emptyList(),
+    val isApproved: Boolean = false,
     val updatedAt: Timestamp? = null
 ) {
     val activeClueId: String?

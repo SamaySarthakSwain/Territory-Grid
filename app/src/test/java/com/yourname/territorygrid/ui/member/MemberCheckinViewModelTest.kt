@@ -165,7 +165,8 @@ class MemberCheckinViewModelTest {
             score = 100,
             clueOrder = listOf("c1", "c2"),
             currentClueIndex = 1,
-            visitedZones = listOf("ZONE_01")
+            visitedZones = listOf("ZONE_01"),
+            isApproved = true
         )
         fakeTeamRepo.setTeams(listOf(team1))
         runCurrent()
@@ -198,7 +199,8 @@ class MemberCheckinViewModelTest {
             score = 0,
             clueOrder = listOf("c1", "c2"),
             currentClueIndex = 0,
-            visitedZones = emptyList()
+            visitedZones = emptyList(),
+            isApproved = true
         )
         fakeTeamRepo.setTeams(listOf(team1))
         runCurrent()
@@ -229,7 +231,8 @@ class MemberCheckinViewModelTest {
             score = 25,
             clueOrder = listOf("c2"),
             currentClueIndex = 0,
-            visitedZones = listOf("ZONE_02") // already visited!
+            visitedZones = listOf("ZONE_02"), // already visited!
+            isApproved = true
         )
         fakeTeamRepo.setTeams(listOf(team1))
         runCurrent()
@@ -254,7 +257,8 @@ class MemberCheckinViewModelTest {
             score = 300,
             clueOrder = listOf("c1", "c2"),
             currentClueIndex = 2, // finished both
-            visitedZones = listOf("ZONE_01", "ZONE_02")
+            visitedZones = listOf("ZONE_01", "ZONE_02"),
+            isApproved = true
         )
         fakeTeamRepo.setTeams(listOf(team1))
         runCurrent()
@@ -266,6 +270,38 @@ class MemberCheckinViewModelTest {
         assertEquals(TeamArrivalStatus.FINISHED, state.arrivalStatus)
         assertFalse(state.canSubmit)
         assertTrue(state.blockingReason!!.contains("completed all grid directives"))
+    }
+
+    @Test
+    fun `team not approved by Game Master is marked NOT_APPROVED and blocks submission`() = runTest {
+        startCollectingUiState()
+        runCurrent()
+
+        fakeClueRepo.setClues(
+            listOf(
+                Clue(id = "c2", text = "Go to zone 2", zoneId = "ZONE_02", zoneLabel = "Zone 2")
+            )
+        )
+
+        val unapprovedTeam = Team(
+            id = "t_pending",
+            name = "Pending Squad",
+            score = 0,
+            clueOrder = listOf("c2"),
+            currentClueIndex = 0,
+            visitedZones = emptyList(),
+            isApproved = false
+        )
+        fakeTeamRepo.setTeams(listOf(unapprovedTeam))
+        runCurrent()
+
+        viewModel.onTeamSelected("t_pending")
+        runCurrent()
+
+        val state = viewModel.uiState.value
+        assertEquals(TeamArrivalStatus.NOT_APPROVED, state.arrivalStatus)
+        assertFalse(state.canSubmit)
+        assertTrue(state.blockingReason!!.contains("not yet approved"))
     }
 
     @Test
@@ -284,7 +320,8 @@ class MemberCheckinViewModelTest {
             score = 0,
             clueOrder = listOf("c2"),
             currentClueIndex = 0,
-            visitedZones = emptyList()
+            visitedZones = emptyList(),
+            isApproved = true
         )
         fakeTeamRepo.setTeams(listOf(team1))
         runCurrent()
