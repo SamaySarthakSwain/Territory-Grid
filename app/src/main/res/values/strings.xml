@@ -91,4 +91,33 @@
     <string name="nav_people">People</string>
     <string name="nav_clues">Clues</string>
     <string name="nav_teams">Teams</string>
+
+    <!-- Auth & Navigation Additions -->
+    <string name="error_empty_credentials">Please enter callsign/email and access key.</string>
+    <string name="error_invalid_email">Please enter a valid email format.</string>
+    <string name="error_invalid_password">Access key must be at least 6 characters.</string>
+    <string name="error_no_user_doc">Identity not found in Grid registry. Contact Game Master.</string>
+    <string name="error_no_role">Clearance revoked: No operational role assigned.</string>
+    <string name="error_network">Comms failure: Offline or network unreachable.</string>
+    <string name="error_generic_auth">Clearance denied: Invalid credentials or account locked.</string>
+    <string name="role_desc_player">HUNTER_FIELD</string>
+    <string name="role_desc_member">MARSHAL_LOG</string>
+    <string name="role_desc_admin">CMD_OPERATOR</string>
+    <string name="zone_desc_player">MISSION CONCOURSE: SECTOR D</string>
+    <string name="zone_desc_member">BEACON ARBITRATION: STATION</string>
+    <string name="zone_desc_admin">CENTRAL TELEMETRY // FULL GRID</string>
+    <string name="action_player_enter">ENTER THE GRID</string>
+    <string name="action_member_enter">FIELD MARSHAL STATION</string>
+    <string name="action_admin_enter">COMMAND CONTROL ACCESS</string>
+    <string name="sign_out">TERMINATE SESSION</string>
+    <string name="splash_init">INITIALIZING GRID TELEMETRY...</string>
+    <string name="settings_title">TACTICAL CONFIGURATION</string>
+    <string name="lite_mode">LITE MODE (REDUCED GPU LOAD)</string>
+    <string name="haptics_enabled">TACTICAL HAPTICS</string>
+    <string name="audio_enabled">SYNTHETIC AUDIO ALERTS</string>
+    <string name="version_label">GRID PROTOCOL v1.0.0 // SPARKLIGHT</string>
+    <string name="auto_locks_beacon">Auto-locks to GPS beacon upon entry</string>
+    <string name="synced_badge">SYNCED</string>
+    <string name="required_badge">REQUIRED</string>
+    <string name="forgot_key">Forgot Key?</string>
 </resources>

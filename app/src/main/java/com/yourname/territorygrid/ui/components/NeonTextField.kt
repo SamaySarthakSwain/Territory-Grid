@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -38,14 +41,18 @@ fun NeonTextField(
     label: String,
     modifier: Modifier = Modifier,
     hint: String = "",
+    placeholder: String = hint,
     isError: Boolean = false,
     errorMessage: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null
 ) {
     var isFocused by remember { mutableStateOf(false) }
+
+    val effectiveHint = placeholder.ifBlank { hint }
 
     val borderColor = when {
         isError -> TacticalColors.Error
@@ -81,33 +88,42 @@ fun NeonTextField(
                 .onFocusChanged { isFocused = it.isFocused }
                 .padding(horizontal = 14.dp, vertical = 14.dp)
         ) {
-            BasicTextField(
-                value = value,
-                onValueChange = onValueChange,
-                textStyle = MaterialTheme.typography.bodyLarge.copy(color = TacticalColors.OnSurface),
-                cursorBrush = SolidColor(TacticalColors.PrimaryContainer),
-                visualTransformation = visualTransformation,
-                keyboardOptions = keyboardOptions,
-                keyboardActions = keyboardActions,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterStart),
-                decorationBox = { innerTextField ->
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        if (value.isEmpty()) {
-                            Text(
-                                text = hint,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = TacticalColors.Outline
-                            )
-                        }
-                        innerTextField()
-                    }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                leadingIcon?.let {
+                    it()
+                    Spacer(modifier = Modifier.width(10.dp))
                 }
-            )
 
-            trailingIcon?.let {
-                Box(modifier = Modifier.align(Alignment.CenterEnd)) {
+                Box(modifier = Modifier.weight(1f)) {
+                    BasicTextField(
+                        value = value,
+                        onValueChange = onValueChange,
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(color = TacticalColors.OnSurface),
+                        cursorBrush = SolidColor(TacticalColors.PrimaryContainer),
+                        visualTransformation = visualTransformation,
+                        keyboardOptions = keyboardOptions,
+                        keyboardActions = keyboardActions,
+                        modifier = Modifier.fillMaxWidth(),
+                        decorationBox = { innerTextField ->
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                if (value.isEmpty()) {
+                                    Text(
+                                        text = effectiveHint,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = TacticalColors.Outline
+                                    )
+                                }
+                                innerTextField()
+                            }
+                        }
+                    )
+                }
+
+                trailingIcon?.let {
+                    Spacer(modifier = Modifier.width(8.dp))
                     it()
                 }
             }

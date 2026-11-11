@@ -50,4 +50,13 @@ object TacticalColors {
     val Error = Color(0xFFFFB4AB)
     val ErrorContainer = Color(0xFF93000A)
     val OnError = Color(0xFF690005)
+
+    // Semantic Aliases for tactical readability
+    val TextPrimary = OnSurface
+    val TextSecondary = OnSurfaceVariant
+    val PrimaryFixed = PrimaryFixedDim
+    val SurfaceContainerLow = SurfaceLow
+    val SurfaceContainerHigh = SurfaceHigh
+    val SurfaceContainerHighest = SurfaceHighest
+    val BorderSubtle = OutlineVariant
 }

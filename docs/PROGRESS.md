@@ -42,16 +42,16 @@ Branch: `phase-1-foundation`
 
 ## Phase 2: Data and Authentication
 Branch: `phase-2-data-auth`
-- [ ] Domain models (`User`, `Team`, `Clue`, `GameState`, `Checkin`, `PlayingCard`, `ConeColor`, `Role`)
-- [ ] Pure `calculatePoints(cardRank, coneColor)` with comprehensive unit tests
-- [ ] Tolerant Firestore mappers (resilient to missing/null fields)
-- [ ] `FirebaseModule` (Hilt injection for FirebaseAuth, FirebaseFirestore with offline cache, secondary FirebaseApp)
-- [ ] `AuthRepository` with `AuthState` (`Loading`, `SignedOut`, `SignedIn`, `Error`) & live role change flow
-- [ ] `GameRepository` with StateFlow snapshot listeners
-- [ ] Role-based navigation graph with route guards and session invalidation handling
-- [ ] Tactical Splash screen with auto-routing
-- [ ] Login screen matching `design_refs/screens/login.png` with validation and cybernetic error messages
-- [ ] Unit tests for mappers and auth state logic
+- [x] Domain models (`User`, `Team`, `Clue`, `GameState`, `Checkin`, `PlayingCard`, `ConeColor`, `Role`)
+- [x] Pure `calculatePoints(cardRank, coneColor)` with comprehensive unit tests
+- [x] Tolerant Firestore mappers (resilient to missing/null fields)
+- [x] `FirebaseModule` (Hilt injection for FirebaseAuth, FirebaseFirestore with offline cache, secondary FirebaseApp)
+- [x] `AuthRepository` with `AuthState` (`Loading`, `SignedOut`, `SignedIn`, `Error`) & live role change flow
+- [x] `GameRepository` with StateFlow snapshot listeners
+- [x] Role-based navigation graph with route guards and session invalidation handling
+- [x] Tactical Splash screen with auto-routing
+- [x] Login screen matching `design_refs/screens/login.png` with validation and cybernetic error messages
+- [x] Unit tests for mappers and auth state logic
 
 ---
 

@@ -60,6 +60,13 @@ class AuthRepositoryImpl @Inject constructor(
                             return@addSnapshotListener
                         }
 
+                        val roleStr = snapshot.getString("role")
+                        val role = Role.fromString(roleStr)
+                        if (role == null) {
+                            _authState.value = AuthState.Error.NoRole
+                            return@addSnapshotListener
+                        }
+
                         val userProfile = snapshot.toUserProfile()
                         _authState.value = AuthState.SignedIn(userProfile)
                     }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,6 +47,7 @@ fun NeonButton(
     modifier: Modifier = Modifier,
     variant: NeonButtonVariant = NeonButtonVariant.PRIMARY,
     enabled: Boolean = true,
+    isLoading: Boolean = false,
     leadingIcon: (@Composable () -> Unit)? = null
 ) {
     val view = LocalView.current
@@ -53,7 +55,7 @@ fun NeonButton(
     val isPressed by interactionSource.collectIsPressedAsState()
 
     val glowAlpha by animateFloatAsState(
-        targetValue = if (!enabled) 0f else if (isPressed) 0.65f else 0.35f,
+        targetValue = if (!enabled || isLoading) 0f else if (isPressed) 0.65f else 0.35f,
         animationSpec = tween(durationMillis = 150),
         label = "glowAlpha"
     )
@@ -89,13 +91,15 @@ fun NeonButton(
 
     Button(
         onClick = {
-            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-            onClick()
+            if (!isLoading) {
+                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                onClick()
+            }
         },
         modifier = modifier
             .height(52.dp)
             .drawBehind {
-                if (enabled && glowAlpha > 0f) {
+                if (enabled && !isLoading && glowAlpha > 0f) {
                     // Multi-layer translucent glow per Rule: zero Modifier.blur
                     drawRoundRect(
                         color = glowColor.copy(alpha = glowAlpha * 0.20f),
@@ -109,7 +113,7 @@ fun NeonButton(
                     )
                 }
             },
-        enabled = enabled,
+        enabled = enabled && !isLoading,
         shape = shape,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
@@ -117,14 +121,23 @@ fun NeonButton(
             disabledContainerColor = TacticalColors.SurfaceHighest,
             disabledContentColor = TacticalColors.Outline
         ),
-        border = if (enabled) BorderStroke(1.5.dp, strokeColor) else null,
+        border = if (enabled && !isLoading) BorderStroke(1.5.dp, strokeColor) else null,
         interactionSource = interactionSource,
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            leadingIcon?.let {
-                it()
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(18.dp).height(18.dp),
+                    color = contentColor,
+                    strokeWidth = 2.dp
+                )
                 Spacer(modifier = Modifier.width(8.dp))
+            } else {
+                leadingIcon?.let {
+                    it()
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
             }
             Text(
                 text = text,

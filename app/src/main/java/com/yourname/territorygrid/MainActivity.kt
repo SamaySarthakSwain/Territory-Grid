@@ -8,13 +8,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.yourname.territorygrid.ui.components.ComponentGalleryScreen
+import com.yourname.territorygrid.data.repository.AuthRepository
+import com.yourname.territorygrid.ui.navigation.AppNavGraph
 import com.yourname.territorygrid.ui.theme.TacticalColors
 import com.yourname.territorygrid.ui.theme.TerritoryGridTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var authRepository: AuthRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = TacticalColors.Background
                 ) {
-                    ComponentGalleryScreen()
+                    AppNavGraph(authRepository = authRepository)
                 }
             }
         }
