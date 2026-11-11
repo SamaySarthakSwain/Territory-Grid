@@ -108,6 +108,22 @@
     <string name="pts_unit">PTS</string>
     <string name="game_paused_banner">GAME PAUSED BY GAME MASTER</string>
     <string name="game_ended_banner">MISSION COMPLETED</string>
+    <string name="rank_format">Rank #%1$d / %2$d</string>
+    <string name="total_points_label">Total Points</string>
+    <string name="all_clues_completed_title">ALL DIRECTIVES ACCOMPLISHED!</string>
+    <string name="all_clues_completed_desc">Your squad has cleared all designated checkpoints. Stand by for final leaderboard results.</string>
+    <string name="game_lobby_title">MISSION IN PREPARATION</string>
+    <string name="game_lobby_desc">The Game Master has not yet commenced the hunt. Directives will unlock at launch.</string>
+    <string name="game_member_phase_title">MARSHALS DEPLOYING</string>
+    <string name="game_member_phase_desc">Field Marshals are taking their stations. Prepare for operative launch.</string>
+    <string name="no_team_assigned_title">NO SQUAD ASSIGNED</string>
+    <string name="no_team_assigned_desc">Your callsign is not linked to any squad. Contact the Game Master to join a team.</string>
+    <string name="points_celebration">+%d PTS AWARDED!</string>
+    <string name="contender_grid">Contender Grid (Pos 4+)</string>
+    <string name="delta_tracker">Delta Tracker</string>
+    <string name="card_inventory_title">COLLECTED DECK INVENTORY</string>
+    <string name="no_cards_yet">No playing cards collected yet. Reach checkpoints to gather cards!</string>
+    <string name="view_all_cards">View All %d Cards</string>
 
     <!-- Navigation -->
     <string name="nav_hunt">Hunt</string>

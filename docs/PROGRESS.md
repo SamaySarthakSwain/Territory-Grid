@@ -90,20 +90,20 @@ Branch: `phase-4-member-checkin`
 
 ## Phase 5: Player Experience
 Branch: `phase-5-player-dashboard`
-- [ ] Player bottom navigation: Hunt, Cards, Leaderboard
-- [ ] **Hunt Screen**:
-  - [ ] Team header, live rank, active hunt zone
-  - [ ] `GlowingScoreRing` with animated score transitions
-  - [ ] Pulsing `Active Mission Directive` clue card
-  - [ ] Phase states: Lobby waiting, Member phase waiting, Paused overlay, Game ended screen, All clues completed
-  - [ ] `+N Points` celebration banner with haptic feedback
-- [ ] **Cards Screen**:
-  - [ ] Collected card deck grid with 3D flip-in presentation
-- [ ] **Leaderboard Screen**:
-  - [ ] Holographic podium (Gold #1, Silver #2, Bronze #3)
-  - [ ] Contender grid with delta trackers
-  - [ ] Pinned sticky bottom row highlighting user's team
-- [ ] Unit tests for rank calculations, tie breaks, and score deltas
+- [x] Player bottom navigation: Hunt, Cards, Leaderboard
+- [x] **Hunt Screen**:
+  - [x] Team header, live rank, active hunt zone
+  - [x] `GlowingScoreRing` with animated score transitions
+  - [x] Pulsing `Active Mission Directive` clue card
+  - [x] Phase states: Lobby waiting, Member phase waiting, Paused overlay, Game ended screen, All clues completed
+  - [x] `+N Points` celebration banner with haptic feedback
+- [x] **Cards Screen**:
+  - [x] Collected card deck grid with 3D flip-in presentation
+- [x] **Leaderboard Screen**:
+  - [x] Holographic podium (Gold #1, Silver #2, Bronze #3)
+  - [x] Contender grid with delta trackers
+  - [x] Pinned sticky bottom row highlighting user's team
+- [x] Unit tests for rank calculations, tie breaks, and score deltas
 
 ---
 
