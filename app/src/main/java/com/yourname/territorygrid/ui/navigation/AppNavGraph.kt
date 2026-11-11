@@ -20,6 +20,7 @@ import com.yourname.territorygrid.ui.auth.LoginViewModel
 import com.yourname.territorygrid.ui.components.ComponentGalleryScreen
 import com.yourname.territorygrid.ui.member.MemberRootScreen
 import com.yourname.territorygrid.ui.player.PlayerRootScreen
+import com.yourname.territorygrid.ui.settings.SettingsScreen
 import com.yourname.territorygrid.ui.splash.SplashScreen
 import kotlinx.coroutines.launch
 
@@ -111,7 +112,7 @@ fun AppNavGraph(
                 AdminRootScreen(
                     user = user,
                     onSignOut = {
-                        coroutineScope.launch { authRepository.signOut() }
+                        navController.navigate(Screen.Settings.route)
                     }
                 )
             }
@@ -123,7 +124,7 @@ fun AppNavGraph(
                 MemberRootScreen(
                     user = user,
                     onSignOut = {
-                        coroutineScope.launch { authRepository.signOut() }
+                        navController.navigate(Screen.Settings.route)
                     }
                 )
             }
@@ -135,10 +136,22 @@ fun AppNavGraph(
                 PlayerRootScreen(
                     user = user,
                     onSignOut = {
-                        coroutineScope.launch { authRepository.signOut() }
+                        navController.navigate(Screen.Settings.route)
                     }
                 )
             }
+        }
+
+        composable(Screen.Settings.route) {
+            SettingsScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToGallery = { navController.navigate(Screen.Gallery.route) },
+                onSignedOut = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
         }
 
         composable(Screen.Gallery.route) {

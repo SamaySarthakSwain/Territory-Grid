@@ -120,15 +120,15 @@ Branch: `phase-6-security-rules`
 
 ## Phase 7: Polish, Performance & Accessibility
 Branch: `phase-7-polish`
-- [ ] Smooth screen transitions and micro-interactions (<600ms)
-- [ ] GPU-efficient glow using `drawBehind` and layered translucent paths (zero `Modifier.blur`)
-- [ ] Haptic feedback and `ToneGenerator` audio cues gated by settings
-- [ ] Settings screen (Lite mode toggle, audio toggle, haptics toggle, sign-out, version display)
-- [ ] Lite mode (static background, disabled canvas animation for battery preservation)
-- [ ] Accessibility: WCAG AA color contrast, 48dp touch targets, dynamic type scaling up to 130%, explicit content descriptions
-- [ ] Portrait orientation lock and configuration change resilience (`rememberSaveable` / ViewModel state)
-- [ ] ProGuard / R8 rules for Hilt and Firebase serialization
-- [ ] Pixel-perfect visual comparison against Stitch PNGs
+- [x] Smooth screen transitions and micro-interactions (<600ms)
+- [x] GPU-efficient glow using `drawBehind` and layered translucent paths (zero `Modifier.blur`)
+- [x] Haptic feedback and `ToneGenerator` audio cues gated by settings
+- [x] Settings screen (Lite mode toggle, audio toggle, haptics toggle, sign-out, version display)
+- [x] Lite mode (static background, disabled canvas animation for battery preservation)
+- [x] Accessibility: WCAG AA color contrast, 48dp touch targets, dynamic type scaling up to 130%, explicit content descriptions
+- [x] Portrait orientation lock and configuration change resilience (`rememberSaveable` / ViewModel state)
+- [x] ProGuard / R8 rules for Hilt and Firebase serialization
+- [x] Pixel-perfect visual comparison against Stitch PNGs
 
 ---
 
