@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Territory Grid // Tactical Web Simulation Matrix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#070B14",
+            "surface-card": "#0F1626",
+            "surface-border": "rgba(0, 240, 255, 0.2)",
+            cyan: "#00F0FF",
+            magenta: "#FF0055",
+            green: "#00FF88",
+            yellow: "#FFB800"
+          },
+          fontFamily: {
+            headline: ["Space Grotesk", "sans-serif"],
+            body: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #070B14;
+      color: #DFE2F0;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    .neon-border {
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.25), inset 0 0 15px rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.5);
+    }
+    .neon-glow-cyan {
+      filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
+    }
+    .phone-bezel {
+      width: 412px;
+      height: 870px;
+      border-radius: 48px;
+      border: 12px solid #1A2234;
+      box-shadow: 0 25px 60px -15px rgba(0, 240, 255, 0.25), 0 0 0 1px rgba(0, 240, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+      background: #000;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .phone-bezel.fullscreen-mode {
+      width: 100%;
+      height: calc(100vh - 120px);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+    .notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 26px;
+      background: #1A2234;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .notch-camera {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #090D16;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+    }
+    .notch-speaker {
+      width: 44px;
+      height: 4px;
+      border-radius: 2px;
+      background: #090D16;
+    }
+    /* Hex grid background */
+    .hex-bg {
+      background-image: radial-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col hex-bg">
+
+  <!-- Top Tactical Command Header -->
+  <header class="border-b border-cyan/20 bg-surface/90 backdrop-blur-md sticky top-0 z-40 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg bg-cyan/10 border border-cyan/40 flex items-center justify-center neon-glow-cyan">
+        <span class="material-symbols-outlined text-cyan text-2xl">grid_view</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-headline font-bold text-lg tracking-wider text-white">TERRITORY GRID</h1>
+          <span class="px-2 py-0.5 text-[10px] font-bold font-headline rounded bg-cyan/20 text-cyan border border-cyan/40">WEB MATRIX</span>
+          <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-green"></span>
+          </span>
+        </div>
+        <p class="text-xs text-gray-400 font-mono tracking-tight">Real-time Tactical Scavenger Hunt Simulator</p>
+      </div>
+    </div>
+
+    <!-- Screen Selector Tabs -->
+    <nav class="flex items-center flex-wrap gap-1.5 bg-[#0A101D] p-1 rounded-xl border border-cyan/20" id="nav-tabs">
+      <button onclick="switchScreen('login.html', 'AUTH MATRIX // SIGN-IN', 'PLAYER | MEMBER | ADMIN', this)" 
+              class="tab-btn active px-3.5 py-1.5 text-xs font-headline font-semibold rounded-lg flex items-center gap-1.5 transition-all text-black bg-cyan shadow-[0_0_12px_rgba(0,240,255,0.6)]">
+        <span class="material-symbols-outlined text-base">lock_open</span>
+        <span>Login</span>
+      </button>
+
+      <button onclick="switchScreen('admin_panel.html', 'ADMIN COMMAND PANEL', 'ROLE: ADMIN (GAME MASTER)', this)" 
+              class="tab-btn px-3.5 py-1.5 text-xs font-headline font-semibold rounded-lg flex items-center gap-1.5 transition-all text-gray-400 hover:text-white hover:bg-white/5">
+        <span class="material-symbols-outlined text-base">tune</span>
+        <span>Admin Panel</span>
+      </button>
+
+      <button onclick="switchScreen('member_checkin.html', 'FIELD MARSHAL CHECKPOINT', 'ROLE: MEMBER (SECTOR ARBITER)', this)" 
+              class="tab-btn px-3.5 py-1.5 text-xs font-headline font-semibold rounded-lg flex items-center gap-1.5 transition-all text-gray-400 hover:text-white hover:bg-white/5">
+        <span class="material-symbols-outlined text-base">verified</span>
+        <span>Marshal Check-in</span>
+      </button>
+
+      <button onclick="switchScreen('player_dashboard.html', 'PLAYER MISSION DIRECTIVE', 'ROLE: PLAYER (COMPETITOR)', this)" 
+              class="tab-btn px-3.5 py-1.5 text-xs font-headline font-semibold rounded-lg flex items-center gap-1.5 transition-all text-gray-400 hover:text-white hover:bg-white/5">
+        <span class="material-symbols-outlined text-base">explore</span>
+        <span>Player Hunt</span>
+      </button>
+
+      <button onclick="switchScreen('leaderboard.html', 'LIVE GRID STANDINGS', 'GLOBAL TELEMETRY', this)" 
+              class="tab-btn px-3.5 py-1.5 text-xs font-headline font-semibold rounded-lg flex items-center gap-1.5 transition-all text-gray-400 hover:text-white hover:bg-white/5">
+        <span class="material-symbols-outlined text-base">emoji_events</span>
+        <span>Leaderboard</span>
+      </button>
+    </nav>
+
+    <!-- Controls -->
+    <div class="flex items-center gap-2">
+      <!-- Toggle Phone Bezel vs Wide View -->
+      <button onclick="toggleDeviceView()" id="view-toggle-btn"
+              title="Toggle View Mode (Mobile Frame / Full Width)"
+              class="px-3 py-1.5 rounded-lg border border-cyan/30 bg-[#0A101D] hover:bg-cyan/10 text-cyan text-xs font-headline flex items-center gap-1.5 transition">
+        <span class="material-symbols-outlined text-base" id="view-icon">stay_current_portrait</span>
+        <span id="view-text">Phone Frame</span>
+      </button>
+
+      <!-- Reload Screen -->
+      <button onclick="reloadScreen()" title="Reload Active Screen"
+              class="p-1.5 rounded-lg border border-cyan/30 bg-[#0A101D] hover:bg-cyan/10 text-cyan transition">
+        <span class="material-symbols-outlined text-base">refresh</span>
+      </button>
+
+      <!-- Direct Link in New Tab -->
+      <a id="external-link" href="login.html" target="_blank" title="Open in New Tab"
+         class="px-3 py-1.5 rounded-lg bg-cyan/20 border border-cyan/40 hover:bg-cyan/30 text-white text-xs font-headline flex items-center gap-1 transition">
+        <span>Direct Link</span>
+        <span class="material-symbols-outlined text-sm">open_in_new</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Telemetry Bar -->
+  <div class="bg-[#05080E] border-b border-cyan/10 px-6 py-2 flex items-center justify-between text-xs font-mono">
+    <div class="flex items-center gap-4">
+      <span class="text-cyan font-bold" id="current-screen-title">AUTH MATRIX // SIGN-IN</span>
+      <span class="text-gray-500">|</span>
+      <span class="text-yellow" id="current-screen-role">ROLE: ALL ACCESS</span>
+    </div>
+    <div class="flex items-center gap-6 text-gray-400">
+      <span>SHORTCUTS: <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-cyan">1-5</kbd> Switch Screens &bull; <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-cyan">F</kbd> Toggle Frame</span>
+      <span class="text-green flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-green"></span>
+        HTTP 8080 // ONLINE
+      </span>
+    </div>
+  </div>
+
+  <!-- Main Viewport Container -->
+  <main class="flex-1 flex items-center justify-center p-6 relative">
+    <div id="phone-container" class="phone-bezel">
+      <div class="notch" id="phone-notch">
+        <div class="notch-speaker"></div>
+        <div class="notch-camera"></div>
+      </div>
+      <iframe id="screen-frame" src="login.html" class="w-full h-full border-0 bg-[#0F131D]" title="Territory Grid Mobile Screen"></iframe>
+    </div>
+  </main>
+
+  <script>
+    const screens = [
+      { file: 'login.html', title: 'AUTH MATRIX // SIGN-IN', role: 'PLAYER | MEMBER | ADMIN' },
+      { file: 'admin_panel.html', title: 'ADMIN COMMAND PANEL', role: 'ROLE: ADMIN (GAME MASTER)' },
+      { file: 'member_checkin.html', title: 'FIELD MARSHAL CHECKPOINT', role: 'ROLE: MEMBER (SECTOR ARBITER)' },
+      { file: 'player_dashboard.html', title: 'PLAYER MISSION DIRECTIVE', role: 'ROLE: PLAYER (COMPETITOR)' },
+      { file: 'leaderboard.html', title: 'LIVE GRID STANDINGS', role: 'GLOBAL TELEMETRY' }
+    ];
+
+    let isFullscreen = false;
+
+    function switchScreen(url, title, role, btnElement) {
+      const frame = document.getElementById('screen-frame');
+      const titleEl = document.getElementById('current-screen-title');
+      const roleEl = document.getElementById('current-screen-role');
+      const extLink = document.getElementById('external-link');
+
+      frame.src = url;
+      titleEl.textContent = title;
+      roleEl.textContent = role;
+      extLink.href = url;
+
+      // Update button styling
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('text-black', 'bg-cyan', 'shadow-[0_0_12px_rgba(0,240,255,0.6)]');
+        btn.classList.add('text-gray-400', 'hover:text-white', 'hover:bg-white/5');
+      });
+
+      if (btnElement) {
+        btnElement.classList.remove('text-gray-400', 'hover:text-white', 'hover:bg-white/5');
+        btnElement.classList.add('text-black', 'bg-cyan', 'shadow-[0_0_12px_rgba(0,240,255,0.6)]');
+      }
+    }
+
+    function toggleDeviceView() {
+      const container = document.getElementById('phone-container');
+      const notch = document.getElementById('phone-notch');
+      const viewIcon = document.getElementById('view-icon');
+      const viewText = document.getElementById('view-text');
+
+      isFullscreen = !isFullscreen;
+
+      if (isFullscreen) {
+        container.classList.add('fullscreen-mode');
+        notch.style.display = 'none';
+        viewIcon.textContent = 'fullscreen_exit';
+        viewText.textContent = 'Full Width';
+      } else {
+        container.classList.remove('fullscreen-mode');
+        notch.style.display = 'flex';
+        viewIcon.textContent = 'stay_current_portrait';
+        viewText.textContent = 'Phone Frame';
+      }
+    }
+
+    function reloadScreen() {
+      const frame = document.getElementById('screen-frame');
+      frame.contentWindow.location.reload();
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      
+      const key = parseInt(e.key);
+      if (key >= 1 && key <= 5) {
+        const item = screens[key - 1];
+        const buttons = document.querySelectorAll('.tab-btn');
+        switchScreen(item.file, item.title, item.role, buttons[key - 1]);
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleDeviceView();
+      } else if (e.key.toLowerCase() === 'r') {
+        reloadScreen();
+      }
+    });
+  </script>
+</body>
+</html>
