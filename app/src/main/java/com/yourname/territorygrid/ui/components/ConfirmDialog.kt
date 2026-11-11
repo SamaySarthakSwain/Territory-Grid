@@ -35,7 +35,7 @@ import com.yourname.territorygrid.ui.theme.TerritoryGridTheme
 fun ConfirmDialog(
     title: String,
     message: String,
-    confirmText: String,
+    confirmText: String = "Confirm",
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,

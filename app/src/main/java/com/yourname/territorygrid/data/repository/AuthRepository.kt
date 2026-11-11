@@ -18,6 +18,7 @@ sealed interface AuthState {
 interface AuthRepository {
     val authState: StateFlow<AuthState>
     val currentUserId: String?
+    val allUsers: StateFlow<List<UserProfile>>
     suspend fun signIn(email: String, pass: String): Result<Unit>
     suspend fun signOut()
     suspend fun createAccountWithSecondaryApp(
@@ -28,4 +29,6 @@ interface AuthRepository {
         teamId: String?,
         zoneId: String?
     ): Result<String>
+    suspend fun updateUserAssignment(uid: String, teamId: String?, zoneId: String?): Result<Unit>
+    suspend fun deleteUserDoc(uid: String): Result<Unit>
 }

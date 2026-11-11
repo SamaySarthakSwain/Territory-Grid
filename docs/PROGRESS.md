@@ -57,17 +57,17 @@ Branch: `phase-2-data-auth`
 
 ## Phase 3: Admin Panel
 Branch: `phase-3-admin-control`
-- [ ] State machine transitions (`LOBBY` -> `MEMBER_PHASE` -> `PLAYER_PHASE` <-> `PAUSED` -> `ENDED`, Reset to `LOBBY`)
-- [ ] Server-timestamp driven mission clock with pause duration calculation
-- [ ] Reset Grid modal requiring typing `RESET`, batch deletes check-ins (≤400 per batch), zeroes team scores
-- [ ] Team CRUD operations
-- [ ] Clue order generator (randomized shuffle per team, starting station rotation, preview modal)
-- [ ] Account management via secondary `FirebaseApp` (create Member with `zoneId`, Player with `teamId`, strong password generator, clipboard copy)
-- [ ] Clue CRUD with duplicate zone warning
-- [ ] Live Leaderboard with score descending and tie-break by earliest `updatedAt`
-- [ ] Check-in history list with atomic Undo batch
-- [ ] Bottom navigation: Control, Teams, People, Clues, Live
-- [ ] Visual verification against `admin_panel.png`
+- [x] State machine transitions (`LOBBY` -> `MEMBER_PHASE` -> `PLAYER_PHASE` <-> `PAUSED` -> `ENDED`, Reset to `LOBBY`)
+- [x] Server-timestamp driven mission clock with pause duration calculation
+- [x] Reset Grid modal requiring typing `RESET`, batch deletes check-ins (≤400 per batch), zeroes team scores
+- [x] Team CRUD operations
+- [x] Clue order generator (randomized shuffle per team, starting station rotation, preview modal)
+- [x] Account management via secondary `FirebaseApp` (create Member with `zoneId`, Player with `teamId`, strong password generator, clipboard copy)
+- [x] Clue CRUD with duplicate zone warning
+- [x] Live Leaderboard with score descending and tie-break by earliest `updatedAt`
+- [x] Check-in history list with atomic Undo batch
+- [x] Bottom navigation: Control, Teams, People, Clues, Live
+- [x] Visual verification against `admin_panel.png`
 
 ---
 

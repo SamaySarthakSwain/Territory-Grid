@@ -114,4 +114,13 @@ class TeamRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override suspend fun deleteTeam(teamId: String): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            firestore.collection("teams").document(teamId).delete().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

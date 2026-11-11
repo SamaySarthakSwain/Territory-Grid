@@ -10,6 +10,9 @@ class FakeAuthRepository : AuthRepository {
     private val _authState = MutableStateFlow<AuthState>(AuthState.SignedOut)
     override val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
+    private val _allUsers = MutableStateFlow<List<UserProfile>>(emptyList())
+    override val allUsers: StateFlow<List<UserProfile>> = _allUsers.asStateFlow()
+
     override val currentUserId: String?
         get() = (_authState.value as? AuthState.SignedIn)?.user?.uid
 
@@ -51,6 +54,18 @@ class FakeAuthRepository : AuthRepository {
         zoneId: String?
     ): Result<String> {
         return Result.success("generated-uid-123")
+    }
+
+    override suspend fun updateUserAssignment(uid: String, teamId: String?, zoneId: String?): Result<Unit> {
+        return Result.success(Unit)
+    }
+
+    override suspend fun deleteUserDoc(uid: String): Result<Unit> {
+        return Result.success(Unit)
+    }
+
+    fun setAllUsers(users: List<UserProfile>) {
+        _allUsers.value = users
     }
 
     fun setAuthState(state: AuthState) {

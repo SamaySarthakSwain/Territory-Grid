@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.yourname.territorygrid.data.mapper.toUserProfile
 import com.yourname.territorygrid.domain.model.Role
+import com.yourname.territorygrid.domain.model.UserProfile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,9 @@ class AuthRepositoryImpl @Inject constructor(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
     override val authState: StateFlow<AuthState> = _authState.asStateFlow()
+
+    private val _allUsers = MutableStateFlow<List<UserProfile>>(emptyList())
+    override val allUsers: StateFlow<List<UserProfile>> = _allUsers.asStateFlow()
 
     override val currentUserId: String?
         get() = auth.currentUser?.uid
@@ -72,6 +76,14 @@ class AuthRepositoryImpl @Inject constructor(
                     }
             }
         }
+
+        // Keep allUsers up-to-date for admin management
+        firestore.collection("users")
+            .addSnapshotListener { snapshot, _ ->
+                if (snapshot != null) {
+                    _allUsers.value = snapshot.documents.map { it.toUserProfile() }
+                }
+            }
     }
 
     override suspend fun signIn(email: String, pass: String): Result<Unit> = withContext(Dispatchers.IO) {
@@ -123,6 +135,28 @@ class AuthRepositoryImpl @Inject constructor(
 
             firestore.collection("users").document(newUid).set(userMap).await()
             Result.success(newUid)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun updateUserAssignment(uid: String, teamId: String?, zoneId: String?): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val updates = mapOf(
+                "teamId" to teamId,
+                "zoneId" to zoneId
+            )
+            firestore.collection("users").document(uid).update(updates).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun deleteUserDoc(uid: String): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            firestore.collection("users").document(uid).delete().await()
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }

@@ -11,4 +11,5 @@ interface TeamRepository {
     suspend fun createTeam(name: String, clueOrder: List<String>): Result<String>
     suspend fun updateClueOrder(teamId: String, clueOrder: List<String>): Result<Unit>
     suspend fun generateAndSaveClueOrders(clues: List<Clue>): Result<Unit>
+    suspend fun deleteTeam(teamId: String): Result<Unit>
 }
