@@ -50,6 +50,7 @@ import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.Timer
@@ -77,6 +78,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -467,6 +469,17 @@ private fun ControlTabContent(
                     leadingIcon = { Icon(Icons.Default.Shuffle, contentDescription = null) },
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                if (com.yourname.territorygrid.BuildConfig.DEBUG) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    NeonButton(
+                        text = "SEED DEMO OPERATIONAL DATA",
+                        onClick = viewModel::seedDemoData,
+                        variant = NeonButtonVariant.SECONDARY,
+                        leadingIcon = { Icon(Icons.Default.Sync, contentDescription = null) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
 
@@ -1070,6 +1083,26 @@ private fun LiveTabContent(
                             }
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(14.dp))
+                    val context = LocalContext.current
+                    NeonButton(
+                        text = "SHARE STANDINGS REPORT",
+                        onClick = {
+                            val report = viewModel.exportLeaderboardText()
+                            val sendIntent = android.content.Intent().apply {
+                                action = android.content.Intent.ACTION_SEND
+                                putExtra(android.content.Intent.EXTRA_TEXT, report)
+                                type = "text/plain"
+                            }
+                            context.startActivity(
+                                android.content.Intent.createChooser(sendIntent, "Share Mission Standings")
+                            )
+                        },
+                        variant = NeonButtonVariant.PRIMARY,
+                        leadingIcon = { Icon(Icons.Default.Share, contentDescription = null) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }

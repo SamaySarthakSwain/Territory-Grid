@@ -134,9 +134,9 @@ Branch: `phase-7-polish`
 
 ## Phase 8: QA & Release
 Branch: `phase-8-qa-release`
-- [ ] Comprehensive test documentation (`docs/TEST_PLAN.md`)
-- [ ] Debug-only "Seed Demo Data" utility (4 teams, 10 clues, test accounts)
-- [ ] Game Master event execution manual (`docs/EVENT_SETUP.md`)
-- [ ] Admin Leaderboard text export via Android Sharesheet
-- [ ] End-to-end lint, static analysis, and test pass
-- [ ] Release APK assembly
+- [x] Comprehensive test documentation (`docs/TEST_PLAN.md`)
+- [x] Debug-only "Seed Demo Data" utility (4 teams, 10 clues, test accounts)
+- [x] Game Master event execution manual (`docs/EVENT_SETUP.md`)
+- [x] Admin Leaderboard text export via Android Sharesheet
+- [x] End-to-end lint, static analysis, and test pass
+- [x] Release APK assembly
