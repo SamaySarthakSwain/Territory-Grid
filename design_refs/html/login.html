@@ -90,82 +90,52 @@
   </header>
 
   <!-- Main Container -->
-  <main class="w-full max-w-4xl mx-auto my-auto py-6">
+  <main class="w-full max-w-xl mx-auto my-auto py-4">
 
     <!-- Brand Emblem & Title -->
-    <div class="text-center mb-6">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-cyan/10 border border-cyan/40 mb-3 neon-cyan-glow">
-        <span class="material-symbols-outlined text-cyan text-4xl">grid_view</span>
+    <div class="text-center mb-4">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-cyan/10 border border-cyan/40 mb-2 neon-cyan-glow">
+        <span class="material-symbols-outlined text-cyan text-3xl">grid_view</span>
       </div>
-      <h1 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-wider text-white">
+      <h1 class="text-2xl sm:text-3xl font-headline font-extrabold tracking-wider text-white">
         TERRITORY <span class="text-cyan drop-shadow-[0_0_12px_rgba(0,240,255,0.7)]">GRID</span>
       </h1>
-      <p class="text-xs sm:text-sm font-headline tracking-widest text-cyan/70 uppercase mt-1">
-        Club Fest Tactical Scavenger Hunt Simulator
+      <p class="text-[11px] font-headline tracking-widest text-cyan/70 uppercase mt-0.5">
+        Tactical Scavenger Hunt Gateway
       </p>
     </div>
 
     <!-- VIEW 1: PORTAL CHOOSER & LOGIN/REGISTRATION FORM -->
     <div id="view-portal-gateway" class="w-full">
       
-      <!-- 3 Clear Options: Team | Marshal | Admin -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="portal-cards">
+      <!-- 3 Compact Options: Team | Marshal | Admin -->
+      <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-4" id="portal-cards">
         
-        <!-- OPTION 1: Join as Team -->
-        <div onclick="selectPortal('PLAYER')" id="card-PLAYER" 
-             class="neon-card active-portal rounded-2xl p-5 cursor-pointer relative overflow-hidden group">
-          <div class="absolute top-2 right-2 text-[10px] font-mono px-2 py-0.5 rounded bg-cyan/20 text-cyan border border-cyan/30">
-            COMPETITOR
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan mb-3 group-hover:scale-105 transition-transform">
-            <span class="material-symbols-outlined text-2xl">sports_esports</span>
-          </div>
-          <h2 class="text-lg font-headline font-bold text-white mb-1">1. Join as Team</h2>
-          <p class="text-xs text-gray-400 line-clamp-2">Register squad callsign, unlock secret clues, draw cards & score points.</p>
-          <div class="mt-4 flex items-center text-xs font-bold text-cyan group-hover:translate-x-1 transition-transform">
-            <span>SELECT TEAM PORTAL</span>
-            <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
-          </div>
-        </div>
+        <!-- OPTION 1: Team -->
+        <button type="button" onclick="selectPortal('PLAYER')" id="card-PLAYER" 
+             class="neon-card active-portal rounded-xl py-2 px-2.5 cursor-pointer flex items-center justify-center gap-1.5 transition-all">
+          <span class="material-symbols-outlined text-cyan text-lg">sports_esports</span>
+          <span class="text-xs sm:text-sm font-headline font-bold text-white tracking-wide">Team</span>
+        </button>
 
-        <!-- OPTION 2: Join as Marshal -->
-        <div onclick="selectPortal('MEMBER')" id="card-MEMBER" 
-             class="neon-card rounded-2xl p-5 cursor-pointer relative overflow-hidden group">
-          <div class="absolute top-2 right-2 text-[10px] font-mono px-2 py-0.5 rounded bg-green/20 text-green border border-green/30">
-            CHECKPOINT
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-green/20 border border-green/40 flex items-center justify-center text-green mb-3 group-hover:scale-105 transition-transform">
-            <span class="material-symbols-outlined text-2xl">verified</span>
-          </div>
-          <h2 class="text-lg font-headline font-bold text-white mb-1">2. Join as Marshal</h2>
-          <p class="text-xs text-gray-400 line-clamp-2">Station at sector checkpoint, arbitrate card draws & award team scores.</p>
-          <div class="mt-4 flex items-center text-xs font-bold text-green group-hover:translate-x-1 transition-transform">
-            <span>SELECT MARSHAL PORTAL</span>
-            <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
-          </div>
-        </div>
+        <!-- OPTION 2: Marshal -->
+        <button type="button" onclick="selectPortal('MEMBER')" id="card-MEMBER" 
+             class="neon-card rounded-xl py-2 px-2.5 cursor-pointer flex items-center justify-center gap-1.5 transition-all">
+          <span class="material-symbols-outlined text-green text-lg">verified</span>
+          <span class="text-xs sm:text-sm font-headline font-bold text-white tracking-wide">Marshal</span>
+        </button>
 
         <!-- OPTION 3: Admin -->
-        <div onclick="selectPortal('ADMIN')" id="card-ADMIN" 
-             class="neon-card rounded-2xl p-5 cursor-pointer relative overflow-hidden group">
-          <div class="absolute top-2 right-2 text-[10px] font-mono px-2 py-0.5 rounded bg-magenta/20 text-magenta border border-magenta/30">
-            COMMAND
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-magenta/20 border border-magenta/40 flex items-center justify-center text-magenta mb-3 group-hover:scale-105 transition-transform">
-            <span class="material-symbols-outlined text-2xl">tune</span>
-          </div>
-          <h2 class="text-lg font-headline font-bold text-white mb-1">3. Admin</h2>
-          <p class="text-xs text-gray-400 line-clamp-2">Game Master terminal: manage clock, approvals, clues & MongoDB telemetry.</p>
-          <div class="mt-4 flex items-center text-xs font-bold text-magenta group-hover:translate-x-1 transition-transform">
-            <span>ACCESS ADMIN PORTAL</span>
-            <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
-          </div>
-        </div>
+        <button type="button" onclick="selectPortal('ADMIN')" id="card-ADMIN" 
+             class="neon-card rounded-xl py-2 px-2.5 cursor-pointer flex items-center justify-center gap-1.5 transition-all">
+          <span class="material-symbols-outlined text-magenta text-lg">tune</span>
+          <span class="text-xs sm:text-sm font-headline font-bold text-white tracking-wide">Admin</span>
+        </button>
 
       </div>
 
       <!-- INTERACTIVE FORM CONTAINER -->
-      <div class="neon-card rounded-2xl p-6 sm:p-8 relative">
+      <div class="neon-card rounded-2xl p-5 sm:p-6 relative">
         
         <!-- Form Header with Sub-Tabs (Sign In / Register) -->
         <div class="flex flex-wrap items-center justify-between border-b border-cyan/20 pb-4 mb-6 gap-3">
@@ -384,14 +354,30 @@
     function selectPortal(role) {
       currentRole = role;
 
-      // Update card borders
+      // Update card borders and styles
       ['PLAYER', 'MEMBER', 'ADMIN'].forEach(function(r) {
         var card = document.getElementById('card-' + r);
         if (card) {
           if (r === role) {
             card.classList.add('active-portal');
+            if (r === 'PLAYER') {
+              card.style.borderColor = '#00F0FF';
+              card.style.boxShadow = '0 0 16px rgba(0,240,255,0.45)';
+              card.style.background = 'rgba(0, 240, 255, 0.15)';
+            } else if (r === 'MEMBER') {
+              card.style.borderColor = '#00FF88';
+              card.style.boxShadow = '0 0 16px rgba(0,255,136,0.45)';
+              card.style.background = 'rgba(0, 255, 136, 0.15)';
+            } else {
+              card.style.borderColor = '#FF0055';
+              card.style.boxShadow = '0 0 16px rgba(255,0,85,0.45)';
+              card.style.background = 'rgba(255, 0, 85, 0.15)';
+            }
           } else {
             card.classList.remove('active-portal');
+            card.style.borderColor = 'rgba(0, 240, 255, 0.2)';
+            card.style.boxShadow = 'none';
+            card.style.background = 'rgba(17, 26, 46, 0.85)';
           }
         }
       });
