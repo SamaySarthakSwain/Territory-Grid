@@ -6,34 +6,52 @@
     /* 3D Interactive Card Flip Engine */
     .card-3d-wrap {
       perspective: 1200px;
+      -webkit-perspective: 1200px;
     }
     .card-3d-inner {
       position: relative;
       width: 100%;
       height: 100%;
       transform-style: preserve-3d;
-      transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+      -webkit-transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .card-3d-inner.is-flipped {
       transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
     }
     .card-face {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+    .card-face-front {
+      transform: rotateY(0deg) translate3d(0, 0, 0);
+      -webkit-transform: rotateY(0deg) translate3d(0, 0, 0);
+      z-index: 2;
     }
     .card-face-back {
-      transform: rotateY(180deg);
+      transform: rotateY(180deg) translate3d(0, 0, 0);
+      -webkit-transform: rotateY(180deg) translate3d(0, 0, 0);
+      z-index: 1;
+    }
+    .card-3d-inner.is-flipped .card-face-front {
+      z-index: 1;
+    }
+    .card-3d-inner.is-flipped .card-face-back {
+      z-index: 2;
     }
   </style>
-  <script src="/vendor/qrcode.min.js"></script>
+  <script src="/vendor/qrcode.bundle.js"></script>
   <script>
     if (typeof QRCode === 'undefined') {
       var qrs = document.createElement('script');
-      qrs.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+      qrs.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js';
       document.head.appendChild(qrs);
     }
   </script>
@@ -179,6 +197,20 @@
 
         <!-- INTERACTIVE 3D HOLOGRAPHIC CIPHER CARD (Cyber Deck Art Front + Flipped QR & Manual Code Back) -->
         <div class="pt-3 pb-1 flex flex-col items-center">
+          
+          <!-- Dual View Toggle Bar (Card Artwork vs QR Cipher) -->
+          <div class="flex items-center justify-center gap-2 mb-2.5 w-full max-w-[280px]">
+            <button type="button" id="tab-card-view" onclick="toggleCardFlip(false)" class="flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-primary/50 bg-primary/20 text-primary transition flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_12px_rgba(0,229,255,0.25)]">
+              <span class="material-symbols-outlined text-[15px]">style</span>
+              <span>Card</span>
+            </button>
+            <button type="button" id="tab-qr-view" onclick="toggleCardFlip(true)" class="flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-transparent text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[15px]">qr_code_2</span>
+              <span>QR Code</span>
+              <span class="px-1.5 py-0.5 rounded bg-primary-container text-black text-[9px] font-black animate-pulse leading-none">SHOW</span>
+            </button>
+          </div>
+
           <div class="card-3d-wrap relative group select-none cursor-pointer w-[240px] sm:w-[260px] h-[375px] sm:h-[395px]" onclick="toggleCardFlip()">
             
             <!-- Dynamic Ambient Backing Blur Glow (Cyan for ♠/♣, Crimson for ♥/♦) -->
@@ -188,16 +220,16 @@
             <div id="card-flipper" class="card-3d-inner">
               
               <!-- ==================== FRONT FACE (Exact Cyber Art from Reference Image) ==================== -->
-              <div id="card-front-face" class="card-face rounded-2xl bg-gradient-to-b from-[#071322] via-[#040a14] to-[#02050c] border-2 border-[#00e5ff] shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_0_25px_rgba(0,229,255,0.2)] p-3.5 flex flex-col justify-between overflow-hidden transition-colors duration-500">
+              <div id="card-front-face" class="card-face card-face-front rounded-2xl bg-gradient-to-b from-[#071322] via-[#040a14] to-[#02050c] border-2 border-[#00e5ff] shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_0_25px_rgba(0,229,255,0.2)] p-3.5 flex flex-col justify-between transition-colors duration-500">
                 
                 <!-- Checkered Carbon Background Mesh -->
-                <div class="absolute inset-0 opacity-25 pointer-events-none bg-[radial-gradient(rgba(0,229,255,0.4)_1px,transparent_1px)] [background-size:8px_8px]"></div>
+                <div class="absolute inset-0 opacity-25 rounded-2xl pointer-events-none bg-[radial-gradient(rgba(0,229,255,0.4)_1px,transparent_1px)] [background-size:8px_8px] overflow-hidden"></div>
                 
                 <!-- Inner Glowing Circuit Border -->
                 <div id="inner-border-front" class="absolute inset-2.5 rounded-xl border border-[#00e5ff]/50 shadow-[0_0_15px_rgba(0,229,255,0.25)] pointer-events-none transition-colors duration-500"></div>
 
                 <!-- Corner Sci-Fi Circuit Line Accents -->
-                <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden rounded-2xl" xmlns="http://www.w3.org/2000/svg">
                   <path d="M 22 45 L 22 80 L 38 96" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
                   <path d="M 238 45 L 238 80 L 222 96" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
                   <path d="M 22 345 L 22 310 L 38 294" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
@@ -260,9 +292,9 @@
                   </div>
 
                   <!-- Tap to Reveal QR Prompt -->
-                  <div id="tap-reveal-badge" class="mt-1 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00e5ff]/15 border border-[#00e5ff]/40 shadow-[0_0_12px_rgba(0,229,255,0.2)]">
-                    <span class="material-symbols-outlined text-[14px] text-[#00e5ff] animate-bounce">touch_app</span>
-                    <span class="text-[10px] font-mono tracking-widest text-primary font-bold uppercase">PRESS TO REVEAL QR CIPHER</span>
+                  <div id="tap-reveal-badge" class="mt-1 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00e5ff]/20 border border-[#00e5ff]/50 shadow-[0_0_12px_rgba(0,229,255,0.4)] animate-pulse hover:scale-105 transition">
+                    <span class="material-symbols-outlined text-[15px] text-[#00e5ff]">touch_app</span>
+                    <span class="text-[10px] font-mono tracking-widest text-primary font-bold uppercase">PRESS CARD TO VIEW QR & CIPHER</span>
                   </div>
                 </div>
 
@@ -277,7 +309,7 @@
               </div>
 
               <!-- ==================== BACK FACE (QR Code + Manual Fallback Code) ==================== -->
-              <div id="card-back-face" class="card-face card-face-back rounded-2xl bg-gradient-to-b from-[#06121f] via-[#040812] to-[#020408] border-2 border-[#00e5ff] shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_0_25px_rgba(0,229,255,0.2)] p-3.5 flex flex-col justify-between overflow-hidden transition-colors duration-500">
+              <div id="card-back-face" class="card-face card-face-back rounded-2xl bg-gradient-to-b from-[#06121f] via-[#040812] to-[#020408] border-2 border-[#00e5ff] shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_0_25px_rgba(0,229,255,0.2)] p-3.5 flex flex-col justify-between transition-colors duration-500">
                 
                 <!-- Back Face Header Pip -->
                 <div class="relative z-10 flex items-center justify-between">
@@ -300,9 +332,9 @@
                     <div id="reticle-back-bl" class="absolute -bottom-1 -left-1 w-3.5 h-3.5 border-b-2 border-l-2 border-[#00e5ff] pointer-events-none"></div>
                     <div id="reticle-back-br" class="absolute -bottom-1 -right-1 w-3.5 h-3.5 border-b-2 border-r-2 border-[#00e5ff] pointer-events-none"></div>
 
-                    <!-- Clean QR Canvas -->
+                    <!-- Clean QR Canvas Box -->
                     <div id="card-qr-container" class="w-[130px] h-[130px] bg-white rounded-lg p-1.5 flex items-center justify-center shadow-inner overflow-hidden">
-                      <!-- Dynamically rendered QR code -->
+                      <!-- Dynamically rendered vector QR code -->
                     </div>
                   </div>
 
@@ -328,6 +360,12 @@
 
             </div>
           </div>
+
+          <!-- Flip Card Action Button -->
+          <button type="button" onclick="toggleCardFlip()" id="flip-card-action-btn" class="mt-2.5 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-primary-container/20 hover:from-primary/30 hover:to-primary-container/30 border border-primary/50 text-primary font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-[0_0_15px_rgba(0,229,255,0.25)] transition active:scale-95 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">sync</span>
+            <span id="flip-btn-label">Tap Card to Show QR & Code</span>
+          </button>
         </div>
       </div>
 
@@ -427,14 +465,35 @@
     var activeCipherCard = null;
     var isCardFlipped = false;
 
-    function toggleCardFlip() {
-      isCardFlipped = !isCardFlipped;
+    function toggleCardFlip(targetState) {
+      if (typeof targetState === 'boolean') {
+        isCardFlipped = targetState;
+      } else {
+        isCardFlipped = !isCardFlipped;
+      }
       var flipper = document.getElementById('card-flipper');
+      var btnLabel = document.getElementById('flip-btn-label');
+      var tabCard = document.getElementById('tab-card-view');
+      var tabQr = document.getElementById('tab-qr-view');
       if (flipper) {
         if (isCardFlipped) {
           flipper.classList.add('is-flipped');
+          if (btnLabel) btnLabel.innerText = 'Tap Card to Flip Back';
+          if (tabCard) {
+            tabCard.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-transparent text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer';
+          }
+          if (tabQr) {
+            tabQr.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-primary/50 bg-primary/20 text-primary transition flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_12px_rgba(0,229,255,0.25)]';
+          }
         } else {
           flipper.classList.remove('is-flipped');
+          if (btnLabel) btnLabel.innerText = 'Tap Card to Show QR & Code';
+          if (tabCard) {
+            tabCard.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-primary/50 bg-primary/20 text-primary transition flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_12px_rgba(0,229,255,0.25)]';
+          }
+          if (tabQr) {
+            tabQr.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-transparent text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer';
+          }
         }
       }
     }
@@ -558,19 +617,63 @@
       // QR Code Payload: TG|teamId|squadCallsign|rankNumber|rankCode|suit|token
       var qrPayload = 'TG|' + teamId + '|' + squadCallsign + '|' + card.rank + '|' + card.code + '|' + card.suit + '|' + card.token;
 
-      qrContainer.innerHTML = '';
-      if (typeof QRCode !== 'undefined') {
-        new QRCode(qrContainer, {
-          text: qrPayload,
-          width: 120,
-          height: 120,
-          colorDark: '#02050a',
-          colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.M
+      renderCipherQRCode(qrContainer, qrPayload, card);
+    }
+
+    function renderCipherQRCode(container, payload, cardInfo) {
+      if (!container) return;
+
+      // Strategy 1: Modern vector SVG via local bundle (instant, high-contrast, scalable)
+      if (typeof QRCode !== 'undefined' && typeof QRCode.toString === 'function') {
+        QRCode.toString(payload, {
+          type: 'svg',
+          margin: 1,
+          width: 124,
+          color: {
+            dark: '#02050a',
+            light: '#ffffff'
+          }
+        }, function(err, svgString) {
+          if (!err && svgString) {
+            container.innerHTML = svgString;
+            var svgEl = container.querySelector('svg');
+            if (svgEl) {
+              svgEl.style.width = '100%';
+              svgEl.style.height = '100%';
+              svgEl.style.display = 'block';
+              svgEl.style.borderRadius = '6px';
+            }
+            return;
+          }
+          fallbackRenderQR(container, payload, cardInfo);
         });
-      } else {
-        qrContainer.innerHTML = '<div class="text-[10px] font-mono text-center text-gray-800 font-bold p-1">CIPHER KEY<br><span class="text-xs font-black">' + card.code + card.suit + '</span><br>' + card.token + '</div>';
+        return;
       }
+
+      // Strategy 2: Legacy QRCode constructor (qrcodejs)
+      if (typeof QRCode !== 'undefined' && typeof QRCode === 'function') {
+        try {
+          container.innerHTML = '';
+          new QRCode(container, {
+            text: payload,
+            width: 120,
+            height: 120,
+            colorDark: '#02050a',
+            colorLight: '#ffffff'
+          });
+          return;
+        } catch (e) {
+          console.warn('QRCode constructor error, using image fallback:', e);
+        }
+      }
+
+      // Strategy 3: Dynamic Image Fallback (guaranteed visual QR display)
+      fallbackRenderQR(container, payload, cardInfo);
+    }
+
+    function fallbackRenderQR(container, payload, cardInfo) {
+      var qrImgUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=4&data=' + encodeURIComponent(payload);
+      container.innerHTML = '<img src="' + qrImgUrl + '" alt="QR Cipher" class="w-full h-full object-contain rounded" onerror="this.onerror=null; this.parentElement.innerHTML=\'<div class=\\\'font-mono text-[10px] text-gray-800 font-bold text-center p-1 leading-tight\\\'>CIPHER KEY<br><span class=\\\'text-xs font-black\\\'>' + cardInfo.code + cardInfo.suit + '</span><br>' + cardInfo.token + '</div>\';" />';
     }
 
     // 1. Role Guard
