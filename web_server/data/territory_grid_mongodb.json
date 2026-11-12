@@ -8,9 +8,46 @@
       "password": "samay",
       "isApproved": true,
       "createdAt": "2026-11-12T00:00:00.000Z"
+    },
+    {
+      "_id": "user_1794446983390_f08hr",
+      "callsign": "Alpha Team",
+      "name": "Alpha Team",
+      "role": "PLAYER",
+      "password": "pass123",
+      "teamId": "team_1794446983390_evoif",
+      "zoneId": null,
+      "zoneLabel": null,
+      "isApproved": true,
+      "createdAt": "2026-11-12T01:29:43.390Z"
     }
   ],
-  "teams": [],
+  "teams": [
+    {
+      "_id": "team_1794446983390_evoif",
+      "name": "Alpha Team",
+      "callsign": "Alpha Team",
+      "score": 0,
+      "cards": [],
+      "clueOrder": [
+        "clue_06",
+        "clue_01",
+        "clue_02",
+        "clue_04",
+        "clue_09",
+        "clue_08",
+        "clue_10",
+        "clue_03",
+        "clue_07",
+        "clue_05"
+      ],
+      "currentClueIndex": 0,
+      "visitedZones": [],
+      "isApproved": true,
+      "createdAt": "2026-11-12T01:29:43.390Z",
+      "updatedAt": "2026-11-12T01:29:43.390Z"
+    }
+  ],
   "clues": [
     {
       "_id": "clue_01",
@@ -82,6 +119,24 @@
     "totalPausedMs": 0
   },
   "system_logs": [
+    {
+      "_id": "log_1794447036988_4494",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Alpha Team\" (team_1794446983390_evoif)",
+      "timestamp": "2026-11-12T01:30:36.988Z"
+    },
+    {
+      "_id": "log_1794447018117_eugn",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-12T01:30:18.117Z"
+    },
+    {
+      "_id": "log_1794446983391_z58a",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"Alpha Team\" (Pending Approval)",
+      "timestamp": "2026-11-12T01:29:43.391Z"
+    },
     {
       "_id": "log_init",
       "action": "SYSTEM_INIT",

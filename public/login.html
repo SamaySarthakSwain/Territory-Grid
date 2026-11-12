@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Territory Grid // Operational Clearance Gateway</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#070B14",
+            "surface-low": "#0C1220",
+            "surface-card": "#111A2E",
+            "surface-high": "#19243C",
+            "surface-border": "rgba(0, 240, 255, 0.25)",
+            cyan: "#00F0FF",
+            "cyan-glow": "#9CF0FF",
+            magenta: "#FF0055",
+            green: "#00FF88",
+            yellow: "#FFB800",
+            amber: "#FFD600",
+            error: "#FF4D4D"
+          },
+          fontFamily: {
+            headline: ["Space Grotesk", "sans-serif"],
+            body: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #070B14;
+      color: #DFE2F0;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    .hex-bg {
+      background-image: radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .neon-cyan-glow {
+      filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
+    }
+    .neon-card {
+      background: rgba(17, 26, 46, 0.85);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(0, 240, 255, 0.05);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .neon-card.active-portal {
+      border-color: #00F0FF;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.35), inset 0 0 15px rgba(0, 240, 255, 0.15);
+    }
+    /* Rotating Sonar Radar */
+    .radar-sweep {
+      background: conic-gradient(from 0deg, rgba(0, 240, 255, 0.45) 0deg, rgba(0, 240, 255, 0) 60deg);
+      animation: rotate-radar 3s linear infinite;
+    }
+    @keyframes rotate-radar {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="hex-bg flex flex-col justify-between p-3 sm:p-6 selection:bg-cyan selection:text-black">
+
+  <!-- Top Telemetry Header -->
+  <header class="w-full max-w-4xl mx-auto flex items-center justify-between py-2 border-b border-cyan/20 text-xs font-mono">
+    <div class="flex items-center gap-2 text-cyan">
+      <span class="w-2 h-2 rounded-full bg-green animate-ping"></span>
+      <span class="tracking-widest font-bold">GRID.SYS ONLINE // CLUB FEST MATRIX</span>
+    </div>
+    <div class="flex items-center gap-2 text-gray-400">
+      <span class="material-symbols-outlined text-sm text-cyan">database</span>
+      <span>MONGODB STORE: ACTIVE</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="w-full max-w-4xl mx-auto my-auto py-6">
+
+    <!-- Brand Emblem & Title -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-cyan/10 border border-cyan/40 mb-3 neon-cyan-glow">
+        <span class="material-symbols-outlined text-cyan text-4xl">grid_view</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-wider text-white">
+        TERRITORY <span class="text-cyan drop-shadow-[0_0_12px_rgba(0,240,255,0.7)]">GRID</span>
+      </h1>
+      <p class="text-xs sm:text-sm font-headline tracking-widest text-cyan/70 uppercase mt-1">
+        Club Fest Tactical Scavenger Hunt Simulator
+      </p>
+    </div>
+
+    <!-- VIEW 1: PORTAL CHOOSER & LOGIN/REGISTRATION FORM -->
+    <div id="view-portal-gateway" class="w-full">
+      
+      <!-- 3 Clear Options: Team | Marshal | Admin -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="portal-cards">
+        
+        <!-- OPTION 1: Join as Team -->
+        <div onclick="selectPortal('PLAYER')" id="card-PLAYER" 
+             class="neon-card active-portal rounded-2xl p-5 cursor-pointer relative overflow-hidden group">
+          <div class="absolute top-2 right-2 text-[10px] font-mono px-2 py-0.5 rounded bg-cyan/20 text-cyan border border-cyan/30">
+            COMPETITOR
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan mb-3 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">sports_esports</span>
+          </div>
+          <h2 class="text-lg font-headline font-bold text-white mb-1">1. Join as Team</h2>
+          <p class="text-xs text-gray-400 line-clamp-2">Register squad callsign, unlock secret clues, draw cards & score points.</p>
+          <div class="mt-4 flex items-center text-xs font-bold text-cyan group-hover:translate-x-1 transition-transform">
+            <span>SELECT TEAM PORTAL</span>
+            <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
+          </div>
+        </div>
+
+        <!-- OPTION 2: Join as Marshal -->
+        <div onclick="selectPortal('MEMBER')" id="card-MEMBER" 
+             class="neon-card rounded-2xl p-5 cursor-pointer relative overflow-hidden group">
+          <div class="absolute top-2 right-2 text-[10px] font-mono px-2 py-0.5 rounded bg-green/20 text-green border border-green/30">
+            CHECKPOINT
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-green/20 border border-green/40 flex items-center justify-center text-green mb-3 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">verified</span>
+          </div>
+          <h2 class="text-lg font-headline font-bold text-white mb-1">2. Join as Marshal</h2>
+          <p class="text-xs text-gray-400 line-clamp-2">Station at sector checkpoint, arbitrate card draws & award team scores.</p>
+          <div class="mt-4 flex items-center text-xs font-bold text-green group-hover:translate-x-1 transition-transform">
+            <span>SELECT MARSHAL PORTAL</span>
+            <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
+          </div>
+        </div>
+
+        <!-- OPTION 3: Admin -->
+        <div onclick="selectPortal('ADMIN')" id="card-ADMIN" 
+             class="neon-card rounded-2xl p-5 cursor-pointer relative overflow-hidden group">
+          <div class="absolute top-2 right-2 text-[10px] font-mono px-2 py-0.5 rounded bg-magenta/20 text-magenta border border-magenta/30">
+            COMMAND
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-magenta/20 border border-magenta/40 flex items-center justify-center text-magenta mb-3 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">tune</span>
+          </div>
+          <h2 class="text-lg font-headline font-bold text-white mb-1">3. Admin</h2>
+          <p class="text-xs text-gray-400 line-clamp-2">Game Master terminal: manage clock, approvals, clues & MongoDB telemetry.</p>
+          <div class="mt-4 flex items-center text-xs font-bold text-magenta group-hover:translate-x-1 transition-transform">
+            <span>ACCESS ADMIN PORTAL</span>
+            <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- INTERACTIVE FORM CONTAINER -->
+      <div class="neon-card rounded-2xl p-6 sm:p-8 relative">
+        
+        <!-- Form Header with Sub-Tabs (Sign In / Register) -->
+        <div class="flex flex-wrap items-center justify-between border-b border-cyan/20 pb-4 mb-6 gap-3">
+          <div>
+            <span class="text-[11px] font-mono tracking-widest text-cyan uppercase" id="form-role-badge">ROLE: PLAYER SQUAD</span>
+            <h3 class="text-xl font-headline font-bold text-white" id="form-title">Squad Authentication Terminal</h3>
+          </div>
+
+          <!-- Mode Toggle: Sign In / Register (Hidden for Admin) -->
+          <div class="flex bg-[#0A101D] p-1 rounded-xl border border-cyan/20" id="mode-toggle-group">
+            <button onclick="setAuthMode('login')" id="btn-mode-login" 
+                    class="px-4 py-1.5 text-xs font-headline font-bold rounded-lg bg-cyan text-black transition-all">
+              SIGN IN
+            </button>
+            <button onclick="setAuthMode('register')" id="btn-mode-register" 
+                    class="px-4 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white transition-all">
+              REGISTER NEW
+            </button>
+          </div>
+        </div>
+
+        <!-- Alert Banner -->
+        <div id="alert-banner" class="hidden mb-4 p-3 rounded-xl border text-xs font-mono flex items-center gap-2">
+          <span class="material-symbols-outlined text-base" id="alert-icon">info</span>
+          <span id="alert-message">Notice message</span>
+        </div>
+
+        <!-- Dynamic Form Fields -->
+        <form id="auth-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+
+          <!-- Extra Field 1: Squad / Full Name (Only for Registration) -->
+          <div id="field-name-container" class="hidden">
+            <label class="block text-xs font-mono text-gray-300 uppercase mb-1.5" id="label-name">
+              Squad Full Name
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-3 text-cyan text-lg">groups</span>
+              <input type="text" id="input-name" placeholder="e.g. Phoenix Recon" 
+                     class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan focus:ring-1 focus:ring-cyan transition font-body">
+            </div>
+          </div>
+
+          <!-- Main Field: Callsign / ID -->
+          <div>
+            <label class="block text-xs font-mono text-gray-300 uppercase mb-1.5 flex items-center justify-between" id="label-callsign">
+              <span>Operative Callsign / ID</span>
+              <span class="text-[10px] text-cyan" id="callsign-hint">Callsign used to identify you</span>
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-3 text-cyan text-lg">badge</span>
+              <input type="text" id="input-callsign" required placeholder="e.g. phoenix1" 
+                     class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan focus:ring-1 focus:ring-cyan transition font-body">
+            </div>
+          </div>
+
+          <!-- Extra Field 2: Assigned Checkpoint Station (Only for Marshal Registration) -->
+          <div id="field-zone-container" class="hidden">
+            <label class="block text-xs font-mono text-gray-300 uppercase mb-1.5">
+              Assigned Checkpoint Sector
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-3 text-green text-lg">location_on</span>
+              <select id="input-zone" 
+                      class="w-full bg-[#0A101D] border border-green/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-green focus:ring-1 focus:ring-green transition font-body">
+                <option value="ZONE_01">Sector A: Library Arch (Zone 01)</option>
+                <option value="ZONE_02">Sector B: Solar Obelisk (Zone 02)</option>
+                <option value="ZONE_03">Sector C: Clocktower Terrace (Zone 03)</option>
+                <option value="ZONE_04">Sector D: Glasshouse Botanical (Zone 04)</option>
+                <option value="ZONE_05">Sector E: Skybridge Concourse (Zone 05)</option>
+                <option value="ZONE_06">Sector F: Amphitheater (Zone 06)</option>
+                <option value="ZONE_07">Sector G: Science Basin (Zone 07)</option>
+                <option value="ZONE_08">Sector H: Student Pavilion (Zone 08)</option>
+                <option value="ZONE_09">Sector I: North Telecom Pylon (Zone 09)</option>
+                <option value="ZONE_10">Sector J: Turf Perimeter (Zone 10)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Access Key / Password -->
+          <div>
+            <label class="block text-xs font-mono text-gray-300 uppercase mb-1.5 flex items-center justify-between">
+              <span>Access Key (Password)</span>
+              <span class="text-[10px] text-gray-400" id="password-hint">Min 6 characters</span>
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-3 text-cyan text-lg">lock</span>
+              <input type="password" id="input-password" required placeholder="••••••••" 
+                     class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white focus:outline-none focus:border-cyan focus:ring-1 focus:ring-cyan transition font-body">
+              <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-3 text-gray-400 hover:text-white">
+                <span class="material-symbols-outlined text-lg" id="pwd-visibility-icon">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Admin Quick Hint (Shown only when Admin is selected) -->
+          <div id="admin-credentials-hint" class="hidden p-3 rounded-xl bg-magenta/10 border border-magenta/30 text-xs font-mono text-magenta flex items-center justify-between">
+            <span>GAME MASTER CREDENTIALS: ID: <b>samay</b> | Pass: <b>samay</b></span>
+            <button type="button" onclick="fillAdminCredentials()" class="underline hover:text-white">Fill</button>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="btn-submit" 
+                  class="w-full py-3 px-6 rounded-xl bg-cyan text-black font-headline font-bold text-sm tracking-wider uppercase hover:shadow-[0_0_20px_rgba(0,240,255,0.6)] active:scale-98 transition flex items-center justify-center gap-2 mt-6">
+            <span class="material-symbols-outlined text-lg" id="btn-submit-icon">bolt</span>
+            <span id="btn-submit-text">ENTER SQUAD HUD</span>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- VIEW 2: TACTICAL WAITING HALL / HOLDING BAY -->
+    <div id="view-waiting-hall" class="hidden w-full max-w-xl mx-auto">
+      <div class="neon-card rounded-3xl p-8 text-center relative overflow-hidden">
+        
+        <!-- Animated Radar Sonar -->
+        <div class="relative w-40 h-40 mx-auto mb-6 rounded-full border border-cyan/40 bg-[#091122] flex items-center justify-center overflow-hidden shadow-[0_0_30px_rgba(0,240,255,0.2)]">
+          <!-- Concentric rings -->
+          <div class="absolute w-28 h-28 rounded-full border border-cyan/20"></div>
+          <div class="absolute w-16 h-16 rounded-full border border-cyan/30"></div>
+          <div class="absolute w-full h-[1px] bg-cyan/20"></div>
+          <div class="absolute h-full w-[1px] bg-cyan/20"></div>
+          <!-- Radar sweep -->
+          <div class="absolute inset-0 radar-sweep rounded-full pointer-events-none"></div>
+          <!-- Pulsing Target Dot -->
+          <div class="w-4 h-4 rounded-full bg-cyan animate-ping"></div>
+          <div class="w-3 h-3 rounded-full bg-cyan z-10"></div>
+        </div>
+
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow/10 border border-yellow/30 text-yellow text-xs font-mono font-bold mb-3">
+          <span class="w-2 h-2 rounded-full bg-yellow animate-pulse"></span>
+          <span>CLEARANCE STATUS: PENDING APPROVAL</span>
+        </div>
+
+        <h2 class="text-2xl font-headline font-extrabold text-white mb-2">WAITING FOR GAME MASTER</h2>
+        
+        <p class="text-xs sm:text-sm text-gray-300 max-w-md mx-auto mb-6">
+          Your credentials for <span class="text-cyan font-bold" id="waiting-callsign">Callsign</span> (<span class="text-white font-semibold" id="waiting-role">Squad</span>) have been submitted to Game Master <b>Samay</b>.
+        </p>
+
+        <!-- Live Sync Status Box -->
+        <div class="bg-[#0A101D] border border-cyan/20 rounded-2xl p-4 mb-6 text-left font-mono text-xs space-y-2">
+          <div class="flex justify-between items-center text-gray-400">
+            <span>SIGNAL PROTOCOL:</span>
+            <span class="text-green flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span> LINK ACTIVE
+            </span>
+          </div>
+          <div class="flex justify-between items-center text-gray-400">
+            <span>APPROVAL POLLING:</span>
+            <span class="text-cyan font-bold" id="poll-timer">Checking every 2.5s...</span>
+          </div>
+          <div class="text-[11px] text-gray-400 pt-2 border-t border-cyan/10">
+            Once approved from the Admin Terminal, your dashboard will automatically unlock without refreshing.
+          </div>
+        </div>
+
+        <!-- Exit / Cancel Button -->
+        <button onclick="exitWaitingHall()" 
+                class="px-6 py-2.5 rounded-xl border border-gray-600 hover:border-cyan text-gray-300 hover:text-white text-xs font-headline font-bold transition">
+          CHANGE CALLSIGN / EXIT
+        </button>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer Notice -->
+  <footer class="w-full max-w-4xl mx-auto py-3 text-center text-[11px] font-mono text-gray-400 border-t border-cyan/10">
+    TERRITORY GRID v2.6 // CLUB FEST ADVENTURE // GAME MASTER: SAMAY
+  </footer>
+
+  <!-- SCRIPT LOGIC: PORTALS, REGISTRATION, APPROVAL WAITING HALL -->
+  <script>
+    var currentRole = 'PLAYER'; // 'PLAYER', 'MEMBER', 'ADMIN'
+    var currentMode = 'login';  // 'login', 'register'
+    var pollInterval = null;
+    var currentUserId = null;
+
+    // Initialize page
+    window.addEventListener('DOMContentLoaded', function() {
+      // Check if user is already authenticated
+      var session = getStoredSession();
+      if (session && session.isApproved) {
+        redirectToDashboard(session.role);
+        return;
+      } else if (session && !session.isApproved) {
+        showWaitingHall(session.callsign, session.role, session._id);
+        return;
+      }
+
+      selectPortal('PLAYER');
+    });
+
+    function getStoredSession() {
+      try {
+        var raw = localStorage.getItem('territory_grid_user') || sessionStorage.getItem('territory_grid_user');
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveSession(user) {
+      localStorage.setItem('territory_grid_user', JSON.stringify(user));
+      sessionStorage.setItem('territory_grid_user', JSON.stringify(user));
+    }
+
+    function clearSession() {
+      localStorage.removeItem('territory_grid_user');
+      sessionStorage.removeItem('territory_grid_user');
+    }
+
+    // Portal Selection
+    function selectPortal(role) {
+      currentRole = role;
+
+      // Update card borders
+      ['PLAYER', 'MEMBER', 'ADMIN'].forEach(function(r) {
+        var card = document.getElementById('card-' + r);
+        if (card) {
+          if (r === role) {
+            card.classList.add('active-portal');
+          } else {
+            card.classList.remove('active-portal');
+          }
+        }
+      });
+
+      var formTitle = document.getElementById('form-title');
+      var formRoleBadge = document.getElementById('form-role-badge');
+      var modeToggleGroup = document.getElementById('mode-toggle-group');
+      var fieldZone = document.getElementById('field-zone-container');
+      var adminHint = document.getElementById('admin-credentials-hint');
+      var btnSubmit = document.getElementById('btn-submit');
+      var btnSubmitText = document.getElementById('btn-submit-text');
+      var labelName = document.getElementById('label-name');
+      var inputName = document.getElementById('input-name');
+
+      hideAlert();
+
+      if (role === 'ADMIN') {
+        // Admin is fixed login only
+        setAuthMode('login');
+        if (modeToggleGroup) modeToggleGroup.classList.add('hidden');
+        if (adminHint) adminHint.classList.remove('hidden');
+        if (fieldZone) fieldZone.classList.add('hidden');
+        if (formRoleBadge) formRoleBadge.innerText = 'ROLE: GAME MASTER COMMAND';
+        if (formTitle) formTitle.innerText = 'Admin Command Terminal';
+        if (btnSubmit) {
+          btnSubmit.className = 'w-full py-3 px-6 rounded-xl bg-magenta text-white font-headline font-bold text-sm tracking-wider uppercase hover:shadow-[0_0_20px_rgba(255,0,85,0.6)] active:scale-98 transition flex items-center justify-center gap-2 mt-6';
+        }
+        if (btnSubmitText) btnSubmitText.innerText = 'ACCESS COMMAND TERMINAL';
+        fillAdminCredentials();
+      } else if (role === 'MEMBER') {
+        if (modeToggleGroup) modeToggleGroup.classList.remove('hidden');
+        if (adminHint) adminHint.classList.add('hidden');
+        if (formRoleBadge) formRoleBadge.innerText = 'ROLE: FIELD MARSHAL ARBITER';
+        if (formTitle) formTitle.innerText = 'Marshal Station Terminal';
+        if (labelName) labelName.innerText = 'Field Marshal Call Name';
+        if (inputName) inputName.placeholder = 'e.g. Marshal Alpha';
+        if (btnSubmit) {
+          btnSubmit.className = 'w-full py-3 px-6 rounded-xl bg-green text-black font-headline font-bold text-sm tracking-wider uppercase hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] active:scale-98 transition flex items-center justify-center gap-2 mt-6';
+        }
+        updateFormModeUI();
+      } else { // PLAYER
+        if (modeToggleGroup) modeToggleGroup.classList.remove('hidden');
+        if (adminHint) adminHint.classList.add('hidden');
+        if (formRoleBadge) formRoleBadge.innerText = 'ROLE: PLAYER SQUAD';
+        if (formTitle) formTitle.innerText = 'Squad Authentication Terminal';
+        if (labelName) labelName.innerText = 'Squad Full Name';
+        if (inputName) inputName.placeholder = 'e.g. Phoenix Recon';
+        if (btnSubmit) {
+          btnSubmit.className = 'w-full py-3 px-6 rounded-xl bg-cyan text-black font-headline font-bold text-sm tracking-wider uppercase hover:shadow-[0_0_20px_rgba(0,240,255,0.6)] active:scale-98 transition flex items-center justify-center gap-2 mt-6';
+        }
+        updateFormModeUI();
+      }
+    }
+
+    // Auth Mode: login vs register
+    function setAuthMode(mode) {
+      currentMode = mode;
+      var btnLogin = document.getElementById('btn-mode-login');
+      var btnRegister = document.getElementById('btn-mode-register');
+
+      if (mode === 'login') {
+        btnLogin.className = 'px-4 py-1.5 text-xs font-headline font-bold rounded-lg bg-cyan text-black transition-all';
+        btnRegister.className = 'px-4 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white transition-all';
+      } else {
+        btnRegister.className = 'px-4 py-1.5 text-xs font-headline font-bold rounded-lg bg-cyan text-black transition-all';
+        btnLogin.className = 'px-4 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white transition-all';
+      }
+
+      updateFormModeUI();
+    }
+
+    function updateFormModeUI() {
+      var fieldName = document.getElementById('field-name-container');
+      var fieldZone = document.getElementById('field-zone-container');
+      var btnSubmitText = document.getElementById('btn-submit-text');
+
+      if (currentMode === 'register') {
+        if (fieldName) fieldName.classList.remove('hidden');
+        if (fieldZone) {
+          if (currentRole === 'MEMBER') fieldZone.classList.remove('hidden');
+          else fieldZone.classList.add('hidden');
+        }
+        if (btnSubmitText) {
+          btnSubmitText.innerText = currentRole === 'MEMBER' 
+            ? 'REGISTER MARSHAL & ENTER WAITING HALL' 
+            : 'REGISTER SQUAD & ENTER WAITING HALL';
+        }
+      } else { // login
+        if (fieldName) fieldName.classList.add('hidden');
+        if (fieldZone) fieldZone.classList.add('hidden');
+        if (btnSubmitText) {
+          btnSubmitText.innerText = currentRole === 'MEMBER' 
+            ? 'ENTER MARSHAL STATION' 
+            : 'ENTER SQUAD HUD';
+        }
+      }
+    }
+
+    function fillAdminCredentials() {
+      document.getElementById('input-callsign').value = 'samay';
+      document.getElementById('input-password').value = 'samay';
+    }
+
+    function togglePasswordVisibility() {
+      var pwd = document.getElementById('input-password');
+      var icon = document.getElementById('pwd-visibility-icon');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        icon.innerText = 'visibility_off';
+      } else {
+        pwd.type = 'password';
+        icon.innerText = 'visibility';
+      }
+    }
+
+    function showAlert(msg, isError) {
+      var banner = document.getElementById('alert-banner');
+      var txt = document.getElementById('alert-message');
+      var icon = document.getElementById('alert-icon');
+      if (!banner) return;
+      banner.classList.remove('hidden');
+      txt.innerText = msg;
+      if (isError) {
+        banner.className = 'mb-4 p-3 rounded-xl border border-error/50 bg-error/10 text-error text-xs font-mono flex items-center gap-2';
+        icon.innerText = 'cancel';
+      } else {
+        banner.className = 'mb-4 p-3 rounded-xl border border-cyan/50 bg-cyan/10 text-cyan text-xs font-mono flex items-center gap-2';
+        icon.innerText = 'check_circle';
+      }
+    }
+
+    function hideAlert() {
+      var banner = document.getElementById('alert-banner');
+      if (banner) banner.classList.add('hidden');
+    }
+
+    // Submit handler
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      hideAlert();
+
+      var callsign = document.getElementById('input-callsign').value.trim();
+      var password = document.getElementById('input-password').value.trim();
+      var name = document.getElementById('input-name').value.trim();
+      var zoneElem = document.getElementById('input-zone');
+      var zoneId = zoneElem ? zoneElem.value : null;
+      var zoneLabel = zoneElem ? zoneElem.options[zoneElem.selectedIndex].text : null;
+
+      if (!callsign || !password) {
+        showAlert('Please fill in callsign and access key.', true);
+        return;
+      }
+
+      var endpoint = currentMode === 'register' ? '/api/auth/register' : '/api/auth/login';
+      var payload = {
+        role: currentRole,
+        callsign: callsign,
+        password: password,
+        name: name || callsign,
+        zoneId: zoneId,
+        zoneLabel: zoneLabel,
+        requestedRole: currentRole
+      };
+
+      var btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.classList.add('opacity-70');
+
+      try {
+        var res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        var data = await res.json();
+        btn.disabled = false;
+        btn.classList.remove('opacity-70');
+
+        if (!data.success) {
+          showAlert(data.error || 'Authentication error', true);
+          return;
+        }
+
+        saveSession(data.user);
+
+        // Check approval status
+        if (data.isApproved || data.role === 'ADMIN') {
+          // Direct entry
+          redirectToDashboard(data.role);
+        } else {
+          // Put in Waiting Hall
+          showWaitingHall(data.user.callsign, data.user.role, data.user._id);
+        }
+
+      } catch (err) {
+        btn.disabled = false;
+        btn.classList.remove('opacity-70');
+        showAlert('Network/Server connection error: ' + err.message, true);
+      }
+    }
+
+    // Waiting Hall Screen Controller
+    function showWaitingHall(callsign, role, userId) {
+      currentUserId = userId;
+      document.getElementById('view-portal-gateway').classList.add('hidden');
+      document.getElementById('view-waiting-hall').classList.remove('hidden');
+
+      document.getElementById('waiting-callsign').innerText = callsign;
+      document.getElementById('waiting-role').innerText = role === 'MEMBER' ? 'Field Marshal' : 'Player Squad';
+
+      // Start live polling every 2.5 seconds
+      if (pollInterval) clearInterval(pollInterval);
+      pollInterval = setInterval(function() {
+        checkApprovalStatus(userId, role);
+      }, 2500);
+    }
+
+    async function checkApprovalStatus(userId, role) {
+      if (!userId) return;
+      try {
+        var res = await fetch('/api/auth/status?id=' + encodeURIComponent(userId));
+        var data = await res.json();
+        if (data && data.isApproved) {
+          clearInterval(pollInterval);
+          // Update stored session
+          var session = getStoredSession() || {};
+          session.isApproved = true;
+          saveSession(session);
+
+          // Visual feedback and redirect
+          document.getElementById('poll-timer').innerText = '✓ CLEARANCE AUTHORIZED! REDIRECTING...';
+          document.getElementById('poll-timer').className = 'text-green font-bold animate-bounce';
+          setTimeout(function() {
+            redirectToDashboard(role);
+          }, 1200);
+        }
+      } catch (e) {
+        console.warn('Poll error:', e);
+      }
+    }
+
+    function exitWaitingHall() {
+      if (pollInterval) clearInterval(pollInterval);
+      clearSession();
+      document.getElementById('view-waiting-hall').classList.add('hidden');
+      document.getElementById('view-portal-gateway').classList.remove('hidden');
+    }
+
+    // Strict Role Router
+    function redirectToDashboard(role) {
+      if (role === 'ADMIN') {
+        window.location.href = 'admin_panel.html';
+      } else if (role === 'MEMBER') {
+        window.location.href = 'member_checkin.html';
+      } else { // PLAYER
+        window.location.href = 'player_dashboard.html';
+      }
+    }
+  </script>
+</body>
+</html>
