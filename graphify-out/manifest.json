@@ -1,0 +1,630 @@
+{
+  "api/index.js": {
+    "mtime": 1794447309.9941769,
+    "seen": 1794448860.0127668,
+    "ast_hash": "3f79ea36d4620a7b4b28f47cf7a82f2f",
+    "semantic_hash": "3f79ea36d4620a7b4b28f47cf7a82f2f"
+  },
+  "app/build.gradle.kts": {
+    "mtime": 1794445462.2721348,
+    "seen": 1794448860.0127668,
+    "ast_hash": "78ef1a4dbd03d37181a8c1bfb293ae69",
+    "semantic_hash": "78ef1a4dbd03d37181a8c1bfb293ae69"
+  },
+  "app/google-services.json": {
+    "mtime": 1794445462.2721348,
+    "seen": 1794448860.0133011,
+    "ast_hash": "78bfcf43b11bc526c7801b31bff049b8",
+    "semantic_hash": "78bfcf43b11bc526c7801b31bff049b8",
+    "ast_empty": true
+  },
+  "app/src/main/java/com/yourname/territorygrid/MainActivity.kt": {
+    "mtime": 1794445462.5126083,
+    "seen": 1794448860.0133011,
+    "ast_hash": "f49d153af1d260a78729458eda5616cb",
+    "semantic_hash": "f49d153af1d260a78729458eda5616cb"
+  },
+  "app/src/main/java/com/yourname/territorygrid/TerritoryGridApp.kt": {
+    "mtime": 1794445462.275509,
+    "seen": 1794448860.0133011,
+    "ast_hash": "52a14b1343ad470bb8b8176cebc2b09b",
+    "semantic_hash": "52a14b1343ad470bb8b8176cebc2b09b"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/mapper/CheckinMapper.kt": {
+    "mtime": 1794445462.275509,
+    "seen": 1794448860.0133011,
+    "ast_hash": "e5da1f6e8070087a788152bd33d29451",
+    "semantic_hash": "e5da1f6e8070087a788152bd33d29451"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/mapper/ClueMapper.kt": {
+    "mtime": 1794445462.2765176,
+    "seen": 1794448860.0138416,
+    "ast_hash": "28621f4b103f0eaa9bf6256b3ccc6173",
+    "semantic_hash": "28621f4b103f0eaa9bf6256b3ccc6173"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/mapper/GameStateMapper.kt": {
+    "mtime": 1794445462.2765176,
+    "seen": 1794448860.0138416,
+    "ast_hash": "50859d22958132cc8b04f862d29f80cd",
+    "semantic_hash": "50859d22958132cc8b04f862d29f80cd"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/mapper/TeamMapper.kt": {
+    "mtime": 1794445462.9236102,
+    "seen": 1794448860.014386,
+    "ast_hash": "ae8f9118528248c1975de539bea61d17",
+    "semantic_hash": "ae8f9118528248c1975de539bea61d17"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/mapper/UserMapper.kt": {
+    "mtime": 1794445462.2765176,
+    "seen": 1794448860.014386,
+    "ast_hash": "64f039592606a863f43ee53eecefb51d",
+    "semantic_hash": "64f039592606a863f43ee53eecefb51d"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/repository/AuthRepository.kt": {
+    "mtime": 1794445462.5764499,
+    "seen": 1794448860.0149083,
+    "ast_hash": "d3d98cda9a421d810ac52559a5749cda",
+    "semantic_hash": "d3d98cda9a421d810ac52559a5749cda"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/repository/AuthRepositoryImpl.kt": {
+    "mtime": 1794445462.9246924,
+    "seen": 1794448860.0149083,
+    "ast_hash": "1bc904c15d1ae41207f0afedc2e2fc2d",
+    "semantic_hash": "1bc904c15d1ae41207f0afedc2e2fc2d"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/repository/CheckinRepository.kt": {
+    "mtime": 1794445462.630918,
+    "seen": 1794448860.0154757,
+    "ast_hash": "4d65f5826ddb5e7935c8c8994fb67c96",
+    "semantic_hash": "4d65f5826ddb5e7935c8c8994fb67c96"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/repository/CheckinRepositoryImpl.kt": {
+    "mtime": 1794445462.631483,
+    "seen": 1794448860.0160692,
+    "ast_hash": "99137c193c6dc81a3c97ff4cc0ca515f",
+    "semantic_hash": "99137c193c6dc81a3c97ff4cc0ca515f"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/repository/ClueRepository.kt": {
+    "mtime": 1794445462.2799795,
+    "seen": 1794448860.01665,
+    "ast_hash": "92fddb25d27db07b02e37da6d84bcb02",
+    "semantic_hash": "92fddb25d27db07b02e37da6d84bcb02"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/repository/ClueRepositoryImpl.kt": {
+    "mtime": 1794445462.2809763,
+    "seen": 1794448860.0172057,
+    "ast_hash": "ece19f78180f9a5ec8fc5180f05e1d67",
+    "semantic_hash": "ece19f78180f9a5ec8fc5180f05e1d67"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/repository/GameRepository.kt": {
+    "mtime": 1794445462.2809763,
+    "seen": 1794448860.0172057,
+    "ast_hash": "132b061e1995da267f137dd4a93979bb",
+    "semantic_hash": "132b061e1995da267f137dd4a93979bb"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/repository/GameRepositoryImpl.kt": {
+    "mtime": 1794445462.2819784,
+    "seen": 1794448860.0172057,
+    "ast_hash": "dc801c0d4d61ea2d30d9e174502938bd",
+    "semantic_hash": "dc801c0d4d61ea2d30d9e174502938bd"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/repository/TeamRepository.kt": {
+    "mtime": 1794445462.9246924,
+    "seen": 1794448860.0177405,
+    "ast_hash": "383841606d7a317fbd2ef6799c8f354b",
+    "semantic_hash": "383841606d7a317fbd2ef6799c8f354b"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/repository/TeamRepositoryImpl.kt": {
+    "mtime": 1794445462.925699,
+    "seen": 1794448860.0177405,
+    "ast_hash": "714b778b314186b5441889830a86cd4c",
+    "semantic_hash": "714b778b314186b5441889830a86cd4c"
+  },
+  "app/src/main/java/com/yourname/territorygrid/data/settings/SettingsManager.kt": {
+    "mtime": 1794445462.7769504,
+    "seen": 1794448860.0177405,
+    "ast_hash": "514034c3fbb099e2ca9235efb7562c5a",
+    "semantic_hash": "514034c3fbb099e2ca9235efb7562c5a"
+  },
+  "app/src/main/java/com/yourname/territorygrid/di/FirebaseModule.kt": {
+    "mtime": 1794445462.2829807,
+    "seen": 1794448860.0177405,
+    "ast_hash": "a0d480c086cca10f30cf5df03955dff3",
+    "semantic_hash": "a0d480c086cca10f30cf5df03955dff3"
+  },
+  "app/src/main/java/com/yourname/territorygrid/di/RepositoryModule.kt": {
+    "mtime": 1794445462.2839816,
+    "seen": 1794448860.0182993,
+    "ast_hash": "6e29aeaa6b51b1f2e86121afa880cc02",
+    "semantic_hash": "6e29aeaa6b51b1f2e86121afa880cc02"
+  },
+  "app/src/main/java/com/yourname/territorygrid/domain/model/Checkin.kt": {
+    "mtime": 1794445462.2839816,
+    "seen": 1794448860.0182993,
+    "ast_hash": "776d0f5516d74de16c3285b2671d60a1",
+    "semantic_hash": "776d0f5516d74de16c3285b2671d60a1"
+  },
+  "app/src/main/java/com/yourname/territorygrid/domain/model/Clue.kt": {
+    "mtime": 1794445462.284979,
+    "seen": 1794448860.0182993,
+    "ast_hash": "357bd599359c50f8287030682524ecf3",
+    "semantic_hash": "357bd599359c50f8287030682524ecf3"
+  },
+  "app/src/main/java/com/yourname/territorygrid/domain/model/ConeColor.kt": {
+    "mtime": 1794445462.284979,
+    "seen": 1794448860.0182993,
+    "ast_hash": "fbfeb9b2b059c8c001436d696cfce98d",
+    "semantic_hash": "fbfeb9b2b059c8c001436d696cfce98d"
+  },
+  "app/src/main/java/com/yourname/territorygrid/domain/model/GameState.kt": {
+    "mtime": 1794445462.284979,
+    "seen": 1794448860.018838,
+    "ast_hash": "a2fbbca947e506880aee788745730e2b",
+    "semantic_hash": "a2fbbca947e506880aee788745730e2b"
+  },
+  "app/src/main/java/com/yourname/territorygrid/domain/model/PlayingCard.kt": {
+    "mtime": 1794445462.286413,
+    "seen": 1794448860.0193737,
+    "ast_hash": "24ab31756093ff52f9b6e14558e88b6f",
+    "semantic_hash": "24ab31756093ff52f9b6e14558e88b6f"
+  },
+  "app/src/main/java/com/yourname/territorygrid/domain/model/Role.kt": {
+    "mtime": 1794445462.286413,
+    "seen": 1794448860.019676,
+    "ast_hash": "93cac9afe99264a5301898c5470f7d71",
+    "semantic_hash": "93cac9afe99264a5301898c5470f7d71"
+  },
+  "app/src/main/java/com/yourname/territorygrid/domain/model/Team.kt": {
+    "mtime": 1794445462.9266977,
+    "seen": 1794448860.019676,
+    "ast_hash": "e7c59355fc90a17581455e6d7f90799f",
+    "semantic_hash": "e7c59355fc90a17581455e6d7f90799f"
+  },
+  "app/src/main/java/com/yourname/territorygrid/domain/model/UserProfile.kt": {
+    "mtime": 1794445462.2875307,
+    "seen": 1794448860.0203214,
+    "ast_hash": "aec8b19b54620430506289166100ade8",
+    "semantic_hash": "aec8b19b54620430506289166100ade8"
+  },
+  "app/src/main/java/com/yourname/territorygrid/domain/usecase/CalculatePointsUseCase.kt": {
+    "mtime": 1794445462.2885435,
+    "seen": 1794448860.0203214,
+    "ast_hash": "e806fcbbd0cd9db919700f47c1d56181",
+    "semantic_hash": "e806fcbbd0cd9db919700f47c1d56181"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/admin/AdminRootScreen.kt": {
+    "mtime": 1794445462.9266977,
+    "seen": 1794448860.0208564,
+    "ast_hash": "87a68cddc3a259d93c2d9f75cf5f77db",
+    "semantic_hash": "87a68cddc3a259d93c2d9f75cf5f77db"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/admin/AdminUiState.kt": {
+    "mtime": 1794445462.5807514,
+    "seen": 1794448860.0213962,
+    "ast_hash": "5893edfe06fff2314516b0a1137fadf7",
+    "semantic_hash": "5893edfe06fff2314516b0a1137fadf7"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/admin/AdminViewModel.kt": {
+    "mtime": 1794445462.927811,
+    "seen": 1794448860.0219388,
+    "ast_hash": "d4187822b140f71cfbb475aa713c73c9",
+    "semantic_hash": "d4187822b140f71cfbb475aa713c73c9"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/auth/LoginScreen.kt": {
+    "mtime": 1794445462.9288092,
+    "seen": 1794448860.0224886,
+    "ast_hash": "2b1e9a3a40e6f6233fd6849cf2d1d464",
+    "semantic_hash": "2b1e9a3a40e6f6233fd6849cf2d1d464"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/auth/LoginUiState.kt": {
+    "mtime": 1794445462.9288092,
+    "seen": 1794448860.023113,
+    "ast_hash": "1255f6b4d8fe1ff86d80005bc36211d7",
+    "semantic_hash": "1255f6b4d8fe1ff86d80005bc36211d7"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/auth/LoginViewModel.kt": {
+    "mtime": 1794445462.929809,
+    "seen": 1794448860.023113,
+    "ast_hash": "4119b6bdb504620947f6a74c958c08c0",
+    "semantic_hash": "4119b6bdb504620947f6a74c958c08c0"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/BottomNavBar.kt": {
+    "mtime": 1794445462.2885435,
+    "seen": 1794448860.0236783,
+    "ast_hash": "4cdd90061b3211ead0108665d789337e",
+    "semantic_hash": "4cdd90061b3211ead0108665d789337e"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/ComponentGalleryScreen.kt": {
+    "mtime": 1794445462.289696,
+    "seen": 1794448860.0243082,
+    "ast_hash": "a936422a1546e8f39f2deb22da2a31f7",
+    "semantic_hash": "a936422a1546e8f39f2deb22da2a31f7"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/ConeChip.kt": {
+    "mtime": 1794445462.289696,
+    "seen": 1794448860.0243082,
+    "ast_hash": "deb197caaadda82dafe12bf88149aaa4",
+    "semantic_hash": "deb197caaadda82dafe12bf88149aaa4"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/ConfirmDialog.kt": {
+    "mtime": 1794445462.5817516,
+    "seen": 1794448860.0250995,
+    "ast_hash": "8dd7090283232dfb14f54d1dac77fd06",
+    "semantic_hash": "8dd7090283232dfb14f54d1dac77fd06"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/GlassCard.kt": {
+    "mtime": 1794445462.290704,
+    "seen": 1794448860.0250995,
+    "ast_hash": "00e7f40e0ed6a877bb2d500aeb9221a1",
+    "semantic_hash": "00e7f40e0ed6a877bb2d500aeb9221a1"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/GlowingScoreRing.kt": {
+    "mtime": 1794445462.290704,
+    "seen": 1794448860.0259137,
+    "ast_hash": "7b0944c9ab9f5953d1e00a6b29402e8d",
+    "semantic_hash": "7b0944c9ab9f5953d1e00a6b29402e8d"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/HexGridBackground.kt": {
+    "mtime": 1794445462.2921467,
+    "seen": 1794448860.0259137,
+    "ast_hash": "367b98de0865c7bdc6dbeb0efa22b57b",
+    "semantic_hash": "367b98de0865c7bdc6dbeb0efa22b57b"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/NeonButton.kt": {
+    "mtime": 1794445462.5181656,
+    "seen": 1794448860.026571,
+    "ast_hash": "ce56b4b0f0e3a1a6822583a7f6b9402c",
+    "semantic_hash": "ce56b4b0f0e3a1a6822583a7f6b9402c"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/NeonTextField.kt": {
+    "mtime": 1794445462.5186934,
+    "seen": 1794448860.026571,
+    "ast_hash": "6492c516afa73ba10e9b322d2a2ee27b",
+    "semantic_hash": "6492c516afa73ba10e9b322d2a2ee27b"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/OfflineBanner.kt": {
+    "mtime": 1794445462.2931595,
+    "seen": 1794448860.026571,
+    "ast_hash": "841bc3012faec997b5d64a5a9f03fbb3",
+    "semantic_hash": "841bc3012faec997b5d64a5a9f03fbb3"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/PlayingCardTile.kt": {
+    "mtime": 1794445462.294156,
+    "seen": 1794448860.0277271,
+    "ast_hash": "35d9cf0c86f52527c04048d81d46ca10",
+    "semantic_hash": "35d9cf0c86f52527c04048d81d46ca10"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/StateContainers.kt": {
+    "mtime": 1794445462.294156,
+    "seen": 1794448860.0277271,
+    "ast_hash": "910d4fcb63d1326d5ec4adac483f4f91",
+    "semantic_hash": "910d4fcb63d1326d5ec4adac483f4f91"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/StatusChip.kt": {
+    "mtime": 1794445462.294156,
+    "seen": 1794448860.0277271,
+    "ast_hash": "ef51cfbaf7ec576a5992e9c2858adb26",
+    "semantic_hash": "ef51cfbaf7ec576a5992e9c2858adb26"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/components/TopHudBar.kt": {
+    "mtime": 1794445462.2953832,
+    "seen": 1794448860.0277271,
+    "ast_hash": "dde2768216ba43ce257f63d673bca42c",
+    "semantic_hash": "dde2768216ba43ce257f63d673bca42c"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/member/MemberCheckinUiState.kt": {
+    "mtime": 1794445462.9308143,
+    "seen": 1794448860.0293527,
+    "ast_hash": "729b34724412d333b353fd02e06b236e",
+    "semantic_hash": "729b34724412d333b353fd02e06b236e"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/member/MemberCheckinViewModel.kt": {
+    "mtime": 1794445462.6327252,
+    "seen": 1794448860.0293527,
+    "ast_hash": "99bc7c720f5f2208675cd9f4b2be337a",
+    "semantic_hash": "99bc7c720f5f2208675cd9f4b2be337a"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/member/MemberRootScreen.kt": {
+    "mtime": 1794445462.6339095,
+    "seen": 1794448860.0293527,
+    "ast_hash": "0db3d28fd62746173cb872926222e6e3",
+    "semantic_hash": "0db3d28fd62746173cb872926222e6e3"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/navigation/AppNavGraph.kt": {
+    "mtime": 1794445462.7777357,
+    "seen": 1794448860.0293527,
+    "ast_hash": "cf7adc7e0211b299e712f60186d8fdb5",
+    "semantic_hash": "cf7adc7e0211b299e712f60186d8fdb5"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/navigation/Screen.kt": {
+    "mtime": 1794445462.5203001,
+    "seen": 1794448860.0293527,
+    "ast_hash": "5516d91dfe8c8934847126c3712dbfa3",
+    "semantic_hash": "5516d91dfe8c8934847126c3712dbfa3"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/player/PlayerRootScreen.kt": {
+    "mtime": 1794445462.931814,
+    "seen": 1794448860.0293527,
+    "ast_hash": "76214b3eac80e4c864522e71056800a1",
+    "semantic_hash": "76214b3eac80e4c864522e71056800a1"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/player/PlayerUiState.kt": {
+    "mtime": 1794445462.93281,
+    "seen": 1794448860.0293527,
+    "ast_hash": "8e0ad7870c1f0af6411815149ef619d4",
+    "semantic_hash": "8e0ad7870c1f0af6411815149ef619d4"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/player/PlayerViewModel.kt": {
+    "mtime": 1794445462.93281,
+    "seen": 1794448860.0326242,
+    "ast_hash": "b9352a6661fb83a92593eb241755a24e",
+    "semantic_hash": "b9352a6661fb83a92593eb241755a24e"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/settings/SettingsScreen.kt": {
+    "mtime": 1794445462.7782643,
+    "seen": 1794448860.033055,
+    "ast_hash": "9a57ad7c88f428326b3244ec6fb80ea1",
+    "semantic_hash": "9a57ad7c88f428326b3244ec6fb80ea1"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/settings/SettingsViewModel.kt": {
+    "mtime": 1794445462.779393,
+    "seen": 1794448860.0336113,
+    "ast_hash": "541f05bd145fa4eb6b4a380990432495",
+    "semantic_hash": "541f05bd145fa4eb6b4a380990432495"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/splash/SplashScreen.kt": {
+    "mtime": 1794445462.5234027,
+    "seen": 1794448860.0336113,
+    "ast_hash": "c820a53df49d980630a309de95612c7d",
+    "semantic_hash": "c820a53df49d980630a309de95612c7d"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/theme/Color.kt": {
+    "mtime": 1794445462.6349154,
+    "seen": 1794448860.0336113,
+    "ast_hash": "43021dfbdf3b5d7dae7593b3ffe0f685",
+    "semantic_hash": "43021dfbdf3b5d7dae7593b3ffe0f685"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/theme/Shape.kt": {
+    "mtime": 1794445462.2963932,
+    "seen": 1794448860.0336113,
+    "ast_hash": "0b96e14f173ed3fcb0825079439126f0",
+    "semantic_hash": "0b96e14f173ed3fcb0825079439126f0"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/theme/Spacing.kt": {
+    "mtime": 1794445462.2963932,
+    "seen": 1794448860.0336113,
+    "ast_hash": "87fe96ae2b89b301db5bf518846ee53d",
+    "semantic_hash": "87fe96ae2b89b301db5bf518846ee53d"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/theme/Theme.kt": {
+    "mtime": 1794445462.2973917,
+    "seen": 1794448860.0336113,
+    "ast_hash": "e82f6b219a48a110f15b989ef81869ab",
+    "semantic_hash": "e82f6b219a48a110f15b989ef81869ab"
+  },
+  "app/src/main/java/com/yourname/territorygrid/ui/theme/Type.kt": {
+    "mtime": 1794445462.2973917,
+    "seen": 1794448860.0336113,
+    "ast_hash": "f93462380e1d3c9e32d582d058e04058",
+    "semantic_hash": "f93462380e1d3c9e32d582d058e04058"
+  },
+  "app/src/test/java/com/yourname/territorygrid/data/repository/FakeAuthRepository.kt": {
+    "mtime": 1794445462.5817516,
+    "seen": 1794448860.0336113,
+    "ast_hash": "6a9b5165db10d2173765e8054db2355f",
+    "semantic_hash": "6a9b5165db10d2173765e8054db2355f"
+  },
+  "app/src/test/java/com/yourname/territorygrid/data/repository/FakeCheckinRepository.kt": {
+    "mtime": 1794445462.6359143,
+    "seen": 1794448860.0336113,
+    "ast_hash": "3ee2cfd72e38d178806aad9a98f5071c",
+    "semantic_hash": "3ee2cfd72e38d178806aad9a98f5071c"
+  },
+  "app/src/test/java/com/yourname/territorygrid/data/repository/FakeClueRepository.kt": {
+    "mtime": 1794445462.5827508,
+    "seen": 1794448860.0336113,
+    "ast_hash": "b43335cef39ab25a1458793304c926a0",
+    "semantic_hash": "b43335cef39ab25a1458793304c926a0"
+  },
+  "app/src/test/java/com/yourname/territorygrid/data/repository/FakeGameRepository.kt": {
+    "mtime": 1794445462.6369226,
+    "seen": 1794448860.0336113,
+    "ast_hash": "7a1d2b2ba09603a17dd4ea73744ba4a7",
+    "semantic_hash": "7a1d2b2ba09603a17dd4ea73744ba4a7"
+  },
+  "app/src/test/java/com/yourname/territorygrid/data/repository/FakeTeamRepository.kt": {
+    "mtime": 1794445462.9338088,
+    "seen": 1794448860.0336113,
+    "ast_hash": "dc08161d205b3543dcb0d73407e72aa6",
+    "semantic_hash": "dc08161d205b3543dcb0d73407e72aa6"
+  },
+  "app/src/test/java/com/yourname/territorygrid/data/settings/FakeSettingsManager.kt": {
+    "mtime": 1794445462.780468,
+    "seen": 1794448860.0336113,
+    "ast_hash": "9459eb143d2d15452f1a6db40c27b3a2",
+    "semantic_hash": "9459eb143d2d15452f1a6db40c27b3a2"
+  },
+  "app/src/test/java/com/yourname/territorygrid/domain/usecase/CalculatePointsUseCaseTest.kt": {
+    "mtime": 1794445462.3034258,
+    "seen": 1794448860.0336113,
+    "ast_hash": "cffc837895fdb11e8a09a7de78bcf791",
+    "semantic_hash": "cffc837895fdb11e8a09a7de78bcf791"
+  },
+  "app/src/test/java/com/yourname/territorygrid/ui/admin/AdminViewModelTest.kt": {
+    "mtime": 1794445462.5857582,
+    "seen": 1794448860.0385714,
+    "ast_hash": "1a06b79604002def7bbc7cda1a9f533e",
+    "semantic_hash": "1a06b79604002def7bbc7cda1a9f533e"
+  },
+  "app/src/test/java/com/yourname/territorygrid/ui/auth/LoginViewModelTest.kt": {
+    "mtime": 1794445462.9338088,
+    "seen": 1794448860.0385714,
+    "ast_hash": "609b474078dbf8e33075e637d5acb691",
+    "semantic_hash": "609b474078dbf8e33075e637d5acb691"
+  },
+  "app/src/test/java/com/yourname/territorygrid/ui/member/MemberCheckinViewModelTest.kt": {
+    "mtime": 1794445462.9348102,
+    "seen": 1794448860.0385714,
+    "ast_hash": "49d6d7ad883bbf54f98a57b353478d9b",
+    "semantic_hash": "49d6d7ad883bbf54f98a57b353478d9b"
+  },
+  "app/src/test/java/com/yourname/territorygrid/ui/player/PlayerViewModelTest.kt": {
+    "mtime": 1794445462.686831,
+    "seen": 1794448860.0385714,
+    "ast_hash": "0d98084fcea383660ada976e4d2a7f75",
+    "semantic_hash": "0d98084fcea383660ada976e4d2a7f75"
+  },
+  "app/src/test/java/com/yourname/territorygrid/ui/settings/SettingsViewModelTest.kt": {
+    "mtime": 1794445462.780468,
+    "seen": 1794448860.0385714,
+    "ast_hash": "c8d11a3ba7bf934eb0879ad97af79ca6",
+    "semantic_hash": "c8d11a3ba7bf934eb0879ad97af79ca6"
+  },
+  "build.gradle.kts": {
+    "mtime": 1794445462.3044238,
+    "seen": 1794448860.0401156,
+    "ast_hash": "2c2e9b0c64a7c0d60fce88e5b29b395b",
+    "semantic_hash": "2c2e9b0c64a7c0d60fce88e5b29b395b"
+  },
+  "firebase.json": {
+    "mtime": 1794377430.3929822,
+    "seen": 1794448860.0406034,
+    "ast_hash": "6a7e94c3124e3d2552ee4ec011ae7b1d",
+    "semantic_hash": "6a7e94c3124e3d2552ee4ec011ae7b1d",
+    "ast_empty": true
+  },
+  "firestore-tests/package.json": {
+    "mtime": 1794445462.7319589,
+    "seen": 1794448860.0406034,
+    "ast_hash": "0d8098bff45dc714a655ddc543ac0722",
+    "semantic_hash": "0d8098bff45dc714a655ddc543ac0722"
+  },
+  "firestore-tests/rules.test.js": {
+    "mtime": 1794445462.7324893,
+    "seen": 1794448860.0406034,
+    "ast_hash": "2c9b1e441a8d1f5417fcbcc87fd898dc",
+    "semantic_hash": "2c9b1e441a8d1f5417fcbcc87fd898dc"
+  },
+  "firestore.indexes.json": {
+    "mtime": 1794377450.9552286,
+    "seen": 1794448860.0406034,
+    "ast_hash": "6c1369bcee45fa3baebaaf77f2dc3ae3",
+    "semantic_hash": "6c1369bcee45fa3baebaaf77f2dc3ae3",
+    "ast_empty": true
+  },
+  "gradlew": {
+    "mtime": 1794445462.3091493,
+    "seen": 1794448860.0406034,
+    "ast_hash": "11b6e68c11ad03a73e19f8549170795c",
+    "semantic_hash": "11b6e68c11ad03a73e19f8549170795c"
+  },
+  "package.json": {
+    "mtime": 1794447332.578695,
+    "seen": 1794448860.0406034,
+    "ast_hash": "912bbc105c29d48822436d61b7d554d7",
+    "semantic_hash": "912bbc105c29d48822436d61b7d554d7"
+  },
+  "scripts/build.ps1": {
+    "mtime": 1794445462.3091493,
+    "seen": 1794448860.0406034,
+    "ast_hash": "fe94f522ffe687fea44134c2172e52e4",
+    "semantic_hash": "fe94f522ffe687fea44134c2172e52e4"
+  },
+  "scripts/build.sh": {
+    "mtime": 1794377172.3243227,
+    "seen": 1794448860.0406034,
+    "ast_hash": "23033cc015d7e08ebaceacab64c7562d",
+    "semantic_hash": "23033cc015d7e08ebaceacab64c7562d"
+  },
+  "scripts/install_run.ps1": {
+    "mtime": 1794377182.598045,
+    "seen": 1794448860.0406034,
+    "ast_hash": "56d24775d296f776fbf0237b8eea1cf7",
+    "semantic_hash": "56d24775d296f776fbf0237b8eea1cf7"
+  },
+  "scripts/install_run.sh": {
+    "mtime": 1794377191.8262088,
+    "seen": 1794448860.0406034,
+    "ast_hash": "2e744e42cd5d960a4d27b9c1f247fac3",
+    "semantic_hash": "2e744e42cd5d960a4d27b9c1f247fac3"
+  },
+  "scripts/logs.ps1": {
+    "mtime": 1794377203.1006362,
+    "seen": 1794448860.0406034,
+    "ast_hash": "a7ed2fee2a03f89ebd283fd2bdc97a59",
+    "semantic_hash": "a7ed2fee2a03f89ebd283fd2bdc97a59"
+  },
+  "scripts/logs.sh": {
+    "mtime": 1794377215.6114404,
+    "seen": 1794448860.0406034,
+    "ast_hash": "5242b6b8705778f95d9566319b28c120",
+    "semantic_hash": "5242b6b8705778f95d9566319b28c120"
+  },
+  "scripts/reset_app.ps1": {
+    "mtime": 1794377265.5374906,
+    "seen": 1794448860.0406034,
+    "ast_hash": "699015f036a2a22ecf0eeb61a0a052fe",
+    "semantic_hash": "699015f036a2a22ecf0eeb61a0a052fe"
+  },
+  "scripts/reset_app.sh": {
+    "mtime": 1794377274.324416,
+    "seen": 1794448860.0406034,
+    "ast_hash": "e67d9676548c428ac986e984f9c86808",
+    "semantic_hash": "e67d9676548c428ac986e984f9c86808"
+  },
+  "scripts/run_website.ps1": {
+    "mtime": 1794445462.985174,
+    "seen": 1794448860.0406034,
+    "ast_hash": "a000c95c0b607e11bb296ee9864200ea",
+    "semantic_hash": "a000c95c0b607e11bb296ee9864200ea"
+  },
+  "scripts/run_website.sh": {
+    "mtime": 1794445462.9862797,
+    "seen": 1794448860.0406034,
+    "ast_hash": "be760281b6cc8f392546a0f5d9f94933",
+    "semantic_hash": "be760281b6cc8f392546a0f5d9f94933"
+  },
+  "scripts/shot.ps1": {
+    "mtime": 1794377224.8942478,
+    "seen": 1794448860.0406034,
+    "ast_hash": "043c8c20263e23a6fb62cc297604f493",
+    "semantic_hash": "043c8c20263e23a6fb62cc297604f493"
+  },
+  "scripts/shot.sh": {
+    "mtime": 1794377237.7353632,
+    "seen": 1794448860.0406034,
+    "ast_hash": "aa602f9934406870778c611f280b4b18",
+    "semantic_hash": "aa602f9934406870778c611f280b4b18"
+  },
+  "settings.gradle.kts": {
+    "mtime": 1794445462.310383,
+    "seen": 1794448860.0406034,
+    "ast_hash": "f18ddaad621a07c1a52386a63460a78f",
+    "semantic_hash": "f18ddaad621a07c1a52386a63460a78f"
+  },
+  "vercel.json": {
+    "mtime": 1794447317.8176987,
+    "seen": 1794448860.0406034,
+    "ast_hash": "06719e908c6d721a891e7bce585939b8",
+    "semantic_hash": "06719e908c6d721a891e7bce585939b8"
+  },
+  "web_server/data/territory_grid_mongodb.json": {
+    "mtime": 1794447036.9883611,
+    "seen": 1794448860.0406034,
+    "ast_hash": "c90504ee84096b5a94e4e19d6fbea1a1",
+    "semantic_hash": "c90504ee84096b5a94e4e19d6fbea1a1",
+    "ast_empty": true
+  },
+  "web_server/package.json": {
+    "mtime": 1794445823.324298,
+    "seen": 1794448860.0406034,
+    "ast_hash": "b262d831e1b4f00e61c5809dcd66ae3b",
+    "semantic_hash": "b262d831e1b4f00e61c5809dcd66ae3b"
+  },
+  "web_server/server.js": {
+    "mtime": 1794446230.1500459,
+    "seen": 1794448860.0406034,
+    "ast_hash": "11e58646c845341c0212d854a87ff9c9",
+    "semantic_hash": "11e58646c845341c0212d854a87ff9c9"
+  }
+}
