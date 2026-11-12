@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Territory Grid</string>
+    <string name="title_activity_main">Territory Grid</string>
+    <string name="package_name">com.rec.territorygrid</string>
+    <string name="custom_url_scheme">com.rec.territorygrid</string>
+</resources>

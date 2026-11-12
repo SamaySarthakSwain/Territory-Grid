@@ -1,0 +1,13 @@
+{
+  "appId": "com.rec.territorygrid",
+  "appName": "Territory Grid",
+  "webDir": "public",
+  "server": {
+    "url": "https://territory-grid-delta.vercel.app",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true,
+    "webContentsDebuggingEnabled": true
+  }
+}
