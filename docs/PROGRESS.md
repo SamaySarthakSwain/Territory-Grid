@@ -8,35 +8,35 @@
 - [x] Create helper scripts in `scripts/` (`build`, `install_run`, `logs`, `shot`, `reset_app`) and `docs/DEV_LOOP.md`
 - [x] Produce `docs/DESIGN_SPEC.md` from all PNGs, HTML, and design tokens
 - [x] Produce `docs/ARCHITECTURE.md` with package tree, navigation, UiState, repositories, and edge cases
-- [ ] Present comprehensive plan and receive user approval
+- [x] Present comprehensive plan and receive user approval
 
 ---
 
 ## Phase 1: Foundation
 Branch: `phase-1-foundation`
-- [ ] Version catalog (`gradle/libs.versions.toml`) configuration
-- [ ] Root `build.gradle.kts` and `app/build.gradle.kts` setup with Hilt, Compose, Firebase, Navigation
-- [ ] Application class (`TerritoryGridApp`) with `@HiltAndroidApp`
-- [ ] `MainActivity` with edge-to-edge support and portrait lock
-- [ ] Tactical Dark Theme (`Color.kt`, `Type.kt`, `Shape.kt`, `Spacing.kt`, `Theme.kt`)
-- [ ] Typography bundling (Space Grotesk & Inter) in `res/font`
-- [ ] Core component library with `@Preview`:
-  - [ ] `NeonButton` (Primary, Secondary, Danger with haptic feedback)
-  - [ ] `GlassCard` (Luminescent glassmorphism, chamfered corners, subtle border stroke)
-  - [ ] `GlowingScoreRing` (Animated sweep and numeric counter)
-  - [ ] `HexGridBackground` (Lightweight Canvas, subtle coordinate motion)
-  - [ ] `PlayingCardTile` (Front, back, 3D flip animation)
-  - [ ] `ConeChip` (Red, Yellow, Green with score badge)
-  - [ ] `StatusChip` (Tactical telemetry status indicators)
-  - [ ] `NeonTextField` (Tactical cyber well with focus reticle)
-  - [ ] `TopHudBar` (Status telemetry, battery/wifi, role pill, profile)
-  - [ ] `BottomNavBar` (Hunt, Cards, Rank, Control with cyan neon indicator)
-  - [ ] `OfflineBanner` & `PendingSyncBadge`
-  - [ ] `LoadingOverlay`, `ErrorState`, `EmptyState`
-  - [ ] `ScanlineDivider`
-  - [ ] `ConfirmDialog`
-- [ ] Debug-only `ComponentGalleryScreen`
-- [ ] Build & preview verification (`./gradlew assembleDebug`)
+- [x] Version catalog (`gradle/libs.versions.toml`) configuration
+- [x] Root `build.gradle.kts` and `app/build.gradle.kts` setup with Hilt, Compose, Firebase, Navigation
+- [x] Application class (`TerritoryGridApp`) with `@HiltAndroidApp`
+- [x] `MainActivity` with edge-to-edge support and portrait lock
+- [x] Tactical Dark Theme (`Color.kt`, `Type.kt`, `Shape.kt`, `Spacing.kt`, `Theme.kt`)
+- [x] Typography bundling (Space Grotesk & Inter) in `res/font`
+- [x] Core component library with `@Preview`:
+  - [x] `NeonButton` (Primary, Secondary, Danger with haptic feedback)
+  - [x] `GlassCard` (Luminescent glassmorphism, chamfered corners, subtle border stroke)
+  - [x] `GlowingScoreRing` (Animated sweep and numeric counter)
+  - [x] `HexGridBackground` (Lightweight Canvas, subtle coordinate motion)
+  - [x] `PlayingCardTile` (Front, back, 3D flip animation)
+  - [x] `ConeChip` (Red, Yellow, Green with score badge)
+  - [x] `StatusChip` (Tactical telemetry status indicators)
+  - [x] `NeonTextField` (Tactical cyber well with focus reticle)
+  - [x] `TopHudBar` (Status telemetry, battery/wifi, role pill, profile)
+  - [x] `BottomNavBar` (Hunt, Cards, Rank, Control with cyan neon indicator)
+  - [x] `OfflineBanner` & `PendingSyncBadge`
+  - [x] `LoadingOverlay`, `ErrorState`, `EmptyState`
+  - [x] `ScanlineDivider`
+  - [x] `ConfirmDialog`
+- [x] Debug-only `ComponentGalleryScreen`
+- [x] Build & preview verification (`./gradlew assembleDebug`)
 
 ---
 

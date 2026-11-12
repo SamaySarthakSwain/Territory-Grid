@@ -9,6 +9,8 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+build/
+**/build/
 /captures
 .externalNativeBuild
 .cxx
@@ -18,3 +20,6 @@ shots/
 *.jks
 *.keystore
 keystore.properties
+.kotlin/
+stitch_territory_grid_scavenger_hunt/
+

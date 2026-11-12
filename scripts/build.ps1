@@ -1,6 +1,4 @@
 # scripts/build.ps1
-$ErrorActionPreference = "Stop"
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = Split-Path -Parent $scriptDir
 $logsDir = Join-Path $projectRoot "logs"
@@ -16,18 +14,18 @@ Write-Host "Starting Gradle assembleDebug build..." -ForegroundColor Cyan
 
 $gradlew = Join-Path $projectRoot "gradlew.bat"
 if (-not (Test-Path $gradlew)) {
-    Write-Host "Warning: gradlew.bat not found in $projectRoot yet. Attempting gradle on PATH..." -ForegroundColor Yellow
     $gradlew = "gradle"
 }
 
-try {
-    & $gradlew assembleDebug *>&1 | Tee-Object -FilePath $buildLog
-    Write-Host "`nBuild complete. Showing last 40 lines of build log:" -ForegroundColor Green
-    Get-Content $buildLog -Tail 40
-} catch {
-    Write-Host "Build failed with exception: $_" -ForegroundColor Red
-    if (Test-Path $buildLog) {
-        Get-Content $buildLog -Tail 40
-    }
-    exit 1
+& $gradlew assembleDebug > $buildLog 2>&1
+$exitCode = $LASTEXITCODE
+
+Get-Content $buildLog -Tail 40
+
+if ($exitCode -eq 0) {
+    Write-Host "`nBUILD SUCCESSFUL" -ForegroundColor Green
+    exit 0
+} else {
+    Write-Host "`nBUILD FAILED with exit code $exitCode" -ForegroundColor Red
+    exit $exitCode
 }

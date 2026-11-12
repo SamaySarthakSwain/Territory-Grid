@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Territory Grid</string>
+    <string name="tagline">Real-Time Scavenger Hunt Adventure</string>
+    <string name="explore_hunt_score_win">EXPLORE • HUNT • SCORE • WIN</string>
+
+    <!-- Roles -->
+    <string name="role_admin">ADMIN</string>
+    <string name="role_member">FIELD MARSHAL</string>
+    <string name="role_player">PLAYER</string>
+
+    <!-- Login -->
+    <string name="gateway_header">NODE_AUTH // GATEWAY_01</string>
+    <string name="port_number">PORT 8443</string>
+    <string name="callsign_label">Tactical Callsign / Email</string>
+    <string name="callsign_hint">agent@territorygrid.com</string>
+    <string name="access_key_label">Cryptographic Access Key</string>
+    <string name="access_key_hint">••••••••••••</string>
+    <string name="enter_grid">▶ ENTER THE GRID</string>
+    <string name="fast_deployment">FAST DEPLOYMENT</string>
+    <string name="squad_token_hint">Team Passcode / Squad Token...</string>
+    <string name="join">JOIN</string>
+    <string name="sys_online">SYS.ONLINE // LAT:41.8902 LON:12.4922</string>
+    <string name="grid_active">GRID: ACTIVE</string>
+    <string name="active_teams">ACTIVE TEAMS</string>
+    <string name="field_cones">FIELD CONES</string>
+    <string name="match_timer">MATCH TIMER</string>
+    <string name="security_protocol">ENCRYPTED SECURE CHANNEL V2.4 // AES-GCM 256-BIT</string>
+
+    <!-- Offline Banner & Sync -->
+    <string name="offline_banner">OFFLINE CACHE ACTIVE — Submissions queued locally</string>
+    <string name="pending_sync_badge">%d PENDING</string>
+    <string name="sync_complete">SYNC COMPLETE</string>
+
+    <!-- Admin -->
+    <string name="admin_control_panel">Admin Control Panel</string>
+    <string name="mission_elapsed_time">Mission Elapsed Time</string>
+    <string name="pause_ops">Pause Ops</string>
+    <string name="resume_ops">Resume Ops</string>
+    <string name="reset_grid">Reset Grid</string>
+    <string name="force_global_reshuffle">Force Global Reshuffle</string>
+    <string name="advance_clue_phase">Advance Clue Phase</string>
+    <string name="live_grid_standings">Live Grid Standings</string>
+    <string name="register_team">Register Team</string>
+    <string name="manage_marshals">Manage Field Marshals</string>
+    <string name="teams_registered">Teams Reg</string>
+    <string name="total_points">Total Pts</string>
+    <string name="active_zones">Active Zones</string>
+    <string name="authorize_grid_reset">Authorize Grid Reset?</string>
+    <string name="reset_warning_message">Type RESET to zero all team scores and delete check-in telemetry permanently.</string>
+    <string name="purge_grid">Purge Grid</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Member -->
+    <string name="field_marshal">Field Marshal</string>
+    <string name="checkpoint_log">Checkpoint Log</string>
+    <string name="validate_log_advance">Validate • Log • Advance</string>
+    <string name="grid_zone">Grid Zone</string>
+    <string name="step_team_arrived">01 Team Arrived at Checkpoint</string>
+    <string name="step_cone_verified">02 Cone Color / Beacon Verified</string>
+    <string name="step_player_card">03 Scan Player Card</string>
+    <string name="cone_red">Red</string>
+    <string name="cone_yellow">Yellow</string>
+    <string name="cone_green">Green</string>
+    <string name="pts_plus_10">+10 PTS</string>
+    <string name="pts_plus_12">+12 PTS</string>
+    <string name="pts_plus_15">+15 PTS</string>
+    <string name="points_to_award">Points to be Awarded</string>
+    <string name="transmit_clue">Transmit &amp; Unlock Next Clue</string>
+    <string name="recent_checkpoint_logs">Recent Checkpoint Logs</string>
+    <string name="confirm_submission_title">Confirm Station Transmission</string>
+    <string name="confirm_submission_body">Awarding %1$d PTS (%2$s Cone + %3$s) to %4$s at %5$s.</string>
+    <string name="transmit">Transmit</string>
+
+    <!-- Player -->
+    <string name="player_dashboard">Player Dashboard</string>
+    <string name="score_hud">Score HUD</string>
+    <string name="inventory">Inventory</string>
+    <string name="active_mission_directive">Active Mission Directive</string>
+    <string name="navigate">Navigate</string>
+    <string name="collected_deck_log">Collected Deck Log</string>
+    <string name="pts_unit">PTS</string>
+    <string name="game_paused_banner">GAME PAUSED BY GAME MASTER</string>
+    <string name="game_ended_banner">MISSION COMPLETED</string>
+
+    <!-- Navigation -->
+    <string name="nav_hunt">Hunt</string>
+    <string name="nav_cards">Cards</string>
+    <string name="nav_rank">Rank</string>
+    <string name="nav_control">Control</string>
+    <string name="nav_people">People</string>
+    <string name="nav_clues">Clues</string>
+    <string name="nav_teams">Teams</string>
+</resources>
