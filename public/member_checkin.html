@@ -157,6 +157,26 @@
           </button>
         </div>
 
+        <!-- MANUAL CIPHER CODE ENTRY (Fallback if Optical Scanner/Camera fails) -->
+        <div class="mt-1 pt-2.5 border-t border-outline-variant/30 flex flex-col gap-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono text-gray-200 font-bold uppercase flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px] text-secondary-fixed">pin</span>
+              Manual Cipher Code Entry
+            </span>
+            <span class="text-[10px] font-mono text-gray-400">Fallback if camera scan fails</span>
+          </div>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <input type="text" id="manual-cipher-input" placeholder="e.g. TG-ALPHA-K-8492 or K-8492" class="w-full h-10 bg-surface-container-lowest text-on-surface font-mono text-xs uppercase px-3 rounded-lg border border-primary/30 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition" onkeydown="if(event.key==='Enter') verifyManualCipherCode()">
+            </div>
+            <button onclick="verifyManualCipherCode()" type="button" class="h-10 px-4 rounded-lg bg-secondary-fixed/20 hover:bg-secondary-fixed/30 text-secondary-fixed border border-secondary-fixed/40 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 active:scale-95 transition cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">check_circle</span>
+              <span>Verify Code</span>
+            </button>
+          </div>
+        </div>
+
       </div>
 
       <!-- STEP 1: Select Arrived Team -->
@@ -788,6 +808,81 @@
 
       var mockPayload = 'TG|' + chosenTeamId + '|' + chosenTeamName + '|' + r.num + '|' + r.code + '|' + s + '|' + Math.floor(Math.random() * 9000 + 1000).toString(16).toUpperCase();
       handleDecodedQR(mockPayload);
+    }
+
+    function verifyManualCipherCode() {
+      var input = document.getElementById('manual-cipher-input');
+      var code = (input.value || '').trim().toUpperCase();
+
+      if (!code) {
+        showNotification('Please enter the manual cipher code from the player card.', true);
+        return;
+      }
+
+      var rankCode = 'K';
+      var rankNum = 13;
+      var suitSymbol = '♠';
+      var squadFound = null;
+
+      var ranksMap = {
+        'A': 1, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5,
+        '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+        'J': 11, '11': 11, 'Q': 12, '12': 12, 'K': 13, '13': 13
+      };
+
+      if (code.startsWith('TG|')) {
+        handleDecodedQR(code);
+        input.value = '';
+        return;
+      }
+
+      var tokens = code.split(/[-_\s|]+/);
+      var clean = tokens.filter(function(t) { return t && t !== 'TG'; });
+
+      // Match squad against approved teams
+      var selector = document.getElementById('team-selector');
+      clean.forEach(function(token) {
+        for (var i = 0; i < selector.options.length; i++) {
+          var optText = selector.options[i].text.toUpperCase();
+          if (optText.includes(token)) {
+            selector.selectedIndex = i;
+            squadFound = selector.options[i].text;
+          }
+        }
+        // Match rank
+        if (ranksMap[token] !== undefined) {
+          rankCode = token;
+          rankNum = ranksMap[token];
+        }
+      });
+
+      if (!squadFound && !selector.value) {
+        showNotification('Squad callsign not detected in code. Please select squad in Step 1.', true);
+        return;
+      }
+
+      // Set rank & suit
+      setRank(rankCode, rankNum);
+      setSuit(suitSymbol, 'text-primary');
+
+      // Audio confirmation
+      playCyberBeep();
+
+      // Show Scan Detected Banner
+      var banner = document.getElementById('scan-detected-banner');
+      if (banner) {
+        banner.classList.remove('hidden');
+        var selectedTeamObj = currentTeams.find(function(t) { return t._id === selector.value; });
+        var displaySquad = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : 'Squad Verified';
+        document.getElementById('scan-result-team-name').innerText = displaySquad;
+        document.getElementById('scan-result-rank').innerText = rankCode;
+        document.getElementById('scan-result-suit').innerText = suitSymbol;
+        document.getElementById('scan-result-pts-tag').innerText = '+' + rankNum + ' PTS CARD (MANUAL)';
+      }
+
+      updateSummary();
+      showNotification('✓ Manual Cipher Verified: ' + rankCode + suitSymbol + ' (+' + rankNum + ' PTS)');
+      input.value = '';
     }
 
     function updateCardDisplay() {

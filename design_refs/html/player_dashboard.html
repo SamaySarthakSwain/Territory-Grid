@@ -3,6 +3,31 @@
     body {
       min-height: max(884px, 100dvh);
     }
+    /* 3D Interactive Card Flip Engine */
+    .card-3d-wrap {
+      perspective: 1200px;
+    }
+    .card-3d-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .card-3d-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+    .card-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+    .card-face-back {
+      transform: rotateY(180deg);
+    }
   </style>
   <script src="/vendor/qrcode.min.js"></script>
   <script>
@@ -152,56 +177,153 @@
           </p>
         </div>
 
-        <!-- DYNAMIC HOLOGRAPHIC CIPHER CARD (Eye-Catching Cyber Card with Center QR) -->
+        <!-- INTERACTIVE 3D HOLOGRAPHIC CIPHER CARD (Cyber Deck Art Front + Flipped QR & Manual Code Back) -->
         <div class="pt-3 pb-1 flex flex-col items-center">
-          <div class="relative group select-none transition-transform duration-500 ease-out" style="perspective: 1000px;">
+          <div class="card-3d-wrap relative group select-none cursor-pointer w-[240px] sm:w-[260px] h-[375px] sm:h-[395px]" onclick="toggleCardFlip()">
             
-            <!-- Ambient Card Backing Glow (Dynamically matched to suit: Cyan for ♠/♣, Crimson for ♥/♦) -->
-            <div id="card-ambient-glow" class="absolute -inset-2.5 rounded-3xl bg-[#00e5ff]/25 blur-2xl transition-all duration-700 pointer-events-none"></div>
+            <!-- Dynamic Ambient Backing Blur Glow (Cyan for ♠/♣, Crimson for ♥/♦) -->
+            <div id="card-ambient-glow" class="absolute -inset-3 rounded-3xl bg-[#00e5ff]/25 blur-2xl transition-all duration-700 pointer-events-none"></div>
 
-            <!-- The Cyber Card Body -->
-            <div id="cyber-playing-card" class="relative w-[240px] sm:w-[260px] h-[360px] sm:h-[380px] rounded-2xl bg-gradient-to-b from-[#0b1726] via-[#050b14] to-[#02050a] border-2 border-[#00e5ff]/60 shadow-[0_12px_36px_rgba(0,0,0,0.9),inset_0_0_24px_rgba(0,229,255,0.18)] flex flex-col justify-between p-3.5 overflow-hidden transition-all duration-500">
+            <!-- 3D Card Inner (Flips on click) -->
+            <div id="card-flipper" class="card-3d-inner">
               
-              <!-- Sci-Fi Micro-Circuit & Hexagon Lattice Overlay -->
-              <div class="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#00e5ff_1px,transparent_1px)] [background-size:12px_12px]"></div>
-              <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.04] to-transparent pointer-events-none"></div>
-              
-              <!-- Subtle Holographic Scanner Ray -->
-              <div class="absolute -inset-x-10 top-0 h-[2px] bg-white/20 blur-[1px] opacity-40 pointer-events-none animate-pulse"></div>
+              <!-- ==================== FRONT FACE (Exact Cyber Art from Reference Image) ==================== -->
+              <div id="card-front-face" class="card-face rounded-2xl bg-gradient-to-b from-[#071322] via-[#040a14] to-[#02050c] border-2 border-[#00e5ff] shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_0_25px_rgba(0,229,255,0.2)] p-3.5 flex flex-col justify-between overflow-hidden transition-colors duration-500">
+                
+                <!-- Checkered Carbon Background Mesh -->
+                <div class="absolute inset-0 opacity-25 pointer-events-none bg-[radial-gradient(rgba(0,229,255,0.4)_1px,transparent_1px)] [background-size:8px_8px]"></div>
+                
+                <!-- Inner Glowing Circuit Border -->
+                <div id="inner-border-front" class="absolute inset-2.5 rounded-xl border border-[#00e5ff]/50 shadow-[0_0_15px_rgba(0,229,255,0.25)] pointer-events-none transition-colors duration-500"></div>
 
-              <!-- Top-Left Corner Pip: Card Rank & Suit -->
-              <div class="relative z-10 flex flex-col items-start leading-none pl-1 pt-0.5">
-                <span id="card-rank-top" class="font-black text-2xl tracking-tighter text-[#00e5ff] drop-shadow-[0_0_10px_rgba(0,229,255,0.8)] font-mono">K</span>
-                <span id="card-suit-top" class="text-xl font-bold text-[#00e5ff] drop-shadow-[0_0_10px_rgba(0,229,255,0.8)] mt-0.5">♠</span>
-              </div>
+                <!-- Corner Sci-Fi Circuit Line Accents -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M 22 45 L 22 80 L 38 96" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
+                  <path d="M 238 45 L 238 80 L 222 96" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
+                  <path d="M 22 345 L 22 310 L 38 294" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
+                  <path d="M 238 345 L 238 310 L 222 294" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
+                </svg>
 
-              <!-- Center Centerpiece: Reticle Frame + High-Contrast Scannable QR Code -->
-              <div class="relative z-10 my-auto flex flex-col items-center justify-center">
-                <!-- Cyber Reticle Outer Frame with Glowing Corner Brackets -->
-                <div class="relative p-2.5 rounded-xl bg-black/80 border border-white/10 shadow-[0_0_25px_rgba(0,0,0,0.85)]">
-                  <!-- Reticle Corner HUD Brackets -->
-                  <div id="reticle-tl" class="absolute -top-1 -left-1 w-3.5 h-3.5 border-t-2 border-l-2 border-[#00e5ff] pointer-events-none transition-colors duration-500"></div>
-                  <div id="reticle-tr" class="absolute -top-1 -right-1 w-3.5 h-3.5 border-t-2 border-r-2 border-[#00e5ff] pointer-events-none transition-colors duration-500"></div>
-                  <div id="reticle-bl" class="absolute -bottom-1 -left-1 w-3.5 h-3.5 border-b-2 border-l-2 border-[#00e5ff] pointer-events-none transition-colors duration-500"></div>
-                  <div id="reticle-br" class="absolute -bottom-1 -right-1 w-3.5 h-3.5 border-b-2 border-r-2 border-[#00e5ff] pointer-events-none transition-colors duration-500"></div>
-
-                  <!-- High-Contrast Clean Scannable QR Code Canvas Box -->
-                  <div id="card-qr-container" class="w-[136px] h-[136px] bg-white rounded-lg p-1.5 flex items-center justify-center shadow-inner overflow-hidden">
-                    <!-- Dynamic QR Canvas will be mounted here -->
+                <!-- Top-Left Corner Pip Badge -->
+                <div class="relative z-10 self-start">
+                  <div id="badge-top-left" class="px-2.5 py-1 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.5)] flex items-center gap-1.5 transition-colors duration-500">
+                    <span id="card-rank-top" class="font-black text-xl tracking-tight text-white font-mono leading-none">K</span>
+                    <span id="card-suit-top" class="text-base font-bold text-[#00e5ff] leading-none">♠</span>
                   </div>
                 </div>
 
-                <!-- Sleek Minimal HUD Label (No verbose details as requested) -->
-                <div class="mt-2.5 flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-sm">
-                  <span id="cipher-pulse-dot" class="w-1.5 h-1.5 rounded-full bg-[#00e5ff] animate-ping"></span>
-                  <span class="text-[10px] font-mono tracking-widest text-gray-300 font-semibold uppercase">CIPHER TOKEN â€¢ SHOW TO MARSHAL</span>
+                <!-- Center Holographic Hex Matrix & Reactor Core (Matches User Image) -->
+                <div class="relative z-10 my-auto flex flex-col items-center justify-center w-full px-2">
+                  <!-- Top Honeycomb Hex Cluster -->
+                  <div class="w-full h-16 relative flex items-center justify-center opacity-90 overflow-hidden">
+                    <svg viewBox="0 0 160 70" class="w-full h-full text-[#00e5ff] hex-svg">
+                      <pattern id="hex-grid-pattern-top" width="20" height="17.32" patternUnits="userSpaceOnUse">
+                        <polygon points="10,0 20,5.77 20,17.32 10,23.09 0,17.32 0,5.77" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+                        <circle cx="10" cy="8.66" r="1.5" fill="currentColor" opacity="0.6"/>
+                      </pattern>
+                      <rect width="100%" height="100%" fill="url(#hex-grid-pattern-top)"/>
+                      <!-- Energy nodules in hex -->
+                      <circle cx="55" cy="30" r="3.5" fill="currentColor" class="animate-pulse shadow-[0_0_8px_currentColor]"/>
+                      <circle cx="95" cy="25" r="4.5" fill="currentColor" class="animate-pulse shadow-[0_0_10px_currentColor]"/>
+                      <circle cx="75" cy="50" r="4" fill="currentColor" class="animate-pulse shadow-[0_0_8px_currentColor]"/>
+                      <circle cx="120" cy="40" r="3" fill="currentColor" class="animate-pulse shadow-[0_0_6px_currentColor]"/>
+                    </svg>
+                  </div>
+
+                  <!-- Center Iris Reactor Lens Motif -->
+                  <div class="relative my-0.5 flex items-center justify-center">
+                    <div id="reactor-outer-ring" class="w-14 h-14 rounded-full border-2 border-[#00e5ff] shadow-[0_0_20px_rgba(0,229,255,0.7)] flex items-center justify-center bg-black/60 transition-colors duration-500">
+                      <div id="reactor-inner-ring" class="w-9 h-9 rounded-full border border-[#00e5ff]/70 flex items-center justify-center transition-colors duration-500">
+                        <div id="reactor-pulse-dot" class="w-4 h-4 rounded-full bg-[#00e5ff] shadow-[0_0_10px_#00e5ff] animate-ping opacity-75"></div>
+                        <div class="w-3.5 h-3.5 rounded-full bg-white shadow-[0_0_8px_white] absolute"></div>
+                      </div>
+                    </div>
+                    <!-- Horizontal Tech Flanges -->
+                    <div class="absolute -left-10 w-9 h-[2px] bg-gradient-to-r from-transparent to-[#00e5ff] flange-line"></div>
+                    <div class="absolute -right-10 w-9 h-[2px] bg-gradient-to-l from-transparent to-[#00e5ff] flange-line"></div>
+                  </div>
+
+                  <!-- Bottom Honeycomb Hex Cluster -->
+                  <div class="w-full h-16 relative flex items-center justify-center opacity-90 overflow-hidden">
+                    <svg viewBox="0 0 160 70" class="w-full h-full text-[#00e5ff] hex-svg">
+                      <pattern id="hex-grid-pattern-bot" width="20" height="17.32" patternUnits="userSpaceOnUse">
+                        <polygon points="10,0 20,5.77 20,17.32 10,23.09 0,17.32 0,5.77" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+                        <circle cx="10" cy="8.66" r="1.5" fill="currentColor" opacity="0.6"/>
+                      </pattern>
+                      <rect width="100%" height="100%" fill="url(#hex-grid-pattern-bot)"/>
+                      <!-- Energy nodules in hex -->
+                      <circle cx="65" cy="22" r="4" fill="currentColor" class="animate-pulse shadow-[0_0_8px_currentColor]"/>
+                      <circle cx="95" cy="40" r="4.5" fill="currentColor" class="animate-pulse shadow-[0_0_10px_currentColor]"/>
+                      <circle cx="45" cy="45" r="3" fill="currentColor" class="animate-pulse shadow-[0_0_6px_currentColor]"/>
+                      <circle cx="115" cy="25" r="3.5" fill="currentColor" class="animate-pulse shadow-[0_0_8px_currentColor]"/>
+                    </svg>
+                  </div>
+
+                  <!-- Tap to Reveal QR Prompt -->
+                  <div id="tap-reveal-badge" class="mt-1 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00e5ff]/15 border border-[#00e5ff]/40 shadow-[0_0_12px_rgba(0,229,255,0.2)]">
+                    <span class="material-symbols-outlined text-[14px] text-[#00e5ff] animate-bounce">touch_app</span>
+                    <span class="text-[10px] font-mono tracking-widest text-primary font-bold uppercase">PRESS TO REVEAL QR CIPHER</span>
+                  </div>
                 </div>
+
+                <!-- Bottom-Right Corner Pip Badge (Inverted) -->
+                <div class="relative z-10 self-end rotate-180">
+                  <div id="badge-bot-right" class="px-2.5 py-1 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.5)] flex items-center gap-1.5 transition-colors duration-500">
+                    <span id="card-rank-bot" class="font-black text-xl tracking-tight text-white font-mono leading-none">K</span>
+                    <span id="card-suit-bot" class="text-base font-bold text-[#00e5ff] leading-none">♠</span>
+                  </div>
+                </div>
+
               </div>
 
-              <!-- Bottom-Right Corner Pip: Inverted Rank & Suit -->
-              <div class="relative z-10 flex flex-col items-end leading-none pr-1 pb-0.5 rotate-180">
-                <span id="card-rank-bot" class="font-black text-2xl tracking-tighter text-[#00e5ff] drop-shadow-[0_0_10px_rgba(0,229,255,0.8)] font-mono">K</span>
-                <span id="card-suit-bot" class="text-xl font-bold text-[#00e5ff] drop-shadow-[0_0_10px_rgba(0,229,255,0.8)] mt-0.5">♠</span>
+              <!-- ==================== BACK FACE (QR Code + Manual Fallback Code) ==================== -->
+              <div id="card-back-face" class="card-face card-face-back rounded-2xl bg-gradient-to-b from-[#06121f] via-[#040812] to-[#020408] border-2 border-[#00e5ff] shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_0_25px_rgba(0,229,255,0.2)] p-3.5 flex flex-col justify-between overflow-hidden transition-colors duration-500">
+                
+                <!-- Back Face Header Pip -->
+                <div class="relative z-10 flex items-center justify-between">
+                  <div id="badge-back-top" class="px-2.5 py-1 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] flex items-center gap-1 shadow-sm">
+                    <span id="card-rank-back" class="font-black text-lg text-white font-mono leading-none">K</span>
+                    <span id="card-suit-back" class="text-sm font-bold text-[#00e5ff] leading-none">♠</span>
+                  </div>
+                  <span class="text-[10px] font-mono tracking-widest text-[#00e5ff] font-bold uppercase" id="back-header-label">BEACON CIPHER</span>
+                  <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-300">
+                    <span class="material-symbols-outlined text-[14px]">qr_code_2</span>
+                  </div>
+                </div>
+
+                <!-- Centerpiece: High-Contrast Scannable QR Code -->
+                <div class="relative z-10 my-auto flex flex-col items-center justify-center">
+                  <!-- Reticle Frame with Corner Brackets -->
+                  <div class="relative p-2 rounded-xl bg-black/85 border border-white/15 shadow-[0_0_20px_rgba(0,0,0,0.85)]">
+                    <div id="reticle-back-tl" class="absolute -top-1 -left-1 w-3.5 h-3.5 border-t-2 border-l-2 border-[#00e5ff] pointer-events-none"></div>
+                    <div id="reticle-back-tr" class="absolute -top-1 -right-1 w-3.5 h-3.5 border-t-2 border-r-2 border-[#00e5ff] pointer-events-none"></div>
+                    <div id="reticle-back-bl" class="absolute -bottom-1 -left-1 w-3.5 h-3.5 border-b-2 border-l-2 border-[#00e5ff] pointer-events-none"></div>
+                    <div id="reticle-back-br" class="absolute -bottom-1 -right-1 w-3.5 h-3.5 border-b-2 border-r-2 border-[#00e5ff] pointer-events-none"></div>
+
+                    <!-- Clean QR Canvas -->
+                    <div id="card-qr-container" class="w-[130px] h-[130px] bg-white rounded-lg p-1.5 flex items-center justify-center shadow-inner overflow-hidden">
+                      <!-- Dynamically rendered QR code -->
+                    </div>
+                  </div>
+
+                  <!-- MANUAL ENTRY CIPHER CODE (Directly under the QR code as requested!) -->
+                  <div class="mt-2.5 flex flex-col items-center w-full px-2">
+                    <span class="text-[9px] font-mono tracking-widest text-gray-400 uppercase font-semibold">MANUAL ENTRY CODE</span>
+                    <div class="mt-1 px-3 py-1 rounded-lg bg-[#07192c] border border-primary/50 shadow-[0_0_12px_rgba(0,229,255,0.25)] flex items-center gap-1.5 max-w-full">
+                      <span class="material-symbols-outlined text-[15px] text-primary">key</span>
+                      <span id="manual-cipher-code" class="font-mono text-xs sm:text-sm font-black tracking-widest text-white select-all">TG-ALPHA-K-7842</span>
+                    </div>
+                    <span class="text-[8px] font-mono text-gray-400 mt-0.5 text-center">If camera scanner fails, Marshal enters this code</span>
+                  </div>
+                </div>
+
+                <!-- Back Face Footer Hint -->
+                <div class="relative z-10 flex items-center justify-center pb-0.5">
+                  <span class="text-[10px] font-mono text-gray-400 flex items-center gap-1 hover:text-white transition">
+                    <span class="material-symbols-outlined text-[13px]">replay</span> Tap card to flip back
+                  </span>
+                </div>
+
               </div>
 
             </div>
@@ -303,6 +425,19 @@
     ];
 
     var activeCipherCard = null;
+    var isCardFlipped = false;
+
+    function toggleCardFlip() {
+      isCardFlipped = !isCardFlipped;
+      var flipper = document.getElementById('card-flipper');
+      if (flipper) {
+        if (isCardFlipped) {
+          flipper.classList.add('is-flipped');
+        } else {
+          flipper.classList.remove('is-flipped');
+        }
+      }
+    }
 
     function generateRandomCipherCard() {
       var r = CARD_RANKS[Math.floor(Math.random() * CARD_RANKS.length)];
@@ -318,19 +453,15 @@
     }
 
     function rotateCardCipher(animate) {
-      var cardEl = document.getElementById('cyber-playing-card');
-      if (!cardEl) return;
-
       activeCipherCard = generateRandomCipherCard();
 
-      if (animate) {
-        // Smooth 3D flip animation
-        cardEl.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s ease';
-        cardEl.style.transform = 'perspective(800px) rotateY(90deg) scale(0.96)';
-
+      var flipper = document.getElementById('card-flipper');
+      if (animate && flipper) {
+        // Subtle cyber shimmer during silent 30s rotation
+        flipper.style.filter = 'brightness(1.35) drop-shadow(0 0 16px rgba(0,229,255,0.7))';
         setTimeout(function() {
           applyCardVisuals(activeCipherCard);
-          cardEl.style.transform = 'perspective(800px) rotateY(0deg) scale(1)';
+          flipper.style.filter = 'none';
         }, 220);
       } else {
         applyCardVisuals(activeCipherCard);
@@ -343,61 +474,102 @@
       var suitTop = document.getElementById('card-suit-top');
       var rankBot = document.getElementById('card-rank-bot');
       var suitBot = document.getElementById('card-suit-bot');
-      var cardEl = document.getElementById('cyber-playing-card');
+      var rankBack = document.getElementById('card-rank-back');
+      var suitBack = document.getElementById('card-suit-back');
+
+      var frontCard = document.getElementById('card-front-face');
+      var backCard = document.getElementById('card-back-face');
       var glowEl = document.getElementById('card-ambient-glow');
       var qrContainer = document.getElementById('card-qr-container');
+      var manualCodeEl = document.getElementById('manual-cipher-code');
 
-      if (!rankTop || !cardEl || !qrContainer) return;
+      if (!rankTop || !frontCard || !backCard || !qrContainer) return;
 
       var color = card.isRed ? '#ff2a6d' : '#00e5ff';
       var glowColor = card.isRed ? 'rgba(255, 42, 109, 0.35)' : 'rgba(0, 229, 255, 0.35)';
 
+      // Corner pips: Rank and Suit
       rankTop.innerText = card.code;
-      rankTop.style.color = color;
-      rankTop.style.textShadow = '0 0 10px ' + glowColor;
+      rankBot.innerText = card.code;
+      if (rankBack) rankBack.innerText = card.code;
 
       suitTop.innerText = card.suit;
-      suitTop.style.color = color;
-      suitTop.style.textShadow = '0 0 10px ' + glowColor;
-
-      rankBot.innerText = card.code;
-      rankBot.style.color = color;
-      rankBot.style.textShadow = '0 0 10px ' + glowColor;
-
       suitBot.innerText = card.suit;
+      if (suitBack) suitBack.innerText = card.suit;
+
+      suitTop.style.color = color;
       suitBot.style.color = color;
-      suitBot.style.textShadow = '0 0 10px ' + glowColor;
+      if (suitBack) suitBack.style.color = color;
 
-      cardEl.style.borderColor = color;
-      cardEl.style.boxShadow = '0 12px 36px rgba(0,0,0,0.9), inset 0 0 24px ' + glowColor;
-      glowEl.style.backgroundColor = color;
+      // Badges
+      var bTop = document.getElementById('badge-top-left');
+      var bBot = document.getElementById('badge-bot-right');
+      var bBack = document.getElementById('badge-back-top');
+      if (bTop) bTop.style.borderColor = color;
+      if (bBot) bBot.style.borderColor = color;
+      if (bBack) bBack.style.borderColor = color;
 
-      ['reticle-tl', 'reticle-tr', 'reticle-bl', 'reticle-br'].forEach(function(id) {
+      // Card outer borders and inner glow
+      frontCard.style.borderColor = color;
+      frontCard.style.boxShadow = '0 12px 40px rgba(0,0,0,0.95), inset 0 0 25px ' + glowColor;
+
+      backCard.style.borderColor = color;
+      backCard.style.boxShadow = '0 12px 40px rgba(0,0,0,0.95), inset 0 0 25px ' + glowColor;
+
+      if (glowEl) glowEl.style.backgroundColor = color;
+
+      var innerBorder = document.getElementById('inner-border-front');
+      if (innerBorder) {
+        innerBorder.style.borderColor = color;
+        innerBorder.style.boxShadow = '0 0 15px ' + glowColor;
+      }
+
+      var reactorOuter = document.getElementById('reactor-outer-ring');
+      var reactorInner = document.getElementById('reactor-inner-ring');
+      var reactorDot = document.getElementById('reactor-pulse-dot');
+      if (reactorOuter) reactorOuter.style.borderColor = color;
+      if (reactorInner) reactorInner.style.borderColor = color;
+      if (reactorDot) reactorDot.style.backgroundColor = color;
+
+      // Reticle Brackets on Back Face
+      ['reticle-back-tl', 'reticle-back-tr', 'reticle-back-bl', 'reticle-back-br'].forEach(function(id) {
         var el = document.getElementById(id);
         if (el) el.style.borderColor = color;
       });
 
-      var dot = document.getElementById('cipher-pulse-dot');
-      if (dot) dot.style.backgroundColor = color;
+      // Circuit Strokes & Hex SVGs
+      document.querySelectorAll('.flange-line').forEach(function(el) {
+        el.style.backgroundColor = color;
+      });
+      document.querySelectorAll('.circuit-stroke').forEach(function(el) {
+        el.setAttribute('stroke', color);
+      });
+      document.querySelectorAll('.hex-svg').forEach(function(el) {
+        el.style.color = color;
+      });
 
-      // QR Code Payload: TG|teamId|teamName|rankNumber|rankCode|suit|token
+      // Generate Manual Code: TG-{SQUAD}-{RANK}-{TOKEN}
       var teamId = (currentUser && currentUser.teamId) ? currentUser.teamId : (currentMyTeam ? currentMyTeam._id : 'team_demo');
-      var teamName = (currentUser && currentUser.callsign) ? currentUser.callsign : (currentMyTeam ? (currentMyTeam.name || currentMyTeam.callsign) : 'Squad');
+      var squadCallsign = (currentUser && currentUser.callsign) ? currentUser.callsign.toUpperCase() : (currentMyTeam ? (currentMyTeam.callsign || currentMyTeam.name || 'SQUAD').toUpperCase() : 'SQUAD');
+      
+      var manualCode = 'TG-' + squadCallsign + '-' + card.code + '-' + card.token;
+      if (manualCodeEl) manualCodeEl.innerText = manualCode;
 
-      var qrPayload = 'TG|' + teamId + '|' + teamName + '|' + card.rank + '|' + card.code + '|' + card.suit + '|' + card.token;
+      // QR Code Payload: TG|teamId|squadCallsign|rankNumber|rankCode|suit|token
+      var qrPayload = 'TG|' + teamId + '|' + squadCallsign + '|' + card.rank + '|' + card.code + '|' + card.suit + '|' + card.token;
 
       qrContainer.innerHTML = '';
       if (typeof QRCode !== 'undefined') {
         new QRCode(qrContainer, {
           text: qrPayload,
-          width: 124,
-          height: 124,
+          width: 120,
+          height: 120,
           colorDark: '#02050a',
           colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.M
         });
       } else {
-        qrContainer.innerHTML = '<div class="text-[10px] font-mono text-center text-gray-800 font-bold p-1">CIPHER TOKEN<br><span class="text-xs font-black">' + card.code + card.suit + '</span><br>' + card.token + '</div>';
+        qrContainer.innerHTML = '<div class="text-[10px] font-mono text-center text-gray-800 font-bold p-1">CIPHER KEY<br><span class="text-xs font-black">' + card.code + card.suit + '</span><br>' + card.token + '</div>';
       }
     }
 
