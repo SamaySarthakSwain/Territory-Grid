@@ -1,0 +1,92 @@
+{
+  "users": [
+    {
+      "_id": "user_admin_samay",
+      "callsign": "samay",
+      "name": "Game Master Samay",
+      "role": "ADMIN",
+      "password": "samay",
+      "isApproved": true,
+      "createdAt": "2026-11-12T00:00:00.000Z"
+    }
+  ],
+  "teams": [],
+  "clues": [
+    {
+      "_id": "clue_01",
+      "text": "Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!",
+      "zoneId": "ZONE_01",
+      "zoneLabel": "Sector A: Library Arch"
+    },
+    {
+      "_id": "clue_02",
+      "text": "Search the courtyard perimeter behind the ancient bronze solar obelisk.",
+      "zoneId": "ZONE_02",
+      "zoneLabel": "Sector B: Solar Obelisk"
+    },
+    {
+      "_id": "clue_03",
+      "text": "Ascend the terrace staircase overlooking the historic clocktower.",
+      "zoneId": "ZONE_03",
+      "zoneLabel": "Sector C: Clocktower Terrace"
+    },
+    {
+      "_id": "clue_04",
+      "text": "Investigate the botanical garden glasshouse south perimeter.",
+      "zoneId": "ZONE_04",
+      "zoneLabel": "Sector D: Glasshouse Botanical"
+    },
+    {
+      "_id": "clue_05",
+      "text": "Cross the pedestrian skybridge connecting science hall 1 & 2.",
+      "zoneId": "ZONE_05",
+      "zoneLabel": "Sector E: Skybridge Concourse"
+    },
+    {
+      "_id": "clue_06",
+      "text": "Look beneath the concrete amphitheater canopy seating.",
+      "zoneId": "ZONE_06",
+      "zoneLabel": "Sector F: Amphitheater"
+    },
+    {
+      "_id": "clue_07",
+      "text": "Find the water fountain basin near the science auditorium.",
+      "zoneId": "ZONE_07",
+      "zoneLabel": "Sector G: Science Basin"
+    },
+    {
+      "_id": "clue_08",
+      "text": "Check the shaded colonnade behind student center pavilion.",
+      "zoneId": "ZONE_08",
+      "zoneLabel": "Sector H: Student Pavilion"
+    },
+    {
+      "_id": "clue_09",
+      "text": "Locate the red telecom antenna pylon on north concourse.",
+      "zoneId": "ZONE_09",
+      "zoneLabel": "Sector I: North Telecom Pylon"
+    },
+    {
+      "_id": "clue_10",
+      "text": "Scan the perimeter fence surrounding the athletic turf field.",
+      "zoneId": "ZONE_10",
+      "zoneLabel": "Sector J: Turf Perimeter"
+    }
+  ],
+  "checkins": [],
+  "gameState": {
+    "status": "LOBBY",
+    "startedAt": null,
+    "endedAt": null,
+    "pausedAt": null,
+    "totalPausedMs": 0
+  },
+  "system_logs": [
+    {
+      "_id": "log_init",
+      "action": "SYSTEM_INIT",
+      "details": "Territory Grid Club Fest Database initialized. Game Master Samay ready.",
+      "timestamp": "2026-11-12T00:00:00.000Z"
+    }
+  ]
+}

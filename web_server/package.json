@@ -1,0 +1,17 @@
+{
+  "name": "territory-grid-server",
+  "version": "1.0.0",
+  "description": "Territory Grid Real-Time Scavenger Hunt MongoDB Backend & Web Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "scavenger-hunt",
+    "territory-grid",
+    "mongodb",
+    "real-time"
+  ],
+  "author": "Samay Sarthak Swain",
+  "license": "MIT"
+}

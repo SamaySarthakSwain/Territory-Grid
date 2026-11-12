@@ -1,281 +1,679 @@
-<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "secondary-fixed": "#ffd9e3", "on-secondary-fixed": "#3e001e", "primary": "#c3f5ff", "secondary-container": "#e1037d", "primary-fixed-dim": "#00daf3", "surface": "#0f131d", "on-primary-container": "#00626e", "on-tertiary-fixed": "#022100", "secondary-fixed-dim": "#ffb0c9", "surface-container-low": "#171c25", "surface-container-highest": "#31353f", "on-secondary-fixed-variant": "#8e004c", "on-primary": "#00363d", "primary-fixed": "#9cf0ff", "surface-variant": "#31353f", "on-secondary": "#640034", "on-primary-fixed-variant": "#004f58", "primary-container": "#00e5ff", "background": "#0f131d", "on-background": "#dfe2f0", "on-primary-fixed": "#001f24", "tertiary-container": "#2cf100", "inverse-primary": "#006875", "surface-container-high": "#262a34", "tertiary": "#baffa2", "on-tertiary": "#053900", "on-secondary-container": "#fffbff", "error-container": "#93000a", "on-surface": "#dfe2f0", "on-surface-variant": "#bac9cc", "inverse-on-surface": "#2c303b", "surface-bright": "#353944", "outline-variant": "#3b494c", "on-error-container": "#ffdad6", "secondary": "#ffb0c9", "outline": "#849396", "surface-container": "#1b2029", "inverse-surface": "#dfe2f0", "on-tertiary-container": "#0e6800", "surface-tint": "#00daf3", "on-error": "#690005", "error": "#ffb4ab", "surface-container-lowest": "#0a0e17", "on-tertiary-fixed-variant": "#095300", "tertiary-fixed-dim": "#2ae500", "tertiary-fixed": "#79ff5b", "surface-dim": "#0f131d" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "gutter": "1rem", "space-md": "1rem", "space-sm": "0.5rem", "space-xl": "2rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "margin": "1rem" }, fontFamily: { "headline-md": ["Space Grotesk"], "body-md": ["Inter"], "body-lg": ["Inter"], "headline-sm": ["Space Grotesk"], "label-lg": ["Space Grotesk"], "label-md": ["Space Grotesk"], "headline-xl": ["Space Grotesk"], "body-sm": ["Inter"], "label-sm": ["Space Grotesk"], "headline-xl-mobile": ["Space Grotesk"], "headline-lg": ["Space Grotesk"] }, fontSize: { "headline-md": ["22px", { lineHeight: "28px", letterSpacing: "0.01em", fontWeight: "600" }], "body-md": ["14px", { lineHeight: "20px", letterSpacing: "0em", fontWeight: "400" }], "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "0em", fontWeight: "400" }], "headline-sm": ["18px", { lineHeight: "24px", letterSpacing: "0.02em", fontWeight: "600" }], "label-lg": ["14px", { lineHeight: "18px", letterSpacing: "0.08em", fontWeight: "700" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.1em", fontWeight: "600" }], "headline-xl": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "700" }], "body-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "400" }], "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.12em", fontWeight: "600" }], "headline-xl-mobile": ["30px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "700" }], "headline-lg": ["28px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;background-color:#0f131d;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Territory Grid // Admin Command Terminal & MongoDB Manager</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#070B14",
+            "surface-low": "#0C1220",
+            "surface-card": "#111A2E",
+            "surface-high": "#19243C",
+            "surface-border": "rgba(0, 240, 255, 0.25)",
+            cyan: "#00F0FF",
+            magenta: "#FF0055",
+            green: "#00FF88",
+            yellow: "#FFB800",
+            amber: "#FFD600",
+            error: "#FF4D4D"
+          },
+          fontFamily: {
+            headline: ["Space Grotesk", "sans-serif"],
+            body: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
     body {
-      min-height: max(884px, 100dvh);
+      background-color: #070B14;
+      color: #DFE2F0;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    .hex-bg {
+      background-image: radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .neon-card {
+      background: rgba(17, 26, 46, 0.85);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(0, 240, 255, 0.05);
+    }
+    .json-code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 11px;
+      line-height: 1.5;
     }
   </style>
-  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,229,255,0.08)] pt-safe"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Territory Grid Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrBzgMT_rz5cfiPGGPLEnK_ourwFTlz2hn-iaheybDqfIUyxn-MJUYQX3C_hDmj05IY-jdhJVUUfxsMHmtOFKhzrliw2tBc6k7ZsWy4ybtgyLB9shs4C_rgrM-ShNMoeKjcVyarg0BBrlbHFG1DDbWdCaexOOnNgG5lcEW5q7agl-oAlYBp51s0vTVMwyZah3wSMImZBrYsWexDu77Cq9GE7Eh1mTAINM2StVbluXYgG"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-wider uppercase leading-none drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">Territory Grid</span><div class="flex items-center gap-space-xs mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Admin Control Panel</span></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-space-xs bg-surface-container-high px-space-sm py-0.5 rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span><span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Marshal</span></div><div class="flex items-center gap-1 text-on-surface-variant px-1"><span class="material-symbols-outlined text-[16px] text-tertiary">wifi</span><span class="material-symbols-outlined text-[16px] text-primary-container">battery_charging_full</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-20 bg-surface min-h-screen"><div class="flex flex-col w-full px-gutter pb-6 gap-space-md">
-<!-- Top Command HUD & Master Tactical Timer -->
-<section class="relative w-full rounded-xl bg-surface-container-high/70 backdrop-blur-xl p-space-md shadow-[0_8px_30px_rgba(0,0,0,0.6)] overflow-hidden">
-<!-- Cybernetic Ambient Glow & Scan Lines -->
-<div class="absolute -top-12 -left-12 w-40 h-40 bg-primary-container/10 rounded-full blur-3xl pointer-events-none"></div>
-<div class="absolute -bottom-10 -right-10 w-40 h-40 bg-secondary-container/15 rounded-full blur-3xl pointer-events-none"></div>
-<div class="relative z-10 flex flex-col items-center text-center">
-<!-- Status Badge -->
-<div class="inline-flex items-center gap-2 bg-surface-container-lowest/80 px-3 py-1 rounded-full shadow-inner">
-<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container shadow-[0_0_10px_#2cf100] animate-ping"></span>
-<span class="font-label-sm text-label-sm uppercase tracking-widest text-tertiary font-bold">Game is LIVE!</span>
-<span class="text-on-surface-variant font-label-sm">• Zone Alpha</span>
-</div>
-<!-- Tactical Digital Timer -->
-<div class="my-space-sm flex flex-col items-center">
-<div class="flex items-center gap-1.5 text-on-surface-variant">
-<span class="material-symbols-outlined text-[18px] text-primary-container">timer</span>
-<span class="font-label-sm text-label-sm tracking-widest uppercase">Mission Elapsed Time</span>
-</div>
-<div class="font-headline-xl-mobile text-headline-xl-mobile font-bold tracking-wider text-primary drop-shadow-[0_0_16px_rgba(0,229,255,0.7)] mt-0.5" id="mission-clock">00:51:24</div>
-</div>
-<!-- Quick Control Actions -->
-<div class="grid grid-cols-2 gap-space-sm w-full mt-space-xs">
-<button class="group relative flex items-center justify-center gap-2 bg-surface-container-lowest/80 hover:bg-surface-container-highest px-3 py-2.5 rounded-lg shadow-md active:scale-95 transition-all" id="btn-pause" type="button">
-<span class="material-symbols-outlined text-[18px] text-yellow-400 group-hover:scale-110 transition-transform">pause_circle</span>
-<span class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Pause Ops</span>
-</button>
-<button class="group relative flex items-center justify-center gap-2 bg-error-container/20 hover:bg-error-container/40 px-3 py-2.5 rounded-lg shadow-md active:scale-95 transition-all" id="btn-reset" type="button">
-<span class="material-symbols-outlined text-[18px] text-error group-hover:rotate-45 transition-transform">restart_alt</span>
-<span class="font-label-md text-label-md text-error uppercase tracking-wider">Reset Grid</span>
-</button>
-</div><div class="w-full mt-space-md pt-space-sm border-t border-surface-variant/40 flex flex-col gap-2"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#ffb0c9] animate-pulse"></span><span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">Instant 1-Tap Cipher Override</span></div><span class="font-label-sm text-label-sm text-on-surface-variant">Sync: 30s Dynamic</span></div><button class="group relative w-full flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-secondary-container/20 via-surface-container-high/90 to-primary-container/20 border border-secondary/30 hover:border-secondary shadow-[0_0_16px_rgba(225,3,125,0.25)] hover:shadow-[0_0_24px_rgba(225,3,125,0.45)] active:scale-[0.98] transition-all text-left" id="btn-global-reshuffle" type="button"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-lg bg-secondary-container/30 border border-secondary/40 flex items-center justify-center text-secondary group-hover:scale-110 group-hover:rotate-180 transition-all duration-300 shadow-[0_0_10px_rgba(225,3,125,0.5)]"><span class="material-symbols-outlined text-[22px]">shuffle</span></div><div class="flex flex-col"><div class="flex items-center gap-2"><span class="font-headline-sm text-headline-sm text-on-surface font-bold uppercase tracking-wider leading-tight group-hover:text-secondary transition-colors">Force Global Reshuffle</span><span class="material-symbols-outlined text-[16px] text-primary-container animate-spin">sync</span></div><span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-snug">Instantly resets &amp; reshuffles 30s dynamic card ciphers for all 8 active teams simultaneously</span></div></div><div class="flex items-center justify-center pl-2"><span class="material-symbols-outlined text-[22px] text-secondary group-hover:translate-x-0.5 transition-transform">bolt</span></div></button><div class="flex items-center justify-between px-1 font-label-sm text-label-sm text-on-surface-variant"><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-tertiary">sync_saved_locally</span><span>Last Global Reshuffle: Auto (30s sync)</span></span><span class="text-primary-container font-mono text-[11px]">CIPHER-ID #88A-LIVE</span></div></div>
-</div>
-</section>
-<!-- Key Metrics Telemetry Grid (3 Stat Pods) -->
-<section class="grid grid-cols-3 gap-space-sm w-full">
-<!-- Pod 1 -->
-<div class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-container/80 backdrop-blur-md shadow-md text-center">
-<div class="w-8 h-8 rounded-full bg-primary-container/10 flex items-center justify-center mb-1">
-<span class="material-symbols-outlined text-primary-container text-[18px]">groups</span>
-</div>
-<span class="font-headline-sm text-headline-sm text-on-surface leading-tight font-bold">8</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-0.5">Teams Reg</span>
-</div>
-<!-- Pod 2 -->
-<div class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-container/80 backdrop-blur-md shadow-md text-center">
-<div class="w-8 h-8 rounded-full bg-tertiary-container/10 flex items-center justify-center mb-1">
-<span class="material-symbols-outlined text-tertiary text-[18px]">bolt</span>
-</div>
-<span class="font-headline-sm text-headline-sm text-tertiary leading-tight font-bold">1,286</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-0.5">Total Pts</span>
-</div>
-<!-- Pod 3 -->
-<div class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-container/80 backdrop-blur-md shadow-md text-center">
-<div class="w-8 h-8 rounded-full bg-secondary-container/15 flex items-center justify-center mb-1">
-<span class="material-symbols-outlined text-secondary text-[18px]">share_location</span>
-</div>
-<span class="font-headline-sm text-headline-sm text-on-surface leading-tight font-bold">3 <span class="font-label-sm text-label-sm text-on-surface-variant">/ 4</span></span>
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-0.5">Active Zones</span>
-</div>
-</section>
-<!-- Live Field Leaderboard Section -->
-<section class="flex flex-col w-full rounded-xl bg-surface-container/60 backdrop-blur-xl p-space-md shadow-lg">
-<div class="flex items-center justify-between pb-space-sm">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary-container text-[20px]">military_tech</span>
-<h2 class="font-headline-sm text-headline-sm text-on-surface uppercase tracking-wide">Live Grid Standings</h2>
-</div>
-<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
-<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
-<span>Telemetry Realtime</span>
-</div>
-</div>
-<!-- Leaderboard Stack -->
-<div class="flex flex-col gap-2.5 mt-space-xs">
-<!-- Rank 1 -->
-<div class="flex flex-col bg-surface-container-high/80 rounded-lg p-space-sm shadow-md transition-all hover:bg-surface-container-high">
-<div class="flex items-center justify-between text-body-md font-body-md">
-<div class="flex items-center gap-2.5 min-w-0">
-<span class="w-6 h-6 rounded-full bg-amber-400 text-surface-container-lowest font-label-md text-label-md flex items-center justify-center font-bold shadow-[0_0_10px_rgba(251,191,36,0.6)]">1</span>
-<span class="font-label-lg text-label-lg text-on-surface font-bold truncate">Team Explorers</span>
-<span class="material-symbols-outlined text-amber-400 text-[16px]">stars</span>
-</div>
-<span class="font-headline-sm text-headline-sm text-primary font-bold">342 <span class="font-label-sm text-label-sm text-on-surface-variant">PTS</span></span>
-</div>
-<div class="w-full h-1.5 bg-surface-container-lowest rounded-full mt-2 overflow-hidden">
-<div class="h-full bg-gradient-to-r from-primary via-primary-container to-tertiary-container rounded-full shadow-[0_0_8px_#00daf3]" style="width: 100%;"></div>
-</div>
-</div>
-<!-- Rank 2 -->
-<div class="flex flex-col bg-surface-container-high/80 rounded-lg p-space-sm shadow-md transition-all hover:bg-surface-container-high">
-<div class="flex items-center justify-between text-body-md font-body-md">
-<div class="flex items-center gap-2.5 min-w-0">
-<span class="w-6 h-6 rounded-full bg-slate-300 text-surface-container-lowest font-label-md text-label-md flex items-center justify-center font-bold">2</span>
-<span class="font-label-lg text-label-lg text-on-surface font-bold truncate">Team Titans</span>
-</div>
-<span class="font-headline-sm text-headline-sm text-primary font-bold">318 <span class="font-label-sm text-label-sm text-on-surface-variant">PTS</span></span>
-</div>
-<div class="w-full h-1.5 bg-surface-container-lowest rounded-full mt-2 overflow-hidden">
-<div class="h-full bg-primary-container rounded-full" style="width: 93%;"></div>
-</div>
-</div>
-<!-- Rank 3 -->
-<div class="flex flex-col bg-surface-container-high/80 rounded-lg p-space-sm shadow-md transition-all hover:bg-surface-container-high">
-<div class="flex items-center justify-between text-body-md font-body-md">
-<div class="flex items-center gap-2.5 min-w-0">
-<span class="w-6 h-6 rounded-full bg-amber-700 text-white font-label-md text-label-md flex items-center justify-center font-bold">3</span>
-<span class="font-label-lg text-label-lg text-on-surface font-bold truncate">Dream Squad</span>
-</div>
-<span class="font-headline-sm text-headline-sm text-primary font-bold">295 <span class="font-label-sm text-label-sm text-on-surface-variant">PTS</span></span>
-</div>
-<div class="w-full h-1.5 bg-surface-container-lowest rounded-full mt-2 overflow-hidden">
-<div class="h-full bg-primary-fixed-dim rounded-full" style="width: 86%;"></div>
-</div>
-</div>
-<!-- Rank 4 -->
-<div class="flex flex-col bg-surface-container-high/40 rounded-lg p-space-sm shadow-sm transition-all hover:bg-surface-container-high">
-<div class="flex items-center justify-between text-body-md font-body-md">
-<div class="flex items-center gap-2.5 min-w-0">
-<span class="w-6 h-6 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md flex items-center justify-center font-bold">4</span>
-<span class="font-label-md text-label-md text-on-surface font-semibold truncate">Innovators</span>
-</div>
-<span class="font-headline-sm text-headline-sm text-on-surface font-bold">271 <span class="font-label-sm text-label-sm text-on-surface-variant">PTS</span></span>
-</div>
-<div class="w-full h-1.5 bg-surface-container-lowest rounded-full mt-2 overflow-hidden">
-<div class="h-full bg-surface-tint/60 rounded-full" style="width: 79%;"></div>
-</div>
-</div>
-<!-- Rank 5 -->
-<div class="flex flex-col bg-surface-container-high/40 rounded-lg p-space-sm shadow-sm transition-all hover:bg-surface-container-high">
-<div class="flex items-center justify-between text-body-md font-body-md">
-<div class="flex items-center gap-2.5 min-w-0">
-<span class="w-6 h-6 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md flex items-center justify-center font-bold">5</span>
-<span class="font-label-md text-label-md text-on-surface font-semibold truncate">Code Warriors</span>
-</div>
-<span class="font-headline-sm text-headline-sm text-on-surface font-bold">248 <span class="font-label-sm text-label-sm text-on-surface-variant">PTS</span></span>
-</div>
-<div class="w-full h-1.5 bg-surface-container-lowest rounded-full mt-2 overflow-hidden">
-<div class="h-full bg-surface-tint/40 rounded-full" style="width: 72%;"></div>
-</div>
-</div>
-</div>
-</section>
-<!-- Interactive Administration Deck -->
-<section class="grid grid-cols-2 gap-space-sm w-full">
-<!-- Register Squad Card -->
-<div class="flex flex-col justify-between p-space-sm rounded-xl bg-surface-container/70 backdrop-blur-md shadow-md">
-<div class="flex items-center justify-between">
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold">Squad Sync</span>
-<span class="material-symbols-outlined text-primary-container text-[18px]">qr_code_scanner</span>
-</div>
-<div class="my-space-sm">
-<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold leading-tight">Register Team</h3>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Issue tracker badge</p>
-</div>
-<button class="w-full flex items-center justify-center gap-1.5 bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container text-primary font-label-md text-label-md py-2 rounded-lg transition-colors shadow" type="button">
-<span class="material-symbols-outlined text-[16px]">person_add</span>
-<span>Add Team</span>
-</button>
-</div>
-<!-- Marshals Status Card -->
-<div class="flex flex-col justify-between p-space-sm rounded-xl bg-surface-container/70 backdrop-blur-md shadow-md">
-<div class="flex items-center justify-between">
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold">Field Agents</span>
-<span class="flex h-2 w-2 relative">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary-container"></span>
-</span>
-</div>
-<div class="my-space-sm">
-<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold leading-tight">4 Marshals</h3>
-<p class="font-body-sm text-body-sm text-tertiary mt-0.5">All nodes active</p>
-</div>
-<button class="w-full flex items-center justify-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md text-label-md py-2 rounded-lg transition-colors shadow" type="button">
-<span class="material-symbols-outlined text-[16px]">security</span>
-<span>Manage</span>
-</button>
-</div>
-</section>
-<!-- Critical Command Trigger (Broadcast / Phase Advance) -->
-<section class="w-full pt-space-xs">
-<button class="w-full flex items-center justify-between bg-primary-container hover:bg-primary-fixed-dim text-on-primary-container p-space-md rounded-xl font-label-lg text-label-lg uppercase tracking-wider shadow-[0_0_24px_rgba(0,229,255,0.4)] active:scale-[0.99] transition-all" id="btn-broadcast" type="button">
-<div class="flex items-center gap-2.5">
-<span class="material-symbols-outlined text-[24px]">campaign</span>
-<div class="flex flex-col text-left">
-<span class="font-headline-sm text-headline-sm text-on-primary-container font-bold leading-tight">Advance Clue Phase</span>
-<span class="font-body-sm text-body-sm text-on-primary-container/80 normal-case tracking-normal">Broadcast tactical alert to all 8 squads</span>
-</div>
-</div>
-<span class="material-symbols-outlined text-[24px]">arrow_forward</span>
-</button>
-</section>
-<!-- Modal Confirm Dialog for Danger Zone Reset -->
-<div class="fixed inset-0 z-50 flex items-center justify-center px-gutter bg-surface-container-lowest/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300" id="reset-modal">
-<div class="w-full max-w-sm rounded-xl bg-surface-container-high p-space-lg shadow-2xl flex flex-col items-center text-center">
-<div class="w-12 h-12 rounded-full bg-error-container/30 flex items-center justify-center mb-space-sm text-error">
-<span class="material-symbols-outlined text-[28px]">warning</span>
-</div>
-<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Authorize Grid Reset?</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mt-1">This will invalidate all checkpoint caches, recalculate delta scores to zero, and halt current team telemetry.</p>
-<div class="grid grid-cols-2 gap-space-sm w-full mt-space-md">
-<button class="bg-surface-container text-on-surface font-label-md text-label-md py-2.5 rounded-lg" id="btn-cancel-reset" type="button">Cancel</button>
-<button class="bg-error text-on-error font-label-md text-label-md py-2.5 rounded-lg shadow-[0_0_12px_rgba(255,180,171,0.5)]" id="btn-confirm-reset" type="button">Purge Grid</button>
-</div>
-</div>
-</div>
-</div>
-<script>
-  // Mission Clock live ticker micro-interaction
-  let totalSeconds = 45 * 60 + 32;
-  let isPaused = false;
-  const clockElement = document.getElementById('mission-clock');
-  const pauseBtn = document.getElementById('btn-pause');
-  const resetBtn = document.getElementById('btn-reset');
-  const resetModal = document.getElementById('reset-modal');
-  const cancelResetBtn = document.getElementById('btn-cancel-reset');
-  const confirmResetBtn = document.getElementById('btn-confirm-reset');
-  const broadcastBtn = document.getElementById('btn-broadcast');
+</head>
+<body class="hex-bg flex flex-col justify-between selection:bg-cyan selection:text-black">
 
-  function updateClockDisplay() {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    clockElement.textContent = 
-      String(hours).padStart(2, '0') + ':' + 
-      String(minutes).padStart(2, '0') + ':' + 
-      String(seconds).padStart(2, '0');
-  }
+  <!-- Top Fixed Admin Header -->
+  <header class="w-full bg-[#080E1C]/90 backdrop-blur-xl border-b border-cyan/25 sticky top-0 z-50 px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-magenta/20 border border-magenta/40 flex items-center justify-center text-magenta shadow-[0_0_12px_rgba(255,0,85,0.4)]">
+        <span class="material-symbols-outlined text-2xl">shield</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-base sm:text-lg font-headline font-bold text-white tracking-wide">COMMAND TERMINAL</h1>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-magenta/20 text-magenta border border-magenta/40 font-bold">GAME MASTER</span>
+        </div>
+        <p class="text-xs text-cyan font-mono">Logged in as: <span class="font-bold text-white">samay</span> • Club Fest Central</p>
+      </div>
+    </div>
 
-  setInterval(() => {
-    if (!isPaused) {
-      totalSeconds++;
-      updateClockDisplay();
+    <!-- Navigation View Tabs -->
+    <div class="flex items-center gap-1.5 bg-[#050914] p-1 rounded-xl border border-cyan/20">
+      <button onclick="switchTab('ops')" id="nav-btn-ops" 
+              class="px-3.5 py-1.5 text-xs font-headline font-bold rounded-lg bg-cyan text-black flex items-center gap-1.5 transition">
+        <span class="material-symbols-outlined text-base">dashboard</span>
+        <span>Operations</span>
+      </button>
+
+      <button onclick="switchTab('approvals')" id="nav-btn-approvals" 
+              class="px-3.5 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition relative">
+        <span class="material-symbols-outlined text-base">how_to_reg</span>
+        <span>Approvals</span>
+        <span id="badge-pending" class="px-1.5 py-0.2 rounded-full bg-yellow text-black font-mono font-bold text-[10px] ml-1">0</span>
+      </button>
+
+      <button onclick="switchTab('database')" id="nav-btn-database" 
+              class="px-3.5 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition">
+        <span class="material-symbols-outlined text-base">database</span>
+        <span>MongoDB Database</span>
+      </button>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="flex items-center gap-3">
+      <button onclick="exportDatabase()" title="Export MongoDB Backup"
+              class="px-3 py-1.5 rounded-lg border border-cyan/30 bg-cyan/10 hover:bg-cyan/20 text-cyan text-xs font-headline flex items-center gap-1.5 transition">
+        <span class="material-symbols-outlined text-sm">download</span>
+        <span class="hidden sm:inline">Export DB</span>
+      </button>
+      
+      <button onclick="signOut()" 
+              class="px-3 py-1.5 rounded-lg border border-red-500/40 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-headline font-bold flex items-center gap-1 transition">
+        <span class="material-symbols-outlined text-sm">logout</span>
+        <span>Logout</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="w-full max-w-6xl mx-auto p-4 sm:p-6 mb-auto space-y-6">
+
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- TAB 1: OPERATIONS HUD (TIMER, LEADERBOARD, QUICK ACTIONS) -->
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <div id="tab-content-ops" class="space-y-6">
+      
+      <!-- Top Tactical Mission Clock Card -->
+      <div class="neon-card rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
+          <div class="w-16 h-16 rounded-2xl bg-cyan/10 border border-cyan/40 flex items-center justify-center text-cyan shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+            <span class="material-symbols-outlined text-3xl">timer</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="w-2.5 h-2.5 rounded-full bg-green animate-ping"></span>
+              <span class="text-xs font-mono text-green uppercase tracking-widest font-bold" id="game-phase-badge">PLAYER PHASE // LIVE</span>
+            </div>
+            <div class="text-4xl sm:text-5xl font-headline font-black text-cyan tracking-wider drop-shadow-[0_0_15px_rgba(0,240,255,0.7)]" id="clock-display">
+              00:00:00
+            </div>
+          </div>
+        </div>
+
+        <!-- Clock Action Buttons -->
+        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <button onclick="togglePauseGame()" id="btn-pause-ops" 
+                  class="flex-1 md:flex-initial px-5 py-2.5 rounded-xl border border-yellow/40 bg-yellow/10 hover:bg-yellow/20 text-yellow text-xs font-headline font-bold flex items-center justify-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">pause_circle</span>
+            <span id="btn-pause-text">PAUSE OPS</span>
+          </button>
+
+          <button onclick="changeGameStatus('PLAYER_PHASE')" 
+                  class="flex-1 md:flex-initial px-5 py-2.5 rounded-xl border border-green/40 bg-green/10 hover:bg-green/20 text-green text-xs font-headline font-bold flex items-center justify-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">play_circle</span>
+            <span>START HUNT</span>
+          </button>
+
+          <button onclick="changeGameStatus('ENDED')" 
+                  class="flex-1 md:flex-initial px-5 py-2.5 rounded-xl border border-red-500/40 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-headline font-bold flex items-center justify-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">flag</span>
+            <span>END MATCH</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="neon-card rounded-2xl p-4 text-center">
+          <span class="material-symbols-outlined text-cyan text-2xl mb-1">groups</span>
+          <div class="text-2xl font-headline font-bold text-white" id="stat-teams-count">0</div>
+          <div class="text-[11px] font-mono text-gray-400 uppercase">Approved Teams</div>
+        </div>
+        <div class="neon-card rounded-2xl p-4 text-center">
+          <span class="material-symbols-outlined text-green text-2xl mb-1">verified_user</span>
+          <div class="text-2xl font-headline font-bold text-green" id="stat-marshals-count">0</div>
+          <div class="text-[11px] font-mono text-gray-400 uppercase">Field Marshals</div>
+        </div>
+        <div class="neon-card rounded-2xl p-4 text-center">
+          <span class="material-symbols-outlined text-yellow text-2xl mb-1">hourglass_top</span>
+          <div class="text-2xl font-headline font-bold text-yellow" id="stat-pending-count">0</div>
+          <div class="text-[11px] font-mono text-gray-400 uppercase">Pending Approvals</div>
+        </div>
+        <div class="neon-card rounded-2xl p-4 text-center">
+          <span class="material-symbols-outlined text-magenta text-2xl mb-1">emoji_events</span>
+          <div class="text-2xl font-headline font-bold text-magenta" id="stat-total-points">0</div>
+          <div class="text-[11px] font-mono text-gray-400 uppercase">Total Points Awarded</div>
+        </div>
+      </div>
+
+      <!-- Live Leaderboard Table -->
+      <div class="neon-card rounded-2xl p-6">
+        <div class="flex items-center justify-between border-b border-cyan/20 pb-4 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-cyan">emoji_events</span>
+            <h2 class="text-lg font-headline font-bold text-white">Live Leaderboard Standings</h2>
+          </div>
+          <button onclick="loadLeaderboard()" class="text-xs font-mono text-cyan hover:underline flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">refresh</span> Refresh
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead>
+              <tr class="text-gray-400 border-b border-cyan/10">
+                <th class="py-2.5 px-3">RANK</th>
+                <th class="py-2.5 px-3">SQUAD NAME</th>
+                <th class="py-2.5 px-3">STATUS</th>
+                <th class="py-2.5 px-3">CARDS DRAWN</th>
+                <th class="py-2.5 px-3">PROGRESS</th>
+                <th class="py-2.5 px-3 text-right">TOTAL POINTS</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-table-body" class="divide-y divide-cyan/5">
+              <tr>
+                <td colspan="6" class="py-6 text-center text-gray-400">Loading live squads...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- TAB 2: PENDING APPROVALS QUEUE (WAITING HALL AUTHORIZATION) -->
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <div id="tab-content-approvals" class="hidden space-y-6">
+      
+      <div class="neon-card rounded-2xl p-6">
+        <div class="flex items-center justify-between border-b border-cyan/20 pb-4 mb-6">
+          <div>
+            <h2 class="text-xl font-headline font-bold text-white">Pending Clearances (Waiting Hall)</h2>
+            <p class="text-xs font-mono text-gray-400 mt-1">
+              Teams and Marshals waiting for your approval to enter the Territory Grid app.
+            </p>
+          </div>
+          <button onclick="loadPendingApprovals()" class="px-4 py-2 rounded-xl bg-cyan/10 border border-cyan/30 text-cyan text-xs font-headline font-bold hover:bg-cyan/20 transition flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">refresh</span>
+            <span>Check Now</span>
+          </button>
+        </div>
+
+        <!-- Pending Items Container -->
+        <div id="pending-items-list" class="space-y-3">
+          <div class="text-center py-10 text-gray-400 text-xs font-mono">Checking pending queue...</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- TAB 3: MONGODB DATABASE EXPLORER -->
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <div id="tab-content-database" class="hidden space-y-6">
+      
+      <!-- Database Banner -->
+      <div class="neon-card rounded-2xl p-6 border-cyan/40">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-cyan/20 pb-4 mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-green/20 border border-green/40 flex items-center justify-center text-green shadow-[0_0_15px_rgba(0,255,136,0.4)]">
+              <span class="material-symbols-outlined text-2xl">database</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-lg font-headline font-bold text-white">MongoDB Collections Inspector</h2>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/40 font-bold flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span> CONNECTED
+                </span>
+              </div>
+              <p class="text-xs font-mono text-gray-400" id="db-host-info">mongodb://localhost:27017/territory_grid (Persistent Engine)</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="exportDatabase()" class="px-3.5 py-2 rounded-xl bg-cyan text-black font-headline font-bold text-xs flex items-center gap-1.5 hover:shadow-[0_0_15px_rgba(0,240,255,0.6)] transition">
+              <span class="material-symbols-outlined text-base">file_download</span>
+              <span>Export All JSON</span>
+            </button>
+            <button onclick="loadDatabaseData()" class="p-2 rounded-xl border border-cyan/30 text-cyan hover:bg-cyan/10 transition">
+              <span class="material-symbols-outlined text-base">refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Collection Selector Pills -->
+        <div class="flex flex-wrap gap-2 mb-6" id="collection-pills">
+          <button onclick="viewCollection('users')" id="col-btn-users" class="px-4 py-2 rounded-xl bg-cyan text-black font-mono text-xs font-bold transition">
+            users (<span id="count-users">0</span>)
+          </button>
+          <button onclick="viewCollection('teams')" id="col-btn-teams" class="px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition">
+            teams (<span id="count-teams">0</span>)
+          </button>
+          <button onclick="viewCollection('clues')" id="col-btn-clues" class="px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition">
+            clues (<span id="count-clues">0</span>)
+          </button>
+          <button onclick="viewCollection('checkins')" id="col-btn-checkins" class="px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition">
+            checkins (<span id="count-checkins">0</span>)
+          </button>
+          <button onclick="viewCollection('gameState')" id="col-btn-gameState" class="px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition">
+            gameState
+          </button>
+          <button onclick="viewCollection('system_logs')" id="col-btn-system_logs" class="px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition">
+            system_logs (<span id="count-logs">0</span>)
+          </button>
+        </div>
+
+        <!-- Search / Filter within collection -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="relative flex-1">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-lg">search</span>
+            <input type="text" id="collection-search" oninput="filterCollectionRecords()" placeholder="Filter records in this collection by ID, callsign, or name..." 
+                   class="w-full bg-[#0A101D] border border-cyan/20 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan transition font-mono">
+          </div>
+          <span class="text-xs font-mono text-gray-400" id="record-count-indicator">Showing 0 documents</span>
+        </div>
+
+        <!-- Collection Documents Viewer Container -->
+        <div id="collection-docs-container" class="space-y-3 max-h-[600px] overflow-y-auto pr-1">
+          <!-- Rendered dynamically -->
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // 1. Role Guard: Enforce Admin (samay)
+    (function checkAdminClearance() {
+      try {
+        var raw = localStorage.getItem('territory_grid_user') || sessionStorage.getItem('territory_grid_user');
+        var user = raw ? JSON.parse(raw) : null;
+        if (!user || user.role !== 'ADMIN') {
+          alert('Security Clearance Alert: Access restricted to Game Master Samay.');
+          window.location.href = 'login.html';
+        }
+      } catch (e) {
+        window.location.href = 'login.html';
+      }
+    })();
+
+    var activeTab = 'ops';
+    var activeCollection = 'users';
+    var cachedDbData = null;
+    var timerSeconds = 0;
+    var timerRunning = true;
+
+    window.addEventListener('DOMContentLoaded', function() {
+      loadLeaderboard();
+      loadPendingApprovals();
+      loadDatabaseData();
+      startClock();
+      
+      // Auto-poll pending approvals every 3 seconds
+      setInterval(loadPendingApprovals, 3000);
+      setInterval(loadLeaderboard, 4000);
+    });
+
+    function signOut() {
+      localStorage.removeItem('territory_grid_user');
+      sessionStorage.removeItem('territory_grid_user');
+      window.location.href = 'login.html';
     }
-  }, 1000);
 
-  pauseBtn.addEventListener('click', () => {
-    isPaused = !isPaused;
-    const label = pauseBtn.querySelector('span:nth-child(2)');
-    const icon = pauseBtn.querySelector('.material-symbols-outlined');
-    if (isPaused) {
-      label.textContent = 'Resume Ops';
-      icon.textContent = 'play_circle';
-      clockElement.classList.add('opacity-50');
-    } else {
-      label.textContent = 'Pause Ops';
-      icon.textContent = 'pause_circle';
-      clockElement.classList.remove('opacity-50');
+    function switchTab(tab) {
+      activeTab = tab;
+      ['ops', 'approvals', 'database'].forEach(function(t) {
+        var content = document.getElementById('tab-content-' + t);
+        var btn = document.getElementById('nav-btn-' + t);
+        if (content && btn) {
+          if (t === tab) {
+            content.classList.remove('hidden');
+            btn.className = 'px-3.5 py-1.5 text-xs font-headline font-bold rounded-lg bg-cyan text-black flex items-center gap-1.5 transition';
+          } else {
+            content.classList.add('hidden');
+            btn.className = 'px-3.5 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition';
+          }
+        }
+      });
+
+      if (tab === 'database') loadDatabaseData();
+      if (tab === 'approvals') loadPendingApprovals();
     }
-  });
 
-  resetBtn.addEventListener('click', () => {
-    resetModal.classList.remove('opacity-0', 'pointer-events-none');
-  });
+    // Master Clock
+    function startClock() {
+      setInterval(function() {
+        if (timerRunning) {
+          timerSeconds++;
+          var h = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
+          var m = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
+          var s = String(timerSeconds % 60).padStart(2, '0');
+          var el = document.getElementById('clock-display');
+          if (el) el.innerText = h + ':' + m + ':' + s;
+        }
+      }, 1000);
+    }
 
-  cancelResetBtn.addEventListener('click', () => {
-    resetModal.classList.add('opacity-0', 'pointer-events-none');
-  });
+    function togglePauseGame() {
+      timerRunning = !timerRunning;
+      var btn = document.getElementById('btn-pause-text');
+      if (btn) btn.innerText = timerRunning ? 'PAUSE OPS' : 'RESUME OPS';
+    }
 
-  confirmResetBtn.addEventListener('click', () => {
-    totalSeconds = 0;
-    updateClockDisplay();
-    resetModal.classList.add('opacity-0', 'pointer-events-none');
-  });
+    async function changeGameStatus(status) {
+      try {
+        await fetch('/api/game/state', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: status })
+        });
+        document.getElementById('game-phase-badge').innerText = status + ' // LIVE';
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
-  broadcastBtn.addEventListener('click', () => {
-    broadcastBtn.classList.add('scale-95');
-    setTimeout(() => {
-      broadcastBtn.classList.remove('scale-95');
-      alert('Tactical Clue Phase 2 broadcasted to all field marshals and teams.');
-    }, 150);
-  });
-</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_16px_rgba(0,229,255,0.06)]" data-active-classes="text-primary-container drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] font-bold"><div class="flex justify-around items-center h-20 px-gutter"><a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" data-path="player-dashboard" href="#"><span class="material-symbols-outlined text-[24px]">radar</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Hunt</span></a><a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" data-path="checkpoint-log" href="#"><span class="material-symbols-outlined text-[24px]">style</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Cards</span></a><a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" data-path="leaderboard" href="#"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Rank</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-16 transition-colors text-primary-container drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] font-bold" data-path="admin-control-panel" href="#"><span class="material-symbols-outlined text-[24px]">tune</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Control</span></a></div></nav>
+    // Load Leaderboard
+    async function loadLeaderboard() {
+      try {
+        var res = await fetch('/api/teams');
+        var data = await res.json();
+        if (data.success) {
+          var teams = data.teams || [];
+          var approved = teams.filter(function(t) { return t.isApproved; });
+          approved.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
 
-</body></html>
+          document.getElementById('stat-teams-count').innerText = approved.length;
+          
+          var totalPoints = approved.reduce(function(acc, t) { return acc + (t.score || 0); }, 0);
+          document.getElementById('stat-total-points').innerText = totalPoints;
+
+          var tbody = document.getElementById('leaderboard-table-body');
+          if (approved.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-gray-400">No approved squads playing yet. Approve squads from the Approvals tab.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = approved.map(function(t, idx) {
+            var cardsCount = (t.cards || []).length;
+            var rankBadge = idx === 0 ? '👑 #1' : (idx === 1 ? '🥈 #2' : (idx === 2 ? '🥉 #3' : '#' + (idx + 1)));
+            return '<tr class="hover:bg-cyan/5 transition-colors">' +
+              '<td class="py-3 px-3 font-bold text-cyan">' + rankBadge + '</td>' +
+              '<td class="py-3 px-3 font-bold text-white">' + (t.name || t.callsign) + '</td>' +
+              '<td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-green/20 text-green border border-green/30">ACTIVE</span></td>' +
+              '<td class="py-3 px-3 text-gray-300">' + cardsCount + ' Cards</td>' +
+              '<td class="py-3 px-3 text-cyan">Zone Step ' + (t.currentClueIndex || 0) + '</td>' +
+              '<td class="py-3 px-3 text-right font-bold text-green text-sm">' + (t.score || 0) + ' PTS</td>' +
+            '</tr>';
+          }).join('');
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Load Pending Approvals (Waiting Hall)
+    async function loadPendingApprovals() {
+      try {
+        var res = await fetch('/api/admin/pending');
+        var data = await res.json();
+        if (data.success) {
+          var count = data.count || 0;
+          document.getElementById('badge-pending').innerText = count;
+          document.getElementById('stat-pending-count').innerText = count;
+
+          var listContainer = document.getElementById('pending-items-list');
+          if (count === 0) {
+            listContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-mono text-xs">No pending requests. All squads and marshals are clear!</div>';
+            return;
+          }
+
+          var html = '';
+          // Pending Teams
+          (data.teams || []).forEach(function(team) {
+            html += '<div class="neon-card rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 border-yellow/30 bg-[#091122]">' +
+              '<div class="flex items-center gap-3">' +
+                '<div class="w-10 h-10 rounded-lg bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan">' +
+                  '<span class="material-symbols-outlined">sports_esports</span>' +
+                '</div>' +
+                '<div>' +
+                  '<div class="flex items-center gap-2">' +
+                    '<h4 class="font-headline font-bold text-white text-sm">' + team.name + '</h4>' +
+                    '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan/20 text-cyan border border-cyan/30">SQUAD</span>' +
+                  '</div>' +
+                  '<p class="text-xs text-gray-400 font-mono">Callsign: <b>' + (team.callsign || team.name) + '</b> • Registered: ' + new Date(team.createdAt).toLocaleTimeString() + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="flex items-center gap-2">' +
+                '<button onclick="approveEntity(\'TEAM\', \'' + team._id + '\')" class="px-4 py-2 rounded-xl bg-green text-black font-headline font-bold text-xs flex items-center gap-1 hover:shadow-[0_0_12px_rgba(0,255,136,0.6)] transition">' +
+                  '<span class="material-symbols-outlined text-sm">check</span> <span>APPROVE SQUAD</span>' +
+                '</button>' +
+                '<button onclick="rejectEntity(\'TEAM\', \'' + team._id + '\')" class="px-3 py-2 rounded-xl bg-red-500/20 text-red-400 font-headline font-bold text-xs hover:bg-red-500/30 transition">' +
+                  '<span class="material-symbols-outlined text-sm">close</span>' +
+                '</button>' +
+              '</div>' +
+            '</div>';
+          });
+
+          // Pending Users (Marshals)
+          (data.users || []).filter(function(u) { return u.role === 'MEMBER'; }).forEach(function(user) {
+            html += '<div class="neon-card rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 border-green/30 bg-[#091122]">' +
+              '<div class="flex items-center gap-3">' +
+                '<div class="w-10 h-10 rounded-lg bg-green/20 border border-green/40 flex items-center justify-center text-green">' +
+                  '<span class="material-symbols-outlined">verified</span>' +
+                '</div>' +
+                '<div>' +
+                  '<div class="flex items-center gap-2">' +
+                    '<h4 class="font-headline font-bold text-white text-sm">' + user.name + '</h4>' +
+                    '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30">FIELD MARSHAL</span>' +
+                  '</div>' +
+                  '<p class="text-xs text-gray-400 font-mono">Callsign: <b>' + user.callsign + '</b> • Station: <b>' + (user.zoneLabel || user.zoneId) + '</b></p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="flex items-center gap-2">' +
+                '<button onclick="approveEntity(\'USER\', \'' + user._id + '\')" class="px-4 py-2 rounded-xl bg-green text-black font-headline font-bold text-xs flex items-center gap-1 hover:shadow-[0_0_12px_rgba(0,255,136,0.6)] transition">' +
+                  '<span class="material-symbols-outlined text-sm">check</span> <span>APPROVE MARSHAL</span>' +
+                '</button>' +
+                '<button onclick="rejectEntity(\'USER\', \'' + user._id + '\')" class="px-3 py-2 rounded-xl bg-red-500/20 text-red-400 font-headline font-bold text-xs hover:bg-red-500/30 transition">' +
+                  '<span class="material-symbols-outlined text-sm">close</span>' +
+                '</button>' +
+              '</div>' +
+            '</div>';
+          });
+
+          listContainer.innerHTML = html;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function approveEntity(type, id) {
+      try {
+        var res = await fetch('/api/admin/approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: type, id: id })
+        });
+        var data = await res.json();
+        if (data.success) {
+          loadPendingApprovals();
+          loadLeaderboard();
+          loadDatabaseData();
+        }
+      } catch (e) {
+        alert('Approve error: ' + e.message);
+      }
+    }
+
+    async function rejectEntity(type, id) {
+      if (!confirm('Are you sure you want to reject and remove this request?')) return;
+      try {
+        var res = await fetch('/api/admin/reject', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: type, id: id })
+        });
+        var data = await res.json();
+        if (data.success) {
+          loadPendingApprovals();
+          loadDatabaseData();
+        }
+      } catch (e) {
+        alert('Reject error: ' + e.message);
+      }
+    }
+
+    // Load MongoDB Database Data
+    async function loadDatabaseData() {
+      try {
+        var res = await fetch('/api/database/all');
+        var data = await res.json();
+        if (data.success) {
+          cachedDbData = data.collections;
+          
+          document.getElementById('count-users').innerText = (cachedDbData.users || []).length;
+          document.getElementById('count-teams').innerText = (cachedDbData.teams || []).length;
+          document.getElementById('count-clues').innerText = (cachedDbData.clues || []).length;
+          document.getElementById('count-checkins').innerText = (cachedDbData.checkins || []).length;
+          document.getElementById('count-logs').innerText = (cachedDbData.system_logs || []).length;
+
+          // Count marshals
+          var marshals = (cachedDbData.users || []).filter(function(u) { return u.role === 'MEMBER' && u.isApproved; });
+          document.getElementById('stat-marshals-count').innerText = marshals.length;
+
+          renderCollectionDocuments();
+        }
+      } catch (e) {
+        console.error('Database load error:', e);
+      }
+    }
+
+    function viewCollection(colName) {
+      activeCollection = colName;
+      ['users', 'teams', 'clues', 'checkins', 'gameState', 'system_logs'].forEach(function(c) {
+        var btn = document.getElementById('col-btn-' + c);
+        if (btn) {
+          if (c === colName) {
+            btn.className = 'px-4 py-2 rounded-xl bg-cyan text-black font-mono text-xs font-bold transition';
+          } else {
+            btn.className = 'px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition';
+          }
+        }
+      });
+      renderCollectionDocuments();
+    }
+
+    function renderCollectionDocuments() {
+      if (!cachedDbData) return;
+      var docs = cachedDbData[activeCollection];
+      var container = document.getElementById('collection-docs-container');
+      var filterText = (document.getElementById('collection-search').value || '').toLowerCase().trim();
+
+      if (activeCollection === 'gameState') {
+        container.innerHTML = '<div class="bg-[#050914] border border-cyan/30 rounded-xl p-4 font-mono text-xs text-cyan overflow-x-auto"><pre>' + JSON.stringify(docs, null, 2) + '</pre></div>';
+        document.getElementById('record-count-indicator').innerText = '1 document in collection gameState';
+        return;
+      }
+
+      var list = Array.isArray(docs) ? docs : [];
+      if (filterText) {
+        list = list.filter(function(item) {
+          return JSON.stringify(item).toLowerCase().indexOf(filterText) !== -1;
+        });
+      }
+
+      document.getElementById('record-count-indicator').innerText = 'Showing ' + list.length + ' documents in collection ' + activeCollection;
+
+      if (list.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-gray-400 font-mono text-xs">No documents found matching criteria.</div>';
+        return;
+      }
+
+      container.innerHTML = list.map(function(doc, idx) {
+        var docId = doc._id || ('doc_' + idx);
+        var title = doc.name || doc.callsign || doc.action || docId;
+        var approvalBadge = '';
+        if (typeof doc.isApproved !== 'undefined') {
+          approvalBadge = doc.isApproved 
+            ? '<span class="px-2 py-0.5 rounded text-[10px] bg-green/20 text-green border border-green/30">APPROVED</span>'
+            : '<span class="px-2 py-0.5 rounded text-[10px] bg-yellow/20 text-yellow border border-yellow/30">PENDING</span>';
+        }
+
+        return '<div class="neon-card rounded-xl p-3.5 bg-[#0A101D] border border-cyan/20">' +
+          '<div class="flex items-center justify-between mb-2">' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="text-cyan font-bold font-mono text-xs">' + title + '</span>' +
+              '<span class="text-[10px] font-mono text-gray-500">_id: ' + docId + '</span>' +
+              approvalBadge +
+            '</div>' +
+            '<button onclick="toggleDocJson(\'' + docId + '\')" class="text-[11px] font-mono text-cyan hover:underline">Toggle JSON</button>' +
+          '</div>' +
+          '<div id="doc-json-' + docId + '" class="bg-[#050914] p-3 rounded-lg font-mono text-[11px] text-gray-300 overflow-x-auto max-h-48">' +
+            '<pre>' + JSON.stringify(doc, null, 2) + '</pre>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function toggleDocJson(id) {
+      var el = document.getElementById('doc-json-' + id);
+      if (el) el.classList.toggle('hidden');
+    }
+
+    function filterCollectionRecords() {
+      renderCollectionDocuments();
+    }
+
+    function exportDatabase() {
+      window.open('/api/database/export', '_blank');
+    }
+  </script>
+</body>
+</html>

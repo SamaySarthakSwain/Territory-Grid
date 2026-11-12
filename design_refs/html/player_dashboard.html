@@ -4,180 +4,413 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,229,255,0.08)] pt-safe"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Territory Grid Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrBzgMT_rz5cfiPGGPLEnK_ourwFTlz2hn-iaheybDqfIUyxn-MJUYQX3C_hDmj05IY-jdhJVUUfxsMHmtOFKhzrliw2tBc6k7ZsWy4ybtgyLB9shs4C_rgrM-ShNMoeKjcVyarg0BBrlbHFG1DDbWdCaexOOnNgG5lcEW5q7agl-oAlYBp51s0vTVMwyZah3wSMImZBrYsWexDu77Cq9GE7Eh1mTAINM2StVbluXYgG"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-wider uppercase leading-none drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">Territory Grid</span><div class="flex items-center gap-space-xs mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Player Dashboard</span></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-space-xs bg-surface-container-high px-space-sm py-0.5 rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span><span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Marshal</span></div><div class="flex items-center gap-1 text-on-surface-variant px-1"><span class="material-symbols-outlined text-[16px] text-tertiary">wifi</span><span class="material-symbols-outlined text-[16px] text-primary-container">battery_charging_full</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-20 bg-surface min-h-screen"><div class="flex flex-col w-full px-gutter space-y-space-md pb-6">
-<!-- Sub-Header: Team Status & Live Standing -->
-<div class="flex items-center justify-between bg-surface-container-low/80 backdrop-blur-xl p-space-sm rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-<div class="flex items-center gap-2.5 pl-1.5">
-<div class="relative flex items-center justify-center">
-<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container animate-ping absolute"></span>
-<span class="w-2 h-2 rounded-full bg-tertiary-container relative"></span>
-</div>
-<div class="flex flex-col">
-<span class="font-headline-sm text-headline-sm text-primary leading-tight font-bold tracking-wide">Team Explorers</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant leading-none uppercase tracking-widest">Active Hunt • Zone B</span>
-</div>
-</div>
-<div class="flex items-center gap-1.5 bg-surface-container-highest/90 px-3 py-1.5 rounded-full">
-<span class="material-symbols-outlined text-[16px] text-[#FFD600]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
-<span class="font-label-md text-label-md text-primary font-bold tracking-wider">Rank #2 <span class="text-on-surface-variant font-normal">/ 8</span></span>
-</div>
-</div>
-<!-- Telemetry HUD: Score & Card Counter -->
-<div class="grid grid-cols-5 gap-space-sm">
-<!-- Huge Score Ring HUD (3 cols) -->
-<div class="col-span-3 bg-surface-container/80 backdrop-blur-xl p-3.5 rounded-xl shadow-[0_0_24px_rgba(0,229,255,0.1)] relative overflow-hidden flex flex-col justify-between">
-<div class="absolute -right-6 -bottom-6 w-24 h-24 bg-primary-container/10 rounded-full blur-xl pointer-events-none"></div>
-<div class="flex items-center justify-between relative z-10">
-<div class="flex items-center gap-1 text-on-surface-variant">
-<span class="material-symbols-outlined text-[16px] text-primary">military_tech</span>
-<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary">Score HUD</span>
-</div>
-<div class="flex items-center gap-0.5 bg-tertiary-container/20 text-tertiary px-1.5 py-0.5 rounded text-[11px] font-bold">
-<span class="material-symbols-outlined text-[12px]">trending_up</span>
-<span>+22 PTS</span>
-</div>
-</div>
-<div class="flex items-center gap-3 my-1 relative z-10">
-<!-- SVG Radial Ring with Glow -->
-<div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
-<svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
-<circle class="opacity-60" cx="32" cy="32" fill="none" r="26" stroke="#1b2029" stroke-width="5"></circle>
-<circle class="drop-shadow-[0_0_6px_rgba(0,229,255,0.8)]" cx="32" cy="32" fill="none" r="26" stroke="#00e5ff" stroke-dasharray="163" stroke-dashoffset="42" stroke-linecap="round" stroke-width="5"></circle>
-</svg>
-<span class="material-symbols-outlined absolute text-[20px] text-primary-container">bolt</span>
-</div>
-<div class="flex flex-col">
-<span class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight leading-none drop-shadow-[0_0_12px_rgba(195,245,255,0.3)]">148</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Total Points</span>
-</div>
-</div>
-<!-- Micro scan line telemetry indicator -->
-<div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden relative z-10">
-<div class="bg-gradient-to-r from-primary-container to-tertiary-container h-full w-[74%] rounded-full shadow-[0_0_8px_rgba(0,229,255,0.7)]"></div>
-</div>
-</div>
-<!-- Cards Collected Counter (2 cols) -->
-<div class="col-span-2 bg-surface-container/80 backdrop-blur-xl p-3.5 rounded-xl shadow-[0_0_24px_rgba(0,229,255,0.06)] flex flex-col justify-between relative overflow-hidden">
-<div class="flex items-center justify-between">
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Inventory</span>
-<span class="material-symbols-outlined text-[18px] text-secondary">style</span>
-</div>
-<div class="flex items-baseline gap-1 my-1">
-<span class="font-headline-xl text-headline-xl text-secondary font-bold leading-none">5</span>
-<span class="font-label-md text-label-md text-on-surface-variant uppercase">/ 12</span>
-</div>
-<!-- Mini stack card graphic -->
-<div class="flex items-center -space-x-2 pt-1">
-<div class="w-5 h-7 rounded bg-surface-bright flex items-center justify-center text-[10px] text-primary shadow-sm font-bold">♠</div>
-<div class="w-5 h-7 rounded bg-surface-container-high flex items-center justify-center text-[10px] text-secondary font-bold shadow-sm">♥</div>
-<div class="w-5 h-7 rounded bg-primary-container/20 flex items-center justify-center text-[10px] text-primary font-bold shadow-sm">♦</div>
-<div class="w-5 h-7 rounded bg-surface-container-highest flex items-center justify-center text-[9px] text-tertiary font-bold">+2</div>
-</div>
-</div>
-</div>
-<!-- ACTIVE CLUE: Neon HUD Mission Card -->
-<div class="bg-surface-container-low/90 backdrop-blur-2xl rounded-xl p-4 shadow-[0_0_30px_rgba(255,214,0,0.12)] relative overflow-hidden space-y-3">
-<!-- Amber / Cyan Laser Header Strip -->
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-lg bg-[#FFD600]/20 flex items-center justify-center shadow-[0_0_12px_rgba(255,214,0,0.3)]">
-<span class="material-symbols-outlined text-[#FFD600] text-[18px] animate-pulse">radar</span>
-</div>
-<div class="flex flex-col">
-<span class="font-label-sm text-label-sm uppercase tracking-widest text-[#FFD600] font-bold">Active Mission Directive</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">Beacon Checkpoint #04</span>
-</div>
-</div>
-<span class="px-2 py-0.5 rounded-full bg-[#FFD600]/15 text-[#FFD600] font-label-sm text-label-sm font-bold uppercase tracking-wider">
-        +12 PTS
-      </span>
-</div>
-<!-- Clue Prompt Banner -->
-<div class="bg-surface-container-highest/60 p-3 rounded-lg flex items-start gap-2.5">
-<span class="material-symbols-outlined text-[#FFD600] text-[20px] shrink-0 mt-0.5">lightbulb</span>
-<p class="font-headline-sm text-headline-sm text-on-surface font-semibold leading-snug">
-        “Locate the <span class="text-[#FFD600] drop-shadow-[0_0_8px_rgba(255,214,0,0.6)]">Yellow Beacon Cone</span> nestled near the library plaza &amp; colonnade arch!”
-      </p>
-</div>
-<!-- Isometric Tactical Minimap Visual -->
-<div class="relative w-full h-36 rounded-lg overflow-hidden bg-surface-container-lowest">
-<img class="w-full h-full object-cover" data-alt="Tactical isometric 3D scavenger hunt game map of an urban university campus plaza at dusk with neon cyan glowing paths, vector waypoint trails, and a prominent glowing yellow beacon cone standing illuminated in front of a modern glass library architectural pavilion with subtle cyber holographic grid overlay." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYy_S8ATTym7KGFmKDBg78K5e1tA7Idtag1n6kPaNZ8dAWd_cGS00HOUrMUKmTvzYccCNJCpEtgDrUOnkCq0Y8_hvwZ9qelEMTSSO8DJrn-dYkSd4ue2NGCukYYPhFDIhEqOy4sIeuybzw62CCu19q8WeEiAK5PNh0xGwAN9AozK1uz6bs1pH-XstwYupEnPNdEgiw2iReBciL63zBdhO2phuJUgcjGLqtLPn6-4s">
-<!-- Gradient Map Overlays -->
-<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent opacity-85"></div>
-<!-- Mini Beacon Target Marker Overlay -->
-<div class="absolute top-4 right-5 flex items-center gap-1.5 bg-surface-container-lowest/90 px-2.5 py-1 rounded-full shadow-lg">
-<span class="w-2 h-2 rounded-full bg-[#FFD600] animate-ping"></span>
-<span class="font-label-sm text-label-sm text-primary font-bold">CONE: YELLOW</span>
-</div>
-<div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-<div class="flex items-center gap-1.5 bg-surface/90 backdrop-blur-md px-2.5 py-1 rounded-md">
-<span class="material-symbols-outlined text-primary-container text-[16px]">navigation</span>
-<span class="font-label-sm text-label-sm text-on-surface font-semibold">140m South-East</span>
-</div>
-<button class="bg-primary-container hover:bg-primary-fixed text-on-primary-container font-label-md text-label-md uppercase px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-[0_0_16px_rgba(0,229,255,0.4)] transition-transform active:scale-95">
-<span>Navigate</span>
-<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Holographic Playing Cards Inventory -->
-<div class="space-y-2.5"><div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-[18px]">sync</span><span class="font-headline-sm text-headline-sm text-primary uppercase font-bold tracking-wider">Active Card Cipher</span></div><div class="flex items-center gap-1.5 bg-primary-container/15 px-2.5 py-1 rounded-full border border-primary-container/40"><span class="w-2 h-2 rounded-full bg-primary-container animate-ping"></span><span class="font-label-sm text-label-sm text-primary font-bold tracking-widest uppercase">Live Beacon</span></div></div><div class="bg-surface-container-high/90 backdrop-blur-2xl rounded-xl p-4 shadow-[0_0_24px_rgba(0,229,255,0.18)] border border-primary-container/30 relative overflow-hidden space-y-3"><div class="flex items-center justify-between pb-2 border-b border-outline-variant/30"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#FFD600] text-[18px] animate-pulse">timer</span><div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">30s Cipher Rotation</span><span class="font-label-md text-label-md text-[#FFD600] font-bold tracking-widest">RESHUFFLES IN 00:24s</span></div></div><div class="relative w-8 h-8 flex items-center justify-center"><svg class="w-full h-full -rotate-90" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#1b2029" stroke-width="3.5" class="opacity-60"></circle><circle cx="18" cy="18" r="14" fill="none" stroke="#00e5ff" stroke-width="3.5" stroke-dasharray="88" stroke-dashoffset="22" stroke-linecap="round" class="drop-shadow-[0_0_6px_rgba(0,229,255,0.8)]"></circle></svg><span class="material-symbols-outlined absolute text-[12px] text-primary-container">bolt</span></div></div><div class="grid grid-cols-5 gap-3 items-center"><div class="col-span-2 relative group"><div class="relative w-full aspect-[2/3] rounded-xl overflow-hidden border border-primary-container/60 shadow-[0_0_20px_rgba(0,229,255,0.35)] bg-surface-container-lowest flex items-center justify-center"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWC1wa07cUCyyu1XUMw0nJXv7LU55ADqNFTBQiFQBQsO8SGgpoaKeUvDmSEVQydXbGT2FbcLb1BaxREV7nitOnov-dQpYi59yd1jB1NDUrQ3oghhpvriHO5lmVZiGdNMurdxrxItMqXVqJW0CASCGF-Ex3_FGomhh4wpUGOhlaZXv1ABU5DrCEBCVpvZflvaSWvC-hOmW4ajrEKBuEdTse_7gb5TBmRNWyc2U5oQ8Oi8hMqODbXe5X" alt="Holographic Card Back Cipher" class="w-full h-full object-cover"><div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent opacity-60"></div><div class="absolute top-2 left-2 flex items-center gap-0.5 bg-surface/90 px-1.5 py-0.5 rounded border border-primary-container/50"><span class="font-headline-sm text-headline-sm font-bold text-primary leading-none">K</span><span class="text-primary text-[12px] font-bold">♠</span></div><div class="absolute bottom-2 right-2 flex items-center gap-0.5 bg-surface/90 px-1.5 py-0.5 rounded border border-primary-container/50 rotate-180"><span class="font-headline-sm text-headline-sm font-bold text-primary leading-none">K</span><span class="text-primary text-[12px] font-bold">♠</span></div><div class="absolute inset-0 rounded-xl bg-primary-container/10 pointer-events-none animate-pulse"></div></div></div><div class="col-span-3 flex flex-col justify-between space-y-2.5"><div class="space-y-1"><div class="flex items-center gap-1.5"><span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary-container font-label-sm text-label-sm font-bold uppercase tracking-wider">Cipher #089</span><span class="text-[10px] text-tertiary font-bold uppercase tracking-wide">Active</span></div><h4 class="font-headline-sm text-headline-sm text-primary font-bold leading-tight">King of Spades (K♠)</h4><p class="font-body-sm text-body-sm text-on-surface-variant leading-snug">Cryptographic holographic key for Beacon Point #04.</p></div><div class="p-2.5 rounded-lg bg-surface-container-lowest/90 border border-primary-container/40 flex items-center gap-2.5 shadow-sm"><div class="w-10 h-10 rounded bg-primary-container/15 flex items-center justify-center shrink-0 border border-primary-container/50"><span class="material-symbols-outlined text-primary-container text-[24px]">qr_code_2</span></div><div class="flex flex-col"><span class="font-label-sm text-label-sm text-primary font-bold tracking-wider uppercase">Field Transmission</span><span class="font-body-sm text-[11px] text-on-surface leading-tight font-semibold">SHOW TO FIELD MARSHAL TO SCAN</span></div></div></div></div><div class="p-2.5 rounded-lg bg-[#FFD600]/10 border border-[#FFD600]/30 flex items-start gap-2"><span class="material-symbols-outlined text-[#FFD600] text-[18px] shrink-0 mt-0.5 animate-pulse">bolt</span><p class="font-body-sm text-[11px] text-[#FFD600] leading-snug font-medium">⚡ CARD CIPHER RE-ROLLS EVERY 30 SECONDS — Must be scanned before expiration to claim points!</p></div></div><div class="flex items-center justify-between pt-1"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-on-surface-variant text-[16px]">inventory_2</span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold tracking-wider">Collected Deck Log</span></div><button class="font-label-sm text-label-sm text-primary hover:text-primary-fixed-dim uppercase tracking-wider flex items-center gap-0.5"><span>View All 5 Cards</span><span class="material-symbols-outlined text-[14px]">chevron_right</span></button></div><div class="flex gap-2.5 overflow-x-auto pb-1 pt-0.5 no-scrollbar -mx-gutter px-gutter"><div class="group relative w-16 shrink-0 h-24 rounded-lg bg-gradient-to-b from-surface-container-high to-surface-container-lowest p-1.5 flex flex-col justify-between shadow-[0_4px_16px_rgba(0,229,255,0.15)] hover:scale-105 transition-all cursor-pointer border border-outline-variant/30"><div class="flex items-center justify-between"><span class="font-label-md text-label-md font-bold text-on-surface leading-none">7</span><span class="text-primary text-[11px] font-bold">♠</span></div><div class="flex items-center justify-center my-auto"><span class="material-symbols-outlined text-[20px] text-primary-container drop-shadow-[0_0_6px_rgba(0,229,255,0.8)]">token</span></div><div class="flex items-center justify-between rotate-180"><span class="font-label-md text-label-md font-bold text-on-surface leading-none">7</span><span class="text-primary text-[11px] font-bold">♠</span></div></div><div class="group relative w-16 shrink-0 h-24 rounded-lg bg-gradient-to-b from-surface-container-high to-surface-container-lowest p-1.5 flex flex-col justify-between shadow-[0_4px_16px_rgba(255,176,201,0.2)] hover:scale-105 transition-all cursor-pointer border border-outline-variant/30"><div class="flex items-center justify-between"><span class="font-label-md text-label-md font-bold text-secondary-container leading-none">K</span><span class="text-secondary text-[11px] font-bold">♥</span></div><div class="flex items-center justify-center my-auto"><span class="material-symbols-outlined text-[20px] text-secondary drop-shadow-[0_0_6px_rgba(255,176,201,0.8)]">crown</span></div><div class="flex items-center justify-between rotate-180"><span class="font-label-md text-label-md font-bold text-secondary-container leading-none">K</span><span class="text-secondary text-[11px] font-bold">♥</span></div></div><div class="group relative w-16 shrink-0 h-24 rounded-lg bg-gradient-to-b from-surface-container-high to-surface-container-lowest p-1.5 flex flex-col justify-between shadow-[0_4px_16px_rgba(0,229,255,0.15)] hover:scale-105 transition-all cursor-pointer border border-outline-variant/30"><div class="flex items-center justify-between"><span class="font-label-md text-label-md font-bold text-secondary leading-none">A</span><span class="text-secondary text-[11px] font-bold">♦</span></div><div class="flex items-center justify-center my-auto"><span class="material-symbols-outlined text-[20px] text-secondary drop-shadow-[0_0_6px_rgba(255,176,201,0.8)]">diamond</span></div><div class="flex items-center justify-between rotate-180"><span class="font-label-md text-label-md font-bold text-secondary leading-none">A</span><span class="text-secondary text-[11px] font-bold">♦</span></div></div><div class="group relative w-16 shrink-0 h-24 rounded-lg bg-gradient-to-b from-surface-container-high to-surface-container-lowest p-1.5 flex flex-col justify-between shadow-[0_4px_16px_rgba(0,229,255,0.15)] hover:scale-105 transition-all cursor-pointer border border-outline-variant/30"><div class="flex items-center justify-between"><span class="font-label-md text-label-md font-bold text-on-surface leading-none">Q</span><span class="text-primary text-[11px] font-bold">♣</span></div><div class="flex items-center justify-center my-auto"><span class="material-symbols-outlined text-[20px] text-tertiary-container drop-shadow-[0_0_6px_rgba(44,241,0,0.8)]">award_star</span></div><div class="flex items-center justify-between rotate-180"><span class="font-label-md text-label-md font-bold text-on-surface leading-none">Q</span><span class="text-primary text-[11px] font-bold">♣</span></div></div><div class="group relative w-16 shrink-0 h-24 rounded-lg bg-gradient-to-b from-surface-container-high to-surface-container-lowest p-1.5 flex flex-col justify-between shadow-[0_4px_16px_rgba(0,229,255,0.15)] hover:scale-105 transition-all cursor-pointer border border-outline-variant/30"><div class="flex items-center justify-between"><span class="font-label-md text-label-md font-bold text-on-surface leading-none">10</span><span class="text-primary text-[11px] font-bold">♠</span></div><div class="flex items-center justify-center my-auto"><span class="material-symbols-outlined text-[18px] text-primary drop-shadow-[0_0_6px_rgba(0,229,255,0.8)]">shield</span></div><div class="flex items-center justify-between rotate-180"><span class="font-label-md text-label-md font-bold text-on-surface leading-none">10</span><span class="text-primary text-[11px] font-bold">♠</span></div></div></div></div>
-<!-- Real-Time Leaderboard Ticker Strip -->
-<div class="bg-surface-container-high/90 backdrop-blur-xl rounded-xl p-3 shadow-lg flex flex-col space-y-2">
-<div class="flex items-center justify-between text-on-surface-variant">
-<div class="flex items-center gap-1.5">
-<span class="material-symbols-outlined text-[16px] text-primary">leaderboard</span>
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Grid Standings</span>
-</div>
-<span class="font-label-sm text-label-sm text-tertiary font-semibold animate-pulse">● Live Synced</span>
-</div>
-<!-- 3 Mini Leaderboard Rows -->
-<div class="space-y-1.5">
-<!-- 1st Rank -->
-<div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-surface-container-lowest/80">
-<div class="flex items-center gap-2">
-<span class="w-5 h-5 rounded-full bg-[#FFD600]/20 text-[#FFD600] font-label-sm text-label-sm font-bold flex items-center justify-center">1</span>
-<span class="font-body-sm text-body-sm text-on-surface font-semibold">Team Titans</span>
-</div>
-<div class="flex items-center gap-1">
-<span class="font-headline-sm text-headline-sm text-[#FFD600] font-bold">318</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">pts</span>
-</div>
-</div>
-<!-- 2nd Rank (User Team Highlighted) -->
-<div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-primary-container/15 shadow-[0_0_12px_rgba(0,229,255,0.15)]">
-<div class="flex items-center gap-2">
-<span class="w-5 h-5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-bold flex items-center justify-center">2</span>
-<span class="font-body-sm text-body-sm text-primary font-bold">Team Explorers (You)</span>
-</div>
-<div class="flex items-center gap-1">
-<span class="font-headline-sm text-headline-sm text-primary font-bold">148</span>
-<span class="font-label-sm text-label-sm text-primary-fixed-dim uppercase">pts</span>
-</div>
-</div>
-<!-- 3rd Rank -->
-<div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-surface-container-lowest/80">
-<div class="flex items-center gap-2">
-<span class="w-5 h-5 rounded-full bg-[#FF8A65]/20 text-[#FF8A65] font-label-sm text-label-sm font-bold flex items-center justify-center">3</span>
-<span class="font-body-sm text-body-sm text-on-surface font-semibold">Dream Squad</span>
-</div>
-<div class="flex items-center gap-1">
-<span class="font-headline-sm text-headline-sm text-[#FF8A65] font-bold">125</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">pts</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-<script>
-  // Simple micro-interaction for tapping card inventory items
-  document.querySelectorAll('.group.cursor-pointer').forEach(card => {
-    card.addEventListener('click', () => {
-      card.classList.add('scale-110');
-      setTimeout(() => card.classList.remove('scale-110'), 180);
-    });
-  });
-</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_16px_rgba(0,229,255,0.06)]" data-active-classes="text-primary-container drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] font-bold"><div class="flex justify-around items-center h-20 px-gutter"><a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-16 transition-colors text-primary-container drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] font-bold" data-path="player-dashboard" href="#"><span class="material-symbols-outlined text-[24px]">radar</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Hunt</span></a><a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" data-path="checkpoint-log" href="#"><span class="material-symbols-outlined text-[24px]">style</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Cards</span></a><a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" data-path="leaderboard" href="#"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Rank</span></a><a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" data-path="admin-control-panel" href="#"><span class="material-symbols-outlined text-[24px]">tune</span><span class="font-label-sm text-label-sm uppercase tracking-wider">Control</span></a></div></nav>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+  
+  <!-- Fixed Header with Active Operative Telemetry -->
+  <header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,229,255,0.08)] pt-safe">
+    <div class="h-16 px-gutter flex items-center justify-between">
+      <div class="flex items-center gap-space-sm">
+        <div class="w-8 h-8 rounded-lg bg-primary-container/20 border border-primary-container/50 flex items-center justify-center text-primary-container">
+          <span class="material-symbols-outlined text-[20px]">sports_esports</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-headline-sm text-headline-sm text-primary tracking-wider uppercase leading-none drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">Territory Grid</span>
+          <div class="flex items-center gap-space-xs mt-0.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Player HUD // Active</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-space-sm">
+        <div class="flex items-center gap-space-xs bg-surface-container-high px-space-sm py-0.5 rounded-full border border-primary-container/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+          <span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider" id="header-callsign-badge">SQUAD</span>
+        </div>
+        <button onclick="signOutUser()" title="Sign Out" class="w-8 h-8 rounded-full bg-surface-container-high hover:bg-error-container/30 border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-error transition">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
+  <main class="flex flex-col relative w-full pt-16 pb-20 bg-surface min-h-screen">
+    <div class="flex flex-col w-full px-gutter space-y-space-md pb-6">
+      
+      <!-- Sub-Header: Team Status & Live Standing -->
+      <div class="flex items-center justify-between bg-surface-container-low/80 backdrop-blur-xl p-space-sm rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-primary-container/20">
+        <div class="flex items-center gap-2.5 pl-1.5">
+          <div class="relative flex items-center justify-center">
+            <span class="w-2.5 h-2.5 rounded-full bg-tertiary-container animate-ping absolute"></span>
+            <span class="w-2 h-2 rounded-full bg-tertiary-container relative"></span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-headline-sm text-headline-sm text-primary leading-tight font-bold tracking-wide" id="team-name-label">Squad Loading...</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant leading-none uppercase tracking-widest" id="team-zone-label">Active Hunt • Live Grid</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 bg-surface-container-highest/90 px-3 py-1.5 rounded-full border border-primary-container/30">
+          <span class="material-symbols-outlined text-[16px] text-[#FFD600]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+          <span class="font-label-md text-label-md text-primary font-bold tracking-wider" id="team-rank-label">Rank #-- <span class="text-on-surface-variant font-normal">/ --</span></span>
+        </div>
+      </div>
+
+      <!-- Telemetry HUD: Score & Card Counter -->
+      <div class="grid grid-cols-5 gap-space-sm">
+        
+        <!-- Huge Score Ring HUD (3 cols) -->
+        <div class="col-span-3 bg-surface-container/80 backdrop-blur-xl p-3.5 rounded-xl shadow-[0_0_24px_rgba(0,229,255,0.1)] border border-primary-container/20 relative overflow-hidden flex flex-col justify-between">
+          <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-primary-container/10 rounded-full blur-xl pointer-events-none"></div>
+          <div class="flex items-center justify-between relative z-10">
+            <div class="flex items-center gap-1 text-on-surface-variant">
+              <span class="material-symbols-outlined text-[16px] text-primary">military_tech</span>
+              <span class="font-label-sm text-label-sm uppercase tracking-widest text-primary">Score HUD</span>
+            </div>
+            <div class="flex items-center gap-0.5 bg-tertiary-container/20 text-tertiary px-1.5 py-0.5 rounded text-[11px] font-bold">
+              <span class="material-symbols-outlined text-[12px]">trending_up</span>
+              <span id="last-points-badge">+0 PTS</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 my-1 relative z-10">
+            <!-- SVG Radial Ring with Glow -->
+            <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                <circle class="opacity-60" cx="32" cy="32" fill="none" r="26" stroke="#1b2029" stroke-width="5"></circle>
+                <circle id="score-ring-circle" class="drop-shadow-[0_0_6px_rgba(0,229,255,0.8)] transition-all duration-700" cx="32" cy="32" fill="none" r="26" stroke="#00e5ff" stroke-dasharray="163" stroke-dashoffset="163" stroke-linecap="round" stroke-width="5"></circle>
+              </svg>
+              <span class="material-symbols-outlined absolute text-[20px] text-primary-container">bolt</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight leading-none drop-shadow-[0_0_12px_rgba(195,245,255,0.3)]" id="team-score-num">0</span>
+              <span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Total Points</span>
+            </div>
+          </div>
+          <!-- Micro scan line telemetry indicator -->
+          <div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden relative z-10">
+            <div id="score-progress-bar" class="bg-gradient-to-r from-primary-container to-tertiary-container h-full w-[5%] rounded-full shadow-[0_0_8px_rgba(0,229,255,0.7)] transition-all duration-700"></div>
+          </div>
+        </div>
+
+        <!-- Cards Collected Counter (2 cols) -->
+        <div class="col-span-2 bg-surface-container/80 backdrop-blur-xl p-3.5 rounded-xl shadow-[0_0_24px_rgba(0,229,255,0.06)] border border-secondary/20 flex flex-col justify-between relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Inventory</span>
+            <span class="material-symbols-outlined text-[18px] text-secondary">style</span>
+          </div>
+          <div class="flex items-baseline gap-1 my-1">
+            <span class="font-headline-xl text-headline-xl text-secondary font-bold leading-none" id="cards-count-label">0</span>
+            <span class="font-label-md text-label-md text-on-surface-variant uppercase">/ 10</span>
+          </div>
+          <!-- Mini stack card graphic -->
+          <div class="flex items-center -space-x-2 pt-1" id="mini-cards-stack">
+            <div class="w-5 h-7 rounded bg-surface-bright flex items-center justify-center text-[10px] text-primary shadow-sm font-bold">♠</div>
+            <div class="w-5 h-7 rounded bg-surface-container-high flex items-center justify-center text-[10px] text-secondary font-bold shadow-sm">♥</div>
+            <div class="w-5 h-7 rounded bg-primary-container/20 flex items-center justify-center text-[10px] text-primary font-bold shadow-sm">♦</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVE CLUE: Neon HUD Mission Card -->
+      <div class="bg-surface-container-low/90 backdrop-blur-2xl rounded-xl p-4 shadow-[0_0_30px_rgba(255,214,0,0.12)] border border-[#FFD600]/30 relative overflow-hidden space-y-3">
+        <!-- Amber / Cyan Laser Header Strip -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-[#FFD600]/20 flex items-center justify-center shadow-[0_0_12px_rgba(255,214,0,0.3)]">
+              <span class="material-symbols-outlined text-[#FFD600] text-[18px] animate-pulse">radar</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-label-sm text-label-sm uppercase tracking-widest text-[#FFD600] font-bold">Active Mission Directive</span>
+              <span class="font-label-sm text-label-sm text-on-surface-variant" id="active-checkpoint-label">Beacon Checkpoint #01</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-[#FFD600]/15 text-[#FFD600] font-label-sm text-label-sm font-bold uppercase tracking-wider" id="active-zone-badge">
+            TARGET ZONE
+          </span>
+        </div>
+
+        <!-- Clue Prompt Banner -->
+        <div class="bg-surface-container-highest/60 p-3 rounded-lg flex items-start gap-2.5 border border-outline-variant/30">
+          <span class="material-symbols-outlined text-[#FFD600] text-[20px] shrink-0 mt-0.5">lightbulb</span>
+          <p class="font-headline-sm text-headline-sm text-on-surface font-semibold leading-snug" id="active-clue-text">
+            “Locate the <span class="text-[#FFD600] drop-shadow-[0_0_8px_rgba(255,214,0,0.6)]">Yellow Beacon Cone</span> nestled near the library plaza & colonnade arch!”
+          </p>
+        </div>
+
+        <!-- Checkpoint instructions -->
+        <div class="p-2.5 rounded-lg bg-[#00e5ff]/10 border border-[#00e5ff]/30 flex items-start gap-2">
+          <span class="material-symbols-outlined text-primary-container text-[18px] shrink-0 mt-0.5 animate-pulse">sports_score</span>
+          <p class="font-body-sm text-[12px] text-primary leading-snug font-medium">
+            Reach this sector and report to the <b>Field Marshal</b> stationed with the beacon cones to draw your card and record your score!
+          </p>
+        </div>
+      </div>
+
+      <!-- Holographic Playing Cards Inventory -->
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary-container text-[18px]">style</span>
+            <span class="font-headline-sm text-headline-sm text-primary uppercase font-bold tracking-wider">Collected Deck Inventory</span>
+          </div>
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold tracking-wider" id="deck-count-indicator">0 Cards Collected</span>
+        </div>
+
+        <!-- Cards Deck Scrollable -->
+        <div class="flex gap-2.5 overflow-x-auto pb-2 pt-1 no-scrollbar -mx-gutter px-gutter" id="collected-deck-container">
+          <!-- Populated dynamically -->
+          <div class="p-4 rounded-xl bg-surface-container-high/60 border border-outline-variant/30 text-center w-full text-xs font-mono text-gray-400">
+            No cards collected yet. Reach your first checkpoint to draw!
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time Leaderboard Ticker Strip -->
+      <div class="bg-surface-container-high/90 backdrop-blur-xl rounded-xl p-3 shadow-lg border border-primary-container/20 flex flex-col space-y-2">
+        <div class="flex items-center justify-between text-on-surface-variant">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-primary">leaderboard</span>
+            <span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Grid Standings</span>
+          </div>
+          <span class="font-label-sm text-label-sm text-tertiary font-semibold animate-pulse">● Live Synced</span>
+        </div>
+        
+        <!-- Live Leaderboard Rows -->
+        <div class="space-y-1.5" id="mini-leaderboard-rows">
+          <div class="py-2 text-center text-xs font-mono text-gray-400">Loading standings...</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl border-t border-cyan/20 shadow-[0_-2px_16px_rgba(0,229,255,0.06)]">
+    <div class="flex justify-around items-center h-20 px-gutter">
+      <a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-16 transition-colors text-primary-container drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] font-bold" href="player_dashboard.html">
+        <span class="material-symbols-outlined text-[24px]">radar</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Hunt</span>
+      </a>
+      <a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" href="leaderboard.html">
+        <span class="material-symbols-outlined text-[24px]">emoji_events</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Rank</span>
+      </a>
+      <button onclick="handleRestrictedNav('MEMBER')" class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant/40 hover:text-on-surface-variant transition-colors">
+        <span class="material-symbols-outlined text-[24px]">verified</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Marshal</span>
+      </button>
+      <button onclick="handleRestrictedNav('ADMIN')" class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant/40 hover:text-on-surface-variant transition-colors">
+        <span class="material-symbols-outlined text-[24px]">tune</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Admin</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Script: Role Guard & Dynamic Live Data Synchronization -->
+  <script>
+    var currentUser = null;
+    var allClues = [];
+
+    // 1. Role Guard
+    (function enforceClearance() {
+      try {
+        var raw = localStorage.getItem('territory_grid_user') || sessionStorage.getItem('territory_grid_user');
+        currentUser = raw ? JSON.parse(raw) : null;
+        if (!currentUser) {
+          window.location.href = 'login.html';
+          return;
+        }
+        if (!currentUser.isApproved && currentUser.role !== 'ADMIN') {
+          window.location.href = 'login.html';
+          return;
+        }
+        if (currentUser.role === 'MEMBER') {
+          window.location.href = 'member_checkin.html';
+          return;
+        }
+      } catch (e) {
+        window.location.href = 'login.html';
+      }
+    })();
+
+    window.addEventListener('DOMContentLoaded', function() {
+      if (!currentUser) return;
+      document.getElementById('header-callsign-badge').innerText = currentUser.callsign || 'SQUAD';
+      
+      loadCluesAndSync();
+      // Poll live data every 3 seconds
+      setInterval(syncTeamData, 3000);
+    });
+
+    function signOutUser() {
+      localStorage.removeItem('territory_grid_user');
+      sessionStorage.removeItem('territory_grid_user');
+      window.location.href = 'login.html';
+    }
+
+    function handleRestrictedNav(role) {
+      if (currentUser && currentUser.role === 'ADMIN') {
+        window.location.href = role === 'ADMIN' ? 'admin_panel.html' : 'member_checkin.html';
+      } else {
+        alert('Clearance Restricted: This portal is reserved for ' + (role === 'ADMIN' ? 'Game Master Samay' : 'Field Marshals') + '.');
+      }
+    }
+
+    async function loadCluesAndSync() {
+      try {
+        var res = await fetch('/api/clues');
+        var data = await res.json();
+        if (data.success) {
+          allClues = data.clues || [];
+        }
+      } catch (e) {
+        console.warn('Failed to load clues:', e);
+      }
+      syncTeamData();
+    }
+
+    async function syncTeamData() {
+      try {
+        var res = await fetch('/api/teams');
+        var data = await res.json();
+        if (!data.success) return;
+
+        var teams = data.teams || [];
+        var approvedTeams = teams.filter(function(t) { return t.isApproved; });
+        approvedTeams.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
+
+        // Find current player team
+        var myTeam = approvedTeams.find(function(t) {
+          return (currentUser.teamId && t._id === currentUser.teamId) ||
+                 (t.callsign && currentUser.callsign && t.callsign.toLowerCase() === currentUser.callsign.toLowerCase());
+        });
+
+        if (!myTeam) {
+          // If not in approved teams yet, find in all teams
+          myTeam = teams.find(function(t) {
+            return (currentUser.teamId && t._id === currentUser.teamId) ||
+                   (t.callsign && currentUser.callsign && t.callsign.toLowerCase() === currentUser.callsign.toLowerCase());
+          });
+        }
+
+        if (myTeam) {
+          // 1. Team Name & Points
+          document.getElementById('team-name-label').innerText = myTeam.name || myTeam.callsign;
+          document.getElementById('team-score-num').innerText = myTeam.score || 0;
+
+          // Rank
+          var myRankIndex = approvedTeams.findIndex(function(t) { return t._id === myTeam._id; });
+          var rankText = myRankIndex >= 0 ? '#' + (myRankIndex + 1) : '#--';
+          document.getElementById('team-rank-label').innerHTML = 'Rank ' + rankText + ' <span class="text-on-surface-variant font-normal">/ ' + approvedTeams.length + '</span>';
+
+          // Score Ring (circumference ~ 163)
+          var maxScore = 300;
+          var pct = Math.min((myTeam.score || 0) / maxScore, 1);
+          var strokeOffset = Math.round(163 * (1 - pct));
+          var ring = document.getElementById('score-ring-circle');
+          if (ring) ring.setAttribute('stroke-dashoffset', strokeOffset);
+          var bar = document.getElementById('score-progress-bar');
+          if (bar) bar.style.width = Math.max(Math.round(pct * 100), 5) + '%';
+
+          // 2. Cards Inventory
+          var cards = myTeam.cards || [];
+          document.getElementById('cards-count-label').innerText = cards.length;
+          document.getElementById('deck-count-indicator').innerText = cards.length + ' Cards Collected';
+
+          // Render collected deck
+          renderDeck(cards);
+
+          // 3. Active Clue Directive
+          var currentIdx = myTeam.currentClueIndex || 0;
+          if (currentIdx >= allClues.length && allClues.length > 0) {
+            document.getElementById('active-checkpoint-label').innerText = 'FINAL OBJECTIVE CLEARED';
+            document.getElementById('active-zone-badge').innerText = 'COMPLETED';
+            document.getElementById('active-clue-text').innerHTML = '🏆 <b>ALL CHECKPOINTS COMPLETED!</b> Return to Game Master Central for final scoring!';
+            document.getElementById('team-zone-label').innerText = 'All Zones Completed';
+          } else if (allClues.length > 0) {
+            var clueId = (myTeam.clueOrder && myTeam.clueOrder[currentIdx]) || allClues[currentIdx]._id;
+            var activeClue = allClues.find(function(c) { return c._id === clueId; }) || allClues[currentIdx];
+            
+            document.getElementById('active-checkpoint-label').innerText = 'Beacon Checkpoint #' + String(currentIdx + 1).padStart(2, '0');
+            document.getElementById('active-zone-badge').innerText = activeClue.zoneId || 'SECTOR';
+            document.getElementById('active-clue-text').innerText = '“' + activeClue.text + '”';
+            document.getElementById('team-zone-label').innerText = 'Active Hunt • ' + (activeClue.zoneLabel || activeClue.zoneId);
+          }
+
+          if (cards.length > 0) {
+            var lastCard = cards[cards.length - 1];
+            document.getElementById('last-points-badge').innerText = '+' + ((lastCard.rank || 1) + 12) + ' PTS';
+          }
+        }
+
+        // Render Leaderboard Ticker Strip
+        renderMiniLeaderboard(approvedTeams, myTeam ? myTeam._id : null);
+
+      } catch (err) {
+        console.warn('Sync error:', err);
+      }
+    }
+
+    function renderDeck(cards) {
+      var container = document.getElementById('collected-deck-container');
+      if (!container) return;
+
+      if (!cards || cards.length === 0) {
+        container.innerHTML = '<div class="p-4 rounded-xl bg-surface-container-high/60 border border-outline-variant/30 text-center w-full text-xs font-mono text-gray-400">No cards collected yet. Report to a Field Marshal station!</div>';
+        return;
+      }
+
+      var rankSymbols = { 1: 'A', 11: 'J', 12: 'Q', 13: 'K' };
+
+      container.innerHTML = cards.map(function(c) {
+        var rankDisplay = rankSymbols[c.rank] || c.rank;
+        var suit = c.suit || '♠';
+        var isRed = suit === '♥' || suit === '♦';
+        var suitColor = isRed ? 'text-secondary' : 'text-primary';
+
+        return '<div class="group relative w-16 shrink-0 h-24 rounded-lg bg-gradient-to-b from-surface-container-high to-surface-container-lowest p-1.5 flex flex-col justify-between shadow-[0_4px_16px_rgba(0,229,255,0.15)] border border-outline-variant/30 hover:scale-105 transition cursor-pointer">' +
+          '<div class="flex items-center justify-between">' +
+            '<span class="font-label-md text-label-md font-bold text-on-surface leading-none">' + rankDisplay + '</span>' +
+            '<span class="' + suitColor + ' text-[11px] font-bold">' + suit + '</span>' +
+          '</div>' +
+          '<div class="flex items-center justify-center my-auto">' +
+            '<span class="material-symbols-outlined text-[20px] text-primary-container drop-shadow-[0_0_6px_rgba(0,229,255,0.8)]">token</span>' +
+          '</div>' +
+          '<div class="flex items-center justify-between rotate-180">' +
+            '<span class="font-label-md text-label-md font-bold text-on-surface leading-none">' + rankDisplay + '</span>' +
+            '<span class="' + suitColor + ' text-[11px] font-bold">' + suit + '</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderMiniLeaderboard(teams, myTeamId) {
+      var rowsContainer = document.getElementById('mini-leaderboard-rows');
+      if (!rowsContainer) return;
+
+      if (!teams || teams.length === 0) {
+        rowsContainer.innerHTML = '<div class="py-2 text-center text-xs font-mono text-gray-400">No squads authorized yet.</div>';
+        return;
+      }
+
+      var topTeams = teams.slice(0, 3);
+      rowsContainer.innerHTML = topTeams.map(function(t, idx) {
+        var isMe = t._id === myTeamId;
+        var rankBadgeColor = idx === 0 ? 'bg-[#FFD600]/20 text-[#FFD600]' : (idx === 1 ? 'bg-primary/20 text-primary' : 'bg-[#FF8A65]/20 text-[#FF8A65]');
+        var rowBg = isMe ? 'bg-primary-container/15 border border-primary-container/40 shadow-[0_0_12px_rgba(0,229,255,0.15)]' : 'bg-surface-container-lowest/80';
+        var nameColor = isMe ? 'text-primary font-bold' : 'text-on-surface font-semibold';
+        var youBadge = isMe ? ' <span class="text-[10px] text-primary-container font-bold">(You)</span>' : '';
+
+        return '<div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg ' + rowBg + '">' +
+          '<div class="flex items-center gap-2">' +
+            '<span class="w-5 h-5 rounded-full ' + rankBadgeColor + ' font-label-sm text-label-sm font-bold flex items-center justify-center">' + (idx + 1) + '</span>' +
+            '<span class="font-body-sm text-body-sm ' + nameColor + '">' + (t.name || t.callsign) + youBadge + '</span>' +
+          '</div>' +
+          '<div class="flex items-center gap-1">' +
+            '<span class="font-headline-sm text-headline-sm text-primary font-bold">' + (t.score || 0) + '</span>' +
+            '<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">pts</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+  </script>
 </body></html>
