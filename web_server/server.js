@@ -157,7 +157,10 @@ function sendJson(res, statusCode, data) {
     'Content-Type': 'application/json; charset=UTF-8',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+    'Pragma': 'no-cache',
+    'Expires': '0'
   });
   res.end(JSON.stringify(data));
 }
@@ -365,19 +368,21 @@ const server = http.createServer(async (req, res) => {
 
       // 4. GET /api/admin/pending (List all pending approvals)
       if (pathname === '/api/admin/pending' && req.method === 'GET') {
-        const pendingUsers = db.collections.users.filter(u => !u.isApproved && u.role !== 'ADMIN');
+        db.load();
+        const pendingMarshals = db.collections.users.filter(u => !u.isApproved && u.role === 'MEMBER');
         const pendingTeams = db.collections.teams.filter(t => !t.isApproved);
 
         return sendJson(res, 200, {
           success: true,
-          count: pendingUsers.length + pendingTeams.length,
-          users: pendingUsers,
+          count: pendingMarshals.length + pendingTeams.length,
+          users: pendingMarshals,
           teams: pendingTeams
         });
       }
 
       // 5. POST /api/admin/approve (Approve Team or Marshal)
       if (pathname === '/api/admin/approve' && req.method === 'POST') {
+        db.load();
         const body = await parseBody(req);
         const { type, id } = body; // type: 'USER' or 'TEAM'
 
@@ -385,9 +390,11 @@ const server = http.createServer(async (req, res) => {
           const team = db.collections.teams.find(t => t._id === id);
           if (team) {
             team.isApproved = true;
-            // Also approve user with this teamId
+            // Also approve all squad users with this teamId or matching callsign
             db.collections.users.forEach(u => {
-              if (u.teamId === id) u.isApproved = true;
+              if (u.teamId === id || (team.callsign && u.callsign && u.callsign.toLowerCase() === team.callsign.toLowerCase())) {
+                u.isApproved = true;
+              }
             });
             db.save();
             db.logEvent('APPROVE_TEAM', `Squad authorized: "${team.name}" (${team._id})`);
@@ -402,7 +409,7 @@ const server = http.createServer(async (req, res) => {
               if (team) team.isApproved = true;
             }
             db.save();
-            db.logEvent('APPROVE_USER', `Operative authorized: "${user.callsign}" (${user.role})`);
+            db.logEvent('APPROVE_USER', `Marshal authorized: "${user.callsign}" (${user.role})`);
             return sendJson(res, 200, { success: true, message: `Operative "${user.callsign}" approved.` });
           }
         }
@@ -489,6 +496,7 @@ const server = http.createServer(async (req, res) => {
 
       // 10. GET /api/teams (All teams for Leaderboard & Marshal Check-in)
       if (pathname === '/api/teams' && req.method === 'GET') {
+        db.load();
         return sendJson(res, 200, {
           success: true,
           teams: db.collections.teams

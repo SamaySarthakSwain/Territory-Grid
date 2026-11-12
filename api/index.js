@@ -172,7 +172,10 @@ function sendJson(res, statusCode, data) {
     'Content-Type': 'application/json; charset=UTF-8',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+    'Pragma': 'no-cache',
+    'Expires': '0'
   });
   res.end(JSON.stringify(data));
 }
@@ -411,30 +414,51 @@ module.exports = async (req, res) => {
         const query = userId ? { _id: userId } : { callsign: new RegExp('^' + callsign + '$', 'i') };
         const user = await atlasDb.collection('users').findOne(query);
         if (!user) return sendJson(res, 404, { success: false, error: 'User not found.' });
+
+        let isApproved = !!user.isApproved;
+        if (!isApproved && user.teamId) {
+          const team = await atlasDb.collection('teams').findOne({ _id: user.teamId });
+          if (team && team.isApproved) {
+            isApproved = true;
+            await atlasDb.collection('users').updateOne({ _id: user._id }, { $set: { isApproved: true } });
+          }
+        }
+
         return sendJson(res, 200, {
           success: true,
           _id: user._id,
           callsign: user.callsign,
           role: user.role,
-          isApproved: !!user.isApproved,
+          isApproved: isApproved,
           teamId: user.teamId,
-          status: user.isApproved ? 'AUTHORIZED' : 'WAITING_APPROVAL'
+          status: isApproved ? 'AUTHORIZED' : 'WAITING_APPROVAL'
         });
       }
 
+      memoryStore.load();
       const user = memoryStore.collections.users.find(u => 
         (userId && u._id === userId) || (callsign && u.callsign.toLowerCase() === callsign.toLowerCase())
       );
       if (!user) return sendJson(res, 404, { success: false, error: 'User not found.' });
+
+      let isApproved = !!user.isApproved;
+      if (!isApproved && user.teamId) {
+        const team = memoryStore.collections.teams.find(t => t._id === user.teamId);
+        if (team && team.isApproved) {
+          isApproved = true;
+          user.isApproved = true;
+          memoryStore.save();
+        }
+      }
 
       return sendJson(res, 200, {
         success: true,
         _id: user._id,
         callsign: user.callsign,
         role: user.role,
-        isApproved: !!user.isApproved,
+        isApproved: isApproved,
         teamId: user.teamId,
-        status: user.isApproved ? 'AUTHORIZED' : 'WAITING_APPROVAL'
+        status: isApproved ? 'AUTHORIZED' : 'WAITING_APPROVAL'
       });
     }
 
@@ -443,23 +467,24 @@ module.exports = async (req, res) => {
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/admin/pending' && req.method === 'GET') {
       if (atlasDb) {
-        const users = await atlasDb.collection('users').find({ isApproved: false, role: { $ne: 'ADMIN' } }).toArray();
+        const marshals = await atlasDb.collection('users').find({ isApproved: false, role: 'MEMBER' }).toArray();
         const teams = await atlasDb.collection('teams').find({ isApproved: false }).toArray();
         return sendJson(res, 200, {
           success: true,
-          count: users.length + teams.length,
-          users: users,
+          count: marshals.length + teams.length,
+          users: marshals,
           teams: teams
         });
       }
 
-      const users = memoryStore.collections.users.filter(u => !u.isApproved && u.role !== 'ADMIN');
+      memoryStore.load();
+      const marshals = memoryStore.collections.users.filter(u => !u.isApproved && u.role === 'MEMBER');
       const teams = memoryStore.collections.teams.filter(t => !t.isApproved);
       return sendJson(res, 200, {
         success: true,
-        count: users.length + teams.length,
-        users,
-        teams
+        count: marshals.length + teams.length,
+        users: marshals,
+        teams: teams
       });
     }
 
@@ -472,8 +497,13 @@ module.exports = async (req, res) => {
 
       if (atlasDb) {
         if (type === 'TEAM') {
+          const team = await atlasDb.collection('teams').findOne({ _id: id });
           await atlasDb.collection('teams').updateOne({ _id: id }, { $set: { isApproved: true } });
-          await atlasDb.collection('users').updateMany({ teamId: id }, { $set: { isApproved: true } });
+          await atlasDb.collection('users').updateMany(
+            { $or: [{ teamId: id }, { callsign: team ? team.callsign : '' }] },
+            { $set: { isApproved: true } }
+          );
+          return sendJson(res, 200, { success: true, message: 'Squad approved successfully.' });
         } else {
           const user = await atlasDb.collection('users').findOne({ _id: id });
           if (user) {
@@ -481,19 +511,24 @@ module.exports = async (req, res) => {
             if (user.teamId) {
               await atlasDb.collection('teams').updateOne({ _id: user.teamId }, { $set: { isApproved: true } });
             }
+            return sendJson(res, 200, { success: true, message: `Operative "${user.callsign}" approved.` });
           }
         }
-        return sendJson(res, 200, { success: true, message: 'Entity approved successfully.' });
+        return sendJson(res, 404, { success: false, error: 'Entity not found.' });
       }
 
+      memoryStore.load();
       if (type === 'TEAM') {
         const team = memoryStore.collections.teams.find(t => t._id === id);
         if (team) {
           team.isApproved = true;
           memoryStore.collections.users.forEach(u => {
-            if (u.teamId === id) u.isApproved = true;
+            if (u.teamId === id || (team.callsign && u.callsign && u.callsign.toLowerCase() === team.callsign.toLowerCase())) {
+              u.isApproved = true;
+            }
           });
           memoryStore.save();
+          memoryStore.logEvent('APPROVE_TEAM', `Squad authorized: "${team.name}" (${team._id})`);
           return sendJson(res, 200, { success: true, message: `Squad "${team.name}" approved.` });
         }
       } else {
@@ -505,6 +540,7 @@ module.exports = async (req, res) => {
             if (team) team.isApproved = true;
           }
           memoryStore.save();
+          memoryStore.logEvent('APPROVE_USER', `Marshal authorized: "${user.callsign}"`);
           return sendJson(res, 200, { success: true, message: `Operative "${user.callsign}" approved.` });
         }
       }
@@ -635,6 +671,7 @@ module.exports = async (req, res) => {
         const teams = await atlasDb.collection('teams').find().toArray();
         return sendJson(res, 200, { success: true, teams });
       }
+      memoryStore.load();
       return sendJson(res, 200, { success: true, teams: memoryStore.collections.teams });
     }
 

@@ -248,6 +248,39 @@
         </div>
       </div>
 
+      <!-- ───────────────────────────────────────────────────────────── -->
+      <!-- ACTIVE AUTHORIZED CLEARANCES (LIVE APPROVED ROSTER) -->
+      <!-- ───────────────────────────────────────────────────────────── -->
+      <div class="neon-card rounded-2xl p-6 border-green/30">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-green/20 pb-4 mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-green/20 border border-green/40 flex items-center justify-center text-green shadow-[0_0_12px_rgba(0,255,136,0.25)]">
+              <span class="material-symbols-outlined text-xl">verified</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-lg font-headline font-bold text-white">Active Authorized Clearances</h3>
+                <span id="badge-approved-total" class="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-green/20 text-green border border-green/30">
+                  0 ACTIVE
+                </span>
+              </div>
+              <p class="text-xs font-mono text-gray-400 mt-0.5">
+                Squads & Field Marshals authorized in the live grid. Real-time synchronized.
+              </p>
+            </div>
+          </div>
+          <button onclick="loadApprovedRoster()" class="px-4 py-2 rounded-xl bg-green/10 border border-green/30 text-green text-xs font-headline font-bold hover:bg-green/20 transition flex items-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-sm">refresh</span>
+            <span>Refresh Roster</span>
+          </button>
+        </div>
+
+        <!-- Live Approved Clearances List Container -->
+        <div id="approved-items-list" class="space-y-3">
+          <div class="text-center py-6 text-gray-400 text-xs font-mono">Loading active clearances...</div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ───────────────────────────────────────────────────────────── -->
@@ -352,11 +385,13 @@
     window.addEventListener('DOMContentLoaded', function() {
       loadLeaderboard();
       loadPendingApprovals();
+      loadApprovedRoster();
       loadDatabaseData();
       startClock();
       
-      // Auto-poll pending approvals every 3 seconds
-      setInterval(loadPendingApprovals, 3000);
+      // Auto-poll pending approvals and roster
+      setInterval(loadPendingApprovals, 2000);
+      setInterval(loadApprovedRoster, 3500);
       setInterval(loadLeaderboard, 4000);
     });
 
@@ -383,7 +418,8 @@
       });
 
       if (tab === 'database') loadDatabaseData();
-      if (tab === 'approvals') loadPendingApprovals();
+      if (tab === 'approvals') { loadPendingApprovals(); loadApprovedRoster(); }
+      if (tab === 'ops') loadLeaderboard();
     }
 
     // Master Clock
@@ -422,7 +458,7 @@
     // Load Leaderboard
     async function loadLeaderboard() {
       try {
-        var res = await fetch('/api/teams');
+        var res = await fetch('/api/teams?_t=' + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (data.success) {
           var teams = data.teams || [];
@@ -443,13 +479,18 @@
           tbody.innerHTML = approved.map(function(t, idx) {
             var cardsCount = (t.cards || []).length;
             var rankBadge = idx === 0 ? '👑 #1' : (idx === 1 ? '🥈 #2' : (idx === 2 ? '🥉 #3' : '#' + (idx + 1)));
+            var scoreText = (t.score || 0) + ' PTS';
+            var statusBadge = (t.score > 0)
+              ? '<span class="px-2 py-0.5 rounded text-[10px] bg-green/20 text-green border border-green/30 font-semibold">ACTIVE</span>'
+              : '<span class="px-2 py-0.5 rounded text-[10px] bg-cyan/20 text-cyan border border-cyan/30 font-semibold">READY // DRAW PENDING</span>';
+
             return '<tr class="hover:bg-cyan/5 transition-colors">' +
               '<td class="py-3 px-3 font-bold text-cyan">' + rankBadge + '</td>' +
               '<td class="py-3 px-3 font-bold text-white">' + (t.name || t.callsign) + '</td>' +
-              '<td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-green/20 text-green border border-green/30">ACTIVE</span></td>' +
+              '<td class="py-3 px-3">' + statusBadge + '</td>' +
               '<td class="py-3 px-3 text-gray-300">' + cardsCount + ' Cards</td>' +
               '<td class="py-3 px-3 text-cyan">Zone Step ' + (t.currentClueIndex || 0) + '</td>' +
-              '<td class="py-3 px-3 text-right font-bold text-green text-sm">' + (t.score || 0) + ' PTS</td>' +
+              '<td class="py-3 px-3 text-right font-bold text-green text-sm">' + scoreText + '</td>' +
             '</tr>';
           }).join('');
         }
@@ -458,43 +499,56 @@
       }
     }
 
+    var pendingItemsCache = {};
+    var isLoadingPending = false;
+    var isLoadingRoster = false;
+
     // Load Pending Approvals (Waiting Hall)
     async function loadPendingApprovals() {
+      if (isLoadingPending) return;
+      isLoadingPending = true;
       try {
-        var res = await fetch('/api/admin/pending');
+        var res = await fetch('/api/admin/pending?_t=' + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (data.success) {
-          var count = data.count || 0;
-          document.getElementById('badge-pending').innerText = count;
-          document.getElementById('stat-pending-count').innerText = count;
+          var pendingTeams = data.teams || [];
+          var pendingMarshals = (data.users || []).filter(function(u) { return u.role === 'MEMBER'; });
+          var realCount = pendingTeams.length + pendingMarshals.length;
+
+          document.getElementById('badge-pending').innerText = realCount;
+          document.getElementById('stat-pending-count').innerText = realCount;
 
           var listContainer = document.getElementById('pending-items-list');
-          if (count === 0) {
+          if (realCount === 0) {
             listContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-mono text-xs">No pending requests. All squads and marshals are clear!</div>';
+            pendingItemsCache = {};
             return;
           }
 
           var html = '';
+          pendingItemsCache = {};
+
           // Pending Teams
-          (data.teams || []).forEach(function(team) {
-            html += '<div class="neon-card rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 border-yellow/30 bg-[#091122]">' +
+          pendingTeams.forEach(function(team) {
+            pendingItemsCache['TEAM_' + team._id] = team;
+            html += '<div id="card-pending-TEAM-' + team._id + '" class="neon-card rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 border-yellow/30 bg-[#091122] transition-all duration-300">' +
               '<div class="flex items-center gap-3">' +
                 '<div class="w-10 h-10 rounded-lg bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan">' +
                   '<span class="material-symbols-outlined">sports_esports</span>' +
                 '</div>' +
                 '<div>' +
                   '<div class="flex items-center gap-2">' +
-                    '<h4 class="font-headline font-bold text-white text-sm">' + team.name + '</h4>' +
+                    '<h4 class="font-headline font-bold text-white text-sm">' + (team.name || team.callsign) + '</h4>' +
                     '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan/20 text-cyan border border-cyan/30">SQUAD</span>' +
                   '</div>' +
-                  '<p class="text-xs text-gray-400 font-mono">Callsign: <b>' + (team.callsign || team.name) + '</b> • Registered: ' + new Date(team.createdAt).toLocaleTimeString() + '</p>' +
+                  '<p class="text-xs text-gray-400 font-mono">Callsign: <b>' + (team.callsign || team.name) + '</b> • Registered: ' + (team.createdAt ? new Date(team.createdAt).toLocaleTimeString() : 'Recent') + '</p>' +
                 '</div>' +
               '</div>' +
-              '<div class="flex items-center gap-2">' +
-                '<button onclick="approveEntity(\'TEAM\', \'' + team._id + '\')" class="px-4 py-2 rounded-xl bg-green text-black font-headline font-bold text-xs flex items-center gap-1 hover:shadow-[0_0_12px_rgba(0,255,136,0.6)] transition">' +
+              '<div class="flex items-center gap-2" id="actions-TEAM-' + team._id + '">' +
+                '<button onclick="approveEntity(\'TEAM\', \'' + team._id + '\')" class="px-4 py-2 rounded-xl bg-green text-black font-headline font-bold text-xs flex items-center gap-1 hover:shadow-[0_0_12px_rgba(0,255,136,0.6)] active:scale-95 transition cursor-pointer">' +
                   '<span class="material-symbols-outlined text-sm">check</span> <span>APPROVE SQUAD</span>' +
                 '</button>' +
-                '<button onclick="rejectEntity(\'TEAM\', \'' + team._id + '\')" class="px-3 py-2 rounded-xl bg-red-500/20 text-red-400 font-headline font-bold text-xs hover:bg-red-500/30 transition">' +
+                '<button onclick="rejectEntity(\'TEAM\', \'' + team._id + '\')" class="px-3 py-2 rounded-xl bg-red-500/20 text-red-400 font-headline font-bold text-xs hover:bg-red-500/30 active:scale-95 transition cursor-pointer">' +
                   '<span class="material-symbols-outlined text-sm">close</span>' +
                 '</button>' +
               '</div>' +
@@ -502,8 +556,9 @@
           });
 
           // Pending Users (Marshals)
-          (data.users || []).filter(function(u) { return u.role === 'MEMBER'; }).forEach(function(user) {
-            html += '<div class="neon-card rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 border-green/30 bg-[#091122]">' +
+          pendingMarshals.forEach(function(user) {
+            pendingItemsCache['USER_' + user._id] = user;
+            html += '<div id="card-pending-USER-' + user._id + '" class="neon-card rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 border-green/30 bg-[#091122] transition-all duration-300">' +
               '<div class="flex items-center gap-3">' +
                 '<div class="w-10 h-10 rounded-lg bg-green/20 border border-green/40 flex items-center justify-center text-green">' +
                   '<span class="material-symbols-outlined">verified</span>' +
@@ -513,14 +568,14 @@
                     '<h4 class="font-headline font-bold text-white text-sm">' + user.name + '</h4>' +
                     '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30">FIELD MARSHAL</span>' +
                   '</div>' +
-                  '<p class="text-xs text-gray-400 font-mono">Callsign: <b>' + user.callsign + '</b> • Station: <b>' + (user.zoneLabel || user.zoneId) + '</b></p>' +
+                  '<p class="text-xs text-gray-400 font-mono">Callsign: <b>' + user.callsign + '</b> • Station: <b>' + (user.zoneLabel || user.zoneId || 'Unassigned') + '</b></p>' +
                 '</div>' +
               '</div>' +
-              '<div class="flex items-center gap-2">' +
-                '<button onclick="approveEntity(\'USER\', \'' + user._id + '\')" class="px-4 py-2 rounded-xl bg-green text-black font-headline font-bold text-xs flex items-center gap-1 hover:shadow-[0_0_12px_rgba(0,255,136,0.6)] transition">' +
+              '<div class="flex items-center gap-2" id="actions-USER-' + user._id + '">' +
+                '<button onclick="approveEntity(\'USER\', \'' + user._id + '\')" class="px-4 py-2 rounded-xl bg-green text-black font-headline font-bold text-xs flex items-center gap-1 hover:shadow-[0_0_12px_rgba(0,255,136,0.6)] active:scale-95 transition cursor-pointer">' +
                   '<span class="material-symbols-outlined text-sm">check</span> <span>APPROVE MARSHAL</span>' +
                 '</button>' +
-                '<button onclick="rejectEntity(\'USER\', \'' + user._id + '\')" class="px-3 py-2 rounded-xl bg-red-500/20 text-red-400 font-headline font-bold text-xs hover:bg-red-500/30 transition">' +
+                '<button onclick="rejectEntity(\'USER\', \'' + user._id + '\')" class="px-3 py-2 rounded-xl bg-red-500/20 text-red-400 font-headline font-bold text-xs hover:bg-red-500/30 active:scale-95 transition cursor-pointer">' +
                   '<span class="material-symbols-outlined text-sm">close</span>' +
                 '</button>' +
               '</div>' +
@@ -530,11 +585,141 @@
           listContainer.innerHTML = html;
         }
       } catch (e) {
-        console.error(e);
+        console.error('Pending load error:', e);
+      } finally {
+        isLoadingPending = false;
       }
     }
 
+    // Load Active Authorized Clearances (Live Roster directly on Approvals tab)
+    async function loadApprovedRoster() {
+      if (isLoadingRoster) return;
+      isLoadingRoster = true;
+      try {
+        var [teamsRes, usersRes] = await Promise.all([
+          fetch('/api/teams?_t=' + Date.now(), { cache: 'no-store' }),
+          fetch('/api/database?collection=users&_t=' + Date.now(), { cache: 'no-store' })
+        ]);
+        var teamsData = await teamsRes.json();
+        var usersData = await usersRes.json();
+
+        var approvedTeams = (teamsData.teams || []).filter(function(t) { return t.isApproved; });
+        var approvedMarshals = (usersData.data || []).filter(function(u) { return u.isApproved && u.role === 'MEMBER'; });
+        var totalActive = approvedTeams.length + approvedMarshals.length;
+
+        var badge = document.getElementById('badge-approved-total');
+        if (badge) badge.innerText = totalActive + ' ACTIVE';
+        document.getElementById('stat-teams-count').innerText = approvedTeams.length;
+        document.getElementById('stat-marshals-count').innerText = approvedMarshals.length;
+
+        var container = document.getElementById('approved-items-list');
+        if (!container) return;
+
+        if (totalActive === 0) {
+          container.innerHTML = '<div class="text-center py-6 text-gray-400 text-xs font-mono">No active clearances yet. Approvals from the queue above will instantly appear here.</div>';
+          return;
+        }
+
+        var html = '';
+        // Approved Squads
+        approvedTeams.forEach(function(team) {
+          html += '<div class="neon-card rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 border-cyan/30 bg-[#071322] hover:border-cyan/60 transition">' +
+            '<div class="flex items-center gap-3">' +
+              '<div class="w-9 h-9 rounded-lg bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan shadow-[0_0_8px_rgba(0,229,255,0.3)]">' +
+                '<span class="material-symbols-outlined text-lg">groups</span>' +
+              '</div>' +
+              '<div>' +
+                '<div class="flex items-center gap-2">' +
+                  '<h4 class="font-headline font-bold text-white text-sm">' + (team.name || team.callsign) + '</h4>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan/20 text-cyan border border-cyan/30">SQUAD</span>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30 flex items-center gap-1 font-semibold">' +
+                    '<span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span> LIVE IN GRID' +
+                  '</span>' +
+                '</div>' +
+                '<p class="text-xs text-gray-400 font-mono mt-0.5">' +
+                  'Callsign: <b class="text-gray-200">' + (team.callsign || team.name) + '</b> • Score: <b class="text-green">' + (team.score || 0) + ' PTS</b> • Cards: <b class="text-cyan">' + (team.cards ? team.cards.length : 0) + '</b> • Zone Step: <b>' + (team.currentClueIndex || 0) + '</b>' +
+                '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex items-center gap-2">' +
+              '<button onclick="rejectEntity(\'TEAM\', \'' + team._id + '\')" title="Revoke clearance" class="px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 font-headline font-bold text-[11px] hover:bg-red-500/20 active:scale-95 transition cursor-pointer flex items-center gap-1">' +
+                '<span class="material-symbols-outlined text-xs">block</span> <span>REVOKE</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        });
+
+        // Approved Marshals
+        approvedMarshals.forEach(function(user) {
+          html += '<div class="neon-card rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 border-green/30 bg-[#061814] hover:border-green/60 transition">' +
+            '<div class="flex items-center gap-3">' +
+              '<div class="w-9 h-9 rounded-lg bg-green/20 border border-green/40 flex items-center justify-center text-green shadow-[0_0_8px_rgba(0,255,136,0.3)]">' +
+                '<span class="material-symbols-outlined text-lg">verified_user</span>' +
+              '</div>' +
+              '<div>' +
+                '<div class="flex items-center gap-2">' +
+                  '<h4 class="font-headline font-bold text-white text-sm">' + user.name + '</h4>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30">FIELD MARSHAL</span>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30 flex items-center gap-1 font-semibold">' +
+                    '<span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span> STATION READY' +
+                  '</span>' +
+                '</div>' +
+                '<p class="text-xs text-gray-400 font-mono mt-0.5">' +
+                  'Callsign: <b class="text-gray-200">' + user.callsign + '</b> • Station: <b class="text-yellow">' + (user.zoneLabel || user.zoneId || 'Zone Station') + '</b>' +
+                '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex items-center gap-2">' +
+              '<button onclick="rejectEntity(\'USER\', \'' + user._id + '\')" title="Revoke clearance" class="px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 font-headline font-bold text-[11px] hover:bg-red-500/20 active:scale-95 transition cursor-pointer flex items-center gap-1">' +
+                '<span class="material-symbols-outlined text-xs">block</span> <span>REVOKE</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        });
+
+        container.innerHTML = html;
+      } catch (e) {
+        console.error('Roster load error:', e);
+      } finally {
+        isLoadingRoster = false;
+      }
+    }
+
+    // Instant Optimistic Approval (0ms Perceived Lag)
     async function approveEntity(type, id) {
+      var cardId = 'card-pending-' + type + '-' + id;
+      var cardEl = document.getElementById(cardId);
+      var actionsEl = document.getElementById('actions-' + type + '-' + id);
+
+      // 1. INSTANT OPTIMISTIC UI FEEDBACK
+      if (actionsEl) {
+        actionsEl.innerHTML = '<span class="px-3 py-1.5 rounded-lg bg-green text-black font-headline font-bold text-xs flex items-center gap-1 shadow-[0_0_15px_rgba(0,255,136,0.8)] animate-pulse">' +
+          '<span class="material-symbols-outlined text-sm">check_circle</span> <span>AUTHORIZED!</span>' +
+        '</span>';
+      }
+
+      if (cardEl) {
+        cardEl.style.borderColor = '#00ff88';
+        cardEl.style.boxShadow = '0 0 20px rgba(0,255,136,0.4)';
+        setTimeout(function() {
+          if (cardEl && cardEl.parentNode) {
+            cardEl.remove();
+            var listContainer = document.getElementById('pending-items-list');
+            if (listContainer && listContainer.children.length === 0) {
+              listContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-mono text-xs">No pending requests. All squads and marshals are clear!</div>';
+            }
+          }
+        }, 400);
+      }
+
+      // Update counters optimistically
+      var curPending = parseInt(document.getElementById('badge-pending').innerText || '0', 10);
+      if (curPending > 0) {
+        document.getElementById('badge-pending').innerText = curPending - 1;
+        document.getElementById('stat-pending-count').innerText = curPending - 1;
+      }
+
+      // 2. DISPATCH SERVER REQUEST IN BACKGROUND
       try {
         var res = await fetch('/api/admin/approve', {
           method: 'POST',
@@ -543,17 +728,34 @@
         });
         var data = await res.json();
         if (data.success) {
-          loadPendingApprovals();
+          // Refresh live roster & leaderboard silently
+          loadApprovedRoster();
           loadLeaderboard();
           loadDatabaseData();
+        } else {
+          alert('Approval error: ' + (data.error || 'Server rejected'));
+          loadPendingApprovals();
+          loadApprovedRoster();
         }
       } catch (e) {
-        alert('Approve error: ' + e.message);
+        alert('Approval network error: ' + e.message);
+        loadPendingApprovals();
+        loadApprovedRoster();
       }
     }
 
+    // Instant Optimistic Rejection
     async function rejectEntity(type, id) {
-      if (!confirm('Are you sure you want to reject and remove this request?')) return;
+      if (!confirm('Are you sure you want to reject/revoke clearance for this entry?')) return;
+      var cardPending = document.getElementById('card-pending-' + type + '-' + id);
+      if (cardPending) {
+        cardPending.style.opacity = '0.3';
+        cardPending.style.transform = 'scale(0.95)';
+        setTimeout(function() {
+          if (cardPending && cardPending.parentNode) cardPending.remove();
+        }, 300);
+      }
+
       try {
         var res = await fetch('/api/admin/reject', {
           method: 'POST',
@@ -563,10 +765,14 @@
         var data = await res.json();
         if (data.success) {
           loadPendingApprovals();
+          loadApprovedRoster();
+          loadLeaderboard();
           loadDatabaseData();
         }
       } catch (e) {
         alert('Reject error: ' + e.message);
+        loadPendingApprovals();
+        loadApprovedRoster();
       }
     }
 

@@ -20,6 +20,30 @@
       "zoneLabel": null,
       "isApproved": true,
       "createdAt": "2026-11-12T01:29:43.390Z"
+    },
+    {
+      "_id": "user_1794468611060_yyfs3",
+      "callsign": "q",
+      "name": "qq",
+      "role": "PLAYER",
+      "password": "q",
+      "teamId": "team_1794468611061_gxn8l",
+      "zoneId": null,
+      "zoneLabel": null,
+      "isApproved": true,
+      "createdAt": "2026-11-12T07:30:11.061Z"
+    },
+    {
+      "_id": "user_1794468683766_4spv8",
+      "callsign": "qqq",
+      "name": "qqq",
+      "role": "PLAYER",
+      "password": "q",
+      "teamId": "team_1794468683767_au4lz",
+      "zoneId": null,
+      "zoneLabel": null,
+      "isApproved": true,
+      "createdAt": "2026-11-12T07:31:23.767Z"
     }
   ],
   "teams": [
@@ -46,6 +70,54 @@
       "isApproved": true,
       "createdAt": "2026-11-12T01:29:43.390Z",
       "updatedAt": "2026-11-12T01:29:43.390Z"
+    },
+    {
+      "_id": "team_1794468611061_gxn8l",
+      "name": "qq",
+      "callsign": "q",
+      "score": 0,
+      "cards": [],
+      "clueOrder": [
+        "clue_06",
+        "clue_08",
+        "clue_10",
+        "clue_01",
+        "clue_07",
+        "clue_09",
+        "clue_04",
+        "clue_02",
+        "clue_03",
+        "clue_05"
+      ],
+      "currentClueIndex": 0,
+      "visitedZones": [],
+      "isApproved": true,
+      "createdAt": "2026-11-12T07:30:11.061Z",
+      "updatedAt": "2026-11-12T07:30:11.061Z"
+    },
+    {
+      "_id": "team_1794468683767_au4lz",
+      "name": "qqq",
+      "callsign": "qqq",
+      "score": 0,
+      "cards": [],
+      "clueOrder": [
+        "clue_03",
+        "clue_10",
+        "clue_04",
+        "clue_05",
+        "clue_07",
+        "clue_02",
+        "clue_08",
+        "clue_01",
+        "clue_06",
+        "clue_09"
+      ],
+      "currentClueIndex": 0,
+      "visitedZones": [],
+      "isApproved": true,
+      "createdAt": "2026-11-12T07:31:23.767Z",
+      "updatedAt": "2026-11-12T07:31:23.767Z"
     }
   ],
   "clues": [
@@ -119,6 +191,30 @@
     "totalPausedMs": 0
   },
   "system_logs": [
+    {
+      "_id": "log_1794468700311_l4u4",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"qqq\" (team_1794468683767_au4lz)",
+      "timestamp": "2026-11-12T07:31:40.311Z"
+    },
+    {
+      "_id": "log_1794468699643_1y4s",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"qq\" (team_1794468611061_gxn8l)",
+      "timestamp": "2026-11-12T07:31:39.643Z"
+    },
+    {
+      "_id": "log_1794468683769_e4zc",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"qqq\" (Pending Approval)",
+      "timestamp": "2026-11-12T07:31:23.769Z"
+    },
+    {
+      "_id": "log_1794468611062_irg3",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"q\" (Pending Approval)",
+      "timestamp": "2026-11-12T07:30:11.062Z"
+    },
     {
       "_id": "log_1794447036988_4494",
       "action": "APPROVE_TEAM",
