@@ -46,6 +46,33 @@
     .card-3d-inner.is-flipped .card-face-back {
       z-index: 2;
     }
+    /* Dynamic Holographic Foil Gleam */
+    @keyframes holoGleam {
+      0% { transform: translateX(-120%) translateY(-50%) rotate(30deg); opacity: 0; }
+      20% { opacity: 0.6; }
+      50% { opacity: 0.8; }
+      80% { opacity: 0.6; }
+      100% { transform: translateX(180%) translateY(-50%) rotate(30deg); opacity: 0; }
+    }
+    .holographic-sheen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 160%;
+      height: 250%;
+      background: linear-gradient(
+        115deg,
+        transparent 35%,
+        rgba(0, 229, 255, 0.06) 44%,
+        rgba(255, 255, 255, 0.22) 50%,
+        rgba(0, 229, 255, 0.08) 56%,
+        transparent 65%
+      );
+      pointer-events-none;
+      animation: holoGleam 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      mix-blend-mode: screen;
+      border-radius: 1rem;
+    }
   </style>
   <script src="/vendor/qrcode.bundle.js"></script>
   <script>
@@ -220,13 +247,16 @@
             <div id="card-flipper" class="card-3d-inner">
               
               <!-- ==================== FRONT FACE (Exact Cyber Art from Reference Image) ==================== -->
-              <div id="card-front-face" class="card-face card-face-front rounded-2xl bg-gradient-to-b from-[#071322] via-[#040a14] to-[#02050c] border-2 border-[#00e5ff] shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_0_25px_rgba(0,229,255,0.2)] p-3.5 flex flex-col justify-between transition-colors duration-500">
+              <div id="card-front-face" class="card-face card-face-front rounded-2xl bg-gradient-to-b from-[#071322] via-[#040a14] to-[#02050c] border-2 border-[#00e5ff] shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_0_25px_rgba(0,229,255,0.2)] p-3 flex flex-col justify-between transition-colors duration-500 overflow-hidden relative">
                 
+                <!-- Dynamic Holographic Foil Reflection Sheen -->
+                <div class="holographic-sheen"></div>
+
                 <!-- Checkered Carbon Background Mesh -->
                 <div class="absolute inset-0 opacity-25 rounded-2xl pointer-events-none bg-[radial-gradient(rgba(0,229,255,0.4)_1px,transparent_1px)] [background-size:8px_8px] overflow-hidden"></div>
                 
                 <!-- Inner Glowing Circuit Border -->
-                <div id="inner-border-front" class="absolute inset-2.5 rounded-xl border border-[#00e5ff]/50 shadow-[0_0_15px_rgba(0,229,255,0.25)] pointer-events-none transition-colors duration-500"></div>
+                <div id="inner-border-front" class="absolute inset-2 rounded-xl border border-[#00e5ff]/50 shadow-[0_0_15px_rgba(0,229,255,0.25)] pointer-events-none transition-colors duration-500"></div>
 
                 <!-- Corner Sci-Fi Circuit Line Accents -->
                 <svg class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden rounded-2xl" xmlns="http://www.w3.org/2000/svg">
@@ -236,18 +266,24 @@
                   <path d="M 238 345 L 238 310 L 222 294" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
                 </svg>
 
-                <!-- Top-Left Corner Pip Badge -->
-                <div class="relative z-10 self-start">
+                <!-- TOP ROW: Corner Pip Badge + REC Club Small Box -->
+                <div class="relative z-10 flex items-center justify-between w-full">
+                  <!-- Top-Left Corner Pip Badge -->
                   <div id="badge-top-left" class="px-2.5 py-1 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.5)] flex items-center gap-1.5 transition-colors duration-500">
                     <span id="card-rank-top" class="font-black text-xl tracking-tight text-white font-mono leading-none">K</span>
                     <span id="card-suit-top" class="text-base font-bold text-[#00e5ff] leading-none">♠</span>
+                  </div>
+
+                  <!-- Top-Right Small Box: REC Club Crest -->
+                  <div id="badge-top-right-rec" class="w-8 h-8 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.4)] flex items-center justify-center p-1 backdrop-blur-md transition-colors duration-500">
+                    <img src="/assets/rec_logo.png" alt="REC Logo" class="w-full h-full object-contain filter drop-shadow-[0_0_4px_rgba(255,255,255,0.7)]" />
                   </div>
                 </div>
 
                 <!-- Center Holographic Hex Matrix & Reactor Core (Matches User Image) -->
                 <div class="relative z-10 my-auto flex flex-col items-center justify-center w-full px-2">
                   <!-- Top Honeycomb Hex Cluster -->
-                  <div class="w-full h-16 relative flex items-center justify-center opacity-90 overflow-hidden">
+                  <div class="w-full h-14 relative flex items-center justify-center opacity-90 overflow-hidden">
                     <svg viewBox="0 0 160 70" class="w-full h-full text-[#00e5ff] hex-svg">
                       <pattern id="hex-grid-pattern-top" width="20" height="17.32" patternUnits="userSpaceOnUse">
                         <polygon points="10,0 20,5.77 20,17.32 10,23.09 0,17.32 0,5.77" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
@@ -262,12 +298,11 @@
                     </svg>
                   </div>
 
-                  <!-- Center Iris Reactor Lens Motif -->
+                  <!-- Center Iris Reactor Lens with REC Core -->
                   <div class="relative my-0.5 flex items-center justify-center">
-                    <div id="reactor-outer-ring" class="w-14 h-14 rounded-full border-2 border-[#00e5ff] shadow-[0_0_20px_rgba(0,229,255,0.7)] flex items-center justify-center bg-black/60 transition-colors duration-500">
-                      <div id="reactor-inner-ring" class="w-9 h-9 rounded-full border border-[#00e5ff]/70 flex items-center justify-center transition-colors duration-500">
-                        <div id="reactor-pulse-dot" class="w-4 h-4 rounded-full bg-[#00e5ff] shadow-[0_0_10px_#00e5ff] animate-ping opacity-75"></div>
-                        <div class="w-3.5 h-3.5 rounded-full bg-white shadow-[0_0_8px_white] absolute"></div>
+                    <div id="reactor-outer-ring" class="w-16 h-16 rounded-full border-2 border-[#00e5ff] shadow-[0_0_24px_rgba(0,229,255,0.75)] flex items-center justify-center bg-black/80 transition-colors duration-500">
+                      <div id="reactor-inner-ring" class="w-11 h-11 rounded-full border border-[#00e5ff]/80 flex items-center justify-center transition-colors duration-500 bg-[#07192c]/90 p-1 shadow-[inset_0_0_10px_rgba(0,229,255,0.6)]">
+                        <img src="/assets/rec_logo.png" alt="REC Power Core" class="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(0,229,255,0.9)]" />
                       </div>
                     </div>
                     <!-- Horizontal Tech Flanges -->
@@ -276,7 +311,7 @@
                   </div>
 
                   <!-- Bottom Honeycomb Hex Cluster -->
-                  <div class="w-full h-16 relative flex items-center justify-center opacity-90 overflow-hidden">
+                  <div class="w-full h-14 relative flex items-center justify-center opacity-90 overflow-hidden">
                     <svg viewBox="0 0 160 70" class="w-full h-full text-[#00e5ff] hex-svg">
                       <pattern id="hex-grid-pattern-bot" width="20" height="17.32" patternUnits="userSpaceOnUse">
                         <polygon points="10,0 20,5.77 20,17.32 10,23.09 0,17.32 0,5.77" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
@@ -290,19 +325,21 @@
                       <circle cx="115" cy="25" r="3.5" fill="currentColor" class="animate-pulse shadow-[0_0_8px_currentColor]"/>
                     </svg>
                   </div>
-
-                  <!-- Tap to Reveal QR Prompt -->
-                  <div id="tap-reveal-badge" class="mt-1 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00e5ff]/20 border border-[#00e5ff]/50 shadow-[0_0_12px_rgba(0,229,255,0.4)] animate-pulse hover:scale-105 transition">
-                    <span class="material-symbols-outlined text-[15px] text-[#00e5ff]">touch_app</span>
-                    <span class="text-[10px] font-mono tracking-widest text-primary font-bold uppercase">PRESS CARD TO VIEW QR & CIPHER</span>
-                  </div>
                 </div>
 
-                <!-- Bottom-Right Corner Pip Badge (Inverted) -->
-                <div class="relative z-10 self-end rotate-180">
-                  <div id="badge-bot-right" class="px-2.5 py-1 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.5)] flex items-center gap-1.5 transition-colors duration-500">
-                    <span id="card-rank-bot" class="font-black text-xl tracking-tight text-white font-mono leading-none">K</span>
-                    <span id="card-suit-bot" class="text-base font-bold text-[#00e5ff] leading-none">♠</span>
+                <!-- BOTTOM ROW: REC Club Small Box + Corner Pip Badge (Inverted) -->
+                <div class="relative z-10 flex items-center justify-between w-full">
+                  <!-- Bottom-Left Small Box: REC Club Crest (Inverted) -->
+                  <div id="badge-bot-left-rec" class="w-8 h-8 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.4)] flex items-center justify-center p-1 backdrop-blur-md transition-colors duration-500 rotate-180">
+                    <img src="/assets/rec_logo.png" alt="REC Logo" class="w-full h-full object-contain filter drop-shadow-[0_0_4px_rgba(255,255,255,0.7)]" />
+                  </div>
+
+                  <!-- Bottom-Right Corner Pip Badge (Inverted) -->
+                  <div class="rotate-180">
+                    <div id="badge-bot-right" class="px-2.5 py-1 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.5)] flex items-center gap-1.5 transition-colors duration-500">
+                      <span id="card-rank-bot" class="font-black text-xl tracking-tight text-white font-mono leading-none">K</span>
+                      <span id="card-suit-bot" class="text-base font-bold text-[#00e5ff] leading-none">♠</span>
+                    </div>
                   </div>
                 </div>
 
@@ -318,8 +355,9 @@
                     <span id="card-suit-back" class="text-sm font-bold text-[#00e5ff] leading-none">♠</span>
                   </div>
                   <span class="text-[10px] font-mono tracking-widest text-[#00e5ff] font-bold uppercase" id="back-header-label">BEACON CIPHER</span>
-                  <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-300">
-                    <span class="material-symbols-outlined text-[14px]">qr_code_2</span>
+                  <!-- Back Face Top-Right Small Box: REC Club Crest -->
+                  <div id="badge-back-rec" class="w-7 h-7 rounded-lg bg-[#07192c]/90 border border-[#00e5ff]/60 shadow-[0_0_8px_rgba(0,229,255,0.3)] flex items-center justify-center p-0.5">
+                    <img src="/assets/rec_logo.png" alt="REC Logo" class="w-full h-full object-contain" />
                   </div>
                 </div>
 
@@ -622,9 +660,15 @@
       var bTop = document.getElementById('badge-top-left');
       var bBot = document.getElementById('badge-bot-right');
       var bBack = document.getElementById('badge-back-top');
+      var bRecTop = document.getElementById('badge-top-right-rec');
+      var bRecBot = document.getElementById('badge-bot-left-rec');
+      var bRecBack = document.getElementById('badge-back-rec');
       if (bTop) bTop.style.borderColor = color;
       if (bBot) bBot.style.borderColor = color;
       if (bBack) bBack.style.borderColor = color;
+      if (bRecTop) bRecTop.style.borderColor = color;
+      if (bRecBot) bRecBot.style.borderColor = color;
+      if (bRecBack) bRecBack.style.borderColor = color;
 
       // Card outer borders and inner glow
       frontCard.style.borderColor = color;
