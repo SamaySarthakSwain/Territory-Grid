@@ -200,16 +200,19 @@
               <span class="material-symbols-outlined absolute left-3 top-3 text-green text-lg">location_on</span>
               <select id="input-zone" 
                       class="w-full bg-[#0A101D] border border-green/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-green focus:ring-1 focus:ring-green transition font-body">
-                <option value="ZONE_01">Sector A: Library Arch (Zone 01)</option>
-                <option value="ZONE_02">Sector B: Solar Obelisk (Zone 02)</option>
-                <option value="ZONE_03">Sector C: Clocktower Terrace (Zone 03)</option>
-                <option value="ZONE_04">Sector D: Glasshouse Botanical (Zone 04)</option>
-                <option value="ZONE_05">Sector E: Skybridge Concourse (Zone 05)</option>
-                <option value="ZONE_06">Sector F: Amphitheater (Zone 06)</option>
-                <option value="ZONE_07">Sector G: Science Basin (Zone 07)</option>
-                <option value="ZONE_08">Sector H: Student Pavilion (Zone 08)</option>
-                <option value="ZONE_09">Sector I: North Telecom Pylon (Zone 09)</option>
-                <option value="ZONE_10">Sector J: Turf Perimeter (Zone 10)</option>
+                <option value="ZONE_01">Zone 1 - Library Arch (ZONE_01)</option>
+                <option value="ZONE_02">Zone 2 - Solar Obelisk (ZONE_02)</option>
+                <option value="ZONE_03">Zone 3 - Clocktower Terrace (ZONE_03)</option>
+                <option value="ZONE_04">Zone 4 - Glasshouse Botanical (ZONE_04)</option>
+                <option value="ZONE_05">Zone 5 - Skybridge Concourse (ZONE_05)</option>
+                <option value="ZONE_06">Zone 6 - Amphitheater Canopy (ZONE_06)</option>
+                <option value="ZONE_07">Zone 7 - Science Basin (ZONE_07)</option>
+                <option value="ZONE_08">Zone 8 - Student Pavilion (ZONE_08)</option>
+                <option value="ZONE_09">Zone 9 - North Telecom Pylon (ZONE_09)</option>
+                <option value="ZONE_10">Zone 10 - Turf Perimeter (ZONE_10)</option>
+                <option value="ZONE_11">Zone 11 - Energy Innovation Hub (ZONE_11)</option>
+                <option value="ZONE_12">Zone 12 - Innovation Arena (ZONE_12)</option>
+                <option value="ZONE_13">Zone 13 - Central Concourse (ZONE_13)</option>
               </select>
             </div>
           </div>
@@ -325,6 +328,7 @@
 
     // Initialize page
     window.addEventListener('DOMContentLoaded', function() {
+      loadDynamicStations();
       // Check if user is already authenticated
       var session = getStoredSession();
       if (session && session.isApproved) {
@@ -337,6 +341,25 @@
 
       selectPortal('PLAYER');
     });
+
+    async function loadDynamicStations() {
+      try {
+        var res = await fetch('/api/clues?_t=' + Date.now(), { cache: 'no-store' });
+        var data = await res.json();
+        if (data.success && Array.isArray(data.clues) && data.clues.length > 0) {
+          var sel = document.getElementById('input-zone');
+          if (sel) {
+            sel.innerHTML = data.clues.map(function(c, idx) {
+              var zId = c.zoneId || ('ZONE_' + String(idx + 1).padStart(2, '0'));
+              var label = c.zoneLabel || ('Zone ' + (idx + 1));
+              return '<option value="' + zId + '">' + label + ' (' + zId + ')</option>';
+            }).join('');
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load dynamic stations:', e);
+      }
+    }
 
     function getStoredSession() {
       try {
@@ -569,15 +592,19 @@
           return;
         }
 
-        saveSession(data.user);
+        var userObj = data.user || {};
+        if (data.isApproved) {
+          userObj.isApproved = true;
+        }
+        saveSession(userObj);
 
         // Check approval status
-        if (data.isApproved || data.role === 'ADMIN') {
-          // Direct entry
-          redirectToDashboard(data.role);
+        if (data.isApproved || userObj.isApproved || data.role === 'ADMIN') {
+          // Direct entry to authorized dashboard
+          redirectToDashboard(data.role || userObj.role);
         } else {
           // Put in Waiting Hall
-          showWaitingHall(data.user.callsign, data.user.role, data.user._id);
+          showWaitingHall(userObj.callsign || callsign, userObj.role || currentRole, userObj._id);
         }
 
       } catch (err) {

@@ -21,16 +21,19 @@ try {
 // Default Data Set
 // ─────────────────────────────────────────────────────────────
 const DEFAULT_CLUES = [
-  { _id: 'clue_01', text: 'Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!', zoneId: 'ZONE_01', zoneLabel: 'Sector A: Library Arch' },
-  { _id: 'clue_02', text: 'Search the courtyard perimeter behind the ancient bronze solar obelisk.', zoneId: 'ZONE_02', zoneLabel: 'Sector B: Solar Obelisk' },
-  { _id: 'clue_03', text: 'Ascend the terrace staircase overlooking the historic clocktower.', zoneId: 'ZONE_03', zoneLabel: 'Sector C: Clocktower Terrace' },
-  { _id: 'clue_04', text: 'Investigate the botanical garden glasshouse south perimeter.', zoneId: 'ZONE_04', zoneLabel: 'Sector D: Glasshouse Botanical' },
-  { _id: 'clue_05', text: 'Cross the pedestrian skybridge connecting science hall 1 & 2.', zoneId: 'ZONE_05', zoneLabel: 'Sector E: Skybridge Concourse' },
-  { _id: 'clue_06', text: 'Look beneath the concrete amphitheater canopy seating.', zoneId: 'ZONE_06', zoneLabel: 'Sector F: Amphitheater' },
-  { _id: 'clue_07', text: 'Find the water fountain basin near the science auditorium.', zoneId: 'ZONE_07', zoneLabel: 'Sector G: Science Basin' },
-  { _id: 'clue_08', text: 'Check the shaded colonnade behind student center pavilion.', zoneId: 'ZONE_08', zoneLabel: 'Sector H: Student Pavilion' },
-  { _id: 'clue_09', text: 'Locate the red telecom antenna pylon on north concourse.', zoneId: 'ZONE_09', zoneLabel: 'Sector I: North Telecom Pylon' },
-  { _id: 'clue_10', text: 'Scan the perimeter fence surrounding the athletic turf field.', zoneId: 'ZONE_10', zoneLabel: 'Sector J: Turf Perimeter' }
+  { _id: 'clue_01', text: 'Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!', zoneId: 'ZONE_01', zoneLabel: 'Zone 1 - Library Arch' },
+  { _id: 'clue_02', text: 'Search the courtyard perimeter behind the ancient bronze solar obelisk.', zoneId: 'ZONE_02', zoneLabel: 'Zone 2 - Solar Obelisk' },
+  { _id: 'clue_03', text: 'Ascend the terrace staircase overlooking the historic clocktower.', zoneId: 'ZONE_03', zoneLabel: 'Zone 3 - Clocktower Terrace' },
+  { _id: 'clue_04', text: 'Investigate the botanical garden glasshouse south perimeter.', zoneId: 'ZONE_04', zoneLabel: 'Zone 4 - Glasshouse Botanical' },
+  { _id: 'clue_05', text: 'Cross the pedestrian skybridge connecting science hall 1 & 2.', zoneId: 'ZONE_05', zoneLabel: 'Zone 5 - Skybridge Concourse' },
+  { _id: 'clue_06', text: 'Look beneath the concrete amphitheater canopy seating.', zoneId: 'ZONE_06', zoneLabel: 'Zone 6 - Amphitheater Canopy' },
+  { _id: 'clue_07', text: 'Find the water fountain basin near the science auditorium.', zoneId: 'ZONE_07', zoneLabel: 'Zone 7 - Science Basin' },
+  { _id: 'clue_08', text: 'Check the shaded colonnade behind student center pavilion.', zoneId: 'ZONE_08', zoneLabel: 'Zone 8 - Student Pavilion' },
+  { _id: 'clue_09', text: 'Locate the red telecom antenna pylon on north concourse.', zoneId: 'ZONE_09', zoneLabel: 'Zone 9 - North Telecom Pylon' },
+  { _id: 'clue_10', text: 'Scan the perimeter fence surrounding the athletic turf field.', zoneId: 'ZONE_10', zoneLabel: 'Zone 10 - Turf Perimeter' },
+  { _id: 'clue_11', text: 'Find the solar energy charging station outside the REC technology workshop.', zoneId: 'ZONE_11', zoneLabel: 'Zone 11 - Energy Innovation Hub' },
+  { _id: 'clue_12', text: 'Spot the green beacon marker stationed near the robotics exhibition arena.', zoneId: 'ZONE_12', zoneLabel: 'Zone 12 - Innovation Arena' },
+  { _id: 'clue_13', text: 'Reach the central ceremonial flagpole lawn overlooking the grand quadrangle.', zoneId: 'ZONE_13', zoneLabel: 'Zone 13 - Central Concourse' }
 ];
 
 const DEFAULT_ADMIN = {
@@ -494,9 +497,10 @@ module.exports = async (req, res) => {
     if (pathname === '/api/admin/approve' && req.method === 'POST') {
       const body = await parseBody(req);
       const { type, id } = body;
+      const isTeam = String(type || '').toUpperCase() === 'TEAM';
 
       if (atlasDb) {
-        if (type === 'TEAM') {
+        if (isTeam) {
           const team = await atlasDb.collection('teams').findOne({ _id: id });
           await atlasDb.collection('teams').updateOne({ _id: id }, { $set: { isApproved: true } });
           await atlasDb.collection('users').updateMany(
@@ -518,7 +522,7 @@ module.exports = async (req, res) => {
       }
 
       memoryStore.load();
-      if (type === 'TEAM') {
+      if (isTeam) {
         const team = memoryStore.collections.teams.find(t => t._id === id);
         if (team) {
           team.isApproved = true;
@@ -676,46 +680,150 @@ module.exports = async (req, res) => {
     }
 
     // ─────────────────────────────────────────────────────────
-    // 10b. GET /api/clues
+    // 10b. GET /api/clues (All Places & Zones)
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/clues' && req.method === 'GET') {
       if (atlasDb) {
-        const clues = await atlasDb.collection('clues').find().toArray();
+        const clues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
         return sendJson(res, 200, { success: true, clues });
       }
+      memoryStore.load();
       return sendJson(res, 200, { success: true, clues: memoryStore.collections.clues });
     }
 
     // ─────────────────────────────────────────────────────────
-    // 11. POST /api/checkin
+    // 10c. POST /api/admin/clues/save (Create or Update Zone Place)
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/clues/save' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const { _id, zoneId, zoneLabel, text } = body;
+
+      if (!zoneId || !zoneLabel || !text) {
+        return sendJson(res, 400, { success: false, error: 'Zone ID, Place Name, and Clue Hint are required.' });
+      }
+
+      const cleanZoneId = zoneId.trim().toUpperCase();
+      const cleanLabel = zoneLabel.trim();
+      const cleanText = text.trim();
+
+      if (atlasDb) {
+        const cluesCol = atlasDb.collection('clues');
+        if (_id) {
+          await cluesCol.updateOne({ _id: _id }, { $set: { zoneId: cleanZoneId, zoneLabel: cleanLabel, text: cleanText } });
+        } else {
+          const newId = 'clue_' + Date.now().toString(36);
+          await cluesCol.insertOne({ _id: newId, zoneId: cleanZoneId, zoneLabel: cleanLabel, text: cleanText });
+        }
+        const updatedClues = await cluesCol.find().sort({ zoneId: 1 }).toArray();
+        return sendJson(res, 200, { success: true, message: 'Place saved successfully.', clues: updatedClues });
+      }
+
+      memoryStore.load();
+      if (_id) {
+        const existing = memoryStore.collections.clues.find(c => c._id === _id);
+        if (existing) {
+          existing.zoneId = cleanZoneId;
+          existing.zoneLabel = cleanLabel;
+          existing.text = cleanText;
+        }
+      } else {
+        const newId = 'clue_' + Date.now().toString(36);
+        memoryStore.collections.clues.push({ _id: newId, zoneId: cleanZoneId, zoneLabel: cleanLabel, text: cleanText });
+      }
+      memoryStore.save();
+      return sendJson(res, 200, { success: true, message: 'Place saved successfully.', clues: memoryStore.collections.clues });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 10d. POST /api/admin/clues/delete (Delete Zone Place)
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/clues/delete' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const { _id } = body;
+
+      if (atlasDb) {
+        await atlasDb.collection('clues').deleteOne({ _id: _id });
+        const updatedClues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
+        return sendJson(res, 200, { success: true, message: 'Place deleted successfully.', clues: updatedClues });
+      }
+
+      memoryStore.load();
+      memoryStore.collections.clues = memoryStore.collections.clues.filter(c => c._id !== _id);
+      memoryStore.save();
+      return sendJson(res, 200, { success: true, message: 'Place deleted successfully.', clues: memoryStore.collections.clues });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 10e. POST /api/admin/clues/reset (Reset or Set Number of Zones)
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/clues/reset' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const targetCount = parseInt(body.count, 10) || 13;
+
+      const newClues = [];
+      for (let i = 1; i <= targetCount; i++) {
+        const numStr = String(i).padStart(2, '0');
+        const defaultMatch = DEFAULT_CLUES[i - 1];
+        if (defaultMatch) {
+          newClues.push({ ...defaultMatch, _id: 'clue_' + numStr });
+        } else {
+          newClues.push({
+            _id: 'clue_' + numStr,
+            zoneId: 'ZONE_' + numStr,
+            zoneLabel: 'Zone ' + i + ' - Station ' + numStr,
+            text: 'Locate the Beacon Cone stationed at Zone ' + i + ' checkpoint area.'
+          });
+        }
+      }
+
+      if (atlasDb) {
+        const cluesCol = atlasDb.collection('clues');
+        await cluesCol.deleteMany({});
+        await cluesCol.insertMany(newClues);
+        return sendJson(res, 200, { success: true, message: `Configured ${targetCount} zones successfully.`, clues: newClues });
+      }
+
+      memoryStore.load();
+      memoryStore.collections.clues = newClues;
+      memoryStore.save();
+      return sendJson(res, 200, { success: true, message: `Configured ${targetCount} zones successfully.`, clues: newClues });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 11. POST /api/checkin (Real-time Point Allocation & Hint Advancement)
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/checkin' && req.method === 'POST') {
       const body = await parseBody(req);
-      const { teamId, zoneId, cone, cardRank, cardSuit, memberId } = body;
+      const { teamId, zoneId, cone, cardRank, cardSuit, memberId, allowDuplicate } = body;
 
       const coneValues = { RED: 10, YELLOW: 12, GREEN: 15 };
-      const conePts = coneValues[cone] || 10;
-      const rankPts = parseInt(cardRank, 10) || 1;
+      const conePts = coneValues[cone] || 12;
+      const rankPts = parseInt(cardRank, 10) || 13;
       const totalPoints = conePts + rankPts;
-      const checkinId = `${teamId}_${zoneId}`;
+      const checkinId = `${teamId}_${zoneId}_${Date.now()}`;
 
       if (atlasDb) {
         const teamsCol = atlasDb.collection('teams');
         const checkinsCol = atlasDb.collection('checkins');
 
-        const team = await teamsCol.findOne({ _id: teamId });
+        const team = await teamsCol.findOne({ $or: [{ _id: teamId }, { callsign: new RegExp('^' + teamId + '$', 'i') }] });
         if (!team) return sendJson(res, 404, { success: false, error: 'Team not found.' });
         if (!team.isApproved) return sendJson(res, 403, { success: false, error: 'Squad is not yet approved by Game Master.' });
-        if (team.visitedZones && team.visitedZones.includes(zoneId)) {
-          return sendJson(res, 400, { success: false, error: 'Team has already completed checkpoint for this zone.' });
+        
+        if (team.visitedZones && team.visitedZones.includes(zoneId) && !allowDuplicate) {
+          return sendJson(res, 400, {
+            success: false,
+            alreadyVisited: true,
+            error: `Squad "${team.name}" has already cleared ${zoneId}! Current objective is Checkpoint #${(team.currentClueIndex || 0) + 1}.`
+          });
         }
 
         const checkinRecord = {
           _id: checkinId,
-          teamId,
+          teamId: team._id,
           zoneId,
           memberId: memberId || 'marshal_station',
-          cone,
+          cone: cone || 'YELLOW',
           cardRank: rankPts,
           cardSuit: cardSuit || '♠',
           points: totalPoints,
@@ -724,62 +832,73 @@ module.exports = async (req, res) => {
 
         await checkinsCol.insertOne(checkinRecord);
         await teamsCol.updateOne(
-          { _id: teamId },
+          { _id: team._id },
           {
             $inc: { score: totalPoints, currentClueIndex: 1 },
             $push: {
-              cards: { rank: rankPts, suit: cardSuit || '♠', zoneId },
+              cards: { rank: rankPts, suit: cardSuit || '♠', zoneId, awardedAt: new Date().toISOString() },
               visitedZones: zoneId
             },
             $set: { updatedAt: new Date().toISOString() }
           }
         );
 
-        const updatedTeam = await teamsCol.findOne({ _id: teamId });
+        const updatedTeam = await teamsCol.findOne({ _id: team._id });
         return sendJson(res, 200, {
           success: true,
           pointsAwarded: totalPoints,
           teamScore: updatedTeam.score,
+          teamName: updatedTeam.name || updatedTeam.callsign,
           nextClueIndex: updatedTeam.currentClueIndex
         });
       }
 
       // Memory Store
-      const team = memoryStore.collections.teams.find(t => t._id === teamId);
+      memoryStore.load();
+      const team = memoryStore.collections.teams.find(t => 
+        t._id === teamId || (t.callsign && t.callsign.toLowerCase() === (teamId || '').toLowerCase())
+      );
       if (!team) return sendJson(res, 404, { success: false, error: 'Team not found.' });
       if (!team.isApproved) return sendJson(res, 403, { success: false, error: 'Squad is not yet approved by Game Master.' });
-      if (team.visitedZones && team.visitedZones.includes(zoneId)) {
-        return sendJson(res, 400, { success: false, error: 'Team has already completed checkpoint for this zone.' });
+      
+      if (team.visitedZones && team.visitedZones.includes(zoneId) && !allowDuplicate) {
+        return sendJson(res, 400, {
+          success: false,
+          alreadyVisited: true,
+          error: `Squad "${team.name}" has already cleared ${zoneId}! Current objective is Checkpoint #${(team.currentClueIndex || 0) + 1}.`
+        });
       }
 
       const checkinRecord = {
         _id: checkinId,
-        teamId,
+        teamId: team._id,
         zoneId,
         memberId: memberId || 'marshal_station',
-        cone,
+        cone: cone || 'YELLOW',
         cardRank: rankPts,
         cardSuit: cardSuit || '♠',
         points: totalPoints,
         timestamp: new Date().toISOString()
       };
 
+      memoryStore.collections.checkins = memoryStore.collections.checkins || [];
       memoryStore.collections.checkins.push(checkinRecord);
       team.score = (team.score || 0) + totalPoints;
       team.cards = team.cards || [];
-      team.cards.push({ rank: rankPts, suit: cardSuit || '♠', zoneId });
+      team.cards.push({ rank: rankPts, suit: cardSuit || '♠', zoneId, awardedAt: new Date().toISOString() });
       team.visitedZones = team.visitedZones || [];
-      team.visitedZones.push(zoneId);
+      if (!team.visitedZones.includes(zoneId)) team.visitedZones.push(zoneId);
       team.currentClueIndex = (team.currentClueIndex || 0) + 1;
       team.updatedAt = new Date().toISOString();
 
       memoryStore.save();
-      memoryStore.logEvent('CHECKIN', `Team "${team.name}" awarded ${totalPoints} PTS at ${zoneId}`);
+      memoryStore.logEvent('CHECKIN', `Team "${team.name}" awarded +${totalPoints} PTS at ${zoneId} (Total: ${team.score} PTS)`);
 
       return sendJson(res, 200, {
         success: true,
         pointsAwarded: totalPoints,
         teamScore: team.score,
+        teamName: team.name || team.callsign,
         nextClueIndex: team.currentClueIndex
       });
     }

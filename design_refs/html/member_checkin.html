@@ -405,6 +405,63 @@
     </div>
   </div>
 
+  <!-- HIGH-IMPACT CELEBRATION MODAL OVERLAY (Shown on Instant Auto-Award) -->
+  <div id="celebration-overlay" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-sm rounded-2xl bg-gradient-to-b from-[#07192c] to-[#030914] border-2 border-green shadow-[0_0_50px_rgba(0,255,136,0.5)] p-6 text-center space-y-4 animate-scaleUp">
+      <div class="w-16 h-16 mx-auto rounded-full bg-green/20 border-2 border-green flex items-center justify-center shadow-[0_0_25px_rgba(0,255,136,0.6)]">
+        <span class="material-symbols-outlined text-green text-3xl animate-bounce">check_circle</span>
+      </div>
+      <div>
+        <span class="px-2.5 py-0.5 rounded-full bg-green/20 text-green font-mono text-[11px] font-bold uppercase tracking-wider">CHECKPOINT CLEARED!</span>
+        <h3 class="text-2xl font-headline font-black text-white mt-1" id="celeb-team-name">Squad Alpha</h3>
+        <p class="text-xs text-gray-300 font-mono mt-0.5" id="celeb-station-zone">Station: ZONE_01</p>
+      </div>
+
+      <div class="bg-[#050c18] p-4 rounded-xl border border-green/30 space-y-1.5">
+        <div class="text-3xl font-mono font-black text-green" id="celeb-points-awarded">+25 PTS</div>
+        <div class="text-xs font-mono text-gray-300">Total Score: <span class="text-white font-bold" id="celeb-total-score">150 PTS</span></div>
+        <div class="pt-2 border-t border-gray-800 text-[11px] text-primary font-mono flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-sm">lock_open</span>
+          <span id="celeb-next-clue-label">Next Mission Hint Unlocked for Squad!</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs font-mono text-gray-400 pt-1">
+        <span id="celeb-auto-timer">Camera re-arming in 2s...</span>
+        <button onclick="dismissCelebration()" class="px-3 py-1 rounded bg-green/20 hover:bg-green/30 text-green font-bold text-xs transition cursor-pointer">
+          Done (OK)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALREADY CLEARED WARNING MODAL (With Force Award Override) -->
+  <div id="already-visited-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-sm rounded-2xl bg-[#0e1726] border-2 border-yellow shadow-[0_0_35px_rgba(255,214,0,0.4)] p-5 space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-yellow/20 border border-yellow flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-yellow text-xl">warning</span>
+        </div>
+        <div>
+          <h4 class="font-headline font-bold text-base text-white">Zone Already Cleared!</h4>
+          <span class="text-[11px] font-mono text-yellow uppercase">Duplicate Station Detected</span>
+        </div>
+      </div>
+      <p class="text-xs text-gray-300 font-body leading-relaxed" id="already-visited-msg">
+        Squad has already completed the checkpoint for this zone.
+      </p>
+      <div class="flex flex-col gap-2 pt-1">
+        <button id="btn-force-award" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-yellow to-amber-500 hover:from-yellow/90 hover:to-amber-600 text-black font-headline font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg transition cursor-pointer">
+          <span class="material-symbols-outlined text-sm">priority_high</span>
+          <span>Force Award Points Anyway</span>
+        </button>
+        <button onclick="dismissAlreadyVisited()" class="w-full py-2 rounded-xl border border-gray-600 hover:border-gray-400 text-gray-400 text-xs font-headline uppercase transition cursor-pointer">
+          Cancel Check-In
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Bottom Navigation Bar -->
   <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl border-t border-cyan/20 shadow-[0_-2px_16px_rgba(0,229,255,0.06)]">
     <div class="flex justify-around items-center h-20 px-gutter">
@@ -665,6 +722,27 @@
       } catch (e) {}
     }
 
+    function playVictoryChirp() {
+      try {
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        var ctx = new AudioCtx();
+        var notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach(function(freq, idx) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+          gain.gain.setValueAtTime(0.25, ctx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + 0.22);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.08);
+          osc.stop(ctx.currentTime + idx * 0.08 + 0.22);
+        });
+      } catch (e) {}
+    }
+
     async function toggleCameraScanner() {
       if (isScanning) {
         stopCameraScanner();
@@ -813,13 +891,15 @@
           document.getElementById('scan-result-pts-tag').innerText = '+' + rankNum + ' PTS CARD';
         }
 
-        // 6. Stop scanner so it doesn't loop
+        // 6. Stop scanner so it doesn't double-scan
         stopCameraScanner();
 
         // 7. Update calculated summary points
         updateSummary();
 
-        showNotification('Scanned & Verified: ' + (teamName || 'Squad') + ' (' + rankCode + suitSymbol + ' +' + rankNum + ' PTS)');
+        // 8. AUTO-AWARD POINTS & ADVANCE CLUE IMMEDIATELY!
+        var awardedTeamId = selector.value || teamId;
+        autoAwardCheckin(awardedTeamId, rankNum, suitSymbol, 'QR Scanner');
       } catch (err) {
         console.error('QR Decode error:', err);
         showNotification('QR scanned but format was invalid.', true);
@@ -965,14 +1045,10 @@
       }
 
       updateSummary();
-      showNotification('✓ 6-Digit Code Verified: ' + (squadFound || 'Squad') + ' — ' + rankCode + ' (+' + rankNum + ' PTS)');
       input.value = '';
 
-      // Highlight Step 4 Award button
-      var awardBtn = document.getElementById('award-action-btn');
-      if (awardBtn) {
-        awardBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
+      // AUTO-AWARD POINTS & ADVANCE CLUE IMMEDIATELY!
+      autoAwardCheckin(selector.value, rankNum, suitSymbol, '6-Digit Cipher');
     }
 
     function updateCardDisplay() {
@@ -1030,23 +1106,38 @@
       document.getElementById('confirmation-modal').classList.add('hidden');
     }
 
-    // Submission handler
-    async function submitCheckin() {
-      var selector = document.getElementById('team-selector');
-      var teamId = selector.value;
-      var zoneId = currentUser.zoneId || 'ZONE_01';
-      var confirmBtn = document.getElementById('btn-modal-confirm');
+    // ─────────────────────────────────────────────────────────
+    // INSTANT AUTO-AWARD & SUBMISSION ENGINE
+    // ─────────────────────────────────────────────────────────
+    var activeOverridePayload = null;
+    var celebDismissTimer = null;
 
-      confirmBtn.disabled = true;
-      confirmBtn.innerText = 'TRANSMITTING...';
+    async function autoAwardCheckin(teamId, rankNum, suitSymbol, method, allowDuplicate) {
+      if (!teamId) {
+        showNotification('Cannot award: No squad selected or recognized in system.', true);
+        return;
+      }
+
+      var zoneId = currentUser.zoneId || 'ZONE_01';
+      var selectedTeamObj = currentTeams.find(function(t) { return t._id === teamId; });
+      var squadName = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : 'Squad';
+
+      var rankVal = (rankNum !== undefined && rankNum !== null) ? rankNum : (checkinState.cardRankValue || 13);
+      var suitSym = suitSymbol || checkinState.cardSuit || '♠';
+      var coneCol = checkinState.coneColor || 'YELLOW';
+      var conePts = checkinState.conePoints || 12;
+      var totalPts = conePts + rankVal;
+
+      showNotification('⚡ Transmitting Check-in for ' + squadName + ' (' + zoneId + ')...');
 
       var payload = {
         teamId: teamId,
         zoneId: zoneId,
-        cone: checkinState.coneColor,
-        cardRank: checkinState.cardRankValue,
-        cardSuit: checkinState.cardSuit,
-        memberId: currentUser.callsign || 'marshal'
+        cone: coneCol,
+        cardRank: rankVal,
+        cardSuit: suitSym,
+        memberId: currentUser.callsign || 'marshal_station',
+        allowDuplicate: !!allowDuplicate
       };
 
       try {
@@ -1057,25 +1148,107 @@
         });
 
         var data = await res.json();
-        confirmBtn.disabled = false;
-        confirmBtn.innerHTML = '<span class="material-symbols-outlined text-base">check</span><span>Confirm & Transmit</span>';
-        closeConfirmationModal();
 
         if (!data.success) {
-          showCheckinAlert(data.error || 'Check-in failed.', true);
+          if (data.alreadyVisited) {
+            showAlreadyVisitedPrompt(data.error || ('Squad "' + squadName + '" already completed ' + zoneId + '!'), payload);
+          } else {
+            showCheckinAlert(data.error || 'Check-in failed.', true);
+          }
           return;
         }
 
-        showCheckinAlert('✓ Success: ' + data.pointsAwarded + ' PTS awarded to squad! Next clue unlocked for squad.', false);
+        // Triumphant victory audio fanfare
+        playVictoryChirp();
+
+        // High-impact celebration modal overlay
+        showCheckinCelebration(data.teamName || squadName, data.pointsAwarded || totalPts, data.teamScore, zoneId, data.nextClueIndex, method);
+
+        // Instant telemetry reload
         loadTeams();
         loadRecentCheckins();
 
       } catch (err) {
-        confirmBtn.disabled = false;
-        confirmBtn.innerHTML = '<span class="material-symbols-outlined text-base">check</span><span>Confirm & Transmit</span>';
-        closeConfirmationModal();
-        showCheckinAlert('Network error: ' + err.message, true);
+        console.error('Auto-award failed:', err);
+        showCheckinAlert('Network transmission error: ' + err.message, true);
       }
+    }
+
+    function showCheckinCelebration(teamName, points, totalScore, zoneId, nextClueIndex, method) {
+      var overlay = document.getElementById('celebration-overlay');
+      if (!overlay) return;
+
+      document.getElementById('celeb-team-name').innerText = teamName;
+      document.getElementById('celeb-station-zone').innerText = 'Station Cleared: ' + zoneId + ' (' + (method || 'Verified') + ')';
+      document.getElementById('celeb-points-awarded').innerText = '+' + points + ' PTS';
+      document.getElementById('celeb-total-score').innerText = (totalScore !== undefined ? totalScore : 'Updated') + ' PTS';
+      
+      var nextClueNum = (nextClueIndex !== undefined) ? (nextClueIndex + 1) : 2;
+      document.getElementById('celeb-next-clue-label').innerText = 'Next Clue #' + nextClueNum + ' is now live on squad phones!';
+
+      overlay.classList.remove('hidden');
+
+      // Countdown timer & auto re-arm scanner
+      var secondsLeft = 3;
+      var timerEl = document.getElementById('celeb-auto-timer');
+      if (timerEl) timerEl.innerText = 'Ready for next player in ' + secondsLeft + 's...';
+
+      if (celebDismissTimer) clearInterval(celebDismissTimer);
+      celebDismissTimer = setInterval(function() {
+        secondsLeft--;
+        if (secondsLeft > 0) {
+          if (timerEl) timerEl.innerText = 'Ready for next player in ' + secondsLeft + 's...';
+        } else {
+          clearInterval(celebDismissTimer);
+          dismissCelebration();
+        }
+      }, 1000);
+    }
+
+    function dismissCelebration() {
+      if (celebDismissTimer) clearInterval(celebDismissTimer);
+      var overlay = document.getElementById('celebration-overlay');
+      if (overlay) overlay.classList.add('hidden');
+      
+      // Clear manual input and re-arm camera scanner
+      var manualInput = document.getElementById('manual-cipher-input');
+      if (manualInput) manualInput.value = '';
+      
+      // Auto re-arm camera scanner for next participant in queue
+      startCameraScanner();
+    }
+
+    function showAlreadyVisitedPrompt(errorMsg, payload) {
+      activeOverridePayload = payload;
+      var modal = document.getElementById('already-visited-modal');
+      var msgEl = document.getElementById('already-visited-msg');
+      var forceBtn = document.getElementById('btn-force-award');
+      if (msgEl) msgEl.innerText = errorMsg;
+      if (forceBtn) {
+        forceBtn.onclick = function() {
+          dismissAlreadyVisited();
+          autoAwardCheckin(payload.teamId, payload.cardRank, payload.cardSuit, 'Force Override', true);
+        };
+      }
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function dismissAlreadyVisited() {
+      var modal = document.getElementById('already-visited-modal');
+      if (modal) modal.classList.add('hidden');
+      activeOverridePayload = null;
+    }
+
+    // Manual Submission fallback
+    async function submitCheckin() {
+      var selector = document.getElementById('team-selector');
+      var teamId = selector.value;
+      if (!teamId) {
+        showCheckinAlert('Please select a squad.', true);
+        return;
+      }
+      closeConfirmationModal();
+      await autoAwardCheckin(teamId, checkinState.cardRankValue, checkinState.cardSuit, 'Manual Confirmation');
     }
 
     function showCheckinAlert(msg, isError) {

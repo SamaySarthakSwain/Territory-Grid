@@ -7,179 +7,88 @@
       "role": "ADMIN",
       "password": "samay",
       "isApproved": true,
-      "createdAt": "2026-11-12T00:00:00.000Z"
-    },
-    {
-      "_id": "user_1794446983390_f08hr",
-      "callsign": "Alpha Team",
-      "name": "Alpha Team",
-      "role": "PLAYER",
-      "password": "pass123",
-      "teamId": "team_1794446983390_evoif",
-      "zoneId": null,
-      "zoneLabel": null,
-      "isApproved": true,
-      "createdAt": "2026-11-12T01:29:43.390Z"
-    },
-    {
-      "_id": "user_1794468611060_yyfs3",
-      "callsign": "q",
-      "name": "qq",
-      "role": "PLAYER",
-      "password": "q",
-      "teamId": "team_1794468611061_gxn8l",
-      "zoneId": null,
-      "zoneLabel": null,
-      "isApproved": true,
-      "createdAt": "2026-11-12T07:30:11.061Z"
-    },
-    {
-      "_id": "user_1794468683766_4spv8",
-      "callsign": "qqq",
-      "name": "qqq",
-      "role": "PLAYER",
-      "password": "q",
-      "teamId": "team_1794468683767_au4lz",
-      "zoneId": null,
-      "zoneLabel": null,
-      "isApproved": true,
-      "createdAt": "2026-11-12T07:31:23.767Z"
+      "createdAt": "2026-11-12T16:49:28.254Z"
     }
   ],
-  "teams": [
-    {
-      "_id": "team_1794446983390_evoif",
-      "name": "Alpha Team",
-      "callsign": "Alpha Team",
-      "score": 0,
-      "cards": [],
-      "clueOrder": [
-        "clue_06",
-        "clue_01",
-        "clue_02",
-        "clue_04",
-        "clue_09",
-        "clue_08",
-        "clue_10",
-        "clue_03",
-        "clue_07",
-        "clue_05"
-      ],
-      "currentClueIndex": 0,
-      "visitedZones": [],
-      "isApproved": true,
-      "createdAt": "2026-11-12T01:29:43.390Z",
-      "updatedAt": "2026-11-12T01:29:43.390Z"
-    },
-    {
-      "_id": "team_1794468611061_gxn8l",
-      "name": "qq",
-      "callsign": "q",
-      "score": 0,
-      "cards": [],
-      "clueOrder": [
-        "clue_06",
-        "clue_08",
-        "clue_10",
-        "clue_01",
-        "clue_07",
-        "clue_09",
-        "clue_04",
-        "clue_02",
-        "clue_03",
-        "clue_05"
-      ],
-      "currentClueIndex": 0,
-      "visitedZones": [],
-      "isApproved": true,
-      "createdAt": "2026-11-12T07:30:11.061Z",
-      "updatedAt": "2026-11-12T07:30:11.061Z"
-    },
-    {
-      "_id": "team_1794468683767_au4lz",
-      "name": "qqq",
-      "callsign": "qqq",
-      "score": 0,
-      "cards": [],
-      "clueOrder": [
-        "clue_03",
-        "clue_10",
-        "clue_04",
-        "clue_05",
-        "clue_07",
-        "clue_02",
-        "clue_08",
-        "clue_01",
-        "clue_06",
-        "clue_09"
-      ],
-      "currentClueIndex": 0,
-      "visitedZones": [],
-      "isApproved": true,
-      "createdAt": "2026-11-12T07:31:23.767Z",
-      "updatedAt": "2026-11-12T07:31:23.767Z"
-    }
-  ],
+  "teams": [],
   "clues": [
     {
       "_id": "clue_01",
       "text": "Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!",
       "zoneId": "ZONE_01",
-      "zoneLabel": "Sector A: Library Arch"
+      "zoneLabel": "Zone 1 - Library Arch"
     },
     {
       "_id": "clue_02",
       "text": "Search the courtyard perimeter behind the ancient bronze solar obelisk.",
       "zoneId": "ZONE_02",
-      "zoneLabel": "Sector B: Solar Obelisk"
+      "zoneLabel": "Zone 2 - Solar Obelisk"
     },
     {
       "_id": "clue_03",
       "text": "Ascend the terrace staircase overlooking the historic clocktower.",
       "zoneId": "ZONE_03",
-      "zoneLabel": "Sector C: Clocktower Terrace"
+      "zoneLabel": "Zone 3 - Clocktower Terrace"
     },
     {
       "_id": "clue_04",
       "text": "Investigate the botanical garden glasshouse south perimeter.",
       "zoneId": "ZONE_04",
-      "zoneLabel": "Sector D: Glasshouse Botanical"
+      "zoneLabel": "Zone 4 - Glasshouse Botanical"
     },
     {
       "_id": "clue_05",
       "text": "Cross the pedestrian skybridge connecting science hall 1 & 2.",
       "zoneId": "ZONE_05",
-      "zoneLabel": "Sector E: Skybridge Concourse"
+      "zoneLabel": "Zone 5 - Skybridge Concourse"
     },
     {
       "_id": "clue_06",
       "text": "Look beneath the concrete amphitheater canopy seating.",
       "zoneId": "ZONE_06",
-      "zoneLabel": "Sector F: Amphitheater"
+      "zoneLabel": "Zone 6 - Amphitheater Canopy"
     },
     {
       "_id": "clue_07",
       "text": "Find the water fountain basin near the science auditorium.",
       "zoneId": "ZONE_07",
-      "zoneLabel": "Sector G: Science Basin"
+      "zoneLabel": "Zone 7 - Science Basin"
     },
     {
       "_id": "clue_08",
       "text": "Check the shaded colonnade behind student center pavilion.",
       "zoneId": "ZONE_08",
-      "zoneLabel": "Sector H: Student Pavilion"
+      "zoneLabel": "Zone 8 - Student Pavilion"
     },
     {
       "_id": "clue_09",
       "text": "Locate the red telecom antenna pylon on north concourse.",
       "zoneId": "ZONE_09",
-      "zoneLabel": "Sector I: North Telecom Pylon"
+      "zoneLabel": "Zone 9 - North Telecom Pylon"
     },
     {
       "_id": "clue_10",
       "text": "Scan the perimeter fence surrounding the athletic turf field.",
       "zoneId": "ZONE_10",
-      "zoneLabel": "Sector J: Turf Perimeter"
+      "zoneLabel": "Zone 10 - Turf Perimeter"
+    },
+    {
+      "_id": "clue_11",
+      "text": "Find the solar energy charging station outside the REC technology workshop.",
+      "zoneId": "ZONE_11",
+      "zoneLabel": "Zone 11 - Energy Innovation Hub"
+    },
+    {
+      "_id": "clue_12",
+      "text": "Spot the green beacon marker stationed near the robotics exhibition arena.",
+      "zoneId": "ZONE_12",
+      "zoneLabel": "Zone 12 - Innovation Arena"
+    },
+    {
+      "_id": "clue_13",
+      "text": "Reach the central ceremonial flagpole lawn overlooking the grand quadrangle.",
+      "zoneId": "ZONE_13",
+      "zoneLabel": "Zone 13 - Central Concourse"
     }
   ],
   "checkins": [],
@@ -190,54 +99,5 @@
     "pausedAt": null,
     "totalPausedMs": 0
   },
-  "system_logs": [
-    {
-      "_id": "log_1794468700311_l4u4",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"qqq\" (team_1794468683767_au4lz)",
-      "timestamp": "2026-11-12T07:31:40.311Z"
-    },
-    {
-      "_id": "log_1794468699643_1y4s",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"qq\" (team_1794468611061_gxn8l)",
-      "timestamp": "2026-11-12T07:31:39.643Z"
-    },
-    {
-      "_id": "log_1794468683769_e4zc",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"qqq\" (Pending Approval)",
-      "timestamp": "2026-11-12T07:31:23.769Z"
-    },
-    {
-      "_id": "log_1794468611062_irg3",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"q\" (Pending Approval)",
-      "timestamp": "2026-11-12T07:30:11.062Z"
-    },
-    {
-      "_id": "log_1794447036988_4494",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Alpha Team\" (team_1794446983390_evoif)",
-      "timestamp": "2026-11-12T01:30:36.988Z"
-    },
-    {
-      "_id": "log_1794447018117_eugn",
-      "action": "ADMIN_LOGIN",
-      "details": "Game Master Samay authenticated.",
-      "timestamp": "2026-11-12T01:30:18.117Z"
-    },
-    {
-      "_id": "log_1794446983391_z58a",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"Alpha Team\" (Pending Approval)",
-      "timestamp": "2026-11-12T01:29:43.391Z"
-    },
-    {
-      "_id": "log_init",
-      "action": "SYSTEM_INIT",
-      "details": "Territory Grid Club Fest Database initialized. Game Master Samay ready.",
-      "timestamp": "2026-11-12T00:00:00.000Z"
-    }
-  ]
+  "system_logs": []
 }

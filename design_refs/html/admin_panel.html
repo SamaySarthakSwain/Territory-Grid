@@ -94,6 +94,12 @@
         <span id="badge-pending" class="px-1.5 py-0.2 rounded-full bg-yellow text-black font-mono font-bold text-[10px] ml-1">0</span>
       </button>
 
+      <button onclick="switchTab('places')" id="nav-btn-places" 
+              class="px-3.5 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition">
+        <span class="material-symbols-outlined text-base">pin_drop</span>
+        <span>Places & Zones (<span id="badge-places-count">13</span>)</span>
+      </button>
+
       <button onclick="switchTab('database')" id="nav-btn-database" 
               class="px-3.5 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition">
         <span class="material-symbols-outlined text-base">database</span>
@@ -358,6 +364,140 @@
 
     </div>
 
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- TAB 4: PLACES & ZONES MANAGER (ADMIN CONTROL OVER CAMPUS CHECKPOINTS) -->
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <div id="tab-content-places" class="hidden space-y-6">
+      
+      <!-- Top Zone Overview Banner -->
+      <div class="neon-card rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-2 py-0.5 rounded bg-cyan/20 border border-cyan/40 text-cyan text-[11px] font-mono font-bold uppercase">Game Master Architecture</span>
+            <span class="text-xs font-mono text-gray-400">Campus Checkpoints & Directives</span>
+          </div>
+          <h2 class="text-2xl font-headline font-bold text-white flex items-center gap-2">
+            <span>Places & Zone Clues Manager</span>
+          </h2>
+          <p class="text-xs text-gray-300 mt-1 max-w-xl font-body">
+            Manage the designated physical hunt stations across campus. Initially configured for 13 Zones (Zone 1 to Zone 13). Adding or updating places updates the player mission clues and Field Marshal station rosters in real-time.
+          </p>
+        </div>
+
+        <!-- Quick Summary Metrics -->
+        <div class="flex items-center gap-4 bg-[#050914] p-3 rounded-xl border border-cyan/20 shrink-0">
+          <div class="text-center px-3 border-r border-gray-800">
+            <div class="text-2xl font-mono font-bold text-cyan" id="places-total-count">13</div>
+            <div class="text-[10px] font-mono uppercase text-gray-400">Total Places</div>
+          </div>
+          <div class="text-center px-3 border-r border-gray-800">
+            <div class="text-2xl font-mono font-bold text-green" id="places-assigned-marshals">0</div>
+            <div class="text-[10px] font-mono uppercase text-gray-400">Active Marshals</div>
+          </div>
+          <div class="text-center px-2">
+            <button onclick="loadPlaces()" class="px-3 py-1.5 rounded-lg bg-cyan/10 hover:bg-cyan/20 text-cyan border border-cyan/30 text-xs font-headline font-semibold flex items-center gap-1 transition">
+              <span class="material-symbols-outlined text-sm">refresh</span>
+              <span>Re-sync</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Set Zone Count Tool & Add New Place Form -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Configure Number of Places Tool -->
+        <div class="neon-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center gap-2 border-b border-gray-800 pb-3">
+            <span class="material-symbols-outlined text-yellow text-lg">tune</span>
+            <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider">Configure Number of Zones</h3>
+          </div>
+          <p class="text-xs text-gray-400 font-body">
+            Quickly set the total number of zones for the event (e.g. 13, 14, 15). Expanding automatically creates new zones with default names.
+          </p>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Target Number of Zones</label>
+              <div class="flex gap-2">
+                <input type="number" id="input-target-zone-count" min="1" max="50" value="13" 
+                       class="w-24 bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white font-mono text-center focus:outline-none focus:border-cyan">
+                <button onclick="setTotalZonesCount()" class="flex-1 py-2 px-3 rounded-xl bg-cyan hover:bg-cyan/80 text-black text-xs font-headline font-bold uppercase transition flex items-center justify-center gap-1">
+                  <span class="material-symbols-outlined text-sm">check</span>
+                  <span>Set Zone Count</span>
+                </button>
+              </div>
+            </div>
+            <div class="pt-2 border-t border-gray-800">
+              <button onclick="resetTo13Zones()" class="w-full py-2 px-3 rounded-xl border border-yellow/40 bg-yellow/10 hover:bg-yellow/20 text-yellow text-xs font-headline font-semibold flex items-center justify-center gap-1.5 transition">
+                <span class="material-symbols-outlined text-sm">restart_alt</span>
+                <span>Reset to Standard 13 Zones</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 2 cols: Add / Edit Place Card Form -->
+        <div class="lg:col-span-2 neon-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-cyan text-lg">add_location_alt</span>
+              <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider" id="place-form-title">Add / Update Campus Place</h3>
+            </div>
+            <button id="btn-cancel-edit-place" onclick="cancelEditPlace()" class="hidden text-xs text-gray-400 hover:text-white font-mono flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">close</span> Cancel Edit
+            </button>
+          </div>
+
+          <form id="form-manage-place" onsubmit="event.preventDefault(); savePlace();" class="space-y-3">
+            <input type="hidden" id="place-edit-id" value="">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Zone Identifier *</label>
+                <input type="text" id="input-place-zone-id" placeholder="e.g. ZONE_14" required
+                       class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white font-mono uppercase focus:outline-none focus:border-cyan">
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Place Name / Location Title *</label>
+                <input type="text" id="input-place-label" placeholder="e.g. Zone 14 - Indoor Arena Foyer" required
+                       class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Mission Clue / Directive Hint *</label>
+              <textarea id="input-place-hint" rows="2" placeholder="Describe where players should search (e.g. Find the Yellow Beacon Cone near the solar pavilion...)" required
+                        class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan font-body"></textarea>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-[11px] font-mono text-gray-400">All connected phones update automatically</span>
+              <button type="submit" id="btn-save-place" class="py-2.5 px-6 rounded-xl bg-gradient-to-r from-cyan to-blue-500 hover:from-cyan/80 hover:to-blue-600 text-black text-xs font-headline font-bold uppercase transition flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,229,255,0.4)]">
+                <span class="material-symbols-outlined text-sm">save</span>
+                <span id="btn-save-place-text">Save / Add Place</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Places & Zones Cards Grid -->
+      <div class="neon-card rounded-2xl p-5 space-y-4">
+        <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-green text-lg">view_list</span>
+            <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider">Campus Checkpoint Directory (Zone 1 - Zone 13+)</h3>
+          </div>
+          <span class="text-xs font-mono text-cyan" id="places-grid-sublabel">Loading places...</span>
+        </div>
+
+        <div id="places-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </div>
+
   </main>
 
   <!-- SCRIPT LOGIC -->
@@ -386,6 +526,7 @@
       loadLeaderboard();
       loadPendingApprovals();
       loadApprovedRoster();
+      loadPlaces();
       loadDatabaseData();
       startClock();
       
@@ -403,7 +544,7 @@
 
     function switchTab(tab) {
       activeTab = tab;
-      ['ops', 'approvals', 'database'].forEach(function(t) {
+      ['ops', 'approvals', 'places', 'database'].forEach(function(t) {
         var content = document.getElementById('tab-content-' + t);
         var btn = document.getElementById('nav-btn-' + t);
         if (content && btn) {
@@ -418,8 +559,214 @@
       });
 
       if (tab === 'database') loadDatabaseData();
+      if (tab === 'places') loadPlaces();
       if (tab === 'approvals') { loadPendingApprovals(); loadApprovedRoster(); }
       if (tab === 'ops') loadLeaderboard();
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // PLACES & ZONES MANAGER CONTROLLER
+    // ─────────────────────────────────────────────────────────────
+    var cachedPlacesList = [];
+
+    async function loadPlaces() {
+      try {
+        var res = await fetch('/api/clues?_t=' + Date.now(), { cache: 'no-store' });
+        var data = await res.json();
+        if (data.success && Array.isArray(data.clues)) {
+          cachedPlacesList = data.clues;
+          renderPlacesList(cachedPlacesList);
+          
+          var countEl = document.getElementById('badge-places-count');
+          var totalCountEl = document.getElementById('places-total-count');
+          if (countEl) countEl.innerText = cachedPlacesList.length;
+          if (totalCountEl) totalCountEl.innerText = cachedPlacesList.length;
+          
+          var nextZoneNum = cachedPlacesList.length + 1;
+          var nextZoneInput = document.getElementById('input-place-zone-id');
+          if (nextZoneInput && !document.getElementById('place-edit-id').value) {
+            nextZoneInput.placeholder = 'e.g. ZONE_' + String(nextZoneNum).padStart(2, '0');
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load places:', e);
+      }
+    }
+
+    function renderPlacesList(places) {
+      var container = document.getElementById('places-list-container');
+      var sublabel = document.getElementById('places-grid-sublabel');
+      if (!container) return;
+
+      if (!places || places.length === 0) {
+        container.innerHTML = '<div class="col-span-full p-8 text-center text-gray-400 font-mono text-sm bg-[#050914] rounded-xl border border-dashed border-gray-800">No campus places configured yet. Add Zone 1 to begin!</div>';
+        if (sublabel) sublabel.innerText = '0 Places Configured';
+        return;
+      }
+
+      if (sublabel) sublabel.innerText = places.length + ' Active Checkpoints Configured';
+
+      // Cross-reference assigned marshals from cachedDbData.users
+      var marshalsByZone = {};
+      var allMarshalsCount = 0;
+      if (cachedDbData && cachedDbData.users) {
+        cachedDbData.users.forEach(function(u) {
+          if (u.role === 'MEMBER') {
+            allMarshalsCount++;
+            var zid = (u.zoneId || 'ZONE_01').toUpperCase();
+            marshalsByZone[zid] = marshalsByZone[zid] || [];
+            marshalsByZone[zid].push(u.callsign || u.name);
+          }
+        });
+      }
+      var assignedMarshalsEl = document.getElementById('places-assigned-marshals');
+      if (assignedMarshalsEl) assignedMarshalsEl.innerText = allMarshalsCount;
+
+      container.innerHTML = places.map(function(place, idx) {
+        var zoneNum = idx + 1;
+        var zid = place.zoneId || ('ZONE_' + String(zoneNum).padStart(2, '0'));
+        var label = place.zoneLabel || ('Zone ' + zoneNum);
+        var hint = place.text || 'Directive hint unassigned';
+        var assigned = marshalsByZone[zid.toUpperCase()] || [];
+
+        return '<div class="bg-[#050914] rounded-xl p-4 border border-cyan/15 hover:border-cyan/40 transition flex flex-col justify-between space-y-3 relative overflow-hidden group shadow-lg">' +
+          '<div class="flex items-start justify-between gap-2">' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="px-2 py-0.5 rounded bg-cyan/15 border border-cyan/40 text-cyan font-mono font-bold text-xs">' + zid + '</span>' +
+              '<span class="text-xs font-mono text-gray-400 font-semibold">Checkpoint #' + zoneNum + '</span>' +
+            '</div>' +
+            '<div class="flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition">' +
+              '<button onclick="editPlace(\'' + place._id + '\')" title="Edit Place" class="w-7 h-7 rounded-lg bg-cyan/10 hover:bg-cyan/30 text-cyan flex items-center justify-center transition cursor-pointer">' +
+                '<span class="material-symbols-outlined text-[15px]">edit</span>' +
+              '</button>' +
+              '<button onclick="deletePlace(\'' + place._id + '\', \'' + label.replace(/'/g, "\\'") + '\')" title="Delete Place" class="w-7 h-7 rounded-lg bg-red-500/10 hover:bg-red-500/30 text-red-400 flex items-center justify-center transition cursor-pointer">' +
+                '<span class="material-symbols-outlined text-[15px]">delete</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          '<div>' +
+            '<h4 class="font-headline font-bold text-sm text-white leading-snug">' + label + '</h4>' +
+            '<p class="text-xs text-gray-300 font-body mt-1 bg-[#091122] p-2.5 rounded-lg border border-gray-800/80 leading-relaxed italic">“' + hint + '”</p>' +
+          '</div>' +
+          '<div class="pt-2 border-t border-gray-800 flex items-center justify-between text-[11px] font-mono">' +
+            '<span class="text-gray-400 flex items-center gap-1">' +
+              '<span class="material-symbols-outlined text-[14px] text-green">shield_person</span>' +
+              (assigned.length > 0 ? ('Marshals: ' + assigned.join(', ')) : '<span class="text-yellow">No Marshal Assigned</span>') +
+            '</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function editPlace(id) {
+      var place = cachedPlacesList.find(function(p) { return p._id === id; });
+      if (!place) return;
+      document.getElementById('place-edit-id').value = place._id;
+      document.getElementById('input-place-zone-id').value = place.zoneId || '';
+      document.getElementById('input-place-label').value = place.zoneLabel || '';
+      document.getElementById('input-place-hint').value = place.text || '';
+      document.getElementById('place-form-title').innerText = 'Edit Campus Place: ' + (place.zoneLabel || place.zoneId);
+      document.getElementById('btn-save-place-text').innerText = 'Update Place';
+      document.getElementById('btn-cancel-edit-place').classList.remove('hidden');
+      document.getElementById('form-manage-place').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function cancelEditPlace() {
+      document.getElementById('place-edit-id').value = '';
+      document.getElementById('input-place-zone-id').value = '';
+      document.getElementById('input-place-label').value = '';
+      document.getElementById('input-place-hint').value = '';
+      document.getElementById('place-form-title').innerText = 'Add / Update Campus Place';
+      document.getElementById('btn-save-place-text').innerText = 'Save / Add Place';
+      document.getElementById('btn-cancel-edit-place').classList.add('hidden');
+    }
+
+    async function savePlace() {
+      var editId = document.getElementById('place-edit-id').value;
+      var zoneId = document.getElementById('input-place-zone-id').value.trim();
+      var zoneLabel = document.getElementById('input-place-label').value.trim();
+      var text = document.getElementById('input-place-hint').value.trim();
+
+      if (!zoneId || !zoneLabel || !text) {
+        alert('Please fill out Zone ID, Place Name, and Clue Hint.');
+        return;
+      }
+
+      var saveBtn = document.getElementById('btn-save-place');
+      saveBtn.disabled = true;
+
+      try {
+        var payload = { _id: editId || undefined, zoneId: zoneId, zoneLabel: zoneLabel, text: text };
+        var res = await fetch('/api/admin/clues/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        var data = await res.json();
+        saveBtn.disabled = false;
+        if (!data.success) {
+          alert('Failed to save place: ' + (data.error || 'Server error'));
+          return;
+        }
+        cancelEditPlace();
+        loadPlaces();
+        loadDatabaseData();
+      } catch (e) {
+        saveBtn.disabled = false;
+        alert('Error saving place: ' + e.message);
+      }
+    }
+
+    async function deletePlace(id, label) {
+      if (!confirm('Are you sure you want to delete place "' + label + '"?')) return;
+      try {
+        var res = await fetch('/api/admin/clues/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ _id: id })
+        });
+        var data = await res.json();
+        if (!data.success) {
+          alert('Delete failed: ' + (data.error || 'Server error'));
+          return;
+        }
+        loadPlaces();
+        loadDatabaseData();
+      } catch (e) {
+        alert('Error deleting place: ' + e.message);
+      }
+    }
+
+    async function setTotalZonesCount() {
+      var count = parseInt(document.getElementById('input-target-zone-count').value, 10);
+      if (isNaN(count) || count < 1 || count > 50) {
+        alert('Please enter a valid count between 1 and 50.');
+        return;
+      }
+      if (!confirm('Configure total number of campus zones to ' + count + '?')) return;
+
+      try {
+        var res = await fetch('/api/admin/clues/reset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ count: count })
+        });
+        var data = await res.json();
+        if (!data.success) {
+          alert('Failed to update zone count: ' + (data.error || 'Server error'));
+          return;
+        }
+        loadPlaces();
+        loadDatabaseData();
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    async function resetTo13Zones() {
+      if (!confirm('Reset all campus zones back to the official default 13 Zones (Zone 1 to Zone 13)?')) return;
+      document.getElementById('input-target-zone-count').value = 13;
+      await setTotalZonesCount();
     }
 
     // Master Clock

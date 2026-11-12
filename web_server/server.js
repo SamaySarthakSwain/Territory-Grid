@@ -77,19 +77,22 @@ class MongoDatabase {
       changed = true;
     }
 
-    // 2. Ensure Initial Tactical Clues (10 Zones for the Club Fest)
+    // 2. Ensure Initial Tactical Clues (13 Zones for the Club Fest)
     if (!this.collections.clues || this.collections.clues.length === 0) {
       this.collections.clues = [
-        { _id: 'clue_01', text: 'Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!', zoneId: 'ZONE_01', zoneLabel: 'Sector A: Library Arch' },
-        { _id: 'clue_02', text: 'Search the courtyard perimeter behind the ancient bronze solar obelisk.', zoneId: 'ZONE_02', zoneLabel: 'Sector B: Solar Obelisk' },
-        { _id: 'clue_03', text: 'Ascend the terrace staircase overlooking the historic clocktower.', zoneId: 'ZONE_03', zoneLabel: 'Sector C: Clocktower Terrace' },
-        { _id: 'clue_04', text: 'Investigate the botanical garden glasshouse south perimeter.', zoneId: 'ZONE_04', zoneLabel: 'Sector D: Glasshouse Botanical' },
-        { _id: 'clue_05', text: 'Cross the pedestrian skybridge connecting science hall 1 & 2.', zoneId: 'ZONE_05', zoneLabel: 'Sector E: Skybridge Concourse' },
-        { _id: 'clue_06', text: 'Look beneath the concrete amphitheater canopy seating.', zoneId: 'ZONE_06', zoneLabel: 'Sector F: Amphitheater' },
-        { _id: 'clue_07', text: 'Find the water fountain basin near the science auditorium.', zoneId: 'ZONE_07', zoneLabel: 'Sector G: Science Basin' },
-        { _id: 'clue_08', text: 'Check the shaded colonnade behind student center pavilion.', zoneId: 'ZONE_08', zoneLabel: 'Sector H: Student Pavilion' },
-        { _id: 'clue_09', text: 'Locate the red telecom antenna pylon on north concourse.', zoneId: 'ZONE_09', zoneLabel: 'Sector I: North Telecom Pylon' },
-        { _id: 'clue_10', text: 'Scan the perimeter fence surrounding the athletic turf field.', zoneId: 'ZONE_10', zoneLabel: 'Sector J: Turf Perimeter' }
+        { _id: 'clue_01', text: 'Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!', zoneId: 'ZONE_01', zoneLabel: 'Zone 1 - Library Arch' },
+        { _id: 'clue_02', text: 'Search the courtyard perimeter behind the ancient bronze solar obelisk.', zoneId: 'ZONE_02', zoneLabel: 'Zone 2 - Solar Obelisk' },
+        { _id: 'clue_03', text: 'Ascend the terrace staircase overlooking the historic clocktower.', zoneId: 'ZONE_03', zoneLabel: 'Zone 3 - Clocktower Terrace' },
+        { _id: 'clue_04', text: 'Investigate the botanical garden glasshouse south perimeter.', zoneId: 'ZONE_04', zoneLabel: 'Zone 4 - Glasshouse Botanical' },
+        { _id: 'clue_05', text: 'Cross the pedestrian skybridge connecting science hall 1 & 2.', zoneId: 'ZONE_05', zoneLabel: 'Zone 5 - Skybridge Concourse' },
+        { _id: 'clue_06', text: 'Look beneath the concrete amphitheater canopy seating.', zoneId: 'ZONE_06', zoneLabel: 'Zone 6 - Amphitheater Canopy' },
+        { _id: 'clue_07', text: 'Find the water fountain basin near the science auditorium.', zoneId: 'ZONE_07', zoneLabel: 'Zone 7 - Science Basin' },
+        { _id: 'clue_08', text: 'Check the shaded colonnade behind student center pavilion.', zoneId: 'ZONE_08', zoneLabel: 'Zone 8 - Student Pavilion' },
+        { _id: 'clue_09', text: 'Locate the red telecom antenna pylon on north concourse.', zoneId: 'ZONE_09', zoneLabel: 'Zone 9 - North Telecom Pylon' },
+        { _id: 'clue_10', text: 'Scan the perimeter fence surrounding the athletic turf field.', zoneId: 'ZONE_10', zoneLabel: 'Zone 10 - Turf Perimeter' },
+        { _id: 'clue_11', text: 'Find the solar energy charging station outside the REC technology workshop.', zoneId: 'ZONE_11', zoneLabel: 'Zone 11 - Energy Innovation Hub' },
+        { _id: 'clue_12', text: 'Spot the green beacon marker stationed near the robotics exhibition arena.', zoneId: 'ZONE_12', zoneLabel: 'Zone 12 - Innovation Arena' },
+        { _id: 'clue_13', text: 'Reach the central ceremonial flagpole lawn overlooking the grand quadrangle.', zoneId: 'ZONE_13', zoneLabel: 'Zone 13 - Central Concourse' }
       ];
       changed = true;
     }
@@ -384,9 +387,10 @@ const server = http.createServer(async (req, res) => {
       if (pathname === '/api/admin/approve' && req.method === 'POST') {
         db.load();
         const body = await parseBody(req);
-        const { type, id } = body; // type: 'USER' or 'TEAM'
+        const { type, id } = body;
+        const isTeam = String(type || '').toUpperCase() === 'TEAM';
 
-        if (type === 'TEAM') {
+        if (isTeam) {
           const team = db.collections.teams.find(t => t._id === id);
           if (team) {
             team.isApproved = true;
@@ -505,18 +509,105 @@ const server = http.createServer(async (req, res) => {
 
       // 10b. GET /api/clues (All clues for Mission Directives)
       if (pathname === '/api/clues' && req.method === 'GET') {
+        db.load();
         return sendJson(res, 200, {
           success: true,
           clues: db.collections.clues
         });
       }
 
+      // 10c. POST /api/admin/clues/save (Create or Update Zone Place)
+      if (pathname === '/api/admin/clues/save' && req.method === 'POST') {
+        db.load();
+        const body = await parseBody(req);
+        const { _id, zoneId, zoneLabel, text } = body;
+
+        if (!zoneId || !zoneLabel || !text) {
+          return sendJson(res, 400, { success: false, error: 'Zone ID, Place Name, and Clue Hint are required.' });
+        }
+
+        const cleanZoneId = zoneId.trim().toUpperCase();
+        const cleanLabel = zoneLabel.trim();
+        const cleanText = text.trim();
+
+        if (_id) {
+          const existing = db.collections.clues.find(c => c._id === _id);
+          if (existing) {
+            existing.zoneId = cleanZoneId;
+            existing.zoneLabel = cleanLabel;
+            existing.text = cleanText;
+          }
+        } else {
+          const newId = 'clue_' + Date.now().toString(36);
+          db.collections.clues.push({ _id: newId, zoneId: cleanZoneId, zoneLabel: cleanLabel, text: cleanText });
+        }
+        db.save();
+        return sendJson(res, 200, { success: true, message: 'Place saved successfully.', clues: db.collections.clues });
+      }
+
+      // 10d. POST /api/admin/clues/delete (Delete Zone Place)
+      if (pathname === '/api/admin/clues/delete' && req.method === 'POST') {
+        db.load();
+        const body = await parseBody(req);
+        const { _id } = body;
+
+        db.collections.clues = db.collections.clues.filter(c => c._id !== _id);
+        db.save();
+        return sendJson(res, 200, { success: true, message: 'Place deleted successfully.', clues: db.collections.clues });
+      }
+
+      // 10e. POST /api/admin/clues/reset (Reset or Set Number of Zones)
+      if (pathname === '/api/admin/clues/reset' && req.method === 'POST') {
+        db.load();
+        const body = await parseBody(req);
+        const targetCount = parseInt(body.count, 10) || 13;
+
+        const default13 = [
+          { _id: 'clue_01', text: 'Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!', zoneId: 'ZONE_01', zoneLabel: 'Zone 1 - Library Arch' },
+          { _id: 'clue_02', text: 'Search the courtyard perimeter behind the ancient bronze solar obelisk.', zoneId: 'ZONE_02', zoneLabel: 'Zone 2 - Solar Obelisk' },
+          { _id: 'clue_03', text: 'Ascend the terrace staircase overlooking the historic clocktower.', zoneId: 'ZONE_03', zoneLabel: 'Zone 3 - Clocktower Terrace' },
+          { _id: 'clue_04', text: 'Investigate the botanical garden glasshouse south perimeter.', zoneId: 'ZONE_04', zoneLabel: 'Zone 4 - Glasshouse Botanical' },
+          { _id: 'clue_05', text: 'Cross the pedestrian skybridge connecting science hall 1 & 2.', zoneId: 'ZONE_05', zoneLabel: 'Zone 5 - Skybridge Concourse' },
+          { _id: 'clue_06', text: 'Look beneath the concrete amphitheater canopy seating.', zoneId: 'ZONE_06', zoneLabel: 'Zone 6 - Amphitheater Canopy' },
+          { _id: 'clue_07', text: 'Find the water fountain basin near the science auditorium.', zoneId: 'ZONE_07', zoneLabel: 'Zone 7 - Science Basin' },
+          { _id: 'clue_08', text: 'Check the shaded colonnade behind student center pavilion.', zoneId: 'ZONE_08', zoneLabel: 'Zone 8 - Student Pavilion' },
+          { _id: 'clue_09', text: 'Locate the red telecom antenna pylon on north concourse.', zoneId: 'ZONE_09', zoneLabel: 'Zone 9 - North Telecom Pylon' },
+          { _id: 'clue_10', text: 'Scan the perimeter fence surrounding the athletic turf field.', zoneId: 'ZONE_10', zoneLabel: 'Zone 10 - Turf Perimeter' },
+          { _id: 'clue_11', text: 'Find the solar energy charging station outside the REC technology workshop.', zoneId: 'ZONE_11', zoneLabel: 'Zone 11 - Energy Innovation Hub' },
+          { _id: 'clue_12', text: 'Spot the green beacon marker stationed near the robotics exhibition arena.', zoneId: 'ZONE_12', zoneLabel: 'Zone 12 - Innovation Arena' },
+          { _id: 'clue_13', text: 'Reach the central ceremonial flagpole lawn overlooking the grand quadrangle.', zoneId: 'ZONE_13', zoneLabel: 'Zone 13 - Central Concourse' }
+        ];
+
+        const newClues = [];
+        for (let i = 1; i <= targetCount; i++) {
+          const numStr = String(i).padStart(2, '0');
+          const defaultMatch = default13[i - 1];
+          if (defaultMatch) {
+            newClues.push({ ...defaultMatch, _id: 'clue_' + numStr });
+          } else {
+            newClues.push({
+              _id: 'clue_' + numStr,
+              zoneId: 'ZONE_' + numStr,
+              zoneLabel: 'Zone ' + i + ' - Station ' + numStr,
+              text: 'Locate the Beacon Cone stationed at Zone ' + i + ' checkpoint area.'
+            });
+          }
+        }
+
+        db.collections.clues = newClues;
+        db.save();
+        return sendJson(res, 200, { success: true, message: `Configured ${targetCount} zones successfully.`, clues: newClues });
+      }
+
       // 11. POST /api/checkin (Field Marshal submit)
       if (pathname === '/api/checkin' && req.method === 'POST') {
+        db.load();
         const body = await parseBody(req);
-        const { teamId, zoneId, cone, cardRank, cardSuit, memberId } = body;
+        const { teamId, zoneId, cone, cardRank, cardSuit, memberId, allowDuplicate } = body;
 
-        const team = db.collections.teams.find(t => t._id === teamId);
+        const team = db.collections.teams.find(t => 
+          t._id === teamId || (t.callsign && t.callsign.toLowerCase() === (teamId || '').toLowerCase())
+        );
         if (!team) {
           return sendJson(res, 404, { success: false, error: 'Team not found.' });
         }
@@ -525,47 +616,53 @@ const server = http.createServer(async (req, res) => {
         }
 
         // Check if already checked in at this zone
-        if (team.visitedZones && team.visitedZones.includes(zoneId)) {
-          return sendJson(res, 400, { success: false, error: 'Team has already completed checkpoint for this zone.' });
+        if (team.visitedZones && team.visitedZones.includes(zoneId) && !allowDuplicate) {
+          return sendJson(res, 400, {
+            success: false,
+            alreadyVisited: true,
+            error: `Squad "${team.name}" has already cleared ${zoneId}! Current objective is Checkpoint #${(team.currentClueIndex || 0) + 1}.`
+          });
         }
 
         // Formula: Card Rank (Ace=1..King=13) + Cone (Red=10, Yellow=12, Green=15)
         const coneValues = { RED: 10, YELLOW: 12, GREEN: 15 };
-        const conePts = coneValues[cone] || 10;
-        const rankPts = parseInt(cardRank, 10) || 1;
+        const conePts = coneValues[cone] || 12;
+        const rankPts = parseInt(cardRank, 10) || 13;
         const totalPoints = conePts + rankPts;
 
-        const checkinId = `${teamId}_${zoneId}`;
+        const checkinId = `${team._id}_${zoneId}_${Date.now()}`;
         const checkinRecord = {
           _id: checkinId,
-          teamId,
+          teamId: team._id,
           zoneId,
           memberId: memberId || 'marshal_station',
-          cone,
+          cone: cone || 'YELLOW',
           cardRank: rankPts,
           cardSuit: cardSuit || '♠',
           points: totalPoints,
           timestamp: new Date().toISOString()
         };
 
+        db.collections.checkins = db.collections.checkins || [];
         db.collections.checkins.push(checkinRecord);
 
         // Update team score and inventory
         team.score = (team.score || 0) + totalPoints;
         team.cards = team.cards || [];
-        team.cards.push({ rank: rankPts, suit: cardSuit || '♠', zoneId });
+        team.cards.push({ rank: rankPts, suit: cardSuit || '♠', zoneId, awardedAt: new Date().toISOString() });
         team.visitedZones = team.visitedZones || [];
-        team.visitedZones.push(zoneId);
+        if (!team.visitedZones.includes(zoneId)) team.visitedZones.push(zoneId);
         team.currentClueIndex = (team.currentClueIndex || 0) + 1;
         team.updatedAt = new Date().toISOString();
 
         db.save();
-        db.logEvent('CHECKIN', `Team "${team.name}" awarded ${totalPoints} PTS at ${zoneId} (${cone}+${rankPts})`);
+        db.logEvent('CHECKIN', `Team "${team.name}" awarded +${totalPoints} PTS at ${zoneId} (Total: ${team.score} PTS)`);
 
         return sendJson(res, 200, {
           success: true,
           pointsAwarded: totalPoints,
           teamScore: team.score,
+          teamName: team.name || team.callsign,
           nextClueIndex: team.currentClueIndex
         });
       }

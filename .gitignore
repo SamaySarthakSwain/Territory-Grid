@@ -29,3 +29,6 @@ graphify-out/.graphify_build.json
 graphify-out/.graphify_root
 
 
+
+.idea/
+*.apk
