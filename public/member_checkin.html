@@ -4,6 +4,14 @@
       min-height: max(884px, 100dvh);
     }
   </style>
+  <script src="/vendor/html5-qrcode.min.js"></script>
+  <script>
+    if (typeof Html5Qrcode === 'undefined') {
+      var h5s = document.createElement('script');
+      h5s.src = 'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+      document.head.appendChild(h5s);
+    }
+  </script>
   </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container">
   
   <!-- Header -->
@@ -75,6 +83,80 @@
             <span class="font-headline-sm text-headline-sm text-primary">ONLINE</span>
           </div>
         </div>
+      </div>
+
+      <!-- OPTICAL SCANNER: Live QR Code Checkpoint Terminal -->
+      <div class="relative w-full rounded-xl bg-surface-container-high/90 backdrop-blur-xl p-4 shadow-xl flex flex-col gap-3 border-2 border-primary/40 relative overflow-hidden">
+        
+        <!-- Scanner Header -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary shadow-[0_0_12px_rgba(0,229,255,0.4)]">
+              <span class="material-symbols-outlined text-[20px]">qr_code_scanner</span>
+            </div>
+            <div>
+              <h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-wide">Optical Checkpoint Scanner</h2>
+              <p class="text-[11px] font-mono text-gray-400">Scan player's dynamic QR cipher to auto-verify squad & card</p>
+            </div>
+          </div>
+          <span id="scanner-status-badge" class="px-2.5 py-1 rounded-full bg-surface-container-lowest text-on-surface-variant font-mono text-[11px] font-bold uppercase tracking-wider border border-white/10 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-gray-500" id="scanner-status-dot"></span>
+            <span id="scanner-status-text">Standby</span>
+          </span>
+        </div>
+
+        <!-- Scanner Action Buttons -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+          <button id="btn-toggle-camera" type="button" onclick="toggleCameraScanner()" class="h-11 rounded-lg bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold font-label-md flex items-center justify-center gap-2 shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
+            <span class="material-symbols-outlined text-[20px]" id="camera-btn-icon">photo_camera</span>
+            <span id="camera-btn-text">Open Camera Scanner</span>
+          </button>
+          
+          <button id="btn-simulate-scan" type="button" onclick="simulateQRScan()" class="h-11 rounded-lg bg-surface-container-lowest hover:bg-surface-container-highest text-secondary-fixed border border-secondary-fixed/40 font-bold font-label-md flex items-center justify-center gap-2 active:scale-[0.98] transition cursor-pointer">
+            <span class="material-symbols-outlined text-[20px]">bolt</span>
+            <span>Simulate Squad Scan (Test)</span>
+          </button>
+        </div>
+
+        <!-- Live Camera Viewfinder Modal / Expandable Container -->
+        <div id="camera-viewfinder-box" class="hidden relative rounded-xl overflow-hidden bg-black border border-primary/50 shadow-[0_0_24px_rgba(0,229,255,0.25)] flex flex-col items-center justify-center p-2 min-h-[260px]">
+          <!-- Video element populated by html5-qrcode -->
+          <div id="qr-reader" class="w-full max-w-[360px] rounded-lg overflow-hidden"></div>
+
+          <!-- Futuristic HUD Scanning Overlay Lines -->
+          <div class="absolute inset-x-6 top-1/2 -translate-y-1/2 h-0.5 bg-[#00e5ff] shadow-[0_0_12px_#00e5ff] animate-pulse pointer-events-none"></div>
+
+          <!-- Close Scanner Bar -->
+          <div class="w-full bg-black/80 backdrop-blur-md p-2 mt-2 rounded flex items-center justify-between text-xs font-mono text-gray-300 border-t border-white/10 z-20">
+            <span class="flex items-center gap-1.5 text-primary">
+              <span class="material-symbols-outlined text-[16px] animate-spin">cyclone</span> Center Player's QR in Frame
+            </span>
+            <button onclick="stopCameraScanner()" type="button" class="px-3 py-1 rounded bg-error/20 hover:bg-error/30 text-error font-bold transition">
+              Close Camera
+            </button>
+          </div>
+        </div>
+
+        <!-- Scan Result HUD Banner (Shown when a QR code is detected!) -->
+        <div id="scan-detected-banner" class="hidden p-3 rounded-lg bg-primary/15 border border-primary/50 shadow-[0_0_20px_rgba(0,229,255,0.2)] flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div id="scan-result-card-badge" class="w-10 h-12 rounded bg-surface-container-lowest border border-primary flex flex-col items-center justify-center shadow-md">
+              <span id="scan-result-rank" class="font-bold text-sm text-primary leading-none">K</span>
+              <span id="scan-result-suit" class="text-sm text-primary leading-none">♠</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono text-[#00e5ff] font-bold uppercase tracking-wider">QR VERIFIED // SQUAD ACQUIRED</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-secondary-fixed/20 text-secondary-fixed font-mono font-bold" id="scan-result-pts-tag">+13 PTS CARD</span>
+              </div>
+              <p class="font-headline-sm text-headline-sm text-on-surface font-bold" id="scan-result-team-name">Squad Alpha</p>
+            </div>
+          </div>
+          <button onclick="openConfirmationModal()" type="button" class="px-3.5 py-2 rounded-lg bg-primary text-on-primary font-bold text-xs uppercase tracking-wider shadow-[0_0_12px_rgba(0,229,255,0.5)] hover:scale-105 active:scale-95 transition cursor-pointer">
+            Verify & Award
+          </button>
+        </div>
+
       </div>
 
       <!-- STEP 1: Select Arrived Team -->
@@ -464,11 +546,14 @@
 
     function setSuit(suit, colorClass, el) {
       checkinState.cardSuit = suit;
-      checkinState.suitColorClass = colorClass;
+      checkinState.suitColorClass = colorClass || (suit === '♥' || suit === '♦' ? 'text-secondary' : 'text-primary');
 
       document.querySelectorAll('.suit-btn').forEach(function(btn) {
         btn.classList.remove('bg-surface-container-high', 'border-primary', 'border-secondary');
         btn.classList.add('bg-surface-container-lowest');
+        if (!el && btn.innerText.includes(suit)) {
+          el = btn;
+        }
       });
       if (el) {
         el.classList.remove('bg-surface-container-lowest');
@@ -484,12 +569,225 @@
 
       document.querySelectorAll('.rank-btn').forEach(function(btn) {
         btn.className = 'rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center';
+        if (!el && (btn.innerText.startsWith(rank + ' ') || btn.innerText === rank)) {
+          el = btn;
+        }
       });
       if (el) {
         el.className = 'rank-btn py-1.5 rounded bg-primary-container text-on-primary-container font-label-md text-label-md text-center font-bold';
       }
 
       updateCardDisplay();
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // OPTICAL SCANNER: Live QR Decoding & Auto-Population
+    // ─────────────────────────────────────────────────────────
+    var html5QrCode = null;
+    var isScanning = false;
+
+    function playCyberBeep() {
+      try {
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        var ctx = new AudioCtx();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.18);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.18);
+      } catch (e) {}
+    }
+
+    async function toggleCameraScanner() {
+      if (isScanning) {
+        stopCameraScanner();
+      } else {
+        startCameraScanner();
+      }
+    }
+
+    async function startCameraScanner() {
+      var box = document.getElementById('camera-viewfinder-box');
+      var btnIcon = document.getElementById('camera-btn-icon');
+      var btnText = document.getElementById('camera-btn-text');
+      var statusText = document.getElementById('scanner-status-text');
+      var statusDot = document.getElementById('scanner-status-dot');
+
+      if (typeof Html5Qrcode === 'undefined') {
+        showNotification('Camera QR engine loading... please retry.', true);
+        return;
+      }
+
+      box.classList.remove('hidden');
+      statusText.innerText = 'CAMERA SCANNING';
+      statusDot.className = 'w-2 h-2 rounded-full bg-secondary-fixed animate-ping';
+      btnIcon.innerText = 'stop_circle';
+      btnText.innerText = 'Close Camera Scanner';
+      isScanning = true;
+
+      try {
+        if (!html5QrCode) {
+          html5QrCode = new Html5Qrcode('qr-reader');
+        }
+
+        var qrConfig = {
+          fps: 10,
+          qrbox: { width: 220, height: 220 },
+          aspectRatio: 1.0
+        };
+
+        await html5QrCode.start(
+          { facingMode: 'environment' },
+          qrConfig,
+          function(decodedText) {
+            handleDecodedQR(decodedText);
+          },
+          function(errorMessage) {
+            // Frame search ignore
+          }
+        );
+      } catch (err) {
+        console.error('Camera start error:', err);
+        statusText.innerText = 'CAMERA ERROR';
+        statusDot.className = 'w-2 h-2 rounded-full bg-error';
+        btnIcon.innerText = 'photo_camera';
+        btnText.innerText = 'Open Camera Scanner';
+        isScanning = false;
+        showNotification('Camera access denied or unavailable. Use "Simulate Squad Scan" for testing.', true);
+      }
+    }
+
+    function stopCameraScanner() {
+      if (html5QrCode && isScanning) {
+        html5QrCode.stop().then(function() {
+          cleanupScannerUI();
+        }).catch(function(err) {
+          console.warn('Stop scanner err:', err);
+          cleanupScannerUI();
+        });
+      } else {
+        cleanupScannerUI();
+      }
+    }
+
+    function cleanupScannerUI() {
+      var box = document.getElementById('camera-viewfinder-box');
+      var btnIcon = document.getElementById('camera-btn-icon');
+      var btnText = document.getElementById('camera-btn-text');
+      var statusText = document.getElementById('scanner-status-text');
+      var statusDot = document.getElementById('scanner-status-dot');
+
+      if (box) box.classList.add('hidden');
+      if (btnIcon) btnIcon.innerText = 'photo_camera';
+      if (btnText) btnText.innerText = 'Open Camera Scanner';
+      if (statusText) statusText.innerText = 'STANDBY';
+      if (statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-gray-500';
+      isScanning = false;
+    }
+
+    function handleDecodedQR(decodedText) {
+      try {
+        var teamId = '';
+        var teamName = '';
+        var rankNum = 1;
+        var rankCode = 'A';
+        var suitSymbol = '♠';
+
+        if (decodedText.startsWith('TG|')) {
+          var parts = decodedText.split('|');
+          teamId = parts[1] || '';
+          teamName = parts[2] || '';
+          rankNum = parseInt(parts[3], 10) || 1;
+          rankCode = parts[4] || 'A';
+          suitSymbol = parts[5] || '♠';
+        } else {
+          var json = JSON.parse(decodedText);
+          teamId = json.teamId || '';
+          teamName = json.teamName || json.teamCallsign || '';
+          rankNum = parseInt(json.rank || json.rankNumber || 1, 10);
+          rankCode = json.code || json.rankCode || 'A';
+          suitSymbol = json.suit || '♠';
+        }
+
+        // 1. Select Team in dropdown
+        var selector = document.getElementById('team-selector');
+        var matched = false;
+        for (var i = 0; i < selector.options.length; i++) {
+          var opt = selector.options[i];
+          if (opt.value === teamId || (teamName && opt.text.toLowerCase().includes(teamName.toLowerCase()))) {
+            selector.selectedIndex = i;
+            matched = true;
+            break;
+          }
+        }
+
+        // 2. Select Suit
+        var isRed = suitSymbol === '♥' || suitSymbol === '♦';
+        var colorClass = isRed ? 'text-secondary' : 'text-primary';
+        setSuit(suitSymbol, colorClass);
+
+        // 3. Select Rank
+        setRank(rankCode, rankNum);
+
+        // 4. Audio confirmation chirp
+        playCyberBeep();
+
+        // 5. Update Scan Detected Banner
+        var banner = document.getElementById('scan-detected-banner');
+        if (banner) {
+          banner.classList.remove('hidden');
+          var selectedTeamObj = currentTeams.find(function(t) { return t._id === selector.value; });
+          var displaySquad = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : (teamName || 'Squad Verified');
+          document.getElementById('scan-result-team-name').innerText = displaySquad;
+          document.getElementById('scan-result-rank').innerText = rankCode;
+          document.getElementById('scan-result-suit').innerText = suitSymbol;
+          document.getElementById('scan-result-rank').className = 'font-bold text-sm leading-none ' + colorClass;
+          document.getElementById('scan-result-suit').className = 'text-sm leading-none ' + colorClass;
+          document.getElementById('scan-result-pts-tag').innerText = '+' + rankNum + ' PTS CARD';
+        }
+
+        // 6. Stop scanner so it doesn't loop
+        stopCameraScanner();
+
+        // 7. Update calculated summary points
+        updateSummary();
+
+        showNotification('Scanned & Verified: ' + (teamName || 'Squad') + ' (' + rankCode + suitSymbol + ' +' + rankNum + ' PTS)');
+      } catch (err) {
+        console.error('QR Decode error:', err);
+        showNotification('QR scanned but format was invalid.', true);
+      }
+    }
+
+    function simulateQRScan() {
+      var selector = document.getElementById('team-selector');
+      if (!selector || selector.options.length <= 1) {
+        showNotification('No approved squads loaded to simulate scan.', true);
+        return;
+      }
+
+      var idx = selector.selectedIndex > 0 ? selector.selectedIndex : (Math.floor(Math.random() * (selector.options.length - 1)) + 1);
+      var chosenTeamId = selector.options[idx].value;
+      var chosenTeamName = selector.options[idx].text.split(' (')[0];
+
+      var ranks = [
+        { code: 'A', num: 1 }, { code: '2', num: 2 }, { code: '5', num: 5 },
+        { code: '7', num: 7 }, { code: '8', num: 8 }, { code: '9', num: 9 },
+        { code: '10', num: 10 }, { code: 'J', num: 11 }, { code: 'Q', num: 12 }, { code: 'K', num: 13 }
+      ];
+      var suits = ['♠', '♥', '♦', '♣'];
+      var r = ranks[Math.floor(Math.random() * ranks.length)];
+      var s = suits[Math.floor(Math.random() * suits.length)];
+
+      var mockPayload = 'TG|' + chosenTeamId + '|' + chosenTeamName + '|' + r.num + '|' + r.code + '|' + s + '|' + Math.floor(Math.random() * 9000 + 1000).toString(16).toUpperCase();
+      handleDecodedQR(mockPayload);
     }
 
     function updateCardDisplay() {

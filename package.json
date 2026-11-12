@@ -23,6 +23,9 @@
   },
   "homepage": "https://github.com/SamaySarthakSwain/Territory-Grid#readme",
   "dependencies": {
-    "mongodb": "^7.8.0"
+    "davidshimjs-qrcodejs": "^0.0.2",
+    "html5-qrcode": "^2.3.8",
+    "mongodb": "^7.8.0",
+    "qrcode": "^1.5.4"
   }
 }
