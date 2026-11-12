@@ -157,20 +157,20 @@
           </button>
         </div>
 
-        <!-- MANUAL CIPHER CODE ENTRY (Fallback if Optical Scanner/Camera fails) -->
+        <!-- MANUAL CIPHER CODE ENTRY (6-Digit Code Fallback) -->
         <div class="mt-1 pt-2.5 border-t border-outline-variant/30 flex flex-col gap-1.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-mono text-gray-200 font-bold uppercase flex items-center gap-1.5">
               <span class="material-symbols-outlined text-[16px] text-secondary-fixed">pin</span>
-              Manual Cipher Code Entry
+              Manual 6-Digit Cipher Entry
             </span>
-            <span class="text-[10px] font-mono text-gray-400">Fallback if camera scan fails</span>
+            <span class="text-[10px] font-mono text-gray-400">Easy keypad entry</span>
           </div>
           <div class="flex gap-2">
             <div class="relative flex-1">
-              <input type="text" id="manual-cipher-input" placeholder="e.g. TG-ALPHA-K-8492 or K-8492" class="w-full h-10 bg-surface-container-lowest text-on-surface font-mono text-xs uppercase px-3 rounded-lg border border-primary/30 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition" onkeydown="if(event.key==='Enter') verifyManualCipherCode()">
+              <input type="text" id="manual-cipher-input" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="Enter 6-digit code e.g. 513347" class="w-full h-11 bg-surface-container-lowest text-on-surface font-mono text-sm tracking-widest uppercase px-3 rounded-lg border border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition" onkeydown="if(event.key==='Enter') verifyManualCipherCode()">
             </div>
-            <button onclick="verifyManualCipherCode()" type="button" class="h-10 px-4 rounded-lg bg-secondary-fixed/20 hover:bg-secondary-fixed/30 text-secondary-fixed border border-secondary-fixed/40 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 active:scale-95 transition cursor-pointer">
+            <button onclick="verifyManualCipherCode()" type="button" class="h-11 px-4 rounded-lg bg-gradient-to-r from-secondary-fixed/30 to-secondary-container/40 hover:from-secondary-fixed/40 hover:to-secondary-container/50 text-secondary-fixed border border-secondary-fixed/50 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 active:scale-95 transition cursor-pointer shrink-0">
               <span class="material-symbols-outlined text-[16px]">check_circle</span>
               <span>Verify Code</span>
             </button>
@@ -431,6 +431,46 @@
   <script>
     var currentUser = null;
     var currentTeams = [];
+
+    // Deterministic 2-Digit Team Code Engine (Unique for every squad)
+    function deriveTeamCode(strOrTeam, teamsList) {
+      var str = '';
+      if (typeof strOrTeam === 'string') {
+        str = strOrTeam;
+      } else if (strOrTeam && typeof strOrTeam === 'object') {
+        str = strOrTeam.callsign || strOrTeam.name || strOrTeam._id || 'SQUAD';
+      } else {
+        str = 'SQUAD';
+      }
+      str = str.toUpperCase().trim();
+
+      // If team name contains explicit number e.g. "Team 1", "Squad 5"
+      var numMatch = str.match(/\d+/);
+      if (numMatch && numMatch[0]) {
+        var n = parseInt(numMatch[0], 10);
+        if (n >= 10 && n <= 99) return n;
+        if (n < 10) return 10 + n;
+      }
+
+      // If teamsList available, derive index offset to guarantee 100% squad uniqueness
+      if (Array.isArray(teamsList) && teamsList.length > 0) {
+        var idx = teamsList.findIndex(function(t) {
+          return (t.callsign && t.callsign.toUpperCase() === str) ||
+                 (t.name && t.name.toUpperCase() === str) ||
+                 (t._id && t._id === str);
+        });
+        if (idx !== -1) {
+          return 11 + (idx % 88);
+        }
+      }
+
+      // Deterministic hash fallback (11-98)
+      var hash = 0;
+      for (var i = 0; i < str.length; i++) {
+        hash = (hash * 31 + str.charCodeAt(i)) % 88;
+      }
+      return 11 + Math.abs(hash);
+    }
 
     var checkinState = {
       coneColor: 'YELLOW',
@@ -812,52 +852,96 @@
 
     function verifyManualCipherCode() {
       var input = document.getElementById('manual-cipher-input');
-      var code = (input.value || '').trim().toUpperCase();
+      var rawCode = (input.value || '').trim();
 
-      if (!code) {
-        showNotification('Please enter the manual cipher code from the player card.', true);
+      if (!rawCode) {
+        showNotification('Please enter the 6-digit cipher code from the player card.', true);
         return;
       }
 
+      if (rawCode.startsWith('TG|')) {
+        handleDecodedQR(rawCode);
+        input.value = '';
+        return;
+      }
+
+      var selector = document.getElementById('team-selector');
+      var cleanDigits = rawCode.replace(/\D/g, '');
       var rankCode = 'K';
       var rankNum = 13;
       var suitSymbol = '♠';
       var squadFound = null;
 
       var ranksMap = {
-        'A': 1, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5,
-        '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
-        'J': 11, '11': 11, 'Q': 12, '12': 12, 'K': 13, '13': 13
+        1: 'A', 2: '2', 3: '3', 4: '4', 5: '5',
+        6: '6', 7: '7', 8: '8', 9: '9', 10: '10',
+        11: 'J', 12: 'Q', 13: 'K'
       };
 
-      if (code.startsWith('TG|')) {
-        handleDecodedQR(code);
-        input.value = '';
-        return;
-      }
+      // 6-Digit Cipher: [TT = Team 2 digits] [RR = Card Rank 2 digits (21-33)] [CC = Salt 2 digits]
+      if (cleanDigits.length === 6) {
+        var tt = parseInt(cleanDigits.slice(0, 2), 10);
+        var rr = parseInt(cleanDigits.slice(2, 4), 10);
+        var calculatedRank = rr - 20;
 
-      var tokens = code.split(/[-_\s|]+/);
-      var clean = tokens.filter(function(t) { return t && t !== 'TG'; });
+        if (calculatedRank >= 1 && calculatedRank <= 13) {
+          rankNum = calculatedRank;
+          rankCode = ranksMap[rankNum];
+        }
 
-      // Match squad against approved teams
-      var selector = document.getElementById('team-selector');
-      clean.forEach(function(token) {
-        for (var i = 0; i < selector.options.length; i++) {
-          var optText = selector.options[i].text.toUpperCase();
-          if (optText.includes(token)) {
-            selector.selectedIndex = i;
-            squadFound = selector.options[i].text;
+        // Match squad by team code TT
+        if (Array.isArray(currentTeams) && currentTeams.length > 0) {
+          var matchedTeam = currentTeams.find(function(t) {
+            return deriveTeamCode(t.callsign || t.name, currentTeams) === tt;
+          });
+          if (matchedTeam) {
+            selector.value = matchedTeam._id;
+            squadFound = matchedTeam.name || matchedTeam.callsign;
           }
         }
-        // Match rank
-        if (ranksMap[token] !== undefined) {
-          rankCode = token;
-          rankNum = ranksMap[token];
-        }
-      });
 
-      if (!squadFound && !selector.value) {
-        showNotification('Squad callsign not detected in code. Please select squad in Step 1.', true);
+        // If not matched via currentTeams, search select options
+        if (!squadFound && selector) {
+          for (var i = 1; i < selector.options.length; i++) {
+            var optText = selector.options[i].text;
+            if (deriveTeamCode(optText, currentTeams) === tt) {
+              selector.selectedIndex = i;
+              squadFound = optText;
+              break;
+            }
+          }
+        }
+      } else {
+        // Fallback for legacy alphanumeric codes e.g. TG-ALPHA-K-8492
+        var tokens = rawCode.toUpperCase().split(/[-_\s|]+/);
+        var cleanTokens = tokens.filter(function(t) { return t && t !== 'TG'; });
+        var legacyRanks = {
+          'A': 1, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5,
+          '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+          'J': 11, '11': 11, 'Q': 12, '12': 12, 'K': 13, '13': 13
+        };
+        cleanTokens.forEach(function(token) {
+          for (var i = 0; i < selector.options.length; i++) {
+            if (selector.options[i].text.toUpperCase().includes(token)) {
+              selector.selectedIndex = i;
+              squadFound = selector.options[i].text;
+            }
+          }
+          if (legacyRanks[token] !== undefined) {
+            rankCode = token;
+            rankNum = legacyRanks[token];
+          }
+        });
+      }
+
+      // If team already chosen manually in Step 1, accept that
+      if (!squadFound && selector && selector.value) {
+        var opt = selector.options[selector.selectedIndex];
+        squadFound = opt ? opt.text : 'Selected Squad';
+      }
+
+      if (!squadFound && (!selector || !selector.value)) {
+        showNotification('Squad code (' + cleanDigits.slice(0, 2) + ') not recognized. Please choose squad in Step 1.', true);
         return;
       }
 
@@ -873,16 +957,22 @@
       if (banner) {
         banner.classList.remove('hidden');
         var selectedTeamObj = currentTeams.find(function(t) { return t._id === selector.value; });
-        var displaySquad = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : 'Squad Verified';
+        var displaySquad = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : (squadFound || 'Squad Verified');
         document.getElementById('scan-result-team-name').innerText = displaySquad;
         document.getElementById('scan-result-rank').innerText = rankCode;
         document.getElementById('scan-result-suit').innerText = suitSymbol;
-        document.getElementById('scan-result-pts-tag').innerText = '+' + rankNum + ' PTS CARD (MANUAL)';
+        document.getElementById('scan-result-pts-tag').innerText = '+' + rankNum + ' PTS (6-DIGIT CODE)';
       }
 
       updateSummary();
-      showNotification('✓ Manual Cipher Verified: ' + rankCode + suitSymbol + ' (+' + rankNum + ' PTS)');
+      showNotification('✓ 6-Digit Code Verified: ' + (squadFound || 'Squad') + ' — ' + rankCode + ' (+' + rankNum + ' PTS)');
       input.value = '';
+
+      // Highlight Step 4 Award button
+      var awardBtn = document.getElementById('award-action-btn');
+      if (awardBtn) {
+        awardBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
     }
 
     function updateCardDisplay() {

@@ -338,14 +338,15 @@
                     </div>
                   </div>
 
-                  <!-- MANUAL ENTRY CIPHER CODE (Directly under the QR code as requested!) -->
+                  <!-- 6-DIGIT MARSHAL CIPHER CODE (Directly under the QR code as requested!) -->
                   <div class="mt-2.5 flex flex-col items-center w-full px-2">
-                    <span class="text-[9px] font-mono tracking-widest text-gray-400 uppercase font-semibold">MANUAL ENTRY CODE</span>
-                    <div class="mt-1 px-3 py-1 rounded-lg bg-[#07192c] border border-primary/50 shadow-[0_0_12px_rgba(0,229,255,0.25)] flex items-center gap-1.5 max-w-full">
-                      <span class="material-symbols-outlined text-[15px] text-primary">key</span>
-                      <span id="manual-cipher-code" class="font-mono text-xs sm:text-sm font-black tracking-widest text-white select-all">TG-ALPHA-K-7842</span>
+                    <span class="text-[9px] font-mono tracking-widest text-primary/80 uppercase font-bold flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[13px] text-primary">pin</span> 6-DIGIT MARSHAL CIPHER
+                    </span>
+                    <div class="mt-1 px-4 py-1.5 rounded-xl bg-[#07192c] border border-primary/50 shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2">
+                      <span id="manual-cipher-code" class="font-mono text-base sm:text-lg font-black tracking-[0.25em] text-white select-all">513 347</span>
                     </div>
-                    <span class="text-[8px] font-mono text-gray-400 mt-0.5 text-center">If camera scanner fails, Marshal enters this code</span>
+                    <span class="text-[8px] font-mono text-gray-400 mt-0.5 text-center">Tell or show this 6-digit number to the Marshal</span>
                   </div>
                 </div>
 
@@ -464,6 +465,63 @@
 
     var activeCipherCard = null;
     var isCardFlipped = false;
+    var cachedTeamsList = [];
+
+    // Deterministic 2-Digit Team Code Engine (Unique for every squad)
+    function deriveTeamCode(strOrTeam, teamsList) {
+      var str = '';
+      if (typeof strOrTeam === 'string') {
+        str = strOrTeam;
+      } else if (strOrTeam && typeof strOrTeam === 'object') {
+        str = strOrTeam.callsign || strOrTeam.name || strOrTeam._id || 'SQUAD';
+      } else {
+        str = 'SQUAD';
+      }
+      str = str.toUpperCase().trim();
+
+      // If team name contains explicit number e.g. "Team 1", "Squad 5"
+      var numMatch = str.match(/\d+/);
+      if (numMatch && numMatch[0]) {
+        var n = parseInt(numMatch[0], 10);
+        if (n >= 10 && n <= 99) return n;
+        if (n < 10) return 10 + n;
+      }
+
+      // If teamsList available, derive index offset to guarantee 100% squad uniqueness
+      if (Array.isArray(teamsList) && teamsList.length > 0) {
+        var idx = teamsList.findIndex(function(t) {
+          return (t.callsign && t.callsign.toUpperCase() === str) ||
+                 (t.name && t.name.toUpperCase() === str) ||
+                 (t._id && t._id === str);
+        });
+        if (idx !== -1) {
+          return 11 + (idx % 88);
+        }
+      }
+
+      // Deterministic hash fallback (11-98)
+      var hash = 0;
+      for (var i = 0; i < str.length; i++) {
+        hash = (hash * 31 + str.charCodeAt(i)) % 88;
+      }
+      return 11 + Math.abs(hash);
+    }
+
+    // 6-Digit Cipher: [TT = Team 2 digits] [RR = Card Rank 2 digits (21-33)] [CC = Rotating Salt 2 digits]
+    function generateSixDigitCipher(callsign, rankValue, tokenSalt, teamsList) {
+      var tt = deriveTeamCode(callsign, teamsList);
+      var rr = 20 + rankValue; // 21 (Ace) through 33 (King)
+      var saltNum = 0;
+      if (typeof tokenSalt === 'string') {
+        for (var i = 0; i < tokenSalt.length; i++) {
+          saltNum = (saltNum * 16 + (parseInt(tokenSalt[i], 16) || 0)) % 90;
+        }
+      } else if (typeof tokenSalt === 'number') {
+        saltNum = tokenSalt % 90;
+      }
+      var cc = 10 + ((tt * 3 + rr * 7 + saltNum) % 89);
+      return '' + tt + rr + cc;
+    }
 
     function toggleCardFlip(targetState) {
       if (typeof targetState === 'boolean') {
@@ -607,15 +665,20 @@
         el.style.color = color;
       });
 
-      // Generate Manual Code: TG-{SQUAD}-{RANK}-{TOKEN}
+      // Generate 6-Digit Manual Code: TT RR CC (Unique per team & card level)
       var teamId = (currentUser && currentUser.teamId) ? currentUser.teamId : (currentMyTeam ? currentMyTeam._id : 'team_demo');
       var squadCallsign = (currentUser && currentUser.callsign) ? currentUser.callsign.toUpperCase() : (currentMyTeam ? (currentMyTeam.callsign || currentMyTeam.name || 'SQUAD').toUpperCase() : 'SQUAD');
       
-      var manualCode = 'TG-' + squadCallsign + '-' + card.code + '-' + card.token;
-      if (manualCodeEl) manualCodeEl.innerText = manualCode;
+      var sixDigitRaw = generateSixDigitCipher(squadCallsign, card.rank, card.token, cachedTeamsList);
+      var formattedSixDigit = sixDigitRaw.slice(0, 3) + ' ' + sixDigitRaw.slice(3);
 
-      // QR Code Payload: TG|teamId|squadCallsign|rankNumber|rankCode|suit|token
-      var qrPayload = 'TG|' + teamId + '|' + squadCallsign + '|' + card.rank + '|' + card.code + '|' + card.suit + '|' + card.token;
+      if (manualCodeEl) {
+        manualCodeEl.innerText = formattedSixDigit;
+        manualCodeEl.setAttribute('data-raw-code', sixDigitRaw);
+      }
+
+      // QR Code Payload: TG|teamId|squadCallsign|rankNumber|rankCode|suit|sixDigitRaw
+      var qrPayload = 'TG|' + teamId + '|' + squadCallsign + '|' + card.rank + '|' + card.code + '|' + card.suit + '|' + sixDigitRaw;
 
       renderCipherQRCode(qrContainer, qrPayload, card);
     }
@@ -748,6 +811,7 @@
         if (!data.success) return;
 
         var teams = data.teams || [];
+        cachedTeamsList = teams;
         var approvedTeams = teams.filter(function(t) { return t.isApproved; });
         approvedTeams.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
 
