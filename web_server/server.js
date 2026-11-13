@@ -656,12 +656,11 @@ const server = http.createServer(async (req, res) => {
       }
 
       // 5. POST /api/admin/approve (Ultra-Resilient Approval for Team or Marshal)
-      if (pathname === '/api/admin/approve' && req.method === 'POST') {
+      if ((pathname === '/api/admin/approve' || pathname === '/api/admin/approve-team' || pathname === '/api/admin/approve-user') && req.method === 'POST') {
         db.load();
         const body = await parseBody(req);
-        const { type, id } = body;
-        const cleanId = String(id || '').trim();
-        const cleanType = String(type || '').trim().toUpperCase();
+        const cleanId = String(body.id || body.teamId || body.userId || '').trim();
+        const cleanType = String(body.type || (pathname.includes('user') ? 'MEMBER' : 'PLAYER')).trim().toUpperCase();
 
         if (!cleanId) {
           return sendJson(res, 400, { success: false, error: 'ID is required for clearance authorization.' });
@@ -744,20 +743,21 @@ const server = http.createServer(async (req, res) => {
       }
 
       // 6. POST /api/admin/reject (Reject Team or Marshal)
-      if (pathname === '/api/admin/reject' && req.method === 'POST') {
+      if ((pathname === '/api/admin/reject' || pathname === '/api/admin/reject-team' || pathname === '/api/admin/reject-user') && req.method === 'POST') {
         const body = await parseBody(req);
-        const { type, id } = body;
+        const cleanId = String(body.id || body.teamId || body.userId || '').trim();
+        const cleanType = String(body.type || (pathname.includes('user') ? 'MEMBER' : 'TEAM')).trim().toUpperCase();
 
-        if (type === 'TEAM') {
-          db.collections.teams = db.collections.teams.filter(t => t._id !== id);
-          db.collections.users = db.collections.users.filter(u => u.teamId !== id);
+        if (cleanType === 'TEAM') {
+          db.collections.teams = db.collections.teams.filter(t => t._id !== cleanId);
+          db.collections.users = db.collections.users.filter(u => u.teamId !== cleanId);
           db.save();
-          db.logEvent('REJECT_TEAM', `Squad rejected and removed: ${id}`);
+          db.logEvent('REJECT_TEAM', `Squad rejected and removed: ${cleanId}`);
           return sendJson(res, 200, { success: true, message: 'Squad removed.' });
         } else {
-          db.collections.users = db.collections.users.filter(u => u._id !== id);
+          db.collections.users = db.collections.users.filter(u => u._id !== cleanId);
           db.save();
-          db.logEvent('REJECT_USER', `Operative rejected and removed: ${id}`);
+          db.logEvent('REJECT_USER', `Operative rejected and removed: ${cleanId}`);
           return sendJson(res, 200, { success: true, message: 'Operative removed.' });
         }
       }

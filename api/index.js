@@ -742,11 +742,10 @@ module.exports = async (req, res) => {
     // ─────────────────────────────────────────────────────────
     // 5. POST /api/admin/approve (Ultra-Resilient Approval)
     // ─────────────────────────────────────────────────────────
-    if (pathname === '/api/admin/approve' && req.method === 'POST') {
+    if ((pathname === '/api/admin/approve' || pathname === '/api/admin/approve-team' || pathname === '/api/admin/approve-user') && req.method === 'POST') {
       const body = await parseBody(req);
-      const { type, id } = body;
-      const cleanId = String(id || '').trim();
-      const cleanType = String(type || '').trim().toUpperCase();
+      const cleanId = String(body.id || body.teamId || body.userId || '').trim();
+      const cleanType = String(body.type || (pathname.includes('user') ? 'MEMBER' : 'PLAYER')).trim().toUpperCase();
 
       if (!cleanId) {
         return sendJson(res, 400, { success: false, error: 'ID is required for clearance authorization.' });
@@ -874,25 +873,26 @@ module.exports = async (req, res) => {
     // ─────────────────────────────────────────────────────────
     // 6. POST /api/admin/reject
     // ─────────────────────────────────────────────────────────
-    if (pathname === '/api/admin/reject' && req.method === 'POST') {
+    if ((pathname === '/api/admin/reject' || pathname === '/api/admin/reject-team' || pathname === '/api/admin/reject-user') && req.method === 'POST') {
       const body = await parseBody(req);
-      const { type, id } = body;
+      const cleanId = String(body.id || body.teamId || body.userId || '').trim();
+      const cleanType = String(body.type || (pathname.includes('user') ? 'MEMBER' : 'TEAM')).trim().toUpperCase();
 
       if (atlasDb) {
-        if (type === 'TEAM') {
-          await atlasDb.collection('teams').deleteOne({ _id: id });
-          await atlasDb.collection('users').deleteMany({ teamId: id });
+        if (cleanType === 'TEAM') {
+          await atlasDb.collection('teams').deleteOne({ _id: cleanId });
+          await atlasDb.collection('users').deleteMany({ teamId: cleanId });
         } else {
-          await atlasDb.collection('users').deleteOne({ _id: id });
+          await atlasDb.collection('users').deleteOne({ _id: cleanId });
         }
         return sendJson(res, 200, { success: true, message: 'Entity rejected.' });
       }
 
-      if (type === 'TEAM') {
-        memoryStore.collections.teams = memoryStore.collections.teams.filter(t => t._id !== id);
-        memoryStore.collections.users = memoryStore.collections.users.filter(u => u.teamId !== id);
+      if (cleanType === 'TEAM') {
+        memoryStore.collections.teams = memoryStore.collections.teams.filter(t => t._id !== cleanId);
+        memoryStore.collections.users = memoryStore.collections.users.filter(u => u.teamId !== cleanId);
       } else {
-        memoryStore.collections.users = memoryStore.collections.users.filter(u => u._id !== id);
+        memoryStore.collections.users = memoryStore.collections.users.filter(u => u._id !== cleanId);
       }
       memoryStore.save();
       return sendJson(res, 200, { success: true, message: 'Entity removed.' });

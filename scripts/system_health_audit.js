@@ -17,7 +17,7 @@ const path = require('path');
 const assert = require('assert');
 
 const isLocal = process.argv.includes('--local');
-const BASE_URL = isLocal ? 'http://localhost:3000' : 'https://territory-grid-delta.vercel.app';
+const BASE_URL = isLocal ? (process.env.LOCAL_URL || 'http://localhost:8088') : 'https://territory-grid-delta.vercel.app';
 
 console.log('╔══════════════════════════════════════════════════════════════════════╗');
 console.log('║        TERRITORY GRID // DEEP PROCESS & ELEMENT AUDIT ENGINE        ║');
@@ -41,45 +41,55 @@ function report(name, passed, detail = '') {
   }
 }
 
-function request(urlPath, options = {}, body = null) {
-  return new Promise((resolve, reject) => {
-    const fullUrl = urlPath.startsWith('http') ? urlPath : (BASE_URL + urlPath);
-    const u = new URL(fullUrl);
-    const isHttps = u.protocol === 'https:';
-    const client = isHttps ? https : http;
+async function request(urlPath, options = {}, body = null, retries = 3) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await new Promise((resolve, reject) => {
+        const fullUrl = urlPath.startsWith('http') ? urlPath : (BASE_URL + urlPath);
+        const u = new URL(fullUrl);
+        const isHttps = u.protocol === 'https:';
+        const client = isHttps ? https : http;
 
-    const opts = {
-      hostname: u.hostname,
-      port: u.port || (isHttps ? 443 : 80),
-      path: u.pathname + u.search,
-      method: options.method || 'GET',
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        ...(options.headers || {})
-      }
-    };
+        const opts = {
+          hostname: u.hostname,
+          port: u.port || (isHttps ? 443 : 80),
+          path: u.pathname + u.search,
+          method: options.method || 'GET',
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            ...(options.headers || {})
+          }
+        };
 
-    if (body) {
-      opts.headers['Content-Type'] = 'application/json';
-    }
+        if (body) {
+          opts.headers['Content-Type'] = 'application/json';
+        }
 
-    const req = client.request(opts, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        let json = null;
-        try { json = JSON.parse(data); } catch (e) {}
-        resolve({ status: res.statusCode, headers: res.headers, json, text: data });
+        const req = client.request(opts, (res) => {
+          let data = '';
+          res.on('data', chunk => data += chunk);
+          res.on('end', () => {
+            let json = null;
+            try { json = JSON.parse(data); } catch (e) {}
+            resolve({ status: res.statusCode, headers: res.headers, json, text: data });
+          });
+        });
+
+        req.on('error', reject);
+
+        if (body) {
+          req.write(typeof body === 'object' ? JSON.stringify(body) : body);
+        }
+        req.end();
       });
-    });
-
-    req.on('error', reject);
-
-    if (body) {
-      req.write(typeof body === 'object' ? JSON.stringify(body) : body);
+    } catch (err) {
+      if (attempt < retries && (err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT' || err.message.includes('hang up'))) {
+        await wait(1500 * attempt);
+        continue;
+      }
+      throw err;
     }
-    req.end();
-  });
+  }
 }
 
 function wait(ms) {
@@ -308,14 +318,14 @@ async function runAudit() {
     {
       file: 'public/index.html',
       name: 'Landing Gateway',
-      requiredIds: [],
-      requiredTexts: ['Territory Grid', 'Operative Sign In', 'Field Marshal Access', 'Game Master Terminal']
+      requiredIds: ['nav-tabs', 'screen-frame', 'current-screen-title', 'current-screen-role'],
+      requiredTexts: ['Territory Grid', 'AUTH MATRIX // SIGN-IN', 'ADMIN COMMAND PANEL', 'FIELD MARSHAL CHECKPOINT']
     },
     {
       file: 'public/login.html',
       name: 'Login Portal',
-      requiredIds: ['role-toggle-player', 'role-toggle-member', 'callsign', 'password', 'login-btn', 'auth-status'],
-      requiredTexts: ['Authentication Required', 'SIGN IN']
+      requiredIds: ['card-PLAYER', 'card-MEMBER', 'card-ADMIN', 'btn-mode-login', 'btn-mode-register', 'input-callsign', 'input-password', 'btn-submit', 'view-waiting-hall', 'alert-banner'],
+      requiredTexts: ['Squad Authentication Terminal', 'ENTER SQUAD HUD', 'selectPortal', 'handleFormSubmit', 'setAuthMode']
     },
     {
       file: 'public/player_dashboard.html',
@@ -323,7 +333,8 @@ async function runAudit() {
       requiredIds: [
         'active-station-name', 'active-clue-text', 'active-checkpoint-label', 'active-zone-badge',
         'card-qr-container', 'manual-cipher-code', 'cards-count-label', 'score-progress-bar',
-        'team-callsign-display', 'collected-deck-container', 'card-front-face', 'card-back-face'
+        'header-callsign-badge', 'team-name-label', 'team-score-num', 'team-rank-label',
+        'collected-deck-container', 'card-front-face', 'card-back-face'
       ],
       requiredTexts: ['resolveTeamTargetClue', 'rotateCardCipher', 'apiUrl']
     },
@@ -342,7 +353,7 @@ async function runAudit() {
       name: 'Admin Master Control',
       requiredIds: [
         'places-total-count', 'stat-teams-count', 'stat-registered-count', 'stat-total-points',
-        'pending-approvals-table', 'approved-roster-table', 'hunt-timer-display', 'places-list'
+        'pending-items-list', 'approved-items-list', 'clock-display', 'places-list-container'
       ],
       requiredTexts: ['rebalanceAllSquadRoutes', 'loadApprovedRoster', 'loadPendingApprovals']
     },
