@@ -195,6 +195,26 @@
         </div>
       </div>
 
+      <!-- Live Pending Clearance Alert Banner (Visible on Ops tab when requests arrive) -->
+      <div id="ops-pending-banner" class="hidden neon-card rounded-2xl p-4 bg-yellow/10 border-2 border-yellow/60 flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-yellow cursor-pointer hover:bg-yellow/15 shadow-[0_0_20px_rgba(255,184,0,0.25)] transition animate-pulse" onclick="switchTab('approvals')">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-yellow/20 border border-yellow/50 flex items-center justify-center text-yellow text-xl">
+            <span class="material-symbols-outlined">notifications_active</span>
+          </div>
+          <div>
+            <div class="font-headline font-black text-sm text-white flex items-center gap-2">
+              <span class="text-yellow">CLEARANCE REQUESTS AWAITING APPROVAL</span>
+              <span class="px-2 py-0.5 rounded-full bg-yellow text-black font-mono font-bold text-[10px]" id="ops-banner-count">0 NEW</span>
+            </div>
+            <p class="text-[11px] text-gray-300 font-sans mt-0.5">New squads or field marshals have submitted registration requests. Click here to open the clearance terminal and authorize them.</p>
+          </div>
+        </div>
+        <div class="px-4 py-2 rounded-xl bg-yellow text-black font-headline font-bold text-xs uppercase flex items-center gap-1.5 shadow-[0_0_12px_rgba(255,184,0,0.5)]">
+          <span>REVIEW & AUTHORIZE</span>
+          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </div>
+      </div>
+
       <!-- Quick Metrics Grid -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div class="neon-card rounded-2xl p-4 text-center">
@@ -207,10 +227,13 @@
           <div class="text-2xl font-headline font-bold text-green" id="stat-marshals-count">0</div>
           <div class="text-[11px] font-mono text-gray-400 uppercase">Field Marshals</div>
         </div>
-        <div class="neon-card rounded-2xl p-4 text-center">
+        <div onclick="switchTab('approvals')" class="neon-card rounded-2xl p-4 text-center cursor-pointer border-yellow/30 hover:border-yellow hover:bg-yellow/5 transition" title="Click to view & approve pending requests">
           <span class="material-symbols-outlined text-yellow text-2xl mb-1">hourglass_top</span>
           <div class="text-2xl font-headline font-bold text-yellow" id="stat-pending-count">0</div>
-          <div class="text-[11px] font-mono text-gray-400 uppercase">Pending Approvals</div>
+          <div class="text-[11px] font-mono text-yellow uppercase font-bold flex items-center justify-center gap-1">
+            <span>Pending Approvals</span>
+            <span class="material-symbols-outlined text-xs">open_in_new</span>
+          </div>
         </div>
         <div class="neon-card rounded-2xl p-4 text-center">
           <span class="material-symbols-outlined text-magenta text-2xl mb-1">emoji_events</span>
@@ -676,17 +699,23 @@
     var timerRunning = true;
 
     window.addEventListener('DOMContentLoaded', function() {
-      loadLeaderboard();
-      loadPendingApprovals();
-      loadApprovedRoster();
-      loadPlaces();
-      loadDatabaseData();
-      startClock();
+      try { loadLeaderboard(); } catch(e) { console.error('Leaderboard load error:', e); }
+      try { loadPendingApprovals(); } catch(e) { console.error('Pending load error:', e); }
+      try { loadApprovedRoster(); } catch(e) { console.error('Roster load error:', e); }
+      try { loadPlaces(); } catch(e) { console.error('Places load error:', e); }
+      try { loadDatabaseData(); } catch(e) { console.error('Db load error:', e); }
+      try { startClock(); } catch(e) { console.error('Clock start error:', e); }
       
-      // Auto-poll pending approvals and roster
-      setInterval(loadPendingApprovals, 2000);
-      setInterval(loadApprovedRoster, 3500);
-      setInterval(loadLeaderboard, 4000);
+      // Auto-poll pending approvals and roster safely
+      setInterval(function() {
+        try { loadPendingApprovals(); } catch(e) {}
+      }, 2000);
+      setInterval(function() {
+        try { loadApprovedRoster(); } catch(e) {}
+      }, 3500);
+      setInterval(function() {
+        try { loadLeaderboard(); } catch(e) {}
+      }, 4000);
     });
 
     function signOut() {
@@ -1287,6 +1316,17 @@
           var statPending = document.getElementById('stat-pending-count');
           if (statPending) statPending.innerText = realCount;
 
+          var opsBanner = document.getElementById('ops-pending-banner');
+          var opsBannerCount = document.getElementById('ops-banner-count');
+          if (opsBanner && opsBannerCount) {
+            if (realCount > 0) {
+              opsBanner.classList.remove('hidden');
+              opsBannerCount.innerText = realCount + ' NEW';
+            } else {
+              opsBanner.classList.add('hidden');
+            }
+          }
+
           var listContainer = document.getElementById('pending-items-list');
           if (!listContainer) return;
 
@@ -1364,10 +1404,110 @@
       }
     }
 
+    // Load Active Authorized Clearances (Live Roster directly on Approvals tab)
+    async function loadApprovedRoster() {
+      if (isLoadingRoster) return;
+      isLoadingRoster = true;
+      try {
+        var [teamsRes, dbRes] = await Promise.all([
+          fetch(apiUrl('/api/teams?_t=') + Date.now(), { cache: 'no-store' }),
+          fetch(apiUrl('/api/database/all?_t=') + Date.now(), { cache: 'no-store' })
+        ]);
+        var teamsData = await teamsRes.json();
+        var dbData = await dbRes.json();
+
+        var approvedTeams = (teamsData.teams || []).filter(function(t) { return t.isApproved; });
+        var allUsers = (dbData.collections && dbData.collections.users) ? dbData.collections.users : [];
+        var approvedMarshals = allUsers.filter(function(u) { return u.isApproved && u.role === 'MEMBER'; });
+        var totalActive = approvedTeams.length + approvedMarshals.length;
+
+        var badge = document.getElementById('badge-approved-total');
+        if (badge) badge.innerText = totalActive + ' ACTIVE';
+        var statTeams = document.getElementById('stat-teams-count');
+        if (statTeams) statTeams.innerText = approvedTeams.length;
+        var statMarshals = document.getElementById('stat-marshals-count');
+        if (statMarshals) statMarshals.innerText = approvedMarshals.length;
+
+        var container = document.getElementById('approved-items-list');
+        if (!container) return;
+
+        if (totalActive === 0) {
+          container.innerHTML = '<div class="text-center py-6 text-gray-400 text-xs font-mono">No active clearances yet. Approvals from the queue above will instantly appear here.</div>';
+          return;
+        }
+
+        var html = '';
+        // Approved Squads
+        approvedTeams.forEach(function(team) {
+          var teamId = team._id || team.id;
+          html += '<div class="neon-card rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 border-cyan/30 bg-[#071322] hover:border-cyan/60 transition">' +
+            '<div class="flex items-center gap-3">' +
+              '<div class="w-9 h-9 rounded-lg bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan shadow-[0_0_8px_rgba(0,229,255,0.3)]">' +
+                '<span class="material-symbols-outlined text-lg">groups</span>' +
+              '</div>' +
+              '<div>' +
+                '<div class="flex items-center gap-2">' +
+                  '<h4 class="font-headline font-bold text-white text-sm">' + (team.name || team.callsign) + '</h4>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan/20 text-cyan border border-cyan/30">SQUAD</span>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30 flex items-center gap-1 font-semibold">' +
+                    '<span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span> LIVE IN GRID' +
+                  '</span>' +
+                '</div>' +
+                '<p class="text-xs text-gray-400 font-mono mt-0.5">' +
+                  'Callsign: <b class="text-gray-200">' + (team.callsign || team.name) + '</b> • Score: <b class="text-green">' + (team.score || 0) + ' PTS</b> • Cards: <b class="text-cyan">' + (team.cards ? team.cards.length : 0) + '</b> • Zone Step: <b>' + (team.currentClueIndex || 0) + '</b>' +
+                '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex items-center gap-2">' +
+              '<button onclick="rejectEntity(\'TEAM\', \'' + teamId + '\')" title="Revoke clearance" class="px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 font-headline font-bold text-[11px] hover:bg-red-500/20 active:scale-95 transition cursor-pointer flex items-center gap-1">' +
+                '<span class="material-symbols-outlined text-xs">block</span> <span>REVOKE</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        });
+
+        // Approved Marshals
+        approvedMarshals.forEach(function(user) {
+          var userId = user._id || user.id;
+          html += '<div class="neon-card rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 border-green/30 bg-[#061814] hover:border-green/60 transition">' +
+            '<div class="flex items-center gap-3">' +
+              '<div class="w-9 h-9 rounded-lg bg-green/20 border border-green/40 flex items-center justify-center text-green shadow-[0_0_8px_rgba(0,255,136,0.3)]">' +
+                '<span class="material-symbols-outlined text-lg">verified_user</span>' +
+              '</div>' +
+              '<div>' +
+                '<div class="flex items-center gap-2">' +
+                  '<h4 class="font-headline font-bold text-white text-sm">' + (user.name || user.callsign) + '</h4>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30">FIELD MARSHAL</span>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30 flex items-center gap-1 font-semibold">' +
+                    '<span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span> STATION READY' +
+                  '</span>' +
+                '</div>' +
+                '<p class="text-xs text-gray-400 font-mono mt-0.5">' +
+                  'Callsign: <b class="text-gray-200">' + user.callsign + '</b> • Assigned: <b class="text-green">' + (user.zoneLabel || user.zoneId || 'Station') + '</b>' +
+                '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex items-center gap-2">' +
+              '<button onclick="rejectEntity(\'USER\', \'' + userId + '\')" title="Revoke clearance" class="px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 font-headline font-bold text-[11px] hover:bg-red-500/20 active:scale-95 transition cursor-pointer flex items-center gap-1">' +
+                '<span class="material-symbols-outlined text-xs">block</span> <span>REVOKE</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        });
+
+        container.innerHTML = html;
+      } catch (e) {
+        console.error('Approved roster load error:', e);
+      } finally {
+        isLoadingRoster = false;
+      }
+    }
+
     // Instant Resilient Approval (Prevents flicker, duplicates, and race conditions)
     async function approveEntity(type, id) {
       if (!id || inFlightApprovals[id]) return;
-      inFlightApprovals[id] = true;
+      inFlightApprovals[id] = Date.now();
+      setTimeout(function() { delete inFlightApprovals[id]; }, 8000);
 
       var cardId = 'card-pending-' + type + '-' + id;
       var cardEl = document.getElementById(cardId);

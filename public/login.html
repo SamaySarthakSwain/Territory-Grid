@@ -600,18 +600,27 @@
       btn.classList.add('opacity-70');
 
       try {
+        var controller = new AbortController();
+        var timeoutId = setTimeout(function() { controller.abort(); }, 12000);
+
         var res = await fetch(apiUrl(endpoint), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
 
         var data = await res.json();
         btn.disabled = false;
         btn.classList.remove('opacity-70');
 
         if (!data.success) {
-          showAlert(data.error || 'Authentication error', true);
+          var errMsg = data.error || 'Authentication error';
+          if (errMsg.toLowerCase().includes('already registered')) {
+            errMsg += ' — If this is your account, switch to LOGIN above.';
+          }
+          showAlert(errMsg, true);
           return;
         }
 

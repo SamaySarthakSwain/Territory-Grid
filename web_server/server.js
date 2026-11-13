@@ -79,7 +79,7 @@ class MongoDatabase {
     }
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3500);
+      const timeoutId = setTimeout(() => controller.abort(), 7000);
       const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store?key=eq.main_store&select=*`, {
         headers: {
           'apikey': SUPABASE_ANON,
@@ -113,7 +113,7 @@ class MongoDatabase {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      const timeoutId = setTimeout(() => controller.abort(), 7000);
       await fetch(`${SUPABASE_URL}/rest/v1/territory_store`, {
         method: 'POST',
         headers: {
