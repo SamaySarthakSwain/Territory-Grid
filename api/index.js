@@ -1202,8 +1202,24 @@ module.exports = async (req, res) => {
       }
     }
 
+function normalizeZone(z) {
+  if (!z) return '';
+  let s = String(z).toUpperCase().trim();
+  s = s.replace(/[^A-Z0-9]/g, '');
+  s = s.replace(/^ZONE0+(\d+)/, 'ZONE$1');
+  return s;
+}
+
 function ensureUniqueTeamCodes(teams) {
   if (!Array.isArray(teams)) return [];
+  // Sort deterministically to prevent position shifting
+  teams.sort((a, b) => {
+    const ta = new Date(a.createdAt || 0).getTime();
+    const tb = new Date(b.createdAt || 0).getTime();
+    if (ta !== tb) return ta - tb;
+    return String(a._id || '').localeCompare(String(b._id || ''));
+  });
+
   const usedCodes = new Set();
 
   // Pass 1: Prioritize teams with numeric names/callsigns (e.g. team1 -> 11, team2 -> 12)
@@ -1244,6 +1260,30 @@ function ensureUniqueTeamCodes(teams) {
     }
   });
   return teams;
+}
+
+function resolveTeamRoute(team, allClues, teamIndex = 0) {
+  if (!Array.isArray(allClues) || allClues.length === 0) return [];
+  const K = allClues.length;
+  const code = (typeof team.teamCode === 'number' && team.teamCode >= 11)
+    ? team.teamCode
+    : (11 + (teamIndex % 88));
+  const offset = code % K;
+  const route = [];
+  for (let i = 0; i < K; i++) {
+    route.push(allClues[(offset + i) % K]);
+  }
+  return route;
+}
+
+function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
+  if (!Array.isArray(allClues) || allClues.length === 0) return null;
+  const route = resolveTeamRoute(team, allClues, teamIndex);
+  const currentIdx = parseInt(team.currentClueIndex, 10) || 0;
+  if (currentIdx >= route.length) {
+    return null; // All checkpoints completed
+  }
+  return route[currentIdx];
 }
 
     // ─────────────────────────────────────────────────────────
@@ -1460,7 +1500,39 @@ function ensureUniqueTeamCodes(teams) {
     }
 
     // ─────────────────────────────────────────────────────────
-    // 11. POST /api/checkin (Real-time Point Allocation & Hint Advancement)
+    // 10d. POST /api/admin/rebalance-routes
+    // Distributes all registered squads equally and randomly across all active checkpoint locations!
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/rebalance-routes' && req.method === 'POST') {
+      if (atlasDb) {
+        const rawClues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
+        const rawTeams = await atlasDb.collection('teams').find().toArray();
+        const teams = ensureUniqueTeamCodes(rawTeams);
+        for (let i = 0; i < teams.length; i++) {
+          const t = teams[i];
+          const route = resolveTeamRoute(t, rawClues, i);
+          const clueOrder = route.map(c => c._id);
+          await atlasDb.collection('teams').updateOne(
+            { _id: t._id },
+            { $set: { teamCode: t.teamCode, clueOrder: clueOrder, updatedAt: new Date().toISOString() } }
+          );
+        }
+        return sendJson(res, 200, { success: true, message: `Re-balanced routes for ${teams.length} squads across ${rawClues.length} stations.` });
+      }
+      memoryStore.load();
+      const rawClues = memoryStore.collections.clues || [];
+      const teams = ensureUniqueTeamCodes(memoryStore.collections.teams || []);
+      for (let i = 0; i < teams.length; i++) {
+        const t = teams[i];
+        const route = resolveTeamRoute(t, rawClues, i);
+        t.clueOrder = route.map(c => c._id);
+      }
+      await memoryStore.syncToCloud();
+      return sendJson(res, 200, { success: true, message: `Re-balanced routes for ${teams.length} squads across ${rawClues.length} stations.` });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 11. POST /api/checkin (Real-time Point Allocation & Strict Station Check)
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/checkin' && req.method === 'POST') {
       const body = await parseBody(req);
@@ -1483,27 +1555,30 @@ function ensureUniqueTeamCodes(teams) {
           const rr = parseInt(cleanDigits.slice(2, 4), 10);
           const hh = parseInt(cleanDigits.slice(4, 6), 10);
 
-          // Match team strictly by TT from 6-digit cipher code
-          let candidateTeams = [];
-          if (atlasDb) {
-            candidateTeams = await atlasDb.collection('teams').find().toArray();
-          } else {
-            memoryStore.load();
-            candidateTeams = memoryStore.collections.teams || [];
-          }
-          ensureUniqueTeamCodes(candidateTeams);
-          let matchedTeam = candidateTeams.find(t => t.teamCode === tt);
-          if (!matchedTeam && tt >= 11 && tt <= 99) {
-            const targetCallsign = 'team' + (tt - 10);
-            matchedTeam = candidateTeams.find(t => 
-              (t.callsign || '').toLowerCase() === targetCallsign.toLowerCase() ||
-              (t.name || '').toLowerCase() === targetCallsign.toLowerCase()
-            );
-          }
-          if (matchedTeam) {
-            teamId = matchedTeam._id;
-          } else if (!teamId) {
-            return sendJson(res, 400, { success: false, error: `Squad code (${tt}) does not match any registered team.` });
+          // IMPORTANT: Match team strictly by TT ONLY if teamId was NOT explicitly passed!
+          // This prevents overriding the scanned team with an arbitrary match.
+          if (!teamId) {
+            let candidateTeams = [];
+            if (atlasDb) {
+              candidateTeams = await atlasDb.collection('teams').find().toArray();
+            } else {
+              memoryStore.load();
+              candidateTeams = memoryStore.collections.teams || [];
+            }
+            ensureUniqueTeamCodes(candidateTeams);
+            let matchedTeam = candidateTeams.find(t => t.teamCode === tt);
+            if (!matchedTeam && tt >= 11 && tt <= 99) {
+              const targetCallsign = 'team' + (tt - 10);
+              matchedTeam = candidateTeams.find(t => 
+                (t.callsign || '').toLowerCase() === targetCallsign.toLowerCase() ||
+                (t.name || '').toLowerCase() === targetCallsign.toLowerCase()
+              );
+            }
+            if (matchedTeam) {
+              teamId = matchedTeam._id;
+            } else {
+              return sendJson(res, 400, { success: false, error: `Squad code (${tt}) does not match any registered team.` });
+            }
           }
 
           // Derive card rank (21..33 -> 1..13)
@@ -1522,83 +1597,82 @@ function ensureUniqueTeamCodes(teams) {
         }
       }
 
+      let team = null;
+      let teamsCol = null;
+      let checkinsCol = null;
+
+      if (atlasDb) {
+        teamsCol = atlasDb.collection('teams');
+        checkinsCol = atlasDb.collection('checkins');
+        team = await teamsCol.findOne({ $or: [{ _id: teamId }, { callsign: new RegExp('^' + teamId + '$', 'i') }] });
+      } else {
+        memoryStore.load();
+        team = memoryStore.collections.teams.find(t => 
+          t._id === teamId || (t.callsign && t.callsign.toLowerCase() === (teamId || '').toLowerCase())
+        );
+      }
+
+      if (!team) return sendJson(res, 404, { success: false, error: 'Team not found in grid telemetry.' });
+      if (!team.isApproved) return sendJson(res, 403, { success: false, error: 'Squad is not yet approved by Game Master.' });
+
+      // ─────────────────────────────────────────────────────────
+      // STRICT STATION ENFORCEMENT & EQUAL LOAD ROUTE CHECK
+      // ─────────────────────────────────────────────────────────
+      let allClues = [];
+      if (atlasDb) {
+        allClues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
+      } else {
+        allClues = memoryStore.collections.clues || [];
+      }
+
+      let activeTargetClue = null;
+      if (allClues.length > 0) {
+        activeTargetClue = resolveTeamTargetClue(team, allClues);
+        if (!activeTargetClue) {
+          return sendJson(res, 400, {
+            success: false,
+            allCompleted: true,
+            error: `Squad "${team.name || team.callsign}" has already cleared all ${allClues.length} campus checkpoints! Direct them to Game Master Central.`
+          });
+        }
+
+        const targetZoneNorm = normalizeZone(activeTargetClue.zoneId);
+        const marshalZoneNorm = normalizeZone(zoneId);
+
+        if (targetZoneNorm !== marshalZoneNorm && !allowDuplicate) {
+          const targetStationName = activeTargetClue.zoneLabel || activeTargetClue.zoneId;
+          const currentStationName = zoneId || 'this station';
+          return sendJson(res, 400, {
+            success: false,
+            wrongStation: true,
+            error: `⛔ WRONG STATION: Squad "${team.name || team.callsign}" is currently assigned to ${targetStationName} for Checkpoint #${(team.currentClueIndex || 0) + 1}. Points CANNOT be awarded at ${currentStationName}!`,
+            targetZoneId: activeTargetClue.zoneId,
+            targetZoneLabel: targetStationName,
+            currentStation: zoneId,
+            currentClueIndex: team.currentClueIndex || 0
+          });
+        }
+      }
+
+      const recordedZone = activeTargetClue ? activeTargetClue.zoneId : (zoneId || 'ZONE_01');
+      if (team.visitedZones && team.visitedZones.some(z => normalizeZone(z) === normalizeZone(recordedZone)) && !allowDuplicate) {
+        return sendJson(res, 400, {
+          success: false,
+          alreadyVisited: true,
+          error: `Squad "${team.name}" has already cleared ${recordedZone}! Current objective is Checkpoint #${(team.currentClueIndex || 0) + 1}.`
+        });
+      }
+
       const coneValues = { RED: 10, YELLOW: 12, GREEN: 15 };
       const conePts = coneValues[cone] || 12;
       const rankPts = parseInt(cardRank, 10) || 13;
       const totalPoints = conePts + rankPts;
-      const checkinId = `${teamId}_${zoneId}_${Date.now()}`;
-
-      if (atlasDb) {
-        const teamsCol = atlasDb.collection('teams');
-        const checkinsCol = atlasDb.collection('checkins');
-
-        const team = await teamsCol.findOne({ $or: [{ _id: teamId }, { callsign: new RegExp('^' + teamId + '$', 'i') }] });
-        if (!team) return sendJson(res, 404, { success: false, error: 'Team not found.' });
-        if (!team.isApproved) return sendJson(res, 403, { success: false, error: 'Squad is not yet approved by Game Master.' });
-        
-        if (team.visitedZones && team.visitedZones.includes(zoneId) && !allowDuplicate) {
-          return sendJson(res, 400, {
-            success: false,
-            alreadyVisited: true,
-            error: `Squad "${team.name}" has already cleared ${zoneId}! Current objective is Checkpoint #${(team.currentClueIndex || 0) + 1}.`
-          });
-        }
-
-        const checkinRecord = {
-          _id: checkinId,
-          teamId: team._id,
-          zoneId,
-          memberId: memberId || 'marshal_station',
-          cone: cone || 'YELLOW',
-          cardRank: rankPts,
-          cardSuit: cardSuit || '♠',
-          points: totalPoints,
-          timestamp: new Date().toISOString()
-        };
-
-        await checkinsCol.insertOne(checkinRecord);
-        await teamsCol.updateOne(
-          { _id: team._id },
-          {
-            $inc: { score: totalPoints, currentClueIndex: 1 },
-            $push: {
-              cards: { rank: rankPts, suit: cardSuit || '♠', zoneId, awardedAt: new Date().toISOString() },
-              visitedZones: zoneId
-            },
-            $set: { updatedAt: new Date().toISOString() }
-          }
-        );
-
-        const updatedTeam = await teamsCol.findOne({ _id: team._id });
-        return sendJson(res, 200, {
-          success: true,
-          pointsAwarded: totalPoints,
-          teamScore: updatedTeam.score,
-          teamName: updatedTeam.name || updatedTeam.callsign,
-          nextClueIndex: updatedTeam.currentClueIndex
-        });
-      }
-
-      // Memory Store
-      memoryStore.load();
-      const team = memoryStore.collections.teams.find(t => 
-        t._id === teamId || (t.callsign && t.callsign.toLowerCase() === (teamId || '').toLowerCase())
-      );
-      if (!team) return sendJson(res, 404, { success: false, error: 'Team not found.' });
-      if (!team.isApproved) return sendJson(res, 403, { success: false, error: 'Squad is not yet approved by Game Master.' });
-      
-      if (team.visitedZones && team.visitedZones.includes(zoneId) && !allowDuplicate) {
-        return sendJson(res, 400, {
-          success: false,
-          alreadyVisited: true,
-          error: `Squad "${team.name}" has already cleared ${zoneId}! Current objective is Checkpoint #${(team.currentClueIndex || 0) + 1}.`
-        });
-      }
+      const checkinId = `${team._id}_${recordedZone}_${Date.now()}`;
 
       const checkinRecord = {
         _id: checkinId,
         teamId: team._id,
-        zoneId,
+        zoneId: recordedZone,
         memberId: memberId || 'marshal_station',
         cone: cone || 'YELLOW',
         cardRank: rankPts,
@@ -1607,25 +1681,60 @@ function ensureUniqueTeamCodes(teams) {
         timestamp: new Date().toISOString()
       };
 
+      if (atlasDb) {
+        await checkinsCol.insertOne(checkinRecord);
+        await teamsCol.updateOne(
+          { _id: team._id },
+          {
+            $inc: { score: totalPoints, currentClueIndex: 1 },
+            $push: {
+              cards: { rank: rankPts, suit: cardSuit || '♠', zoneId: recordedZone, awardedAt: new Date().toISOString() },
+              visitedZones: recordedZone
+            },
+            $set: { updatedAt: new Date().toISOString() }
+          }
+        );
+
+        const updatedTeam = await teamsCol.findOne({ _id: team._id });
+        const nextClue = (allClues.length > 0) ? resolveTeamTargetClue(updatedTeam, allClues) : null;
+        return sendJson(res, 200, {
+          success: true,
+          pointsAwarded: totalPoints,
+          teamScore: updatedTeam.score,
+          teamName: updatedTeam.name || updatedTeam.callsign,
+          nextClueIndex: updatedTeam.currentClueIndex,
+          nextZoneId: nextClue ? nextClue.zoneId : null,
+          nextZoneLabel: nextClue ? (nextClue.zoneLabel || nextClue.zoneId) : 'ALL CHECKPOINTS CLEARED',
+          nextClueText: nextClue ? nextClue.text : 'All campus beacons verified! Report to Game Master Central.'
+        });
+      }
+
+      // Memory Store
       memoryStore.collections.checkins = memoryStore.collections.checkins || [];
       memoryStore.collections.checkins.push(checkinRecord);
       team.score = (team.score || 0) + totalPoints;
       team.cards = team.cards || [];
-      team.cards.push({ rank: rankPts, suit: cardSuit || '♠', zoneId, awardedAt: new Date().toISOString() });
+      team.cards.push({ rank: rankPts, suit: cardSuit || '♠', zoneId: recordedZone, awardedAt: new Date().toISOString() });
       team.visitedZones = team.visitedZones || [];
-      if (!team.visitedZones.includes(zoneId)) team.visitedZones.push(zoneId);
+      if (!team.visitedZones.some(z => normalizeZone(z) === normalizeZone(recordedZone))) {
+        team.visitedZones.push(recordedZone);
+      }
       team.currentClueIndex = (team.currentClueIndex || 0) + 1;
       team.updatedAt = new Date().toISOString();
 
       await memoryStore.syncToCloud();
-      memoryStore.logEvent('CHECKIN', `Team "${team.name}" awarded +${totalPoints} PTS at ${zoneId} (Total: ${team.score} PTS)`);
+      memoryStore.logEvent('CHECKIN', `Team "${team.name}" awarded +${totalPoints} PTS at ${recordedZone} (Total: ${team.score} PTS)`);
 
+      const nextClue = (allClues.length > 0) ? resolveTeamTargetClue(team, allClues) : null;
       return sendJson(res, 200, {
         success: true,
         pointsAwarded: totalPoints,
         teamScore: team.score,
         teamName: team.name || team.callsign,
-        nextClueIndex: team.currentClueIndex
+        nextClueIndex: team.currentClueIndex,
+        nextZoneId: nextClue ? nextClue.zoneId : null,
+        nextZoneLabel: nextClue ? (nextClue.zoneLabel || nextClue.zoneId) : 'ALL CHECKPOINTS CLEARED',
+        nextClueText: nextClue ? nextClue.text : 'All campus beacons verified! Report to Game Master Central.'
       });
     }
 

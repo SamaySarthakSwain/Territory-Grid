@@ -357,11 +357,20 @@
         </div>
 
         <!-- Clue Prompt Banner -->
-        <div class="bg-surface-container-highest/60 p-3 rounded-lg flex items-start gap-2.5 border border-outline-variant/30">
-          <span class="material-symbols-outlined text-[#FFD600] text-[20px] shrink-0 mt-0.5">lightbulb</span>
-          <p class="font-headline-sm text-headline-sm text-on-surface font-semibold leading-snug" id="active-clue-text">
-            Connecting to campus grid... Active checkpoints with registered Field Marshals will appear here.
-          </p>
+        <div class="bg-surface-container-highest/60 p-3 rounded-lg flex flex-col gap-2 border border-outline-variant/30">
+          <div class="flex items-start gap-2.5">
+            <span class="material-symbols-outlined text-[#FFD600] text-[20px] shrink-0 mt-0.5">lightbulb</span>
+            <p class="font-headline-sm text-headline-sm text-on-surface font-semibold leading-snug" id="active-clue-text">
+              Connecting to campus grid... Active checkpoints with registered Field Marshals will appear here.
+            </p>
+          </div>
+          <div class="flex items-center justify-between text-xs font-mono pt-1.5 border-t border-white/5 text-gray-300">
+            <span class="flex items-center gap-1.5 text-primary font-bold">
+              <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+              <span id="active-station-name">Assigned Station: Standby</span>
+            </span>
+            <span class="text-secondary-fixed text-[11px] font-bold px-2 py-0.5 rounded bg-secondary-fixed/15 border border-secondary-fixed/30" id="active-station-status">STATION SCAN REQUIRED</span>
+          </div>
         </div>
 
 
@@ -691,6 +700,29 @@
         hash = (hash * 31 + str.charCodeAt(i)) % 88;
       }
       return 11 + Math.abs(hash);
+    }
+
+    // Balanced Round-Robin Station Routing Engine (Equally distributes all squads)
+    function resolveTeamRoute(team, clues, teamsList) {
+      if (!clues || clues.length === 0) return [];
+      var K = clues.length;
+      var code = (team && typeof team.teamCode === 'number' && team.teamCode >= 11)
+        ? team.teamCode
+        : deriveTeamCode(team, teamsList);
+      var offset = code % K;
+      var route = [];
+      for (var i = 0; i < K; i++) {
+        route.push(clues[(offset + i) % K]);
+      }
+      return route;
+    }
+
+    function resolveTeamTargetClue(team, clues, teamsList) {
+      if (!clues || clues.length === 0) return null;
+      var route = resolveTeamRoute(team, clues, teamsList);
+      var currentIdx = (team && typeof team.currentClueIndex === 'number') ? team.currentClueIndex : 0;
+      if (currentIdx >= route.length) return null;
+      return route[currentIdx];
     }
 
     // Deterministic Checkpoint Card Engine (Rotates dynamic cipher card every 30 seconds)
@@ -1368,26 +1400,38 @@
           // Render collected deck
           renderDeck(cards);
 
-          // 3. Active Clue Directive & Next Location Display
+          // 3. Active Clue Directive & Next Location Display (Balanced Round-Robin)
           var currentIdx = myTeam.currentClueIndex || 0;
           if (!allClues || allClues.length === 0) {
             document.getElementById('active-checkpoint-label').innerText = 'STANDBY FOR DEPLOYMENT';
             document.getElementById('active-zone-badge').innerText = 'AWAITING STATIONS';
             document.getElementById('active-clue-text').innerHTML = '⏳ <b>FIELD DIRECTIVES DEPLOYING</b><br>Field Marshals are taking station at designated campus checkpoints. Directives will unlock as soon as stations open!';
             document.getElementById('team-zone-label').innerText = 'Awaiting Checkpoint Stations';
-          } else if (currentIdx >= allClues.length) {
-            document.getElementById('active-checkpoint-label').innerText = 'FINAL OBJECTIVE CLEARED';
-            document.getElementById('active-zone-badge').innerText = 'COMPLETED';
-            document.getElementById('active-clue-text').innerHTML = '🏆 <b>ALL CAMPUS CHECKPOINTS COMPLETED!</b> Return to Game Master Samay for final scoring & victory ceremony!';
-            document.getElementById('team-zone-label').innerText = 'All ' + allClues.length + ' Checkpoints Cleared';
+            var sn = document.getElementById('active-station-name');
+            if (sn) sn.innerText = 'Assigned Station: Standby';
           } else {
-            var clueId = (myTeam.clueOrder && myTeam.clueOrder[currentIdx]) || (allClues[currentIdx] ? allClues[currentIdx]._id : null);
-            var activeClue = (allClues.find(function(c) { return c._id === clueId; })) || allClues[currentIdx % allClues.length] || allClues[0];
-            
-            document.getElementById('active-checkpoint-label').innerText = 'Beacon Checkpoint #' + String(currentIdx + 1).padStart(2, '0') + ' (of ' + allClues.length + ')';
-            document.getElementById('active-zone-badge').innerText = (activeClue.zoneId || 'SECTOR').toUpperCase();
-            document.getElementById('active-clue-text').innerText = '“' + (activeClue.text || 'Proceed to campus station') + '”';
-            document.getElementById('team-zone-label').innerText = 'Next Location: ' + (activeClue.zoneLabel || activeClue.zoneId || 'Station Area');
+            var activeClue = resolveTeamTargetClue(myTeam, allClues, cachedTeamsList);
+            if (!activeClue) {
+              document.getElementById('active-checkpoint-label').innerText = 'FINAL OBJECTIVE CLEARED';
+              document.getElementById('active-zone-badge').innerText = 'COMPLETED';
+              document.getElementById('active-clue-text').innerHTML = '🏆 <b>ALL CAMPUS CHECKPOINTS COMPLETED!</b> Return to Game Master Samay for final scoring & victory ceremony!';
+              document.getElementById('team-zone-label').innerText = 'All ' + allClues.length + ' Checkpoints Cleared';
+              var sn = document.getElementById('active-station-name');
+              if (sn) sn.innerText = 'All Checkpoints Cleared!';
+              var ss = document.getElementById('active-station-status');
+              if (ss) { ss.innerText = 'MISSION COMPLETE'; ss.className = 'text-tertiary text-[11px] font-bold px-2 py-0.5 rounded bg-tertiary/15 border border-tertiary/30'; }
+            } else {
+              var cNum = currentIdx + 1;
+              document.getElementById('active-checkpoint-label').innerText = 'Beacon Checkpoint #' + String(cNum).padStart(2, '0') + ' (of ' + allClues.length + ')';
+              document.getElementById('active-zone-badge').innerText = (activeClue.zoneId || 'SECTOR').toUpperCase();
+              document.getElementById('active-clue-text').innerText = '“' + (activeClue.text || 'Proceed to campus station') + '”';
+              var targetStation = activeClue.zoneLabel || activeClue.zoneId || 'Station Area';
+              document.getElementById('team-zone-label').innerText = 'Next Location: ' + targetStation;
+              var sn = document.getElementById('active-station-name');
+              if (sn) sn.innerText = 'Assigned Station: ' + targetStation;
+              var ss = document.getElementById('active-station-status');
+              if (ss) { ss.innerText = 'ONLY THIS MARSHAL CAN SCAN'; ss.className = 'text-secondary-fixed text-[11px] font-bold px-2 py-0.5 rounded bg-secondary-fixed/15 border border-secondary-fixed/30'; }
+            }
           }
 
           if (cards.length > 0) {

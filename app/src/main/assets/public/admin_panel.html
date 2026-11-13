@@ -504,10 +504,14 @@
             <div class="text-2xl font-mono font-bold text-yellow" id="places-unstaffed-count">0</div>
             <div class="text-[10px] font-mono uppercase text-gray-400">Unstaffed (Hidden)</div>
           </div>
-          <div class="text-center px-2">
-            <button onclick="loadPlaces()" class="px-3 py-1.5 rounded-lg bg-cyan/10 hover:bg-cyan/20 text-cyan border border-cyan/30 text-xs font-headline font-semibold flex items-center gap-1 transition">
+          <div class="text-center px-2 flex items-center gap-1.5">
+            <button onclick="loadPlaces()" class="px-3 py-1.5 rounded-lg bg-cyan/10 hover:bg-cyan/20 text-cyan border border-cyan/30 text-xs font-headline font-semibold flex items-center gap-1 transition cursor-pointer">
               <span class="material-symbols-outlined text-sm">refresh</span>
               <span>Re-sync</span>
+            </button>
+            <button onclick="rebalanceAllSquadRoutes()" class="px-3 py-1.5 rounded-lg bg-green/10 hover:bg-green/20 text-green border border-green/30 text-xs font-headline font-semibold flex items-center gap-1 transition cursor-pointer" title="Equally distribute all teams across available stations">
+              <span class="material-symbols-outlined text-sm">shuffle</span>
+              <span>Distribute Routes</span>
             </button>
           </div>
         </div>
@@ -745,6 +749,24 @@
       if (tab === 'approvals') { loadPendingApprovals(); loadApprovedRoster(); }
       if (tab === 'ops') loadLeaderboard();
       if (tab === 'history') loadAdminLogs();
+    }
+
+    async function rebalanceAllSquadRoutes() {
+      var conf = confirm('Equally distribute all registered squads across active checkpoint locations?\n\nThis assigns balanced round-robin starting points so marshals are evenly utilized.');
+      if (!conf) return;
+      try {
+        var res = await fetch(apiUrl('/api/admin/rebalance-routes'), { method: 'POST' });
+        var data = await res.json();
+        if (data.success) {
+          alert(data.message || 'Squad routes re-balanced successfully!');
+          loadPlaces();
+          loadApprovedRoster();
+        } else {
+          alert('Error: ' + (data.error || 'Failed to re-balance routes.'));
+        }
+      } catch(e) {
+        alert('Network error: ' + e.message);
+      }
     }
 
     // ─────────────────────────────────────────────────────────────
