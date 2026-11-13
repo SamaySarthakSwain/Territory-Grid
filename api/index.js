@@ -524,14 +524,21 @@ module.exports = async (req, res) => {
       const trimmedCallsign = callsign.trim();
       const trimmedPass = password.trim();
 
-      // Admin Samay (Fixed Account)
-      if (trimmedCallsign.toLowerCase() === 'samay' && trimmedPass === 'samay') {
-        return sendJson(res, 200, {
-          success: true,
-          role: 'ADMIN',
-          isApproved: true,
-          user: DEFAULT_ADMIN
-        });
+      // Strictly Guard Admin Access: Only ID 'samay' and password 'samay'
+      if (requestedRole === 'ADMIN' || trimmedCallsign.toLowerCase() === 'samay') {
+        if (trimmedCallsign.toLowerCase() === 'samay' && trimmedPass === 'samay') {
+          return sendJson(res, 200, {
+            success: true,
+            role: 'ADMIN',
+            isApproved: true,
+            user: DEFAULT_ADMIN
+          });
+        } else {
+          return sendJson(res, 401, {
+            success: false,
+            error: 'Clearance Denied: Admin portal is strictly restricted to Game Master Samay. Invalid ID or password.'
+          });
+        }
       }
 
       if (atlasDb) {

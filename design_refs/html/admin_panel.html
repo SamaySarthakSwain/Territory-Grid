@@ -740,17 +740,26 @@
 
   <!-- SCRIPT LOGIC -->
   <script>
-    // 1. Role Guard: Enforce Admin (samay)
+    // 1. Strict Role & Identity Guard: Strictly enforce Admin (samay)
     (function checkAdminClearance() {
       try {
         var raw = localStorage.getItem('territory_grid_user') || sessionStorage.getItem('territory_grid_user');
         var user = raw ? JSON.parse(raw) : null;
-        if (!user || user.role !== 'ADMIN') {
-          alert('Security Clearance Alert: Access restricted to Game Master Samay.');
-          window.location.href = 'login.html';
+        var isSamay = user && (
+          (user.callsign && user.callsign.toLowerCase() === 'samay') ||
+          (user.username && user.username.toLowerCase() === 'samay') ||
+          (user.name && user.name.toLowerCase() === 'samay')
+        );
+        if (!user || user.role !== 'ADMIN' || !isSamay) {
+          localStorage.removeItem('territory_grid_user');
+          sessionStorage.removeItem('territory_grid_user');
+          window.location.replace('login.html?logout=true&restricted=admin');
+          return;
         }
       } catch (e) {
-        window.location.href = 'login.html';
+        localStorage.removeItem('territory_grid_user');
+        sessionStorage.removeItem('territory_grid_user');
+        window.location.replace('login.html?logout=true&restricted=admin');
       }
     })();
 

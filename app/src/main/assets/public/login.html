@@ -284,9 +284,9 @@
           </div>
 
           <!-- Admin Quick Hint (Shown only when Admin is selected) -->
-          <div id="admin-credentials-hint" class="hidden p-3 rounded-xl bg-magenta/10 border border-magenta/30 text-xs font-mono text-magenta flex items-center justify-between">
-            <span>GAME MASTER ACCESS: Authorized Personnel Only</span>
-            <button type="button" onclick="fillAdminCredentials()" class="underline hover:text-white text-[11px] font-bold">Auto-Fill</button>
+          <div id="admin-credentials-hint" class="hidden p-3 rounded-xl bg-magenta/10 border border-magenta/30 text-xs font-mono text-magenta flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">lock</span>
+            <span>RESTRICTED ACCESS: Enter ID "samay" and password "samay" to access the Admin Terminal.</span>
           </div>
 
           <!-- Submit Button -->
@@ -383,6 +383,13 @@
         var urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('logout') === 'true' || urlParams.get('switch') === 'true' || urlParams.get('clear') === 'true') {
           clearSession();
+        }
+        if (urlParams.get('restricted') === 'admin') {
+          clearSession();
+          setTimeout(function() {
+            showAlert('Access Denied: Only Game Master Samay (ID: samay) can access the Admin Command Terminal.', true);
+            selectPortal('ADMIN');
+          }, 150);
         }
       } catch (e) {}
 
@@ -520,7 +527,11 @@
           btnSubmit.className = 'w-full py-3 px-6 rounded-xl bg-magenta text-white font-headline font-bold text-sm tracking-wider uppercase hover:shadow-[0_0_20px_rgba(255,0,85,0.6)] active:scale-98 transition flex items-center justify-center gap-2 mt-6';
         }
         if (btnSubmitText) btnSubmitText.innerText = 'ACCESS COMMAND TERMINAL';
-        fillAdminCredentials();
+        // Do NOT auto-fill admin credentials - require manual entry of samay / samay
+        var callsignInput = document.getElementById('input-callsign');
+        var passInput = document.getElementById('input-password');
+        if (callsignInput) { callsignInput.value = ''; callsignInput.placeholder = 'Enter Admin ID (samay)'; }
+        if (passInput) { passInput.value = ''; passInput.placeholder = 'Enter Admin Password'; }
       } else if (role === 'MEMBER') {
         if (modeToggleGroup) modeToggleGroup.classList.remove('hidden');
         if (adminHint) adminHint.classList.add('hidden');
@@ -592,8 +603,7 @@
     }
 
     function fillAdminCredentials() {
-      document.getElementById('input-callsign').value = 'samay';
-      document.getElementById('input-password').value = 'samay';
+      // Disabled for security - credentials must be entered manually
     }
 
     function togglePasswordVisibility() {
@@ -643,6 +653,11 @@
 
       if (!callsign || !password) {
         showAlert('Please fill in callsign and access key.', true);
+        return;
+      }
+
+      if (currentRole === 'ADMIN' && (callsign.toLowerCase() !== 'samay' || password !== 'samay')) {
+        showAlert('Security Rejection: Game Master Terminal access is strictly restricted. Only ID "samay" and password "samay" is authorized.', true);
         return;
       }
 
