@@ -390,7 +390,7 @@
             </button>
           </div>
 
-          <div class="card-3d-wrap relative group select-none cursor-pointer w-[240px] sm:w-[260px] h-[375px] sm:h-[395px]" onclick="toggleCardFlip()">
+          <div id="player-card-section" class="card-3d-wrap relative group select-none cursor-pointer w-[240px] sm:w-[260px] h-[375px] sm:h-[395px]" onclick="toggleCardFlip()">
             
             <!-- Dynamic Ambient Backing Blur Glow (Cyan for ♠/♣, Crimson for ♥/♦) -->
             <div id="card-ambient-glow" class="absolute -inset-3 rounded-3xl bg-[#00e5ff]/25 blur-2xl transition-all duration-700 pointer-events-none"></div>
@@ -452,6 +452,7 @@
 
                   <!-- Center Iris Reactor Lens with REC Core -->
                   <div class="relative my-0.5 flex items-center justify-center">
+                    <span id="reactor-pulse-dot" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-cyan animate-ping pointer-events-none"></span>
                     <div id="reactor-outer-ring" class="w-16 h-16 rounded-full border-2 border-[#00e5ff] shadow-[0_0_24px_rgba(0,229,255,0.75)] flex items-center justify-center bg-black/80 transition-colors duration-500">
                       <div id="reactor-inner-ring" class="w-11 h-11 rounded-full border border-[#00e5ff]/80 flex items-center justify-center transition-colors duration-500 bg-white/10 p-1 shadow-[inset_0_0_10px_rgba(0,229,255,0.6)] backdrop-blur-md">
                         <img src="assets/rec_logo.png" alt="REC Power Core" onerror="this.onerror=null; this.src='/assets/rec_logo.png'" class="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(0,229,255,0.9)]" />
@@ -1015,7 +1016,7 @@
             if (snap) {
               currentMyTeam = snap;
               setTimeout(function() {
-                var scoreEl = document.getElementById('current-score');
+                var scoreEl = document.getElementById('team-score-num') || document.getElementById('current-score');
                 if (scoreEl && typeof snap.score !== 'undefined') scoreEl.innerText = snap.score;
                 if (Array.isArray(snap.cards)) renderDeck(snap.cards);
               }, 50);

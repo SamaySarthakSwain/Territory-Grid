@@ -98,6 +98,12 @@
       background-size: 24px 24px;
     }
   </style>
+  <script>
+    // Seamless Mobile Direct Access: On mobile phone screens, jump straight to native mobile portal
+    if (typeof window !== 'undefined' && window.innerWidth <= 768 && !window.location.search.includes('preview=true')) {
+      window.location.replace('login.html');
+    }
+  </script>
 </head>
 <body class="min-h-screen flex flex-col hex-bg">
 

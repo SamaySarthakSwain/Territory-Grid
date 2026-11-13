@@ -52,6 +52,7 @@
     </div>
   </header>
 
+  <div class="hidden"><span id="telemetry-hunt-clock">52:00</span><span id="telemetry-game-status">LOBBY</span></div>
   <main class="flex flex-col relative w-full pt-16 pb-20 bg-surface min-h-screen">
     <div class="flex flex-col w-full px-gutter pb-6 gap-space-md">
       
@@ -275,7 +276,8 @@
         <div class="text-xs font-mono text-gray-300">Total Score: <span class="text-white font-bold" id="celeb-total-score">150 PTS</span></div>
         <div class="pt-2 border-t border-gray-800 text-[11px] text-primary font-mono flex items-center justify-center gap-1">
           <span class="material-symbols-outlined text-sm">lock_open</span>
-          <span id="celeb-next-clue-label">Next Mission Hint Unlocked for Squad!</span>
+          <div class="text-cyan font-bold flex items-center justify-center gap-1 mb-0.5"><span class="material-symbols-outlined text-sm">navigation</span><span id="celeb-next-location-title">NEXT LOCATION: Next Station</span></div>
+          <span id="celeb-next-clue-label" class="text-gray-300 text-[10px]">Next Mission Hint Unlocked for Squad!</span>
         </div>
       </div>
 
@@ -1107,6 +1109,7 @@
         if (Array.isArray(currentTeams) && currentTeams.length > 0) {
           var matchedTeam = currentTeams.find(function(t) {
             if (t.teamCode === tt) return true;
+            if (typeof deriveTeamCode === 'function' && deriveTeamCode(t, currentTeams) === tt) return true;
             var numMatch = (t.name || t.callsign || '').match(/\d+/);
             if (numMatch && numMatch[0]) {
               var n = parseInt(numMatch[0], 10);
