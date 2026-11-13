@@ -488,6 +488,79 @@ const server = http.createServer(async (req, res) => {
         }
       }
 
+      // 6b. POST /api/admin/teams/reset-points (Reset Team Score & Progress to 0)
+      if (pathname === '/api/admin/teams/reset-points' && req.method === 'POST') {
+        db.load();
+        const body = await parseBody(req);
+        const teamId = body.teamId || body.id;
+
+        if (!teamId) {
+          return sendJson(res, 400, { success: false, error: 'Team ID is required.' });
+        }
+
+        const team = db.collections.teams.find(t => t._id === teamId || (t.id && t.id === teamId));
+        if (!team) {
+          return sendJson(res, 404, { success: false, error: 'Squad not found in database.' });
+        }
+
+        const prevScore = team.score || 0;
+        team.score = 0;
+        team.cards = [];
+        team.visitedZones = [];
+        team.currentClueIndex = 0;
+
+        // Clean out check-ins for this team
+        db.collections.checkins = db.collections.checkins.filter(c => c.teamId !== teamId && c.team !== teamId);
+
+        db.save();
+        db.logEvent('RESET_POINTS', `Game Master reset points (was ${prevScore} PTS) and cleared progress for squad: "${team.name}" (${team._id})`);
+        return sendJson(res, 200, { success: true, message: `Points and progress reset to 0 for squad "${team.name}".` });
+      }
+
+      // 6c. POST /api/admin/teams/remove (Permanently Delete Squad & Associated Accounts)
+      if (pathname === '/api/admin/teams/remove' && req.method === 'POST') {
+        db.load();
+        const body = await parseBody(req);
+        const teamId = body.teamId || body.id;
+
+        if (!teamId) {
+          return sendJson(res, 400, { success: false, error: 'Team ID is required.' });
+        }
+
+        const team = db.collections.teams.find(t => t._id === teamId || (t.id && t.id === teamId));
+        const teamName = team ? team.name : teamId;
+
+        db.collections.teams = db.collections.teams.filter(t => t._id !== teamId && t.id !== teamId);
+        db.collections.users = db.collections.users.filter(u => u.teamId !== teamId && u.callsign !== teamName);
+        db.collections.checkins = db.collections.checkins.filter(c => c.teamId !== teamId && c.team !== teamId);
+
+        db.save();
+        db.logEvent('REMOVE_TEAM', `Game Master permanently removed squad: "${teamName}" (${teamId}) and purged operative accounts.`);
+        return sendJson(res, 200, { success: true, message: `Squad "${teamName}" removed permanently.` });
+      }
+
+      // 6d. GET /api/admin/logs (Audit Trail of all Admin & System Events)
+      if (pathname === '/api/admin/logs' && req.method === 'GET') {
+        db.load();
+        const limit = parseInt(parsedUrl.query.limit, 10) || 200;
+        const logs = (db.collections.system_logs || []).slice(0, limit);
+        return sendJson(res, 200, {
+          success: true,
+          logs: logs,
+          total: (db.collections.system_logs || []).length
+        });
+      }
+
+      // 6e. POST /api/admin/logs/clear (Purge Audit Trail)
+      if (pathname === '/api/admin/logs/clear' && req.method === 'POST') {
+        db.load();
+        const count = (db.collections.system_logs || []).length;
+        db.collections.system_logs = [];
+        db.logEvent('PURGE_LOGS', `Game Master purged ${count} system audit log entries.`);
+        db.save();
+        return sendJson(res, 200, { success: true, message: 'Audit logs cleared successfully.' });
+      }
+
       // 7. GET /api/database/all (MongoDB live collections viewer)
       if (pathname === '/api/database/all' && req.method === 'GET') {
         return sendJson(res, 200, {
@@ -765,6 +838,7 @@ const server = http.createServer(async (req, res) => {
           db.collections.clues.push({ _id: newId, zoneId: cleanZoneId, zoneLabel: cleanLabel, text: cleanText });
         }
         db.save();
+        db.logEvent('SAVE_PLACE', `Game Master ${_id ? 'updated' : 'added'} checkpoint "${cleanZoneId}": ${cleanLabel}`);
         return sendJson(res, 200, { success: true, message: 'Place saved successfully.', clues: db.collections.clues });
       }
 
@@ -776,6 +850,7 @@ const server = http.createServer(async (req, res) => {
 
         db.collections.clues = db.collections.clues.filter(c => c._id !== _id);
         db.save();
+        db.logEvent('DELETE_PLACE', `Game Master deleted checkpoint: ${_id}`);
         return sendJson(res, 200, { success: true, message: 'Place deleted successfully.', clues: db.collections.clues });
       }
 

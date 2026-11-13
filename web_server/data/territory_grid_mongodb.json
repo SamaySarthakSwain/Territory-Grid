@@ -56,6 +56,18 @@
       "zoneLabel": null,
       "isApproved": true,
       "createdAt": "2026-11-13T00:38:25.536Z"
+    },
+    {
+      "_id": "user_1794538075019_7jmkd",
+      "callsign": "test_temp_squad",
+      "name": "Temporary Test Squad",
+      "role": "PLAYER",
+      "password": "password123",
+      "teamId": "team_1794538075019_woae4",
+      "zoneId": null,
+      "zoneLabel": null,
+      "isApproved": false,
+      "createdAt": "2026-11-13T02:47:55.019Z"
     }
   ],
   "teams": [
@@ -63,24 +75,15 @@
       "_id": "team_1794529946730_7rjj1",
       "name": "Squad Phoenix",
       "callsign": "squad_phoenix",
-      "score": 20,
-      "cards": [
-        {
-          "rank": 8,
-          "suit": "♠",
-          "zoneId": "ZONE_01",
-          "awardedAt": "2026-11-13T00:32:26.735Z"
-        }
-      ],
+      "score": 0,
+      "cards": [],
       "clueOrder": [
         "clue_mwe8sork",
         "clue_mwe8sorh",
         "clue_mwe8sorj"
       ],
-      "currentClueIndex": 1,
-      "visitedZones": [
-        "ZONE_01"
-      ],
+      "currentClueIndex": 0,
+      "visitedZones": [],
       "isApproved": true,
       "createdAt": "2026-11-13T00:32:26.730Z",
       "updatedAt": "2026-11-13T00:32:26.735Z",
@@ -110,6 +113,22 @@
       "createdAt": "2026-11-13T00:38:25.536Z",
       "updatedAt": "2026-11-13T00:57:00.199Z",
       "teamCode": 11
+    },
+    {
+      "_id": "team_1794538075019_woae4",
+      "name": "Temporary Test Squad",
+      "callsign": "test_temp_squad",
+      "score": 0,
+      "cards": [],
+      "clueOrder": [
+        "clue_mwe8yofo"
+      ],
+      "currentClueIndex": 0,
+      "visitedZones": [],
+      "isApproved": false,
+      "createdAt": "2026-11-13T02:47:55.019Z",
+      "updatedAt": "2026-11-13T02:47:55.019Z",
+      "teamCode": 13
     }
   ],
   "clues": [
@@ -121,17 +140,6 @@
     }
   ],
   "checkins": [
-    {
-      "_id": "team_1794529946730_7rjj1_ZONE_01_1794529946734",
-      "teamId": "team_1794529946730_7rjj1",
-      "zoneId": "ZONE_01",
-      "memberId": "marshal_station",
-      "cone": "YELLOW",
-      "cardRank": 8,
-      "cardSuit": "♠",
-      "points": 20,
-      "timestamp": "2026-11-13T00:32:26.735Z"
-    },
     {
       "_id": "team_1794530305536_hh9o3_ZONE_01_1794531420199",
       "teamId": "team_1794530305536_hh9o3",
@@ -145,18 +153,60 @@
     }
   ],
   "gameState": {
-    "status": "LOBBY",
+    "status": "PLAYER_PHASE",
     "durationMinutes": 52,
     "durationSeconds": 3120,
-    "startedAt": null,
-    "endsAt": null,
-    "countdownStartAt": null,
-    "countdownEndsAt": null,
+    "startedAt": "2026-11-13T02:30:12.622Z",
+    "endsAt": "2026-11-13T03:22:12.622Z",
+    "countdownStartAt": "2026-11-13T02:30:02.622Z",
+    "countdownEndsAt": "2026-11-13T02:30:12.622Z",
     "pausedAt": null,
     "totalPausedMs": 0,
     "endedAt": null
   },
   "system_logs": [
+    {
+      "_id": "log_1794538088696_pnuo",
+      "action": "REMOVE_TEAM",
+      "details": "Game Master permanently removed squad: \"DeleteMe Squad\" (team_1794538088690_qwu44) and purged operative accounts.",
+      "timestamp": "2026-11-13T02:48:08.696Z"
+    },
+    {
+      "_id": "log_1794538088691_1l3f",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"del_me_1\" (Pending Approval)",
+      "timestamp": "2026-11-13T02:48:08.691Z"
+    },
+    {
+      "_id": "log_1794538075020_isnu",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"test_temp_squad\" (Pending Approval)",
+      "timestamp": "2026-11-13T02:47:55.020Z"
+    },
+    {
+      "_id": "log_1794538075015_r7js",
+      "action": "RESET_POINTS",
+      "details": "Game Master reset points (was 20 PTS) and cleared progress for squad: \"Squad Phoenix\" (team_1794529946730_7rjj1)",
+      "timestamp": "2026-11-13T02:47:55.015Z"
+    },
+    {
+      "_id": "log_1794537012663_iw49",
+      "action": "GAME_STATUS",
+      "details": "10s Countdown completed! Game is now LIVE in PLAYER_PHASE (52 Minutes).",
+      "timestamp": "2026-11-13T02:30:12.663Z"
+    },
+    {
+      "_id": "log_1794537002623_tl2v",
+      "action": "GAME_STATUS",
+      "details": "Game Master initiated 10s countdown for 52-minute hunt.",
+      "timestamp": "2026-11-13T02:30:02.623Z"
+    },
+    {
+      "_id": "log_1794536997182_9ygf",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-13T02:29:57.182Z"
+    },
     {
       "_id": "log_1794533033990_ohev",
       "action": "GAME_STATUS",

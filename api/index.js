@@ -580,6 +580,132 @@ module.exports = async (req, res) => {
     }
 
     // ─────────────────────────────────────────────────────────
+    // 6b. POST /api/admin/teams/reset-points
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/teams/reset-points' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const teamId = body.teamId || body.id;
+
+      if (!teamId) {
+        return sendJson(res, 400, { success: false, error: 'Team ID is required.' });
+      }
+
+      if (atlasDb) {
+        const team = await atlasDb.collection('teams').findOne({ $or: [{ _id: teamId }, { id: teamId }] });
+        if (!team) return sendJson(res, 404, { success: false, error: 'Squad not found in database.' });
+
+        const prevScore = team.score || 0;
+        await atlasDb.collection('teams').updateOne(
+          { _id: team._id },
+          { $set: { score: 0, cards: [], visitedZones: [], currentClueIndex: 0 } }
+        );
+        await atlasDb.collection('checkins').deleteMany({ $or: [{ teamId: teamId }, { team: teamId }] });
+
+        memoryStore.logEvent('RESET_POINTS', `Game Master reset points (was ${prevScore} PTS) and cleared progress for squad: "${team.name}" (${team._id})`);
+        try {
+          await atlasDb.collection('system_logs').insertOne({
+            _id: 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+            action: 'RESET_POINTS',
+            details: `Game Master reset points (was ${prevScore} PTS) for squad: "${team.name}"`,
+            timestamp: new Date().toISOString()
+          });
+        } catch(e){}
+
+        return sendJson(res, 200, { success: true, message: `Points and progress reset to 0 for squad "${team.name}".` });
+      }
+
+      const team = memoryStore.collections.teams.find(t => t._id === teamId || (t.id && t.id === teamId));
+      if (!team) return sendJson(res, 404, { success: false, error: 'Squad not found in database.' });
+
+      const prevScore = team.score || 0;
+      team.score = 0;
+      team.cards = [];
+      team.visitedZones = [];
+      team.currentClueIndex = 0;
+      memoryStore.collections.checkins = (memoryStore.collections.checkins || []).filter(c => c.teamId !== teamId && c.team !== teamId);
+      memoryStore.save();
+      memoryStore.logEvent('RESET_POINTS', `Game Master reset points (was ${prevScore} PTS) and progress for squad: "${team.name}" (${team._id})`);
+      return sendJson(res, 200, { success: true, message: `Points and progress reset to 0 for squad "${team.name}".` });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 6c. POST /api/admin/teams/remove
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/teams/remove' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const teamId = body.teamId || body.id;
+
+      if (!teamId) {
+        return sendJson(res, 400, { success: false, error: 'Team ID is required.' });
+      }
+
+      if (atlasDb) {
+        const team = await atlasDb.collection('teams').findOne({ $or: [{ _id: teamId }, { id: teamId }] });
+        const teamName = team ? team.name : teamId;
+
+        await atlasDb.collection('teams').deleteOne({ $or: [{ _id: teamId }, { id: teamId }] });
+        await atlasDb.collection('users').deleteMany({ $or: [{ teamId: teamId }, { callsign: teamName }] });
+        await atlasDb.collection('checkins').deleteMany({ $or: [{ teamId: teamId }, { team: teamId }] });
+
+        memoryStore.logEvent('REMOVE_TEAM', `Game Master permanently removed squad: "${teamName}" (${teamId})`);
+        try {
+          await atlasDb.collection('system_logs').insertOne({
+            _id: 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+            action: 'REMOVE_TEAM',
+            details: `Game Master permanently removed squad: "${teamName}"`,
+            timestamp: new Date().toISOString()
+          });
+        } catch(e){}
+
+        return sendJson(res, 200, { success: true, message: `Squad "${teamName}" removed permanently.` });
+      }
+
+      const team = memoryStore.collections.teams.find(t => t._id === teamId || (t.id && t.id === teamId));
+      const teamName = team ? team.name : teamId;
+
+      memoryStore.collections.teams = memoryStore.collections.teams.filter(t => t._id !== teamId && t.id !== teamId);
+      memoryStore.collections.users = memoryStore.collections.users.filter(u => u.teamId !== teamId && u.callsign !== teamName);
+      memoryStore.collections.checkins = (memoryStore.collections.checkins || []).filter(c => c.teamId !== teamId && c.team !== teamId);
+      memoryStore.save();
+      memoryStore.logEvent('REMOVE_TEAM', `Game Master permanently removed squad: "${teamName}" (${teamId})`);
+      return sendJson(res, 200, { success: true, message: `Squad "${teamName}" removed permanently.` });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 6d. GET /api/admin/logs
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/logs' && req.method === 'GET') {
+      const limit = parseInt(urlObj.searchParams.get('limit'), 10) || 200;
+      if (atlasDb) {
+        const logs = await atlasDb.collection('system_logs').find().sort({ timestamp: -1 }).limit(limit).toArray();
+        return sendJson(res, 200, { success: true, logs: logs, total: logs.length });
+      }
+      const logs = (memoryStore.collections.system_logs || []).slice(0, limit);
+      return sendJson(res, 200, { success: true, logs: logs, total: (memoryStore.collections.system_logs || []).length });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 6e. POST /api/admin/logs/clear
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/logs/clear' && req.method === 'POST') {
+      if (atlasDb) {
+        await atlasDb.collection('system_logs').deleteMany({});
+        await atlasDb.collection('system_logs').insertOne({
+          _id: 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          action: 'PURGE_LOGS',
+          details: 'Game Master purged system audit logs.',
+          timestamp: new Date().toISOString()
+        });
+        return sendJson(res, 200, { success: true, message: 'Audit logs cleared successfully.' });
+      }
+      const count = (memoryStore.collections.system_logs || []).length;
+      memoryStore.collections.system_logs = [];
+      memoryStore.logEvent('PURGE_LOGS', `Game Master purged ${count} system audit log entries.`);
+      memoryStore.save();
+      return sendJson(res, 200, { success: true, message: 'Audit logs cleared successfully.' });
+    }
+
+    // ─────────────────────────────────────────────────────────
     // 7. GET /api/database/all
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/database/all' && req.method === 'GET') {
