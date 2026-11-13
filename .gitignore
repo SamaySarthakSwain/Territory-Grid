@@ -32,3 +32,6 @@ graphify-out/.graphify_root
 
 .idea/
 *.apk
+
+.gemini/
+graphify-out/

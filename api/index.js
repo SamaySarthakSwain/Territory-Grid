@@ -104,7 +104,7 @@ class MemoryStore {
 
   load() {
     try {
-      if ((!this.collections.users || this.collections.users.length <= 1) && fs.existsSync(this.filePath)) {
+      if (this.lastSynced === 0 && fs.existsSync(this.filePath)) {
         const raw = fs.readFileSync(this.filePath, 'utf8');
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object' && Array.isArray(parsed.users) && parsed.users.length > 0) {
@@ -971,6 +971,50 @@ module.exports = async (req, res) => {
     }
 
     // ─────────────────────────────────────────────────────────
+    // 6c-1. POST /api/admin/teams/reset-all-points
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/teams/reset-all-points' && req.method === 'POST') {
+      if (atlasDb) {
+        await atlasDb.collection('teams').updateMany({}, {
+          $set: { score: 0, cards: [], visitedZones: [], currentClueIndex: 0, updatedAt: new Date().toISOString() }
+        });
+        await atlasDb.collection('checkins').deleteMany({});
+      }
+
+      const teamCount = (memoryStore.collections.teams || []).length;
+      (memoryStore.collections.teams || []).forEach(t => {
+        t.score = 0;
+        t.cards = [];
+        t.visitedZones = [];
+        t.currentClueIndex = 0;
+        t.updatedAt = new Date().toISOString();
+      });
+      memoryStore.collections.checkins = [];
+      await memoryStore.syncToCloud();
+      memoryStore.logEvent('RESET_ALL_POINTS', `Game Master reset all points, cards, and checkpoint progress to 0 for ${teamCount} squads.`);
+      return sendJson(res, 200, { success: true, message: `All squad scores and progress reset to 0 (${teamCount} squads affected).` }, 'no-store, no-cache, max-age=0');
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 6c-2. POST /api/admin/teams/purge-all
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/teams/purge-all' && req.method === 'POST') {
+      if (atlasDb) {
+        await atlasDb.collection('teams').deleteMany({});
+        await atlasDb.collection('users').deleteMany({ role: { $ne: 'ADMIN' } });
+        await atlasDb.collection('checkins').deleteMany({});
+      }
+
+      const purgedTeamsCount = (memoryStore.collections.teams || []).length;
+      memoryStore.collections.teams = [];
+      memoryStore.collections.users = (memoryStore.collections.users || []).filter(u => u.role === 'ADMIN');
+      memoryStore.collections.checkins = [];
+      await memoryStore.syncToCloud();
+      memoryStore.logEvent('PURGE_ALL_TEAMS', `Game Master permanently purged all squads (${purgedTeamsCount}) and non-admin operatives.`);
+      return sendJson(res, 200, { success: true, message: `All ${purgedTeamsCount} squads and operative accounts purged successfully.` }, 'no-store, no-cache, max-age=0');
+    }
+
+    // ─────────────────────────────────────────────────────────
     // 6c. POST /api/admin/teams/remove
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/admin/teams/remove' && req.method === 'POST') {
@@ -1165,8 +1209,11 @@ module.exports = async (req, res) => {
           remainingSeconds: remainingSeconds,
           countdownSeconds: countdownSeconds,
           durationSeconds: gs.durationSeconds,
-          durationMinutes: gs.durationMinutes
-        }, 'public, max-age=1, s-maxage=1, stale-while-revalidate=2', req);
+          durationMinutes: gs.durationMinutes,
+          countdownEndsAt: gs.countdownEndsAt,
+          startedAt: gs.startedAt,
+          endsAt: gs.endsAt
+        }, 'no-store, no-cache, must-revalidate, max-age=0', req);
       }
 
       if (req.method === 'POST') {
@@ -1189,7 +1236,7 @@ module.exports = async (req, res) => {
           gs.totalPausedMs = 0;
           gs.endedAt = null;
 
-          memoryStore.save();
+          await memoryStore.syncToCloud();
         } else if (reqStatus === 'START' || reqStatus === 'PLAYER_PHASE') {
           const durMins = parseInt(body.durationMinutes, 10) || 52;
           const durSecs = durMins * 60;
@@ -1357,7 +1404,7 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
       }
       memoryStore.load();
       ensureUniqueTeamCodes(memoryStore.collections.teams);
-      return sendJson(res, 200, { success: true, teams: memoryStore.collections.teams }, 'public, max-age=1, s-maxage=1, stale-while-revalidate=1', req);
+      return sendJson(res, 200, { success: true, teams: memoryStore.collections.teams }, 'no-store, no-cache, must-revalidate, max-age=0', req);
     }
 
     // ─────────────────────────────────────────────────────────

@@ -1,461 +1,49 @@
 {
-  "clues": [
-    {
-      "_id": "clue_mwe8yofo",
-      "text": "Atrium hint",
-      "zoneId": "ZONE 1",
-      "zoneLabel": "Atrium"
-    }
-  ],
-  "teams": [
-    {
-      "_id": "team_1794529946730_7rjj1",
-      "name": "Squad Phoenix",
-      "cards": [],
-      "score": 0,
-      "callsign": "squad_phoenix",
-      "teamCode": 12,
-      "clueOrder": [
-        "clue_mwe8sork",
-        "clue_mwe8sorh",
-        "clue_mwe8sorj"
-      ],
-      "createdAt": "2026-11-13T00:32:26.730Z",
-      "updatedAt": "2026-11-13T00:32:26.735Z",
-      "isApproved": true,
-      "visitedZones": [],
-      "currentClueIndex": 0
-    },
-    {
-      "_id": "team_1794530305536_hh9o3",
-      "name": "team1",
-      "cards": [
-        {
-          "rank": 9,
-          "suit": "♠",
-          "zoneId": "ZONE_01",
-          "awardedAt": "2026-11-13T00:57:00.199Z"
-        }
-      ],
-      "score": 21,
-      "callsign": "team1",
-      "teamCode": 11,
-      "clueOrder": [
-        "clue_mwe8yofo"
-      ],
-      "createdAt": "2026-11-13T00:38:25.536Z",
-      "updatedAt": "2026-11-13T00:57:00.199Z",
-      "isApproved": true,
-      "visitedZones": [
-        "ZONE_01"
-      ],
-      "currentClueIndex": 1
-    },
-    {
-      "_id": "team_1794538075019_woae4",
-      "name": "Temporary Test Squad",
-      "cards": [],
-      "score": 0,
-      "callsign": "test_temp_squad",
-      "teamCode": 13,
-      "clueOrder": [
-        "clue_mwe8yofo"
-      ],
-      "createdAt": "2026-11-13T02:47:55.019Z",
-      "updatedAt": "2026-11-13T02:47:55.019Z",
-      "isApproved": true,
-      "visitedZones": [],
-      "currentClueIndex": 0
-    },
-    {
-      "_id": "team_1794549642680_we7qe",
-      "name": "Live Squad Beta",
-      "cards": [],
-      "score": 0,
-      "callsign": "squad_live_1794549641232",
-      "teamCode": 14,
-      "clueOrder": [
-        "clue_mwe8yofo"
-      ],
-      "createdAt": "2026-11-13T06:00:42.680Z",
-      "updatedAt": "2026-11-13T06:00:42.680Z",
-      "isApproved": true,
-      "visitedZones": [],
-      "currentClueIndex": 0
-    }
-  ],
   "users": [
     {
       "_id": "user_admin_samay",
+      "callsign": "samay",
       "name": "Game Master Samay",
       "role": "ADMIN",
-      "callsign": "samay",
       "password": "samay",
-      "createdAt": "2026-11-12T16:49:28.254Z",
-      "isApproved": true
-    },
-    {
-      "_id": "user_1794529946724_65ird",
-      "name": "Marshal Alpha",
-      "role": "MEMBER",
-      "teamId": null,
-      "zoneId": "ZONE_01",
-      "callsign": "marshal_alpha",
-      "password": "password123",
-      "createdAt": "2026-11-13T00:32:26.724Z",
-      "zoneLabel": "Library Arch Colonnade",
-      "isApproved": true
-    },
-    {
-      "_id": "user_1794529946730_51pe6",
-      "name": "Squad Phoenix",
-      "role": "PLAYER",
-      "teamId": "team_1794529946730_7rjj1",
-      "zoneId": null,
-      "callsign": "squad_phoenix",
-      "password": "password123",
-      "createdAt": "2026-11-13T00:32:26.730Z",
-      "zoneLabel": null,
-      "isApproved": true
-    },
-    {
-      "_id": "user_1794530270106_amsr1",
-      "name": "marshal1",
-      "role": "MEMBER",
-      "teamId": null,
-      "zoneId": "ZONE 1",
-      "callsign": "marshal1",
-      "password": "marshal1",
-      "createdAt": "2026-11-13T00:37:50.106Z",
-      "zoneLabel": "Atrium (ZONE 1)",
-      "isApproved": true
-    },
-    {
-      "_id": "user_1794530305536_awbz7",
-      "name": "team1",
-      "role": "PLAYER",
-      "teamId": "team_1794530305536_hh9o3",
-      "zoneId": null,
-      "callsign": "team1",
-      "password": "team1",
-      "createdAt": "2026-11-13T00:38:25.536Z",
-      "zoneLabel": null,
-      "isApproved": true
-    },
-    {
-      "_id": "user_1794538075019_7jmkd",
-      "name": "Temporary Test Squad",
-      "role": "PLAYER",
-      "teamId": "team_1794538075019_woae4",
-      "zoneId": null,
-      "callsign": "test_temp_squad",
-      "password": "password123",
-      "createdAt": "2026-11-13T02:47:55.019Z",
-      "zoneLabel": null,
-      "isApproved": true
-    },
-    {
-      "_id": "user_1794549617683_vaxcy",
-      "name": "Live Field Marshal Test",
-      "role": "MEMBER",
-      "teamId": null,
-      "zoneId": "ZONE_01",
-      "callsign": "marshal_live_1794549616215",
-      "password": "password123",
-      "createdAt": "2026-11-13T06:00:17.683Z",
-      "zoneLabel": "Zone 1 - Campus Station",
-      "isApproved": true
-    },
-    {
-      "_id": "user_1794549642680_90nn6",
-      "name": "Live Squad Beta",
-      "role": "PLAYER",
-      "teamId": "team_1794549642680_we7qe",
-      "zoneId": null,
-      "callsign": "squad_live_1794549641232",
-      "password": "password123",
-      "createdAt": "2026-11-13T06:00:42.680Z",
-      "zoneLabel": null,
-      "isApproved": true
+      "isApproved": true,
+      "createdAt": "2026-11-13T00:00:00.000Z"
     }
   ],
-  "checkins": [
+  "teams": [],
+  "clues": [
     {
-      "_id": "team_1794530305536_hh9o3_ZONE_01_1794531420199",
-      "cone": "YELLOW",
-      "points": 21,
-      "teamId": "team_1794530305536_hh9o3",
+      "_id": "clue_01",
+      "text": "Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!",
       "zoneId": "ZONE_01",
-      "cardRank": 9,
-      "cardSuit": "♠",
-      "memberId": "marshal_station",
-      "timestamp": "2026-11-13T00:57:00.199Z"
+      "zoneLabel": "Zone 1 - Library Arch"
+    },
+    {
+      "_id": "clue_02",
+      "text": "Search the courtyard perimeter behind the ancient bronze solar obelisk.",
+      "zoneId": "ZONE_02",
+      "zoneLabel": "Zone 2 - Solar Obelisk"
     }
   ],
+  "checkins": [],
   "gameState": {
-    "endsAt": "2026-11-13T03:22:12.622Z",
-    "status": "ENDED",
-    "endedAt": "2026-11-13T06:36:42.106Z",
-    "pausedAt": null,
-    "startedAt": "2026-11-13T02:30:12.622Z",
-    "totalPausedMs": 0,
-    "countdownEndsAt": "2026-11-13T02:30:12.622Z",
+    "status": "LOBBY",
     "durationMinutes": 52,
     "durationSeconds": 3120,
-    "countdownStartAt": "2026-11-13T02:30:02.622Z"
+    "startedAt": null,
+    "endsAt": null,
+    "countdownStartAt": null,
+    "countdownEndsAt": null,
+    "pausedAt": null,
+    "totalPausedMs": 0,
+    "endedAt": null
   },
   "system_logs": [
     {
-      "_id": "log_1794551802106_g8x4",
-      "action": "GAME_STATUS",
-      "details": "52-Minute Hunt duration expired. Match concluded.",
-      "timestamp": "2026-11-13T06:36:42.106Z"
-    },
-    {
-      "_id": "log_1794549645525_zmgd",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Live Squad Beta\" (team_1794549642680_we7qe)",
-      "timestamp": "2026-11-13T06:00:45.525Z"
-    },
-    {
-      "_id": "log_1794549643624_b27a",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_live_1794549641232\" registered.",
-      "timestamp": "2026-11-13T06:00:43.624Z"
-    },
-    {
-      "_id": "log_1794549620575_sl3i",
-      "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Live Field Marshal Test\" (user_1794549617683_vaxcy)",
-      "timestamp": "2026-11-13T06:00:20.575Z"
-    },
-    {
-      "_id": "log_1794549618730_iuvg",
-      "action": "REGISTER",
-      "details": "MEMBER \"marshal_live_1794549616215\" registered.",
-      "timestamp": "2026-11-13T06:00:18.730Z"
-    },
-    {
-      "_id": "log_1794541968741_8k9b",
-      "action": "REMOVE_TEAM",
-      "details": "Game Master permanently removed squad: \"Phoenix Vanguard\" (team_1794541968725_vhl1b) and purged operative accounts.",
-      "timestamp": "2026-11-13T03:52:48.741Z"
-    },
-    {
-      "_id": "log_1794541968734_yu9c",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Phoenix Vanguard\" (team_1794541968725_vhl1b)",
-      "timestamp": "2026-11-13T03:52:48.734Z"
-    },
-    {
-      "_id": "log_1794541968726_3u35",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"phoenix_vanguard\" (Pending Approval)",
-      "timestamp": "2026-11-13T03:52:48.726Z"
-    },
-    {
-      "_id": "log_1794540778327_tccv",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Temporary Test Squad\" (team_1794538075019_woae4)",
-      "timestamp": "2026-11-13T03:32:58.327Z"
-    },
-    {
-      "_id": "log_1794538088696_pnuo",
-      "action": "REMOVE_TEAM",
-      "details": "Game Master permanently removed squad: \"DeleteMe Squad\" (team_1794538088690_qwu44) and purged operative accounts.",
-      "timestamp": "2026-11-13T02:48:08.696Z"
-    },
-    {
-      "_id": "log_1794538088691_1l3f",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"del_me_1\" (Pending Approval)",
-      "timestamp": "2026-11-13T02:48:08.691Z"
-    },
-    {
-      "_id": "log_1794538075020_isnu",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"test_temp_squad\" (Pending Approval)",
-      "timestamp": "2026-11-13T02:47:55.020Z"
-    },
-    {
-      "_id": "log_1794538075015_r7js",
-      "action": "RESET_POINTS",
-      "details": "Game Master reset points (was 20 PTS) and cleared progress for squad: \"Squad Phoenix\" (team_1794529946730_7rjj1)",
-      "timestamp": "2026-11-13T02:47:55.015Z"
-    },
-    {
-      "_id": "log_1794537012663_iw49",
-      "action": "GAME_STATUS",
-      "details": "10s Countdown completed! Game is now LIVE in PLAYER_PHASE (52 Minutes).",
-      "timestamp": "2026-11-13T02:30:12.663Z"
-    },
-    {
-      "_id": "log_1794537002623_tl2v",
-      "action": "GAME_STATUS",
-      "details": "Game Master initiated 10s countdown for 52-minute hunt.",
-      "timestamp": "2026-11-13T02:30:02.623Z"
-    },
-    {
-      "_id": "log_1794536997182_9ygf",
-      "action": "ADMIN_LOGIN",
-      "details": "Game Master Samay authenticated.",
-      "timestamp": "2026-11-13T02:29:57.182Z"
-    },
-    {
-      "_id": "log_1794533033990_ohev",
-      "action": "GAME_STATUS",
-      "details": "Game Master reset game state to LOBBY standby.",
-      "timestamp": "2026-11-13T01:23:53.990Z"
-    },
-    {
-      "_id": "log_1794533020621_rvbw",
-      "action": "GAME_STATUS",
-      "details": "10s Countdown completed! Game is now LIVE in PLAYER_PHASE (52 Minutes).",
-      "timestamp": "2026-11-13T01:23:40.621Z"
-    },
-    {
-      "_id": "log_1794532987239_2p6y",
-      "action": "GAME_STATUS",
-      "details": "Game Master initiated 10s countdown for 52-minute hunt.",
-      "timestamp": "2026-11-13T01:23:07.239Z"
-    },
-    {
-      "_id": "log_1794531420200_gus7",
-      "action": "CHECKIN",
-      "details": "Team \"team1\" awarded +21 PTS at ZONE_01 (Total: 21 PTS)",
-      "timestamp": "2026-11-13T00:57:00.200Z"
-    },
-    {
-      "_id": "log_1794530480691_05ub",
-      "action": "REJECT_TEAM",
-      "details": "Squad rejected and removed: team_1794530360535_dwzex",
-      "timestamp": "2026-11-13T00:41:20.691Z"
-    },
-    {
-      "_id": "log_1794530474479_svg0",
-      "action": "REJECT_USER",
-      "details": "Operative rejected and removed: user_1794529946727_fb6ee",
-      "timestamp": "2026-11-13T00:41:14.479Z"
-    },
-    {
-      "_id": "log_1794530369497_siol",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad Titan\" (team_1794530360535_dwzex)",
-      "timestamp": "2026-11-13T00:39:29.497Z"
-    },
-    {
-      "_id": "log_1794530360536_dzin",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"squad_titan\" (Pending Approval)",
-      "timestamp": "2026-11-13T00:39:20.536Z"
-    },
-    {
-      "_id": "log_1794530311255_84vm",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"team1\" (team_1794530305536_hh9o3)",
-      "timestamp": "2026-11-13T00:38:31.255Z"
-    },
-    {
-      "_id": "log_1794530305537_j7r7",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"team1\" (Pending Approval)",
-      "timestamp": "2026-11-13T00:38:25.537Z"
-    },
-    {
-      "_id": "log_1794530274853_oh9q",
-      "action": "APPROVE_USER",
-      "details": "Marshal authorized: \"marshal1\" (MEMBER)",
-      "timestamp": "2026-11-13T00:37:54.853Z"
-    },
-    {
-      "_id": "log_1794530273106_1uzw",
-      "action": "APPROVE_USER",
-      "details": "Marshal authorized: \"marshal_alpha\" (MEMBER)",
-      "timestamp": "2026-11-13T00:37:53.106Z"
-    },
-    {
-      "_id": "log_1794530270107_uwzn",
-      "action": "REGISTER",
-      "details": "MEMBER registered: \"marshal1\" (Pending Approval)",
-      "timestamp": "2026-11-13T00:37:50.108Z"
-    },
-    {
-      "_id": "log_1794529946735_rv2o",
-      "action": "CHECKIN",
-      "details": "Team \"Squad Phoenix\" awarded +20 PTS at ZONE_01 (Total: 20 PTS)",
-      "timestamp": "2026-11-13T00:32:26.735Z"
-    },
-    {
-      "_id": "log_1794529946733_xrfa",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad Phoenix\" (team_1794529946730_7rjj1)",
-      "timestamp": "2026-11-13T00:32:26.733Z"
-    },
-    {
-      "_id": "log_1794529946730_su1b",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"squad_phoenix\" (Pending Approval)",
-      "timestamp": "2026-11-13T00:32:26.730Z"
-    },
-    {
-      "_id": "log_1794529946728_ihc6",
-      "action": "REGISTER",
-      "details": "MEMBER registered: \"marshal_gamma\" (Pending Approval)",
-      "timestamp": "2026-11-13T00:32:26.728Z"
-    },
-    {
-      "_id": "log_1794529946725_9bsi",
-      "action": "REGISTER",
-      "details": "MEMBER registered: \"marshal_alpha\" (Pending Approval)",
-      "timestamp": "2026-11-13T00:32:26.725Z"
-    },
-    {
-      "_id": "log_1794529946710_h0if",
-      "action": "CLEAR_PLACES",
-      "details": "Game Master cleared all campus places.",
-      "timestamp": "2026-11-13T00:32:26.710Z"
-    },
-    {
-      "_id": "log_1794529922089_h2rw",
-      "action": "CLEAR_PLACES",
-      "details": "Game Master cleared all campus places.",
-      "timestamp": "2026-11-13T00:32:02.089Z"
-    },
-    {
-      "_id": "log_1794528249876_ls9q",
-      "action": "CHECKIN",
-      "details": "Team \"team1\" awarded +20 PTS at ZONE_01 (Total: 20 PTS)",
-      "timestamp": "2026-11-13T00:04:09.877Z"
-    },
-    {
-      "_id": "log_1794526753813_b6cw",
-      "action": "APPROVE_USER",
-      "details": "Marshal authorized: \"marshal1\" (MEMBER)",
-      "timestamp": "2026-11-12T23:39:13.813Z"
-    },
-    {
-      "_id": "log_1794526751638_elzv",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"team1\" (team_1794526706167_0ie1p)",
-      "timestamp": "2026-11-12T23:39:11.638Z"
-    },
-    {
-      "_id": "log_1794526739094_pe4k",
-      "action": "ADMIN_LOGIN",
-      "details": "Game Master Samay authenticated.",
-      "timestamp": "2026-11-12T23:38:59.094Z"
-    },
-    {
-      "_id": "log_1794526731883_ia86",
-      "action": "REGISTER",
-      "details": "MEMBER registered: \"marshal1\" (Pending Approval)",
-      "timestamp": "2026-11-12T23:38:51.883Z"
-    },
-    {
-      "_id": "log_1794526706170_7btz",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"team1\" (Pending Approval)",
-      "timestamp": "2026-11-12T23:38:26.170Z"
+      "_id": "log_init",
+      "action": "SYSTEM_INIT",
+      "details": "Territory Grid Cloud Engine active.",
+      "timestamp": "2026-11-13T00:00:00.000Z"
     }
   ]
 }

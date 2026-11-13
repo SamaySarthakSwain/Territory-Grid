@@ -814,6 +814,33 @@ const server = http.createServer(async (req, res) => {
         return sendJson(res, 200, { success: true, message: `Points and progress reset to 0 for squad "${team.name}".` });
       }
 
+      // 6c-1. POST /api/admin/teams/reset-all-points
+      if (pathname === '/api/admin/teams/reset-all-points' && req.method === 'POST') {
+        const teamCount = (db.collections.teams || []).length;
+        (db.collections.teams || []).forEach(t => {
+          t.score = 0;
+          t.cards = [];
+          t.visitedZones = [];
+          t.currentClueIndex = 0;
+          t.updatedAt = new Date().toISOString();
+        });
+        db.collections.checkins = [];
+        await db.syncToCloud();
+        db.logEvent('RESET_ALL_POINTS', `Game Master reset all points, cards, and checkpoint progress to 0 for ${teamCount} squads.`);
+        return sendJson(res, 200, { success: true, message: `All squad scores and progress reset to 0 (${teamCount} squads affected).` }, 'no-store, no-cache, max-age=0');
+      }
+
+      // 6c-2. POST /api/admin/teams/purge-all
+      if (pathname === '/api/admin/teams/purge-all' && req.method === 'POST') {
+        const purgedTeamsCount = (db.collections.teams || []).length;
+        db.collections.teams = [];
+        db.collections.users = (db.collections.users || []).filter(u => u.role === 'ADMIN');
+        db.collections.checkins = [];
+        await db.syncToCloud();
+        db.logEvent('PURGE_ALL_TEAMS', `Game Master permanently purged all squads (${purgedTeamsCount}) and non-admin operatives.`);
+        return sendJson(res, 200, { success: true, message: `All ${purgedTeamsCount} squads and operative accounts purged successfully.` }, 'no-store, no-cache, max-age=0');
+      }
+
       // 6c. POST /api/admin/teams/remove (Permanently Delete Squad & Associated Accounts)
       if (pathname === '/api/admin/teams/remove' && req.method === 'POST') {
         db.load();
@@ -947,7 +974,10 @@ const server = http.createServer(async (req, res) => {
             remainingSeconds: remainingSeconds,
             countdownSeconds: countdownSeconds,
             durationSeconds: gs.durationSeconds,
-            durationMinutes: gs.durationMinutes
+            durationMinutes: gs.durationMinutes,
+            countdownEndsAt: gs.countdownEndsAt,
+            startedAt: gs.startedAt,
+            endsAt: gs.endsAt
           });
         }
 

@@ -617,7 +617,13 @@
       loadTeams();
       loadRecentCheckins();
       syncMarshalGameState();
-      setInterval(syncMarshalGameState, 3500 + Math.floor(Math.random()*800));
+      function scheduleMarshalSync() {
+        var delay = (marshalGameState === 'LOBBY' || marshalGameState === 'COUNTDOWN') ? 1000 : 3500;
+        setTimeout(function() {
+          syncMarshalGameState().finally(scheduleMarshalSync);
+        }, delay);
+      }
+      scheduleMarshalSync();
       setInterval(function() {
         if (marshalGameState === "PLAYER_PHASE" && marshalRemainingHuntSeconds > 0) {
           marshalRemainingHuntSeconds--;
