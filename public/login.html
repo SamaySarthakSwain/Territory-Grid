@@ -324,7 +324,9 @@
         redirectToDashboard(session.role);
         return;
       } else if (session && !session.isApproved) {
-        showWaitingHall(session.callsign, session.role, session._id);
+        showWaitingHall(session.callsign, session.role, session._id || session.id);
+        // Fast instant check on startup in case approval happened while page was closed
+        checkApprovalStatus(session._id || session.id, session.role, false);
         return;
       }
 
@@ -655,31 +657,46 @@
     }
 
     async function checkApprovalStatus(userId, role, isManual) {
-      if (!userId || isCheckingStatus) return;
+      if (isCheckingStatus) return;
       isCheckingStatus = true;
       try {
-        var res = await fetch('/api/auth/status?id=' + encodeURIComponent(userId) + '&_t=' + Date.now(), {
+        var session = getStoredSession() || {};
+        var uid = userId || session._id || session.id || '';
+        var csign = session.callsign || '';
+
+        var res = await fetch('/api/auth/status?id=' + encodeURIComponent(uid) + '&callsign=' + encodeURIComponent(csign) + '&_t=' + Date.now(), {
           cache: 'no-store'
         });
         var data = await res.json();
+
         if (data && data.isApproved) {
-          clearInterval(pollInterval);
-          // Update stored session
-          var session = getStoredSession() || {};
+          if (pollInterval) clearInterval(pollInterval);
+
+          // Update stored session with persistent clearance
           session.isApproved = true;
+          session._id = data._id || session._id;
+          session.role = data.role || role || session.role;
+          session.teamId = data.teamId || session.teamId;
           saveSession(session);
 
-          // Visual feedback and redirect
-          document.getElementById('poll-timer').innerText = '✓ CLEARANCE AUTHORIZED! REDIRECTING...';
-          document.getElementById('poll-timer').className = 'text-green font-bold animate-bounce';
+          // Visual celebration feedback and instant redirect
+          var pollTimer = document.getElementById('poll-timer');
+          if (pollTimer) {
+            pollTimer.innerText = '✓ CLEARANCE AUTHORIZED! ENTERING SECTOR...';
+            pollTimer.className = 'text-green font-bold text-sm animate-bounce shadow-[0_0_15px_rgba(0,255,136,0.8)]';
+          }
+
           setTimeout(function() {
-            redirectToDashboard(role);
-          }, 600);
+            redirectToDashboard(data.role || role || session.role);
+          }, 400);
         } else if (isManual) {
-          document.getElementById('poll-timer').innerText = 'Pending Game Master Samay approval... (Checked just now)';
+          var pollTimer = document.getElementById('poll-timer');
+          if (pollTimer) {
+            pollTimer.innerText = 'Waiting for Game Master Samay approval... (Checked just now)';
+          }
         }
       } catch (e) {
-        console.warn('Poll error:', e);
+        console.warn('Clearance poll error:', e);
       } finally {
         isCheckingStatus = false;
       }

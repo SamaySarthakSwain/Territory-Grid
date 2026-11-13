@@ -414,16 +414,43 @@ module.exports = async (req, res) => {
       const callsign = parsedUrl.query.callsign;
 
       if (atlasDb) {
-        const query = userId ? { _id: userId } : { callsign: new RegExp('^' + callsign + '$', 'i') };
-        const user = await atlasDb.collection('users').findOne(query);
-        if (!user) return sendJson(res, 404, { success: false, error: 'User not found.' });
+        const query = userId 
+          ? { $or: [{ _id: userId }, { id: userId }] } 
+          : { callsign: new RegExp('^' + callsign + '$', 'i') };
+        
+        let user = await atlasDb.collection('users').findOne(query);
+
+        if (!user && (userId || callsign)) {
+          const team = await atlasDb.collection('teams').findOne(query);
+          if (team) {
+            return sendJson(res, 200, {
+              success: true,
+              _id: team._id,
+              callsign: team.callsign,
+              name: team.name,
+              role: 'PLAYER',
+              isApproved: !!team.isApproved,
+              teamId: team._id,
+              status: team.isApproved ? 'AUTHORIZED' : 'WAITING_APPROVAL'
+            });
+          }
+          return sendJson(res, 404, { success: false, error: 'User record not found.' });
+        }
+
+        if (!user) return sendJson(res, 400, { success: false, error: 'id or callsign query parameter required.' });
 
         let isApproved = !!user.isApproved;
-        if (!isApproved && user.teamId) {
-          const team = await atlasDb.collection('teams').findOne({ _id: user.teamId });
-          if (team && team.isApproved) {
-            isApproved = true;
-            await atlasDb.collection('users').updateOne({ _id: user._id }, { $set: { isApproved: true } });
+        if (user.teamId || user.role === 'PLAYER') {
+          const team = await atlasDb.collection('teams').findOne({
+            $or: [{ _id: user.teamId }, { callsign: user.callsign }]
+          });
+          if (team) {
+            if (team.isApproved !== isApproved) {
+              const finalStatus = team.isApproved || isApproved;
+              isApproved = finalStatus;
+              await atlasDb.collection('users').updateOne({ _id: user._id }, { $set: { isApproved: finalStatus } });
+              await atlasDb.collection('teams').updateOne({ _id: team._id }, { $set: { isApproved: finalStatus } });
+            }
           }
         }
 
@@ -431,6 +458,7 @@ module.exports = async (req, res) => {
           success: true,
           _id: user._id,
           callsign: user.callsign,
+          name: user.name || user.callsign,
           role: user.role,
           isApproved: isApproved,
           teamId: user.teamId,
@@ -439,18 +467,48 @@ module.exports = async (req, res) => {
       }
 
       memoryStore.load();
-      const user = memoryStore.collections.users.find(u => 
-        (userId && u._id === userId) || (callsign && u.callsign.toLowerCase() === callsign.toLowerCase())
+      let user = memoryStore.collections.users.find(u => 
+        (userId && (u._id === userId || u.id === userId)) || 
+        (callsign && u.callsign && u.callsign.toLowerCase() === callsign.toLowerCase())
       );
-      if (!user) return sendJson(res, 404, { success: false, error: 'User not found.' });
 
-      let isApproved = !!user.isApproved;
-      if (!isApproved && user.teamId) {
-        const team = memoryStore.collections.teams.find(t => t._id === user.teamId);
-        if (team && team.isApproved) {
-          isApproved = true;
-          user.isApproved = true;
-          memoryStore.save();
+      if (!user && (userId || callsign)) {
+        const team = memoryStore.collections.teams.find(t => 
+          (userId && (t._id === userId || t.id === userId)) || 
+          (callsign && t.callsign && t.callsign.toLowerCase() === callsign.toLowerCase())
+        );
+        if (team) {
+          return sendJson(res, 200, {
+            success: true,
+            _id: team._id,
+            callsign: team.callsign,
+            name: team.name,
+            role: 'PLAYER',
+            isApproved: !!team.isApproved,
+            teamId: team._id,
+            status: team.isApproved ? 'AUTHORIZED' : 'WAITING_APPROVAL'
+          });
+        }
+        return sendJson(res, 404, { success: false, error: 'User record not found.' });
+      }
+
+      if (!user) {
+        return sendJson(res, 400, { success: false, error: 'id or callsign query parameter is required.' });
+      }
+
+      // Bi-directional sync
+      if (user.role === 'PLAYER' || user.teamId) {
+        const team = memoryStore.collections.teams.find(t => 
+          (user.teamId && (t._id === user.teamId || t.id === user.teamId)) ||
+          (t.callsign && user.callsign && t.callsign.toLowerCase() === user.callsign.toLowerCase())
+        );
+        if (team) {
+          if (team.isApproved !== user.isApproved) {
+            const finalStatus = team.isApproved || user.isApproved;
+            team.isApproved = finalStatus;
+            user.isApproved = finalStatus;
+            memoryStore.save();
+          }
         }
       }
 
@@ -458,10 +516,11 @@ module.exports = async (req, res) => {
         success: true,
         _id: user._id,
         callsign: user.callsign,
+        name: user.name || user.callsign,
         role: user.role,
-        isApproved: isApproved,
+        isApproved: !!user.isApproved,
         teamId: user.teamId,
-        status: isApproved ? 'AUTHORIZED' : 'WAITING_APPROVAL'
+        status: user.isApproved ? 'AUTHORIZED' : 'WAITING_APPROVAL'
       });
     }
 
@@ -470,6 +529,24 @@ module.exports = async (req, res) => {
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/admin/pending' && req.method === 'GET') {
       if (atlasDb) {
+        // Auto-heal approval status in Atlas
+        try {
+          const approvedTeams = await atlasDb.collection('teams').find({ isApproved: true }).toArray();
+          for (const t of approvedTeams) {
+            await atlasDb.collection('users').updateMany(
+              { $or: [{ teamId: t._id }, { callsign: t.callsign }], isApproved: { $ne: true } },
+              { $set: { isApproved: true } }
+            );
+          }
+          const approvedUsers = await atlasDb.collection('users').find({ isApproved: true, teamId: { $ne: null } }).toArray();
+          for (const u of approvedUsers) {
+            await atlasDb.collection('teams').updateMany(
+              { $or: [{ _id: u.teamId }, { callsign: u.callsign }], isApproved: { $ne: true } },
+              { $set: { isApproved: true } }
+            );
+          }
+        } catch(e){}
+
         const marshals = await atlasDb.collection('users').find({ isApproved: false, role: 'MEMBER' }).toArray();
         const teams = await atlasDb.collection('teams').find({ isApproved: false }).toArray();
         return sendJson(res, 200, {
@@ -481,6 +558,30 @@ module.exports = async (req, res) => {
       }
 
       memoryStore.load();
+      // Auto-heal approval status in memoryStore
+      let autoHealed = false;
+      memoryStore.collections.teams.forEach(t => {
+        if (t.isApproved) {
+          memoryStore.collections.users.forEach(u => {
+            if ((u.teamId === t._id || (t.callsign && u.callsign && u.callsign.toLowerCase() === t.callsign.toLowerCase())) && !u.isApproved) {
+              u.isApproved = true;
+              autoHealed = true;
+            }
+          });
+        }
+      });
+      memoryStore.collections.users.forEach(u => {
+        if (u.isApproved && u.teamId) {
+          memoryStore.collections.teams.forEach(t => {
+            if ((t._id === u.teamId || (u.callsign && t.callsign && t.callsign.toLowerCase() === u.callsign.toLowerCase())) && !t.isApproved) {
+              t.isApproved = true;
+              autoHealed = true;
+            }
+          });
+        }
+      });
+      if (autoHealed) memoryStore.save();
+
       const marshals = memoryStore.collections.users.filter(u => !u.isApproved && u.role === 'MEMBER');
       const teams = memoryStore.collections.teams.filter(t => !t.isApproved);
       return sendJson(res, 200, {
@@ -492,64 +593,135 @@ module.exports = async (req, res) => {
     }
 
     // ─────────────────────────────────────────────────────────
-    // 5. POST /api/admin/approve
+    // 5. POST /api/admin/approve (Ultra-Resilient Approval)
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/admin/approve' && req.method === 'POST') {
       const body = await parseBody(req);
       const { type, id } = body;
-      const isTeam = String(type || '').toUpperCase() === 'TEAM';
+      const cleanId = String(id || '').trim();
+      const cleanType = String(type || '').trim().toUpperCase();
+
+      if (!cleanId) {
+        return sendJson(res, 400, { success: false, error: 'ID is required for clearance authorization.' });
+      }
 
       if (atlasDb) {
-        if (isTeam) {
-          const team = await atlasDb.collection('teams').findOne({ _id: id });
-          await atlasDb.collection('teams').updateOne({ _id: id }, { $set: { isApproved: true } });
+        let approvedAny = false;
+        let approvedName = cleanId;
+
+        // Try team lookup
+        const team = await atlasDb.collection('teams').findOne({
+          $or: [{ _id: cleanId }, { id: cleanId }, { callsign: cleanId }, { name: cleanId }]
+        });
+
+        if (team) {
+          approvedAny = true;
+          approvedName = team.name || team.callsign;
+          await atlasDb.collection('teams').updateOne({ _id: team._id }, { $set: { isApproved: true } });
           await atlasDb.collection('users').updateMany(
-            { $or: [{ teamId: id }, { callsign: team ? team.callsign : '' }] },
+            { $or: [{ teamId: team._id }, { callsign: team.callsign }] },
             { $set: { isApproved: true } }
           );
-          return sendJson(res, 200, { success: true, message: 'Squad approved successfully.' });
-        } else {
-          const user = await atlasDb.collection('users').findOne({ _id: id });
-          if (user) {
-            await atlasDb.collection('users').updateOne({ _id: id }, { $set: { isApproved: true } });
-            if (user.teamId) {
-              await atlasDb.collection('teams').updateOne({ _id: user.teamId }, { $set: { isApproved: true } });
-            }
-            return sendJson(res, 200, { success: true, message: `Operative "${user.callsign}" approved.` });
+        }
+
+        // Try user lookup
+        const user = await atlasDb.collection('users').findOne({
+          $or: [{ _id: cleanId }, { id: cleanId }, { callsign: cleanId }]
+        });
+
+        if (user) {
+          approvedAny = true;
+          if (!approvedName || approvedName === cleanId) approvedName = user.name || user.callsign;
+          await atlasDb.collection('users').updateOne({ _id: user._id }, { $set: { isApproved: true } });
+          if (user.teamId) {
+            await atlasDb.collection('teams').updateMany(
+              { $or: [{ _id: user.teamId }, { callsign: user.callsign }] },
+              { $set: { isApproved: true } }
+            );
           }
         }
-        return sendJson(res, 404, { success: false, error: 'Entity not found.' });
+
+        if (approvedAny) {
+          memoryStore.logEvent('APPROVE_CLEARANCE', 'Clearance authorized: ' + approvedName + ' (' + cleanId + ')');
+          return sendJson(res, 200, { success: true, message: approvedName + ' approved successfully.', entityId: cleanId });
+        }
+
+        return sendJson(res, 404, { success: false, error: 'Entity "' + cleanId + '" not found in database.' });
       }
 
       memoryStore.load();
-      if (isTeam) {
-        const team = memoryStore.collections.teams.find(t => t._id === id);
-        if (team) {
+      let approvedAny = false;
+      let approvedName = cleanId;
+      let approvedRole = cleanType === 'MEMBER' ? 'MEMBER' : 'PLAYER';
+
+      // 1. Search Teams
+      const matchedTeams = memoryStore.collections.teams.filter(t => 
+        (t._id && t._id === cleanId) ||
+        (t.id && t.id === cleanId) ||
+        (t.callsign && t.callsign.toLowerCase() === cleanId.toLowerCase()) ||
+        (t.name && t.name.toLowerCase() === cleanId.toLowerCase())
+      );
+
+      if (matchedTeams.length > 0) {
+        matchedTeams.forEach(team => {
           team.isApproved = true;
+          approvedName = team.name || team.callsign;
+          approvedAny = true;
+          approvedRole = 'PLAYER';
+
           memoryStore.collections.users.forEach(u => {
-            if (u.teamId === id || (team.callsign && u.callsign && u.callsign.toLowerCase() === team.callsign.toLowerCase())) {
+            if (
+              u.teamId === team._id || 
+              (team.id && u.teamId === team.id) || 
+              (team.callsign && u.callsign && u.callsign.toLowerCase() === team.callsign.toLowerCase()) ||
+              u._id === cleanId
+            ) {
               u.isApproved = true;
             }
           });
-          memoryStore.save();
-          memoryStore.logEvent('APPROVE_TEAM', `Squad authorized: "${team.name}" (${team._id})`);
-          return sendJson(res, 200, { success: true, message: `Squad "${team.name}" approved.` });
-        }
-      } else {
-        const user = memoryStore.collections.users.find(u => u._id === id);
-        if (user) {
-          user.isApproved = true;
-          if (user.teamId) {
-            const team = memoryStore.collections.teams.find(t => t._id === user.teamId);
-            if (team) team.isApproved = true;
-          }
-          memoryStore.save();
-          memoryStore.logEvent('APPROVE_USER', `Marshal authorized: "${user.callsign}"`);
-          return sendJson(res, 200, { success: true, message: `Operative "${user.callsign}" approved.` });
-        }
+        });
       }
 
-      return sendJson(res, 404, { success: false, error: 'Entity not found.' });
+      // 2. Search Users
+      const matchedUsers = memoryStore.collections.users.filter(u =>
+        (u._id && u._id === cleanId) ||
+        (u.id && u.id === cleanId) ||
+        (u.callsign && u.callsign.toLowerCase() === cleanId.toLowerCase()) ||
+        (u.teamId && u.teamId === cleanId)
+      );
+
+      if (matchedUsers.length > 0) {
+        matchedUsers.forEach(user => {
+          user.isApproved = true;
+          approvedAny = true;
+          if (!approvedName || approvedName === cleanId) approvedName = user.name || user.callsign;
+          approvedRole = user.role;
+
+          if (user.teamId) {
+            memoryStore.collections.teams.forEach(t => {
+              if (
+                t._id === user.teamId || 
+                t.id === user.teamId || 
+                (t.callsign && user.callsign && t.callsign.toLowerCase() === user.callsign.toLowerCase())
+              ) {
+                t.isApproved = true;
+              }
+            });
+          }
+        });
+      }
+
+      if (approvedAny) {
+        memoryStore.save();
+        const logAction = approvedRole === 'MEMBER' ? 'APPROVE_USER' : 'APPROVE_TEAM';
+        const logMsg = approvedRole === 'MEMBER'
+          ? 'Field Marshal authorized: "' + approvedName + '" (' + cleanId + ')'
+          : 'Squad authorized: "' + approvedName + '" (' + cleanId + ')';
+        memoryStore.logEvent(logAction, logMsg);
+        return sendJson(res, 200, { success: true, message: approvedName + ' authorized successfully.', entityId: cleanId });
+      }
+
+      return sendJson(res, 404, { success: false, error: 'Clearance entity "' + cleanId + '" not found in database.' });
     }
 
     // ─────────────────────────────────────────────────────────

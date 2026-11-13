@@ -943,14 +943,45 @@
           window.location.href = 'login.html';
           return;
         }
-        if (!currentUser.isApproved && currentUser.role !== 'ADMIN') {
-          window.location.href = 'login.html';
-          return;
-        }
         if (currentUser.role === 'MEMBER') {
           window.location.href = 'member_checkin.html';
           return;
         }
+        // If stored clearance flag is missing/false, verify with server before redirecting
+        if (!currentUser.isApproved && currentUser.role !== 'ADMIN') {
+          fetch('/api/auth/status?id=' + encodeURIComponent(currentUser._id || '') + '&callsign=' + encodeURIComponent(currentUser.callsign || '') + '&_t=' + Date.now(), { cache: 'no-store' })
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+              if (d && d.isApproved) {
+                currentUser.isApproved = true;
+                localStorage.setItem('territory_grid_user', JSON.stringify(currentUser));
+                sessionStorage.setItem('territory_grid_user', JSON.stringify(currentUser));
+              } else {
+                window.location.href = 'login.html';
+              }
+            })
+            .catch(function() {
+              // Network error: allow user to view their local dashboard rather than locking out
+            });
+        }
+
+        // Restore cached team snapshot immediately so zero detail is lost on page reload
+        try {
+          var snapKey = 'tg_snapshot_' + (currentUser.callsign || 'squad');
+          var rawSnap = localStorage.getItem(snapKey);
+          if (rawSnap) {
+            var snap = JSON.parse(rawSnap);
+            if (snap) {
+              currentMyTeam = snap;
+              setTimeout(function() {
+                var scoreEl = document.getElementById('current-score');
+                if (scoreEl && typeof snap.score !== 'undefined') scoreEl.innerText = snap.score;
+                if (Array.isArray(snap.cards)) renderDeck(snap.cards);
+              }, 50);
+            }
+          }
+        } catch(err){}
+
       } catch (e) {
         window.location.href = 'login.html';
       }
