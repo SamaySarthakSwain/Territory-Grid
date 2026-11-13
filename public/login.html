@@ -40,6 +40,7 @@
   </script>
 
   <style>
+    button, a, input, select { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
     body {
       background-color: #070B14;
       color: #DFE2F0;
@@ -223,8 +224,8 @@
 
           <!-- Admin Quick Hint (Shown only when Admin is selected) -->
           <div id="admin-credentials-hint" class="hidden p-3 rounded-xl bg-magenta/10 border border-magenta/30 text-xs font-mono text-magenta flex items-center justify-between">
-            <span>GAME MASTER CREDENTIALS: ID: <b>samay</b> | Pass: <b>samay</b></span>
-            <button type="button" onclick="fillAdminCredentials()" class="underline hover:text-white">Fill</button>
+            <span>GAME MASTER ACCESS: Authorized Personnel Only</span>
+            <button type="button" onclick="fillAdminCredentials()" class="underline hover:text-white text-[11px] font-bold">Auto-Fill</button>
           </div>
 
           <!-- Submit Button -->

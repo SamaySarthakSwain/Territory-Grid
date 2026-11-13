@@ -39,6 +39,9 @@
   </script>
 
   <style>
+    button, a, input, select { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     body {
       background-color: #070B14;
       color: #DFE2F0;
@@ -80,7 +83,7 @@
     </div>
 
     <!-- Navigation View Tabs -->
-    <div class="flex items-center gap-1.5 bg-[#050914] p-1 rounded-xl border border-cyan/20">
+    <div class="flex items-center gap-1.5 bg-[#050914] p-1 rounded-xl border border-cyan/20 overflow-x-auto no-scrollbar max-w-full">
       <button onclick="switchTab('ops')" id="nav-btn-ops" 
               class="px-3.5 py-1.5 text-xs font-headline font-bold rounded-lg bg-cyan text-black flex items-center gap-1.5 transition">
         <span class="material-symbols-outlined text-base">dashboard</span>
