@@ -1,0 +1,1061 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "secondary-fixed": "#ffd9e3", "on-secondary-fixed": "#3e001e", "primary": "#c3f5ff", "secondary-container": "#e1037d", "primary-fixed-dim": "#00daf3", "surface": "#0f131d", "on-primary-container": "#00626e", "on-tertiary-fixed": "#022100", "secondary-fixed-dim": "#ffb0c9", "surface-container-low": "#171c25", "surface-container-highest": "#31353f", "on-secondary-fixed-variant": "#8e004c", "on-primary": "#00363d", "primary-fixed": "#9cf0ff", "surface-variant": "#31353f", "on-secondary": "#640034", "on-primary-fixed-variant": "#004f58", "primary-container": "#00e5ff", "background": "#0f131d", "on-background": "#dfe2f0", "on-primary-fixed": "#001f24", "tertiary-container": "#2cf100", "inverse-primary": "#006875", "surface-container-high": "#262a34", "tertiary": "#baffa2", "on-tertiary": "#053900", "on-secondary-container": "#fffbff", "error-container": "#93000a", "on-surface": "#dfe2f0", "on-surface-variant": "#bac9cc", "inverse-on-surface": "#2c303b", "surface-bright": "#353944", "outline-variant": "#3b494c", "on-error-container": "#ffdad6", "secondary": "#ffb0c9", "outline": "#849396", "surface-container": "#1b2029", "inverse-surface": "#dfe2f0", "on-tertiary-container": "#0e6800", "surface-tint": "#00daf3", "on-error": "#690005", "error": "#ffb4ab", "surface-container-lowest": "#0a0e17", "on-tertiary-fixed-variant": "#095300", "tertiary-fixed-dim": "#2ae500", "tertiary-fixed": "#79ff5b", "surface-dim": "#0f131d" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "gutter": "1rem", "space-md": "1rem", "space-sm": "0.5rem", "space-xl": "2rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "margin": "1rem" }, fontFamily: { "headline-md": ["Space Grotesk"], "body-md": ["Inter"], "body-lg": ["Inter"], "headline-sm": ["Space Grotesk"], "label-lg": ["Space Grotesk"], "label-md": ["Space Grotesk"], "headline-xl": ["Space Grotesk"], "body-sm": ["Inter"], "label-sm": ["Space Grotesk"], "headline-xl-mobile": ["Space Grotesk"], "headline-lg": ["Space Grotesk"] }, fontSize: { "headline-md": ["22px", { lineHeight: "28px", letterSpacing: "0.01em", fontWeight: "600" }], "body-md": ["14px", { lineHeight: "20px", letterSpacing: "0em", fontWeight: "400" }], "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "0em", fontWeight: "400" }], "headline-sm": ["18px", { lineHeight: "24px", letterSpacing: "0.02em", fontWeight: "600" }], "label-lg": ["14px", { lineHeight: "18px", letterSpacing: "0.08em", fontWeight: "700" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.1em", fontWeight: "600" }], "headline-xl": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "700" }], "body-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "400" }], "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.12em", fontWeight: "600" }], "headline-xl-mobile": ["30px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "700" }], "headline-lg": ["28px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;background-color:#0f131d;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+    /* 3D Interactive Card Flip Engine */
+    .card-3d-wrap {
+      perspective: 1200px;
+      -webkit-perspective: 1200px;
+    }
+    .card-3d-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .card-3d-inner.is-flipped {
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+    }
+    .card-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+    .card-face-front {
+      transform: rotateY(0deg) translate3d(0, 0, 0);
+      -webkit-transform: rotateY(0deg) translate3d(0, 0, 0);
+      z-index: 2;
+    }
+    .card-face-back {
+      transform: rotateY(180deg) translate3d(0, 0, 0);
+      -webkit-transform: rotateY(180deg) translate3d(0, 0, 0);
+      z-index: 1;
+    }
+    .card-3d-inner.is-flipped .card-face-front {
+      z-index: 1;
+    }
+    .card-3d-inner.is-flipped .card-face-back {
+      z-index: 2;
+    }
+    /* Dynamic Holographic Foil Gleam */
+    @keyframes holoGleam {
+      0% { transform: translateX(-120%) translateY(-50%) rotate(30deg); opacity: 0; }
+      20% { opacity: 0.6; }
+      50% { opacity: 0.8; }
+      80% { opacity: 0.6; }
+      100% { transform: translateX(180%) translateY(-50%) rotate(30deg); opacity: 0; }
+    }
+    .holographic-sheen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 160%;
+      height: 250%;
+      background: linear-gradient(
+        115deg,
+        transparent 35%,
+        rgba(0, 229, 255, 0.06) 44%,
+        rgba(255, 255, 255, 0.22) 50%,
+        rgba(0, 229, 255, 0.08) 56%,
+        transparent 65%
+      );
+      pointer-events-none;
+      animation: holoGleam 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      mix-blend-mode: screen;
+      border-radius: 1rem;
+    }
+  </style>
+  <script src="/vendor/qrcode.bundle.js"></script>
+  <script>
+    if (typeof QRCode === 'undefined') {
+      var qrs = document.createElement('script');
+      qrs.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js';
+      document.head.appendChild(qrs);
+    }
+  </script>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+  
+  <!-- Fixed Header with Active Operative Telemetry -->
+  <header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,229,255,0.08)] pt-safe">
+    <div class="h-16 px-gutter flex items-center justify-between">
+      <div class="flex items-center gap-space-sm">
+        <div class="w-8 h-8 rounded-lg bg-primary-container/20 border border-primary-container/50 flex items-center justify-center text-primary-container">
+          <span class="material-symbols-outlined text-[20px]">sports_esports</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-headline-sm text-headline-sm text-primary tracking-wider uppercase leading-none drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">Territory Grid</span>
+          <div class="flex items-center gap-space-xs mt-0.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Player HUD // Active</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-space-sm">
+        <div class="flex items-center gap-space-xs bg-surface-container-high px-space-sm py-0.5 rounded-full border border-primary-container/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+          <span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider" id="header-callsign-badge">SQUAD</span>
+        </div>
+        <button onclick="signOutUser()" title="Sign Out" class="w-8 h-8 rounded-full bg-surface-container-high hover:bg-error-container/30 border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-error transition">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex flex-col relative w-full pt-16 pb-20 bg-surface min-h-screen">
+    <div class="flex flex-col w-full px-gutter space-y-space-md pb-6">
+      
+      <!-- Sub-Header: Team Status & Live Standing -->
+      <div class="flex items-center justify-between bg-surface-container-low/80 backdrop-blur-xl p-space-sm rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-primary-container/20">
+        <div class="flex items-center gap-2.5 pl-1.5">
+          <div class="relative flex items-center justify-center">
+            <span class="w-2.5 h-2.5 rounded-full bg-tertiary-container animate-ping absolute"></span>
+            <span class="w-2 h-2 rounded-full bg-tertiary-container relative"></span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-headline-sm text-headline-sm text-primary leading-tight font-bold tracking-wide" id="team-name-label">Squad Loading...</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant leading-none uppercase tracking-widest" id="team-zone-label">Active Hunt • Live Grid</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 bg-surface-container-highest/90 px-3 py-1.5 rounded-full border border-primary-container/30">
+          <span class="material-symbols-outlined text-[16px] text-[#FFD600]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+          <span class="font-label-md text-label-md text-primary font-bold tracking-wider" id="team-rank-label">Rank #-- <span class="text-on-surface-variant font-normal">/ --</span></span>
+        </div>
+      </div>
+
+      <!-- Telemetry HUD: Score & Card Counter -->
+      <div class="grid grid-cols-5 gap-space-sm">
+        
+        <!-- Huge Score Ring HUD (3 cols) -->
+        <div class="col-span-3 bg-surface-container/80 backdrop-blur-xl p-3.5 rounded-xl shadow-[0_0_24px_rgba(0,229,255,0.1)] border border-primary-container/20 relative overflow-hidden flex flex-col justify-between">
+          <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-primary-container/10 rounded-full blur-xl pointer-events-none"></div>
+          <div class="flex items-center justify-between relative z-10">
+            <div class="flex items-center gap-1 text-on-surface-variant">
+              <span class="material-symbols-outlined text-[16px] text-primary">military_tech</span>
+              <span class="font-label-sm text-label-sm uppercase tracking-widest text-primary">Score HUD</span>
+            </div>
+            <div class="flex items-center gap-0.5 bg-tertiary-container/20 text-tertiary px-1.5 py-0.5 rounded text-[11px] font-bold">
+              <span class="material-symbols-outlined text-[12px]">trending_up</span>
+              <span id="last-points-badge">+0 PTS</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 my-1 relative z-10">
+            <!-- SVG Radial Ring with Glow -->
+            <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                <circle class="opacity-60" cx="32" cy="32" fill="none" r="26" stroke="#1b2029" stroke-width="5"></circle>
+                <circle id="score-ring-circle" class="drop-shadow-[0_0_6px_rgba(0,229,255,0.8)] transition-all duration-700" cx="32" cy="32" fill="none" r="26" stroke="#00e5ff" stroke-dasharray="163" stroke-dashoffset="163" stroke-linecap="round" stroke-width="5"></circle>
+              </svg>
+              <span class="material-symbols-outlined absolute text-[20px] text-primary-container">bolt</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight leading-none drop-shadow-[0_0_12px_rgba(195,245,255,0.3)]" id="team-score-num">0</span>
+              <span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Total Points</span>
+            </div>
+          </div>
+          <!-- Micro scan line telemetry indicator -->
+          <div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden relative z-10">
+            <div id="score-progress-bar" class="bg-gradient-to-r from-primary-container to-tertiary-container h-full w-[5%] rounded-full shadow-[0_0_8px_rgba(0,229,255,0.7)] transition-all duration-700"></div>
+          </div>
+        </div>
+
+        <!-- Cards Collected Counter (2 cols) -->
+        <div class="col-span-2 bg-surface-container/80 backdrop-blur-xl p-3.5 rounded-xl shadow-[0_0_24px_rgba(0,229,255,0.06)] border border-secondary/20 flex flex-col justify-between relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Inventory</span>
+            <span class="material-symbols-outlined text-[18px] text-secondary">style</span>
+          </div>
+          <div class="flex items-baseline gap-1 my-1">
+            <span class="font-headline-xl text-headline-xl text-secondary font-bold leading-none" id="cards-count-label">0</span>
+            <span class="font-label-md text-label-md text-on-surface-variant uppercase">/ 10</span>
+          </div>
+          <!-- Mini stack card graphic -->
+          <div class="flex items-center -space-x-2 pt-1" id="mini-cards-stack">
+            <div class="w-5 h-7 rounded bg-surface-bright flex items-center justify-center text-[10px] text-primary shadow-sm font-bold">♠</div>
+            <div class="w-5 h-7 rounded bg-surface-container-high flex items-center justify-center text-[10px] text-secondary font-bold shadow-sm">♥</div>
+            <div class="w-5 h-7 rounded bg-primary-container/20 flex items-center justify-center text-[10px] text-primary font-bold shadow-sm">♦</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVE CLUE: Neon HUD Mission Card -->
+      <div id="active-clue-directive-card" class="bg-surface-container-low/90 backdrop-blur-2xl rounded-xl p-4 shadow-[0_0_30px_rgba(255,214,0,0.12)] border border-[#FFD600]/30 relative overflow-hidden space-y-3 transition-all duration-500">
+        <!-- Amber / Cyan Laser Header Strip -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-[#FFD600]/20 flex items-center justify-center shadow-[0_0_12px_rgba(255,214,0,0.3)]">
+              <span class="material-symbols-outlined text-[#FFD600] text-[18px] animate-pulse">radar</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-label-sm text-label-sm uppercase tracking-widest text-[#FFD600] font-bold">Active Mission Directive</span>
+              <span class="font-label-sm text-label-sm text-on-surface-variant" id="active-checkpoint-label">Beacon Checkpoint #01</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-[#FFD600]/15 text-[#FFD600] font-label-sm text-label-sm font-bold uppercase tracking-wider" id="active-zone-badge">
+            TARGET ZONE
+          </span>
+        </div>
+
+        <!-- Clue Prompt Banner -->
+        <div class="bg-surface-container-highest/60 p-3 rounded-lg flex items-start gap-2.5 border border-outline-variant/30">
+          <span class="material-symbols-outlined text-[#FFD600] text-[20px] shrink-0 mt-0.5">lightbulb</span>
+          <p class="font-headline-sm text-headline-sm text-on-surface font-semibold leading-snug" id="active-clue-text">
+            “Locate the <span class="text-[#FFD600] drop-shadow-[0_0_8px_rgba(255,214,0,0.6)]">Yellow Beacon Cone</span> nestled near the library plaza & colonnade arch!”
+          </p>
+        </div>
+
+
+        <!-- INTERACTIVE 3D HOLOGRAPHIC CIPHER CARD (Cyber Deck Art Front + Flipped QR & Manual Code Back) -->
+        <div class="pt-3 pb-1 flex flex-col items-center">
+          
+          <!-- Dual View Toggle Bar (Card Artwork vs QR Cipher) -->
+          <div class="flex items-center justify-center gap-2 mb-2.5 w-full max-w-[280px]">
+            <button type="button" id="tab-card-view" onclick="toggleCardFlip(false)" class="flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-primary/50 bg-primary/20 text-primary transition flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_12px_rgba(0,229,255,0.25)]">
+              <span class="material-symbols-outlined text-[15px]">style</span>
+              <span>Card</span>
+            </button>
+            <button type="button" id="tab-qr-view" onclick="toggleCardFlip(true)" class="flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-transparent text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[15px]">qr_code_2</span>
+              <span>QR Code</span>
+              <span class="px-1.5 py-0.5 rounded bg-primary-container text-black text-[9px] font-black animate-pulse leading-none">SHOW</span>
+            </button>
+          </div>
+
+          <div class="card-3d-wrap relative group select-none cursor-pointer w-[240px] sm:w-[260px] h-[375px] sm:h-[395px]" onclick="toggleCardFlip()">
+            
+            <!-- Dynamic Ambient Backing Blur Glow (Cyan for ♠/♣, Crimson for ♥/♦) -->
+            <div id="card-ambient-glow" class="absolute -inset-3 rounded-3xl bg-[#00e5ff]/25 blur-2xl transition-all duration-700 pointer-events-none"></div>
+
+            <!-- 3D Card Inner (Flips on click) -->
+            <div id="card-flipper" class="card-3d-inner">
+              
+              <!-- ==================== FRONT FACE (Exact Cyber Art from Reference Image) ==================== -->
+              <div id="card-front-face" class="card-face card-face-front rounded-2xl bg-gradient-to-b from-[#071322] via-[#040a14] to-[#02050c] border-2 border-[#00e5ff] shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_0_25px_rgba(0,229,255,0.2)] p-3 flex flex-col justify-between transition-colors duration-500 overflow-hidden relative">
+                
+                <!-- Dynamic Holographic Foil Reflection Sheen -->
+                <div class="holographic-sheen"></div>
+
+                <!-- Checkered Carbon Background Mesh -->
+                <div class="absolute inset-0 opacity-25 rounded-2xl pointer-events-none bg-[radial-gradient(rgba(0,229,255,0.4)_1px,transparent_1px)] [background-size:8px_8px] overflow-hidden"></div>
+                
+                <!-- Inner Glowing Circuit Border -->
+                <div id="inner-border-front" class="absolute inset-2 rounded-xl border border-[#00e5ff]/50 shadow-[0_0_15px_rgba(0,229,255,0.25)] pointer-events-none transition-colors duration-500"></div>
+
+                <!-- Corner Sci-Fi Circuit Line Accents -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden rounded-2xl" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M 22 45 L 22 80 L 38 96" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
+                  <path d="M 238 45 L 238 80 L 222 96" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
+                  <path d="M 22 345 L 22 310 L 38 294" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
+                  <path d="M 238 345 L 238 310 L 222 294" stroke="currentColor" stroke-width="1.5" fill="none" class="text-[#00e5ff] opacity-60 circuit-stroke" />
+                </svg>
+
+                <!-- TOP ROW: Corner Pip Badge + REC Club Small Box -->
+                <div class="relative z-10 flex items-center justify-between w-full">
+                  <!-- Top-Left Corner Pip Badge -->
+                  <div id="badge-top-left" class="px-2.5 py-1 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.5)] flex items-center gap-1.5 transition-colors duration-500">
+                    <span id="card-rank-top" class="font-black text-xl tracking-tight text-white font-mono leading-none">K</span>
+                    <span id="card-suit-top" class="text-base font-bold text-[#00e5ff] leading-none">♠</span>
+                  </div>
+
+                  <!-- Top-Right Small Box: REC Club Crest -->
+                  <div id="badge-top-right-rec" class="w-8 h-8 rounded-lg bg-white/10 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.45)] flex items-center justify-center p-1 backdrop-blur-md transition-colors duration-500">
+                    <img src="assets/rec_logo.png" alt="REC Logo" onerror="this.onerror=null; this.src='/assets/rec_logo.png'" class="w-full h-full object-contain filter drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" />
+                  </div>
+                </div>
+
+                <!-- Center Holographic Hex Matrix & Reactor Core (Matches User Image) -->
+                <div class="relative z-10 my-auto flex flex-col items-center justify-center w-full px-2">
+                  <!-- Top Honeycomb Hex Cluster -->
+                  <div class="w-full h-14 relative flex items-center justify-center opacity-90 overflow-hidden">
+                    <svg viewBox="0 0 160 70" class="w-full h-full text-[#00e5ff] hex-svg">
+                      <pattern id="hex-grid-pattern-top" width="20" height="17.32" patternUnits="userSpaceOnUse">
+                        <polygon points="10,0 20,5.77 20,17.32 10,23.09 0,17.32 0,5.77" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+                        <circle cx="10" cy="8.66" r="1.5" fill="currentColor" opacity="0.6"/>
+                      </pattern>
+                      <rect width="100%" height="100%" fill="url(#hex-grid-pattern-top)"/>
+                      <!-- Energy nodules in hex -->
+                      <circle cx="55" cy="30" r="3.5" fill="currentColor" class="animate-pulse shadow-[0_0_8px_currentColor]"/>
+                      <circle cx="95" cy="25" r="4.5" fill="currentColor" class="animate-pulse shadow-[0_0_10px_currentColor]"/>
+                      <circle cx="75" cy="50" r="4" fill="currentColor" class="animate-pulse shadow-[0_0_8px_currentColor]"/>
+                      <circle cx="120" cy="40" r="3" fill="currentColor" class="animate-pulse shadow-[0_0_6px_currentColor]"/>
+                    </svg>
+                  </div>
+
+                  <!-- Center Iris Reactor Lens with REC Core -->
+                  <div class="relative my-0.5 flex items-center justify-center">
+                    <div id="reactor-outer-ring" class="w-16 h-16 rounded-full border-2 border-[#00e5ff] shadow-[0_0_24px_rgba(0,229,255,0.75)] flex items-center justify-center bg-black/80 transition-colors duration-500">
+                      <div id="reactor-inner-ring" class="w-11 h-11 rounded-full border border-[#00e5ff]/80 flex items-center justify-center transition-colors duration-500 bg-white/10 p-1 shadow-[inset_0_0_10px_rgba(0,229,255,0.6)] backdrop-blur-md">
+                        <img src="assets/rec_logo.png" alt="REC Power Core" onerror="this.onerror=null; this.src='/assets/rec_logo.png'" class="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(0,229,255,0.9)]" />
+                      </div>
+                    </div>
+                    <!-- Horizontal Tech Flanges -->
+                    <div class="absolute -left-10 w-9 h-[2px] bg-gradient-to-r from-transparent to-[#00e5ff] flange-line"></div>
+                    <div class="absolute -right-10 w-9 h-[2px] bg-gradient-to-l from-transparent to-[#00e5ff] flange-line"></div>
+                  </div>
+
+                  <!-- Bottom Honeycomb Hex Cluster -->
+                  <div class="w-full h-14 relative flex items-center justify-center opacity-90 overflow-hidden">
+                    <svg viewBox="0 0 160 70" class="w-full h-full text-[#00e5ff] hex-svg">
+                      <pattern id="hex-grid-pattern-bot" width="20" height="17.32" patternUnits="userSpaceOnUse">
+                        <polygon points="10,0 20,5.77 20,17.32 10,23.09 0,17.32 0,5.77" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+                        <circle cx="10" cy="8.66" r="1.5" fill="currentColor" opacity="0.6"/>
+                      </pattern>
+                      <rect width="100%" height="100%" fill="url(#hex-grid-pattern-bot)"/>
+                      <!-- Energy nodules in hex -->
+                      <circle cx="65" cy="22" r="4" fill="currentColor" class="animate-pulse shadow-[0_0_8px_currentColor]"/>
+                      <circle cx="95" cy="40" r="4.5" fill="currentColor" class="animate-pulse shadow-[0_0_10px_currentColor]"/>
+                      <circle cx="45" cy="45" r="3" fill="currentColor" class="animate-pulse shadow-[0_0_6px_currentColor]"/>
+                      <circle cx="115" cy="25" r="3.5" fill="currentColor" class="animate-pulse shadow-[0_0_8px_currentColor]"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- BOTTOM ROW: REC Club Small Box + Corner Pip Badge (Inverted) -->
+                <div class="relative z-10 flex items-center justify-between w-full">
+                  <!-- Bottom-Left Small Box: REC Club Crest (Inverted) -->
+                  <div id="badge-bot-left-rec" class="w-8 h-8 rounded-lg bg-white/10 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.45)] flex items-center justify-center p-1 backdrop-blur-md transition-colors duration-500 rotate-180">
+                    <img src="assets/rec_logo.png" alt="REC Logo" onerror="this.onerror=null; this.src='/assets/rec_logo.png'" class="w-full h-full object-contain filter drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" />
+                  </div>
+
+                  <!-- Bottom-Right Corner Pip Badge (Inverted) -->
+                  <div class="rotate-180">
+                    <div id="badge-bot-right" class="px-2.5 py-1 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.5)] flex items-center gap-1.5 transition-colors duration-500">
+                      <span id="card-rank-bot" class="font-black text-xl tracking-tight text-white font-mono leading-none">K</span>
+                      <span id="card-suit-bot" class="text-base font-bold text-[#00e5ff] leading-none">♠</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- ==================== BACK FACE (QR Code + Manual Fallback Code) ==================== -->
+              <div id="card-back-face" class="card-face card-face-back rounded-2xl bg-gradient-to-b from-[#06121f] via-[#040812] to-[#020408] border-2 border-[#00e5ff] shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_0_25px_rgba(0,229,255,0.2)] p-3.5 flex flex-col justify-between transition-colors duration-500">
+                
+                <!-- Back Face Header Pip -->
+                <div class="relative z-10 flex items-center justify-between">
+                  <div id="badge-back-top" class="px-2.5 py-1 rounded-lg bg-[#07192c]/90 border border-[#00e5ff] flex items-center gap-1 shadow-sm">
+                    <span id="card-rank-back" class="font-black text-lg text-white font-mono leading-none">K</span>
+                    <span id="card-suit-back" class="text-sm font-bold text-[#00e5ff] leading-none">♠</span>
+                  </div>
+                  <span class="text-[10px] font-mono tracking-widest text-[#00e5ff] font-bold uppercase" id="back-header-label">BEACON CIPHER</span>
+                  <!-- Back Face Top-Right Small Box: REC Club Crest -->
+                  <div id="badge-back-rec" class="w-7 h-7 rounded-lg bg-white/10 border border-[#00e5ff]/60 shadow-[0_0_8px_rgba(0,229,255,0.35)] flex items-center justify-center p-0.5 backdrop-blur-md">
+                    <img src="assets/rec_logo.png" alt="REC Logo" onerror="this.onerror=null; this.src='/assets/rec_logo.png'" class="w-full h-full object-contain" />
+                  </div>
+                </div>
+
+                <!-- Centerpiece: High-Contrast Scannable QR Code -->
+                <div class="relative z-10 my-auto flex flex-col items-center justify-center">
+                  <!-- Reticle Frame with Corner Brackets -->
+                  <div class="relative p-2 rounded-xl bg-black/85 border border-white/15 shadow-[0_0_20px_rgba(0,0,0,0.85)]">
+                    <div id="reticle-back-tl" class="absolute -top-1 -left-1 w-3.5 h-3.5 border-t-2 border-l-2 border-[#00e5ff] pointer-events-none"></div>
+                    <div id="reticle-back-tr" class="absolute -top-1 -right-1 w-3.5 h-3.5 border-t-2 border-r-2 border-[#00e5ff] pointer-events-none"></div>
+                    <div id="reticle-back-bl" class="absolute -bottom-1 -left-1 w-3.5 h-3.5 border-b-2 border-l-2 border-[#00e5ff] pointer-events-none"></div>
+                    <div id="reticle-back-br" class="absolute -bottom-1 -right-1 w-3.5 h-3.5 border-b-2 border-r-2 border-[#00e5ff] pointer-events-none"></div>
+
+                    <!-- Clean QR Canvas Box -->
+                    <div id="card-qr-container" class="w-[130px] h-[130px] bg-white rounded-lg p-1.5 flex items-center justify-center shadow-inner overflow-hidden">
+                      <!-- Dynamically rendered vector QR code -->
+                    </div>
+                  </div>
+
+                  <!-- 6-DIGIT MARSHAL CIPHER CODE (Directly under the QR code as requested!) -->
+                  <div class="mt-2.5 flex flex-col items-center w-full px-2">
+                    <span class="text-[9px] font-mono tracking-widest text-primary/80 uppercase font-bold flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[13px] text-primary">pin</span> 6-DIGIT MARSHAL CIPHER
+                    </span>
+                    <div class="mt-1 px-4 py-1.5 rounded-xl bg-[#07192c] border border-primary/50 shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2">
+                      <span id="manual-cipher-code" class="font-mono text-base sm:text-lg font-black tracking-[0.25em] text-white select-all">513 347</span>
+                    </div>
+                    <span class="text-[8px] font-mono text-gray-400 mt-0.5 text-center">Tell or show this 6-digit number to the Marshal</span>
+                  </div>
+                </div>
+
+                <!-- Back Face Footer Hint -->
+                <div class="relative z-10 flex items-center justify-center pb-0.5">
+                  <span class="text-[10px] font-mono text-gray-400 flex items-center gap-1 hover:text-white transition">
+                    <span class="material-symbols-outlined text-[13px]">replay</span> Tap card to flip back
+                  </span>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Flip Card Action Button -->
+          <button type="button" onclick="toggleCardFlip()" id="flip-card-action-btn" class="mt-2.5 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-primary-container/20 hover:from-primary/30 hover:to-primary-container/30 border border-primary/50 text-primary font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-[0_0_15px_rgba(0,229,255,0.25)] transition active:scale-95 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">sync</span>
+            <span id="flip-btn-label">Tap Card to Show QR & Code</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Holographic Playing Cards Inventory -->
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary-container text-[18px]">style</span>
+            <span class="font-headline-sm text-headline-sm text-primary uppercase font-bold tracking-wider">Collected Deck Inventory</span>
+          </div>
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold tracking-wider" id="deck-count-indicator">0 Cards Collected</span>
+        </div>
+
+        <!-- Cards Deck Scrollable -->
+        <div class="flex gap-2.5 overflow-x-auto pb-2 pt-1 no-scrollbar -mx-gutter px-gutter" id="collected-deck-container">
+          <!-- Populated dynamically -->
+          <div class="p-4 rounded-xl bg-surface-container-high/60 border border-outline-variant/30 text-center w-full text-xs font-mono text-gray-400">
+            No cards collected yet. Reach your first checkpoint to draw!
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time Leaderboard Ticker Strip -->
+      <div class="bg-surface-container-high/90 backdrop-blur-xl rounded-xl p-3 shadow-lg border border-primary-container/20 flex flex-col space-y-2">
+        <div class="flex items-center justify-between text-on-surface-variant">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-primary">leaderboard</span>
+            <span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Grid Standings</span>
+          </div>
+          <span class="font-label-sm text-label-sm text-tertiary font-semibold animate-pulse">● Live Synced</span>
+        </div>
+        
+        <!-- Live Leaderboard Rows -->
+        <div class="space-y-1.5" id="mini-leaderboard-rows">
+          <div class="py-2 text-center text-xs font-mono text-gray-400">Loading standings...</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl border-t border-cyan/20 shadow-[0_-2px_16px_rgba(0,229,255,0.06)]">
+    <div class="flex justify-around items-center h-20 px-gutter">
+      <a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-16 transition-colors text-primary-container drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] font-bold" href="player_dashboard.html">
+        <span class="material-symbols-outlined text-[24px]">radar</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Hunt</span>
+      </a>
+      <a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" href="leaderboard.html">
+        <span class="material-symbols-outlined text-[24px]">emoji_events</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Rank</span>
+      </a>
+      <button onclick="handleRestrictedNav('MEMBER')" class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant/40 hover:text-on-surface-variant transition-colors">
+        <span class="material-symbols-outlined text-[24px]">verified</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Marshal</span>
+      </button>
+      <button onclick="handleRestrictedNav('ADMIN')" class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant/40 hover:text-on-surface-variant transition-colors">
+        <span class="material-symbols-outlined text-[24px]">tune</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Admin</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Script: Role Guard & Dynamic Live Data Synchronization -->
+  <script>
+    var currentUser = null;
+    var allClues = [];
+    var currentMyTeam = null;
+
+    // ─────────────────────────────────────────────────────────
+    // DYNAMIC HOLOGRAPHIC CARD CIPHER SYSTEM
+    // Silent 30-second swap (User requirement: zero countdown displayed)
+    // ─────────────────────────────────────────────────────────
+    var CARD_RANKS = [
+      { code: 'A', value: 1, name: 'Ace' },
+      { code: '2', value: 2, name: 'Two' },
+      { code: '3', value: 3, name: 'Three' },
+      { code: '4', value: 4, name: 'Four' },
+      { code: '5', value: 5, name: 'Five' },
+      { code: '6', value: 6, name: 'Six' },
+      { code: '7', value: 7, name: 'Seven' },
+      { code: '8', value: 8, name: 'Eight' },
+      { code: '9', value: 9, name: 'Nine' },
+      { code: '10', value: 10, name: 'Ten' },
+      { code: 'J', value: 11, name: 'Jack' },
+      { code: 'Q', value: 12, name: 'Queen' },
+      { code: 'K', value: 13, name: 'King' }
+    ];
+
+    var CARD_SUITS = [
+      { symbol: '♠', name: 'Spades', isRed: false },
+      { symbol: '♥', name: 'Hearts', isRed: true },
+      { symbol: '♦', name: 'Diamonds', isRed: true },
+      { symbol: '♣', name: 'Clubs', isRed: false }
+    ];
+
+    var activeCipherCard = null;
+    var isCardFlipped = false;
+    var cachedTeamsList = [];
+
+    // Deterministic 2-Digit Team Code Engine (Unique for every squad 10..99)
+    function deriveTeamCode(strOrTeam, teamsList) {
+      var str = '';
+      var teamObj = null;
+      if (strOrTeam && typeof strOrTeam === 'object') {
+        teamObj = strOrTeam;
+        str = strOrTeam.callsign || strOrTeam.name || strOrTeam._id || 'SQUAD';
+      } else if (typeof strOrTeam === 'string') {
+        str = strOrTeam;
+      } else {
+        str = 'SQUAD';
+      }
+      str = String(str).trim();
+
+      if (teamObj && teamObj.teamCode && teamObj.teamCode >= 10 && teamObj.teamCode <= 99) {
+        return teamObj.teamCode;
+      }
+
+      var numMatch = str.match(/\d+/);
+      if (numMatch && numMatch[0]) {
+        var n = parseInt(numMatch[0], 10);
+        if (n >= 1 && n <= 89) return 10 + n;
+        if (n >= 10 && n <= 99) return n;
+      }
+
+      if (Array.isArray(teamsList) && teamsList.length > 0) {
+        var strUpper = str.toUpperCase();
+        var idx = teamsList.findIndex(function(t) {
+          return (t.callsign && t.callsign.toUpperCase() === strUpper) ||
+                 (t.name && t.name.toUpperCase() === strUpper) ||
+                 (t._id && t._id === str);
+        });
+        if (idx !== -1) {
+          return 10 + (idx % 89);
+        }
+      }
+
+      var hash = 0;
+      for (var i = 0; i < str.length; i++) {
+        hash = (hash * 31 + str.charCodeAt(i)) % 88;
+      }
+      return 11 + Math.abs(hash);
+    }
+
+    // Deterministic Checkpoint Card Engine (Unique across all 13 places, all 13 cards, all teams)
+    function getCheckpointCard(team, clueIdx, teamsList) {
+      var tt = deriveTeamCode(team, teamsList);
+      var cIdx = parseInt(clueIdx, 10) || 0;
+      var rankIdx = Math.abs((tt * 3 + cIdx * 7)) % 13;
+      var suitIdx = Math.abs((tt * 5 + cIdx * 3)) % 4;
+      var rankObj = CARD_RANKS[rankIdx];
+      var suitObj = CARD_SUITS[suitIdx];
+      var rr = 20 + rankObj.value;
+      var hh = 10 + (cIdx * 4 + suitIdx);
+      var code = '' + tt + rr + hh;
+      return {
+        rank: rankObj.value,
+        code: rankObj.code,
+        suit: suitObj.symbol,
+        isRed: suitObj.isRed,
+        sixDigitCode: code,
+        token: '' + hh,
+        clueIdx: cIdx
+      };
+    }
+
+    function toggleCardFlip(targetState) {
+      if (typeof targetState === 'boolean') {
+        isCardFlipped = targetState;
+      } else {
+        isCardFlipped = !isCardFlipped;
+      }
+      var flipper = document.getElementById('card-flipper');
+      var btnLabel = document.getElementById('flip-btn-label');
+      var tabCard = document.getElementById('tab-card-view');
+      var tabQr = document.getElementById('tab-qr-view');
+      if (flipper) {
+        if (isCardFlipped) {
+          flipper.classList.add('is-flipped');
+          if (btnLabel) btnLabel.innerText = 'Tap Card to Flip Back';
+          if (tabCard) {
+            tabCard.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-transparent text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer';
+          }
+          if (tabQr) {
+            tabQr.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-primary/50 bg-primary/20 text-primary transition flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_12px_rgba(0,229,255,0.25)]';
+          }
+        } else {
+          flipper.classList.remove('is-flipped');
+          if (btnLabel) btnLabel.innerText = 'Tap Card to Show QR & Code';
+          if (tabCard) {
+            tabCard.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-primary/50 bg-primary/20 text-primary transition flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_12px_rgba(0,229,255,0.25)]';
+          }
+          if (tabQr) {
+            tabQr.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-mono font-bold uppercase tracking-wider border border-transparent text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer';
+          }
+        }
+      }
+    }
+
+    function rotateCardCipher(animate) {
+      var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (currentUser && currentUser.currentClueIndex !== undefined ? currentUser.currentClueIndex : 0);
+      activeCipherCard = getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
+
+      var flipper = document.getElementById('card-flipper');
+      if (animate && flipper) {
+        flipper.style.filter = 'brightness(1.35) drop-shadow(0 0 16px rgba(0,229,255,0.7))';
+        setTimeout(function() {
+          applyCardVisuals(activeCipherCard);
+          flipper.style.filter = 'none';
+        }, 220);
+      } else {
+        applyCardVisuals(activeCipherCard);
+      }
+    }
+
+    function applyCardVisuals(card) {
+      if (!card) return;
+      var rankTop = document.getElementById('card-rank-top');
+      var suitTop = document.getElementById('card-suit-top');
+      var rankBot = document.getElementById('card-rank-bot');
+      var suitBot = document.getElementById('card-suit-bot');
+      var rankBack = document.getElementById('card-rank-back');
+      var suitBack = document.getElementById('card-suit-back');
+
+      var frontCard = document.getElementById('card-front-face');
+      var backCard = document.getElementById('card-back-face');
+      var glowEl = document.getElementById('card-ambient-glow');
+      var qrContainer = document.getElementById('card-qr-container');
+      var manualCodeEl = document.getElementById('manual-cipher-code');
+
+      if (!rankTop || !frontCard || !backCard || !qrContainer) return;
+
+      var color = card.isRed ? '#ff2a6d' : '#00e5ff';
+      var glowColor = card.isRed ? 'rgba(255, 42, 109, 0.35)' : 'rgba(0, 229, 255, 0.35)';
+
+      // Corner pips: Rank and Suit
+      rankTop.innerText = card.code;
+      rankBot.innerText = card.code;
+      if (rankBack) rankBack.innerText = card.code;
+
+      suitTop.innerText = card.suit;
+      suitBot.innerText = card.suit;
+      if (suitBack) suitBack.innerText = card.suit;
+
+      suitTop.style.color = color;
+      suitBot.style.color = color;
+      if (suitBack) suitBack.style.color = color;
+
+      // Badges
+      var bTop = document.getElementById('badge-top-left');
+      var bBot = document.getElementById('badge-bot-right');
+      var bBack = document.getElementById('badge-back-top');
+      var bRecTop = document.getElementById('badge-top-right-rec');
+      var bRecBot = document.getElementById('badge-bot-left-rec');
+      var bRecBack = document.getElementById('badge-back-rec');
+      if (bTop) bTop.style.borderColor = color;
+      if (bBot) bBot.style.borderColor = color;
+      if (bBack) bBack.style.borderColor = color;
+      if (bRecTop) bRecTop.style.borderColor = color;
+      if (bRecBot) bRecBot.style.borderColor = color;
+      if (bRecBack) bRecBack.style.borderColor = color;
+
+      // Card outer borders and inner glow
+      frontCard.style.borderColor = color;
+      frontCard.style.boxShadow = '0 12px 40px rgba(0,0,0,0.95), inset 0 0 25px ' + glowColor;
+
+      backCard.style.borderColor = color;
+      backCard.style.boxShadow = '0 12px 40px rgba(0,0,0,0.95), inset 0 0 25px ' + glowColor;
+
+      if (glowEl) glowEl.style.backgroundColor = color;
+
+      var innerBorder = document.getElementById('inner-border-front');
+      if (innerBorder) {
+        innerBorder.style.borderColor = color;
+        innerBorder.style.boxShadow = '0 0 15px ' + glowColor;
+      }
+
+      var reactorOuter = document.getElementById('reactor-outer-ring');
+      var reactorInner = document.getElementById('reactor-inner-ring');
+      var reactorDot = document.getElementById('reactor-pulse-dot');
+      if (reactorOuter) reactorOuter.style.borderColor = color;
+      if (reactorInner) reactorInner.style.borderColor = color;
+      if (reactorDot) reactorDot.style.backgroundColor = color;
+
+      // Reticle Brackets on Back Face
+      ['reticle-back-tl', 'reticle-back-tr', 'reticle-back-bl', 'reticle-back-br'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.style.borderColor = color;
+      });
+
+      // Circuit Strokes & Hex SVGs
+      document.querySelectorAll('.flange-line').forEach(function(el) {
+        el.style.backgroundColor = color;
+      });
+      document.querySelectorAll('.circuit-stroke').forEach(function(el) {
+        el.setAttribute('stroke', color);
+      });
+      document.querySelectorAll('.hex-svg').forEach(function(el) {
+        el.style.color = color;
+      });
+
+      // Generate 6-Digit Manual Code: TT RR HH (Unique per team, place/hint, card rank, suit)
+      var teamId = (currentUser && currentUser.teamId) ? currentUser.teamId : (currentMyTeam ? currentMyTeam._id : 'team_demo');
+      var squadCallsign = (currentUser && currentUser.callsign) ? currentUser.callsign.toUpperCase() : (currentMyTeam ? (currentMyTeam.callsign || currentMyTeam.name || 'SQUAD').toUpperCase() : 'SQUAD');
+      
+      var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (card.clueIdx || 0);
+      var checkCard = card.sixDigitCode ? card : getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
+      var sixDigitRaw = checkCard.sixDigitCode;
+      var formattedSixDigit = sixDigitRaw.slice(0, 2) + ' ' + sixDigitRaw.slice(2, 4) + ' ' + sixDigitRaw.slice(4, 6);
+
+      if (manualCodeEl) {
+        manualCodeEl.innerText = formattedSixDigit;
+        manualCodeEl.setAttribute('data-raw-code', sixDigitRaw);
+      }
+
+      // QR Code Payload: TG|teamId|squadCallsign|rankNumber|rankCode|suit|sixDigitRaw
+      var qrPayload = 'TG|' + teamId + '|' + squadCallsign + '|' + card.rank + '|' + card.code + '|' + card.suit + '|' + sixDigitRaw;
+
+      renderCipherQRCode(qrContainer, qrPayload, card);
+    }
+
+    function renderCipherQRCode(container, payload, cardInfo) {
+      if (!container) return;
+
+      // Strategy 1: Modern vector SVG via local bundle (instant, high-contrast, scalable)
+      if (typeof QRCode !== 'undefined' && typeof QRCode.toString === 'function') {
+        QRCode.toString(payload, {
+          type: 'svg',
+          margin: 1,
+          width: 124,
+          color: {
+            dark: '#02050a',
+            light: '#ffffff'
+          }
+        }, function(err, svgString) {
+          if (!err && svgString) {
+            container.innerHTML = svgString;
+            var svgEl = container.querySelector('svg');
+            if (svgEl) {
+              svgEl.style.width = '100%';
+              svgEl.style.height = '100%';
+              svgEl.style.display = 'block';
+              svgEl.style.borderRadius = '6px';
+            }
+            return;
+          }
+          fallbackRenderQR(container, payload, cardInfo);
+        });
+        return;
+      }
+
+      // Strategy 2: Legacy QRCode constructor (qrcodejs)
+      if (typeof QRCode !== 'undefined' && typeof QRCode === 'function') {
+        try {
+          container.innerHTML = '';
+          new QRCode(container, {
+            text: payload,
+            width: 120,
+            height: 120,
+            colorDark: '#02050a',
+            colorLight: '#ffffff'
+          });
+          return;
+        } catch (e) {
+          console.warn('QRCode constructor error, using image fallback:', e);
+        }
+      }
+
+      // Strategy 3: Dynamic Image Fallback (guaranteed visual QR display)
+      fallbackRenderQR(container, payload, cardInfo);
+    }
+
+    function fallbackRenderQR(container, payload, cardInfo) {
+      var qrImgUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=4&data=' + encodeURIComponent(payload);
+      container.innerHTML = '<img src="' + qrImgUrl + '" alt="QR Cipher" class="w-full h-full object-contain rounded" onerror="this.onerror=null; this.parentElement.innerHTML=\'<div class=\\\'font-mono text-[10px] text-gray-800 font-bold text-center p-1 leading-tight\\\'>CIPHER KEY<br><span class=\\\'text-xs font-black\\\'>' + cardInfo.code + cardInfo.suit + '</span><br>' + cardInfo.token + '</div>\';" />';
+    }
+
+    // 1. Role Guard
+    (function enforceClearance() {
+      try {
+        var raw = localStorage.getItem('territory_grid_user') || sessionStorage.getItem('territory_grid_user');
+        currentUser = raw ? JSON.parse(raw) : null;
+        if (!currentUser) {
+          window.location.href = 'login.html';
+          return;
+        }
+        if (!currentUser.isApproved && currentUser.role !== 'ADMIN') {
+          window.location.href = 'login.html';
+          return;
+        }
+        if (currentUser.role === 'MEMBER') {
+          window.location.href = 'member_checkin.html';
+          return;
+        }
+      } catch (e) {
+        window.location.href = 'login.html';
+      }
+    })();
+
+    var lastRecordedScore = null;
+    var lastRecordedClueIndex = null;
+
+    function playUnlockChirp() {
+      try {
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        var ctx = new AudioCtx();
+        var notes = [440, 554.37, 659.25, 880]; // A4, C#5, E5, A5
+        notes.forEach(function(freq, idx) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.09);
+          gain.gain.setValueAtTime(0.2, ctx.currentTime + idx * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.09 + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.09);
+          osc.stop(ctx.currentTime + idx * 0.09 + 0.25);
+        });
+      } catch (e) {}
+    }
+
+    function showPlayerNotification(msg) {
+      var toast = document.getElementById('player-celebration-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'player-celebration-toast';
+        toast.className = 'fixed top-20 inset-x-4 max-w-sm mx-auto z-50 p-4 rounded-2xl bg-gradient-to-r from-[#00e5ff]/25 via-surface-container-high to-[#FFD600]/25 backdrop-blur-xl border-2 border-primary shadow-[0_0_35px_rgba(0,229,255,0.6)] text-center text-white font-headline font-bold text-sm flex items-center justify-center gap-2 animate-bounce transition-all duration-300';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = '<span class="material-symbols-outlined text-[#FFD600] text-2xl">celebration</span><span>' + msg + '</span>';
+      toast.classList.remove('hidden');
+      setTimeout(function() {
+        toast.classList.add('hidden');
+      }, 4500);
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      if (!currentUser) return;
+      document.getElementById('header-callsign-badge').innerText = currentUser.callsign || 'SQUAD';
+      
+      // Initialize deterministic checkpoint card cipher
+      rotateCardCipher(false);
+
+      loadCluesAndSync();
+      // Fast live sync every 1.5 seconds for instantaneous clue & score updates
+      setInterval(syncTeamData, 1500);
+    });
+
+    function signOutUser() {
+      localStorage.removeItem('territory_grid_user');
+      sessionStorage.removeItem('territory_grid_user');
+      window.location.href = 'login.html';
+    }
+
+    function handleRestrictedNav(role) {
+      if (currentUser && currentUser.role === 'ADMIN') {
+        window.location.href = role === 'ADMIN' ? 'admin_panel.html' : 'member_checkin.html';
+      } else {
+        alert('Clearance Restricted: This portal is reserved for ' + (role === 'ADMIN' ? 'Game Master Samay' : 'Field Marshals') + '.');
+      }
+    }
+
+    async function loadCluesAndSync() {
+      try {
+        var res = await fetch('/api/clues?_t=' + Date.now(), { cache: 'no-store' });
+        var data = await res.json();
+        if (data.success) {
+          allClues = data.clues || [];
+        }
+      } catch (e) {
+        console.warn('Failed to load clues:', e);
+      }
+      syncTeamData();
+    }
+
+    async function syncTeamData() {
+      try {
+        var res = await fetch('/api/teams?_t=' + Date.now(), { cache: 'no-store' });
+        var data = await res.json();
+        if (!data.success) return;
+
+        var teams = data.teams || [];
+        cachedTeamsList = teams;
+        var approvedTeams = teams.filter(function(t) { return t.isApproved; });
+        approvedTeams.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
+
+        // Find current player team
+        var myTeam = approvedTeams.find(function(t) {
+          return (currentUser.teamId && t._id === currentUser.teamId) ||
+                 (t.callsign && currentUser.callsign && t.callsign.toLowerCase() === currentUser.callsign.toLowerCase());
+        });
+
+        if (!myTeam) {
+          // If not in approved teams yet, find in all teams
+          myTeam = teams.find(function(t) {
+            return (currentUser.teamId && t._id === currentUser.teamId) ||
+                   (t.callsign && currentUser.callsign && t.callsign.toLowerCase() === currentUser.callsign.toLowerCase());
+          });
+        }
+
+        if (myTeam) {
+          currentMyTeam = myTeam;
+
+          // Check if points were newly awarded or clue advanced!
+          if (lastRecordedScore !== null && myTeam.score > lastRecordedScore) {
+            var ptsDelta = myTeam.score - lastRecordedScore;
+            playUnlockChirp();
+            showPlayerNotification('🎉 +' + ptsDelta + ' PTS AWARDED! Objective Cleared!');
+            
+            var scoreEl = document.getElementById('team-score-num');
+            if (scoreEl) {
+              scoreEl.classList.add('text-green', 'animate-bounce');
+              setTimeout(function() { scoreEl.classList.remove('text-green', 'animate-bounce'); }, 3000);
+            }
+          }
+
+          var currentClueIdx = myTeam.currentClueIndex || 0;
+          if (lastRecordedClueIndex !== null && currentClueIdx > lastRecordedClueIndex) {
+            // Flash mission directive card in glowing amber
+            var clueCard = document.getElementById('active-clue-directive-card');
+            if (clueCard) {
+              clueCard.classList.add('ring-4', 'ring-[#FFD600]', 'shadow-[0_0_50px_rgba(255,214,0,0.4)]');
+              setTimeout(function() {
+                clueCard.classList.remove('ring-4', 'ring-[#FFD600]', 'shadow-[0_0_50px_rgba(255,214,0,0.4)]');
+              }, 4000);
+            }
+            // Rotate card for the new checkpoint objective!
+            rotateCardCipher(true);
+          }
+
+          lastRecordedScore = myTeam.score || 0;
+          lastRecordedClueIndex = currentClueIdx;
+
+          // Refresh QR cipher payload with verified teamId
+          if (activeCipherCard) {
+            applyCardVisuals(activeCipherCard);
+          }
+
+          // 1. Team Name & Points
+          document.getElementById('team-name-label').innerText = myTeam.name || myTeam.callsign;
+          document.getElementById('team-score-num').innerText = myTeam.score || 0;
+
+          // Rank
+          var myRankIndex = approvedTeams.findIndex(function(t) { return t._id === myTeam._id; });
+          var rankText = myRankIndex >= 0 ? '#' + (myRankIndex + 1) : '#--';
+          document.getElementById('team-rank-label').innerHTML = 'Rank ' + rankText + ' <span class="text-on-surface-variant font-normal">/ ' + approvedTeams.length + '</span>';
+
+          // Score Ring (circumference ~ 163)
+          var maxScore = 300;
+          var pct = Math.min((myTeam.score || 0) / maxScore, 1);
+          var strokeOffset = Math.round(163 * (1 - pct));
+          var ring = document.getElementById('score-ring-circle');
+          if (ring) ring.setAttribute('stroke-dashoffset', strokeOffset);
+          var bar = document.getElementById('score-progress-bar');
+          if (bar) bar.style.width = Math.max(Math.round(pct * 100), 5) + '%';
+
+          // 2. Cards Inventory
+          var cards = myTeam.cards || [];
+          document.getElementById('cards-count-label').innerText = cards.length;
+          document.getElementById('deck-count-indicator').innerText = cards.length + ' Cards Collected';
+
+          // Render collected deck
+          renderDeck(cards);
+
+          // 3. Active Clue Directive
+          var currentIdx = myTeam.currentClueIndex || 0;
+          if (currentIdx >= allClues.length && allClues.length > 0) {
+            document.getElementById('active-checkpoint-label').innerText = 'FINAL OBJECTIVE CLEARED';
+            document.getElementById('active-zone-badge').innerText = 'COMPLETED';
+            document.getElementById('active-clue-text').innerHTML = '🏆 <b>ALL CHECKPOINTS COMPLETED!</b> Return to Game Master Central for final scoring!';
+            document.getElementById('team-zone-label').innerText = 'All Zones Completed';
+          } else if (allClues.length > 0) {
+            var clueId = (myTeam.clueOrder && myTeam.clueOrder[currentIdx]) || allClues[currentIdx]._id;
+            var activeClue = allClues.find(function(c) { return c._id === clueId; }) || allClues[currentIdx];
+            
+            document.getElementById('active-checkpoint-label').innerText = 'Beacon Checkpoint #' + String(currentIdx + 1).padStart(2, '0');
+            document.getElementById('active-zone-badge').innerText = activeClue.zoneId || 'SECTOR';
+            document.getElementById('active-clue-text').innerText = '“' + activeClue.text + '”';
+            document.getElementById('team-zone-label').innerText = 'Active Hunt • ' + (activeClue.zoneLabel || activeClue.zoneId);
+          }
+
+          if (cards.length > 0) {
+            var lastCard = cards[cards.length - 1];
+            document.getElementById('last-points-badge').innerText = '+' + ((lastCard.rank || 1) + 12) + ' PTS';
+          }
+        }
+
+        // Render Leaderboard Ticker Strip
+        renderMiniLeaderboard(approvedTeams, myTeam ? myTeam._id : null);
+
+      } catch (err) {
+        console.warn('Sync error:', err);
+      }
+    }
+
+    function renderDeck(cards) {
+      var container = document.getElementById('collected-deck-container');
+      if (!container) return;
+
+      if (!cards || cards.length === 0) {
+        container.innerHTML = '<div class="p-4 rounded-xl bg-surface-container-high/60 border border-outline-variant/30 text-center w-full text-xs font-mono text-gray-400">No cards collected yet. Report to a Field Marshal station!</div>';
+        return;
+      }
+
+      var rankSymbols = { 1: 'A', 11: 'J', 12: 'Q', 13: 'K' };
+
+      container.innerHTML = cards.map(function(c) {
+        var rankDisplay = rankSymbols[c.rank] || c.rank;
+        var suit = c.suit || '♠';
+        var isRed = suit === '♥' || suit === '♦';
+        var suitColor = isRed ? 'text-secondary' : 'text-primary';
+
+        return '<div class="group relative w-16 shrink-0 h-24 rounded-lg bg-gradient-to-b from-surface-container-high to-surface-container-lowest p-1.5 flex flex-col justify-between shadow-[0_4px_16px_rgba(0,229,255,0.15)] border border-outline-variant/30 hover:scale-105 transition cursor-pointer">' +
+          '<div class="flex items-center justify-between">' +
+            '<span class="font-label-md text-label-md font-bold text-on-surface leading-none">' + rankDisplay + '</span>' +
+            '<span class="' + suitColor + ' text-[11px] font-bold">' + suit + '</span>' +
+          '</div>' +
+          '<div class="flex items-center justify-center my-auto">' +
+            '<span class="material-symbols-outlined text-[20px] text-primary-container drop-shadow-[0_0_6px_rgba(0,229,255,0.8)]">token</span>' +
+          '</div>' +
+          '<div class="flex items-center justify-between rotate-180">' +
+            '<span class="font-label-md text-label-md font-bold text-on-surface leading-none">' + rankDisplay + '</span>' +
+            '<span class="' + suitColor + ' text-[11px] font-bold">' + suit + '</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderMiniLeaderboard(teams, myTeamId) {
+      var rowsContainer = document.getElementById('mini-leaderboard-rows');
+      if (!rowsContainer) return;
+
+      if (!teams || teams.length === 0) {
+        rowsContainer.innerHTML = '<div class="py-2 text-center text-xs font-mono text-gray-400">No squads authorized yet.</div>';
+        return;
+      }
+
+      var topTeams = teams.slice(0, 3);
+      rowsContainer.innerHTML = topTeams.map(function(t, idx) {
+        var isMe = t._id === myTeamId;
+        var rankBadgeColor = idx === 0 ? 'bg-[#FFD600]/20 text-[#FFD600]' : (idx === 1 ? 'bg-primary/20 text-primary' : 'bg-[#FF8A65]/20 text-[#FF8A65]');
+        var rowBg = isMe ? 'bg-primary-container/15 border border-primary-container/40 shadow-[0_0_12px_rgba(0,229,255,0.15)]' : 'bg-surface-container-lowest/80';
+        var nameColor = isMe ? 'text-primary font-bold' : 'text-on-surface font-semibold';
+        var youBadge = isMe ? ' <span class="text-[10px] text-primary-container font-bold">(You)</span>' : '';
+
+        return '<div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg ' + rowBg + '">' +
+          '<div class="flex items-center gap-2">' +
+            '<span class="w-5 h-5 rounded-full ' + rankBadgeColor + ' font-label-sm text-label-sm font-bold flex items-center justify-center">' + (idx + 1) + '</span>' +
+            '<span class="font-body-sm text-body-sm ' + nameColor + '">' + (t.name || t.callsign) + youBadge + '</span>' +
+          '</div>' +
+          '<div class="flex items-center gap-1">' +
+            '<span class="font-headline-sm text-headline-sm text-primary font-bold">' + (t.score || 0) + '</span>' +
+            '<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">pts</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+  </script>
+</body></html>

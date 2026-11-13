@@ -1,0 +1,1223 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "secondary-fixed": "#ffd9e3", "on-secondary-fixed": "#3e001e", "primary": "#c3f5ff", "secondary-container": "#e1037d", "primary-fixed-dim": "#00daf3", "surface": "#0f131d", "on-primary-container": "#00626e", "on-tertiary-fixed": "#022100", "secondary-fixed-dim": "#ffb0c9", "surface-container-low": "#171c25", "surface-container-highest": "#31353f", "on-secondary-fixed-variant": "#8e004c", "on-primary": "#00363d", "primary-fixed": "#9cf0ff", "surface-variant": "#31353f", "on-secondary": "#640034", "on-primary-fixed-variant": "#004f58", "primary-container": "#00e5ff", "background": "#0f131d", "on-background": "#dfe2f0", "on-primary-fixed": "#001f24", "tertiary-container": "#2cf100", "inverse-primary": "#006875", "surface-container-high": "#262a34", "tertiary": "#baffa2", "on-tertiary": "#053900", "on-secondary-container": "#fffbff", "error-container": "#93000a", "on-surface": "#dfe2f0", "on-surface-variant": "#bac9cc", "inverse-on-surface": "#2c303b", "surface-bright": "#353944", "outline-variant": "#3b494c", "on-error-container": "#ffdad6", "secondary": "#ffb0c9", "outline": "#849396", "surface-container": "#1b2029", "inverse-surface": "#dfe2f0", "on-tertiary-container": "#0e6800", "surface-tint": "#00daf3", "on-error": "#690005", "error": "#ffb4ab", "surface-container-lowest": "#0a0e17", "on-tertiary-fixed-variant": "#095300", "tertiary-fixed-dim": "#2ae500", "tertiary-fixed": "#79ff5b", "surface-dim": "#0f131d" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "gutter": "1rem", "space-md": "1rem", "space-sm": "0.5rem", "space-xl": "2rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "margin": "1rem" }, fontFamily: { "headline-md": ["Space Grotesk"], "body-md": ["Inter"], "body-lg": ["Inter"], "headline-sm": ["Space Grotesk"], "label-lg": ["Space Grotesk"], "label-md": ["Space Grotesk"], "headline-xl": ["Space Grotesk"], "body-sm": ["Inter"], "label-sm": ["Space Grotesk"], "headline-xl-mobile": ["Space Grotesk"], "headline-lg": ["Space Grotesk"] }, fontSize: { "headline-md": ["22px", { lineHeight: "28px", letterSpacing: "0.01em", fontWeight: "600" }], "body-md": ["14px", { lineHeight: "20px", letterSpacing: "0em", fontWeight: "400" }], "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "0em", fontWeight: "400" }], "headline-sm": ["18px", { lineHeight: "24px", letterSpacing: "0.02em", fontWeight: "600" }], "label-lg": ["14px", { lineHeight: "18px", letterSpacing: "0.08em", fontWeight: "700" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.1em", fontWeight: "600" }], "headline-xl": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "700" }], "body-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "400" }], "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.12em", fontWeight: "600" }], "headline-xl-mobile": ["30px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "700" }], "headline-lg": ["28px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;background-color:#0f131d;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  <script src="/vendor/html5-qrcode.min.js"></script>
+  <script>
+    if (typeof Html5Qrcode === 'undefined') {
+      var h5s = document.createElement('script');
+      h5s.src = 'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+      document.head.appendChild(h5s);
+    }
+  </script>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+  
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,229,255,0.08)] pt-safe">
+    <div class="h-16 px-gutter flex items-center justify-between">
+      <div class="flex items-center gap-space-sm">
+        <div class="w-8 h-8 rounded-lg bg-green/20 border border-green/50 flex items-center justify-center text-green">
+          <span class="material-symbols-outlined text-[20px]">verified</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-headline-sm text-headline-sm text-primary tracking-wider uppercase leading-none drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">Territory Grid</span>
+          <div class="flex items-center gap-space-xs mt-0.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Marshal Checkpoint</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-space-sm">
+        <div class="flex items-center gap-space-xs bg-surface-container-high px-space-sm py-0.5 rounded-full border border-green/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-green"></span>
+          <span class="font-label-sm text-label-sm text-green uppercase font-bold tracking-wider" id="header-marshal-callsign">MARSHAL</span>
+        </div>
+        <button onclick="signOutUser()" title="Sign Out" class="w-8 h-8 rounded-full bg-surface-container-high hover:bg-error-container/30 border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-error transition">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex flex-col relative w-full pt-16 pb-20 bg-surface min-h-screen">
+    <div class="flex flex-col w-full px-gutter pb-6 gap-space-md">
+      
+      <!-- Tactical Hero / Field Marshal Status Card -->
+      <div class="relative w-full rounded-xl bg-surface-container-high p-space-md overflow-hidden shadow-xl border border-green/30">
+        <div class="absolute -right-10 -bottom-10 w-36 h-36 bg-tertiary-container/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+        <div class="flex items-center justify-between relative z-10">
+          <div class="flex items-center gap-space-md min-w-0">
+            <div class="w-12 h-12 rounded-xl bg-surface-container-highest flex items-center justify-center text-tertiary-fixed shadow-md flex-shrink-0 border border-green/30">
+              <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="font-headline-sm text-headline-sm text-on-surface tracking-wide uppercase truncate" id="station-marshal-title">Field Marshal</span>
+                <span class="w-2 h-2 rounded-full bg-tertiary-container animate-ping"></span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider uppercase" id="station-zone-label">Sector A: Library Arch</span>
+            </div>
+          </div>
+          <div class="flex flex-col items-end flex-shrink-0 pl-2">
+            <span class="font-label-sm text-label-sm text-on-surface-variant tracking-widest uppercase">Grid Zone</span>
+            <span class="font-headline-sm text-headline-sm text-primary tracking-wider" id="station-zone-id">ZONE_01</span>
+          </div>
+        </div>
+
+        <!-- Quick Station Telemetry Bar -->
+        <div class="grid grid-cols-3 gap-2 mt-space-md pt-space-sm border-t border-outline-variant/30">
+          <div class="flex flex-col items-center bg-surface-container-low/60 rounded p-1.5">
+            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Logged</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface" id="telemetry-logged-count">0</span>
+          </div>
+          <div class="flex flex-col items-center bg-surface-container-low/60 rounded p-1.5">
+            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Squads</span>
+            <span class="font-headline-sm text-headline-sm text-tertiary" id="telemetry-squads-count">0 Live</span>
+          </div>
+          <div class="flex flex-col items-center bg-surface-container-low/60 rounded p-1.5">
+            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Status</span>
+            <span class="font-headline-sm text-headline-sm text-primary">ONLINE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HIDDEN SQUAD SELECTOR (Preserves background telemetry sync) -->
+      <select class="hidden" id="team-selector"></select>
+
+      <!-- ACTION 1: Select Beacon Cone Colour -->
+      <div class="relative w-full rounded-2xl bg-surface-container p-4 shadow-xl flex flex-col gap-3 border-2 border-primary/40">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-mono text-sm font-bold border border-primary/40">1</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface font-bold uppercase tracking-wider">Select Cone Colour</span>
+          </div>
+          <span class="font-label-sm text-label-sm text-secondary-fixed uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-secondary-fixed/15 border border-secondary-fixed/30" id="beacon-status">Yellow Selected (+12 PTS)</span>
+        </div>
+        
+        <!-- 3-State Interactive Beacon Tiles -->
+        <div class="grid grid-cols-3 gap-3">
+          <!-- YELLOW CONE (Selected Default) -->
+          <button class="cone-btn relative flex flex-col items-center justify-between p-3.5 rounded-xl bg-surface-container-high shadow-[0_0_20px_rgba(255,214,0,0.4)] border-2 border-[#FFD600] transition-all duration-200 cursor-pointer" onclick="selectCone('YELLOW', 12, this)" type="button">
+            <div class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center shadow-md">
+              <span class="material-symbols-outlined text-[14px] font-bold">check</span>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-secondary-container/40 flex items-center justify-center text-secondary-fixed mb-1 shadow-inner">
+              <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">change_history</span>
+            </div>
+            <span class="font-headline-sm text-headline-sm text-secondary-fixed font-bold leading-tight">Yellow</span>
+            <span class="font-label-sm text-label-sm text-secondary-fixed uppercase font-bold mt-1">+12 PTS</span>
+          </button>
+
+          <!-- RED CONE -->
+          <button class="cone-btn relative flex flex-col items-center justify-between p-3.5 rounded-xl bg-surface-container-lowest border border-white/10 hover:border-error/40 transition-all duration-200 cursor-pointer" onclick="selectCone('RED', 10, this)" type="button">
+            <div class="w-10 h-10 rounded-full bg-error-container/40 flex items-center justify-center text-error mb-1">
+              <span class="material-symbols-outlined text-[26px]">change_history</span>
+            </div>
+            <span class="font-headline-sm text-headline-sm text-on-surface font-bold leading-tight">Red</span>
+            <span class="font-label-sm text-label-sm text-error uppercase font-bold mt-1">+10 PTS</span>
+          </button>
+          
+          <!-- GREEN CONE -->
+          <button class="cone-btn relative flex flex-col items-center justify-between p-3.5 rounded-xl bg-surface-container-lowest border border-white/10 hover:border-tertiary/40 transition-all duration-200 cursor-pointer" onclick="selectCone('GREEN', 15, this)" type="button">
+            <div class="w-10 h-10 rounded-full bg-tertiary-container/30 flex items-center justify-center text-tertiary mb-1">
+              <span class="material-symbols-outlined text-[26px]">change_history</span>
+            </div>
+            <span class="font-headline-sm text-headline-sm text-on-surface font-bold leading-tight">Green</span>
+            <span class="font-label-sm text-label-sm text-tertiary uppercase font-bold mt-1">+15 PTS</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ACTION 2: Scan QR OR Enter 6-Digit Code (Auto-Awards Points!) -->
+      <div class="relative w-full rounded-2xl bg-surface-container-high/90 backdrop-blur-xl p-4 shadow-xl flex flex-col gap-3 border-2 border-primary/40 overflow-hidden">
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-mono text-sm font-bold border border-primary/40">2</span>
+            <div>
+              <h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-wide">Scan QR Code or Enter 6-Digit Code</h2>
+              <p class="text-[11px] font-mono text-gray-400">Card points + Cone points will be awarded automatically!</p>
+            </div>
+          </div>
+          <span id="scanner-status-badge" class="px-2.5 py-1 rounded-full bg-surface-container-lowest text-on-surface-variant font-mono text-[11px] font-bold uppercase tracking-wider border border-white/10 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-gray-500" id="scanner-status-dot"></span>
+            <span id="scanner-status-text">Standby</span>
+          </span>
+        </div>
+
+        <!-- Scanner Controls: Camera Scan + Test Simulator -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+          <button id="btn-toggle-camera" type="button" onclick="toggleCameraScanner()" class="h-12 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold font-label-md flex items-center justify-center gap-2 shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
+            <span class="material-symbols-outlined text-[22px]" id="camera-btn-icon">photo_camera</span>
+            <span id="camera-btn-text">Open Camera Scanner</span>
+          </button>
+          
+          <button id="btn-simulate-scan" type="button" onclick="simulateQRScan()" class="h-12 rounded-xl bg-surface-container-lowest hover:bg-surface-container-highest text-secondary-fixed border border-secondary-fixed/40 font-bold font-label-md flex items-center justify-center gap-2 active:scale-[0.98] transition cursor-pointer">
+            <span class="material-symbols-outlined text-[20px]">bolt</span>
+            <span>Simulate Squad Scan (Test)</span>
+          </button>
+        </div>
+
+        <!-- Live Camera Viewfinder Modal -->
+        <div id="camera-viewfinder-box" class="hidden relative rounded-xl overflow-hidden bg-black border border-primary/50 shadow-[0_0_24px_rgba(0,229,255,0.25)] flex flex-col items-center justify-center p-2 min-h-[260px]">
+          <div id="qr-reader" class="w-full max-w-[360px] rounded-lg overflow-hidden"></div>
+          <div class="absolute inset-x-6 top-1/2 -translate-y-1/2 h-0.5 bg-[#00e5ff] shadow-[0_0_12px_#00e5ff] animate-pulse pointer-events-none"></div>
+          <div class="w-full bg-black/80 backdrop-blur-md p-2 mt-2 rounded flex items-center justify-between text-xs font-mono text-gray-300 border-t border-white/10 z-20">
+            <span class="flex items-center gap-1.5 text-primary">
+              <span class="material-symbols-outlined text-[16px] animate-spin">cyclone</span> Center Player's QR in Frame
+            </span>
+            <button onclick="stopCameraScanner()" type="button" class="px-3 py-1 rounded bg-error/20 hover:bg-error/30 text-error font-bold transition">
+              Close Camera
+            </button>
+          </div>
+        </div>
+
+        <!-- Scan Result HUD Banner (Transient confirmation) -->
+        <div id="scan-detected-banner" class="hidden p-3 rounded-lg bg-primary/15 border border-primary/50 shadow-[0_0_20px_rgba(0,229,255,0.2)] flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div id="scan-result-card-badge" class="w-10 h-12 rounded bg-surface-container-lowest border border-primary flex flex-col items-center justify-center shadow-md">
+              <span id="scan-result-rank" class="font-bold text-sm text-primary leading-none">K</span>
+              <span id="scan-result-suit" class="text-sm text-primary leading-none">♠</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono text-[#00e5ff] font-bold uppercase tracking-wider">SQUAD ACQUIRED & AWARDED</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-secondary-fixed/20 text-secondary-fixed font-mono font-bold" id="scan-result-pts-tag">+13 PTS CARD</span>
+              </div>
+              <p class="font-headline-sm text-headline-sm text-on-surface font-bold" id="scan-result-team-name">Squad Alpha</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- MANUAL 6-DIGIT CODE ENTRY (Direct Auto-Award on 6 digits or Enter) -->
+        <div class="pt-2.5 border-t border-outline-variant/30 flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono text-gray-200 font-bold uppercase flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px] text-secondary-fixed">pin</span>
+              Enter Player's 6-Digit Code
+            </span>
+            <span class="text-[11px] font-mono text-primary font-bold">Auto-awards immediately on 6th digit!</span>
+          </div>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <input type="text" id="manual-cipher-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="e.g. 11 29 10" class="w-full h-12 bg-surface-container-lowest text-white font-mono text-lg font-bold tracking-[0.2em] uppercase px-4 rounded-xl border-2 border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition" oninput="handleManualCodeInput(this)" onkeydown="if(event.key==='Enter') verifyManualCipherCode()">
+            </div>
+            <button onclick="verifyManualCipherCode()" type="button" class="h-12 px-5 rounded-xl bg-gradient-to-r from-tertiary-container to-secondary-fixed text-black font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(44,241,0,0.4)] active:scale-95 transition cursor-pointer shrink-0">
+              <span class="material-symbols-outlined text-[18px]">verified</span>
+              <span>Award</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Alert Banner -->
+      <div id="checkin-alert" class="hidden p-3 rounded-xl border text-xs font-mono flex items-center gap-2"></div>
+
+      <!-- Recent Submissions Mini Log -->
+      <div class="flex flex-col gap-2 mt-1">
+        <div class="flex items-center justify-between px-1">
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Recent Station Checkpoints</span>
+          <span class="font-label-sm text-label-sm text-primary uppercase">MongoDB Synced</span>
+        </div>
+        <div id="recent-checkins-list" class="space-y-1.5">
+          <div class="p-3 text-center text-xs font-mono text-gray-400 bg-surface-container-low rounded-lg">No check-ins logged at this station yet.</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- CONFIRMATION MODAL (Strict Engineering Rule #2) -->
+  <div id="confirmation-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#0F1626] border border-cyan/40 rounded-2xl p-6 shadow-[0_0_40px_rgba(0,240,255,0.3)] space-y-4">
+      <div class="flex items-center gap-3 border-b border-cyan/20 pb-3">
+        <div class="w-10 h-10 rounded-xl bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan">
+          <span class="material-symbols-outlined text-2xl">task_alt</span>
+        </div>
+        <div>
+          <h3 class="font-headline font-bold text-white text-base">CONFIRM CHECKPOINT SUBMISSION</h3>
+          <p class="text-xs text-gray-400 font-mono">Verify scoring details before transmitting</p>
+        </div>
+      </div>
+
+      <div class="space-y-2.5 font-mono text-xs bg-[#091122] p-4 rounded-xl border border-cyan/20">
+        <div class="flex justify-between items-center text-gray-300">
+          <span>SQUAD NAME:</span>
+          <span class="text-white font-bold" id="modal-team-name">Team</span>
+        </div>
+        <div class="flex justify-between items-center text-gray-300">
+          <span>GRID ZONE:</span>
+          <span class="text-cyan font-bold" id="modal-zone-id">ZONE_01</span>
+        </div>
+        <div class="flex justify-between items-center text-gray-300">
+          <span>CONE COLOR:</span>
+          <span class="text-yellow font-bold" id="modal-cone-color">YELLOW (+12 PTS)</span>
+        </div>
+        <div class="flex justify-between items-center text-gray-300">
+          <span>DRAWN CARD:</span>
+          <span class="text-primary font-bold" id="modal-card-info">K♠ (+13 PTS)</span>
+        </div>
+        <div class="flex justify-between items-center text-gray-300 pt-2 border-t border-cyan/20">
+          <span class="text-sm font-bold text-white">TOTAL AWARD:</span>
+          <span class="text-sm font-bold text-green" id="modal-total-pts">+25 PTS</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 pt-2">
+        <button onclick="closeConfirmationModal()" class="flex-1 py-2.5 rounded-xl border border-gray-600 hover:border-gray-400 text-gray-300 text-xs font-headline font-bold uppercase transition">
+          Cancel / Edit
+        </button>
+        <button onclick="submitCheckin()" id="btn-modal-confirm" class="flex-1 py-2.5 rounded-xl bg-green text-black text-xs font-headline font-bold uppercase hover:shadow-[0_0_15px_rgba(0,255,136,0.6)] transition flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-base">check</span>
+          <span>Confirm & Transmit</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIGH-IMPACT CELEBRATION MODAL OVERLAY (Shown on Instant Auto-Award) -->
+  <div id="celebration-overlay" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-sm rounded-2xl bg-gradient-to-b from-[#07192c] to-[#030914] border-2 border-green shadow-[0_0_50px_rgba(0,255,136,0.5)] p-6 text-center space-y-4 animate-scaleUp">
+      <div class="w-16 h-16 mx-auto rounded-full bg-green/20 border-2 border-green flex items-center justify-center shadow-[0_0_25px_rgba(0,255,136,0.6)]">
+        <span class="material-symbols-outlined text-green text-3xl animate-bounce">check_circle</span>
+      </div>
+      <div>
+        <span class="px-2.5 py-0.5 rounded-full bg-green/20 text-green font-mono text-[11px] font-bold uppercase tracking-wider">CHECKPOINT CLEARED!</span>
+        <h3 class="text-2xl font-headline font-black text-white mt-1" id="celeb-team-name">Squad Alpha</h3>
+        <p class="text-xs text-gray-300 font-mono mt-0.5" id="celeb-station-zone">Station: ZONE_01</p>
+      </div>
+
+      <div class="bg-[#050c18] p-4 rounded-xl border border-green/30 space-y-1.5">
+        <div class="text-3xl font-mono font-black text-green" id="celeb-points-awarded">+25 PTS</div>
+        <div class="text-xs font-mono text-gray-300">Total Score: <span class="text-white font-bold" id="celeb-total-score">150 PTS</span></div>
+        <div class="pt-2 border-t border-gray-800 text-[11px] text-primary font-mono flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-sm">lock_open</span>
+          <span id="celeb-next-clue-label">Next Mission Hint Unlocked for Squad!</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs font-mono text-gray-400 pt-1">
+        <span id="celeb-auto-timer">Camera re-arming in 2s...</span>
+        <button onclick="dismissCelebration()" class="px-3 py-1 rounded bg-green/20 hover:bg-green/30 text-green font-bold text-xs transition cursor-pointer">
+          Done (OK)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALREADY CLEARED WARNING MODAL (With Force Award Override) -->
+  <div id="already-visited-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-sm rounded-2xl bg-[#0e1726] border-2 border-yellow shadow-[0_0_35px_rgba(255,214,0,0.4)] p-5 space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-yellow/20 border border-yellow flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-yellow text-xl">warning</span>
+        </div>
+        <div>
+          <h4 class="font-headline font-bold text-base text-white">Zone Already Cleared!</h4>
+          <span class="text-[11px] font-mono text-yellow uppercase">Duplicate Station Detected</span>
+        </div>
+      </div>
+      <p class="text-xs text-gray-300 font-body leading-relaxed" id="already-visited-msg">
+        Squad has already completed the checkpoint for this zone.
+      </p>
+      <div class="flex flex-col gap-2 pt-1">
+        <button id="btn-force-award" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-yellow to-amber-500 hover:from-yellow/90 hover:to-amber-600 text-black font-headline font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg transition cursor-pointer">
+          <span class="material-symbols-outlined text-sm">priority_high</span>
+          <span>Force Award Points Anyway</span>
+        </button>
+        <button onclick="dismissAlreadyVisited()" class="w-full py-2 rounded-xl border border-gray-600 hover:border-gray-400 text-gray-400 text-xs font-headline uppercase transition cursor-pointer">
+          Cancel Check-In
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl border-t border-cyan/20 shadow-[0_-2px_16px_rgba(0,229,255,0.06)]">
+    <div class="flex justify-around items-center h-20 px-gutter">
+      <a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" href="player_dashboard.html">
+        <span class="material-symbols-outlined text-[24px]">radar</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Hunt</span>
+      </a>
+      <a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-16 transition-colors text-primary-container drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] font-bold" href="member_checkin.html">
+        <span class="material-symbols-outlined text-[24px]">verified</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Cards</span>
+      </a>
+      <a class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant hover:text-on-surface transition-colors" href="leaderboard.html">
+        <span class="material-symbols-outlined text-[24px]">emoji_events</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Rank</span>
+      </a>
+      <button onclick="handleAdminNav()" class="flex flex-col items-center justify-center gap-1 w-16 h-16 text-on-surface-variant/40 hover:text-on-surface-variant transition-colors">
+        <span class="material-symbols-outlined text-[24px]">tune</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">Admin</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Script Logic -->
+  <script>
+    var currentUser = null;
+    var currentTeams = [];
+
+    // Deterministic 2-Digit Team Code Engine (Unique for every squad)
+    function deriveTeamCode(strOrTeam, teamsList) {
+      var str = '';
+      if (typeof strOrTeam === 'string') {
+        str = strOrTeam;
+      } else if (strOrTeam && typeof strOrTeam === 'object') {
+        str = strOrTeam.callsign || strOrTeam.name || strOrTeam._id || 'SQUAD';
+      } else {
+        str = 'SQUAD';
+      }
+      str = str.toUpperCase().trim();
+
+      // If team name contains explicit number e.g. "Team 1", "Squad 5"
+      var numMatch = str.match(/\d+/);
+      if (numMatch && numMatch[0]) {
+        var n = parseInt(numMatch[0], 10);
+        if (n >= 10 && n <= 99) return n;
+        if (n < 10) return 10 + n;
+      }
+
+      // If teamsList available, derive index offset to guarantee 100% squad uniqueness
+      if (Array.isArray(teamsList) && teamsList.length > 0) {
+        var idx = teamsList.findIndex(function(t) {
+          return (t.callsign && t.callsign.toUpperCase() === str) ||
+                 (t.name && t.name.toUpperCase() === str) ||
+                 (t._id && t._id === str);
+        });
+        if (idx !== -1) {
+          return 11 + (idx % 88);
+        }
+      }
+
+      // Deterministic hash fallback (11-98)
+      var hash = 0;
+      for (var i = 0; i < str.length; i++) {
+        hash = (hash * 31 + str.charCodeAt(i)) % 88;
+      }
+      return 11 + Math.abs(hash);
+    }
+
+    var checkinState = {
+      coneColor: 'YELLOW',
+      conePoints: 12,
+      cardRank: 'K',
+      cardRankValue: 13,
+      cardSuit: '♠',
+      suitColorClass: 'text-primary'
+    };
+
+    // 1. Role Guard
+    (function enforceClearance() {
+      try {
+        var raw = localStorage.getItem('territory_grid_user') || sessionStorage.getItem('territory_grid_user');
+        currentUser = raw ? JSON.parse(raw) : null;
+        if (!currentUser) {
+          window.location.href = 'login.html';
+          return;
+        }
+        if (!currentUser.isApproved && currentUser.role !== 'ADMIN') {
+          window.location.href = 'login.html';
+          return;
+        }
+        if (currentUser.role === 'PLAYER') {
+          alert('Clearance Restriction: Field Marshal Checkpoint is restricted. Redirecting to Player Hunt.');
+          window.location.href = 'player_dashboard.html';
+          return;
+        }
+      } catch (e) {
+        window.location.href = 'login.html';
+      }
+    })();
+
+    window.addEventListener('DOMContentLoaded', function() {
+      if (!currentUser) return;
+      
+      // Update header
+      document.getElementById('header-marshal-callsign').innerText = currentUser.callsign || 'MARSHAL';
+      document.getElementById('station-marshal-title').innerText = currentUser.name || currentUser.callsign || 'Field Marshal';
+      
+      var zoneId = currentUser.zoneId || 'ZONE_01';
+      var zoneLabel = currentUser.zoneLabel || 'Sector A: Library Arch';
+      document.getElementById('station-zone-id').innerText = zoneId;
+      document.getElementById('station-zone-label').innerText = zoneLabel;
+
+      loadTeams();
+      loadRecentCheckins();
+      // Poll teams every 4 seconds
+      setInterval(loadTeams, 4000);
+      setInterval(loadRecentCheckins, 5000);
+    });
+
+    function signOutUser() {
+      localStorage.removeItem('territory_grid_user');
+      sessionStorage.removeItem('territory_grid_user');
+      window.location.href = 'login.html';
+    }
+
+    function handleAdminNav() {
+      if (currentUser && currentUser.role === 'ADMIN') {
+        window.location.href = 'admin_panel.html';
+      } else {
+        alert('Access Denied: Game Master terminal restricted to Admin Samay.');
+      }
+    }
+
+    async function loadTeams() {
+      try {
+        var res = await fetch('/api/teams');
+        var data = await res.json();
+        if (data.success) {
+          currentTeams = (data.teams || []).filter(function(t) { return t.isApproved; });
+          var selector = document.getElementById('team-selector');
+          var selectedVal = selector.value;
+
+          document.getElementById('telemetry-squads-count').innerText = currentTeams.length + ' Live';
+
+          if (currentTeams.length === 0) {
+            selector.innerHTML = '<option value="">-- No approved squads available yet --</option>';
+            return;
+          }
+
+          var optionsHtml = currentTeams.map(function(t, idx) {
+            var zoneVisited = t.visitedZones && t.visitedZones.includes(currentUser.zoneId || 'ZONE_01');
+            var suffix = zoneVisited ? ' [ALREADY CHECKED-IN]' : '';
+            return '<option value="' + t._id + '">' + (t.name || t.callsign) + ' (Score: ' + (t.score || 0) + ' pts)' + suffix + '</option>';
+          }).join('');
+
+          selector.innerHTML = optionsHtml;
+          if (selectedVal) selector.value = selectedVal;
+          updateSummary();
+        }
+      } catch (e) {
+        console.warn('Load teams error:', e);
+      }
+    }
+
+    function selectCone(color, points, el) {
+      checkinState.coneColor = color;
+      checkinState.conePoints = points;
+
+      document.querySelectorAll('.cone-btn').forEach(function(btn) {
+        btn.className = 'cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-lowest transition-all duration-200';
+        var badge = btn.querySelector('.absolute.-top-1\\.5');
+        if (badge) badge.remove();
+      });
+
+      var badge = document.createElement('div');
+      badge.className = 'absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center shadow-md';
+
+      if (color === 'RED') {
+        el.className = 'cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-high shadow-[0_0_16px_rgba(255,59,59,0.35)] transition-all duration-200';
+        badge.classList.add('bg-error', 'text-on-error');
+        document.getElementById('beacon-status').innerText = 'Red Selected (+10 PTS)';
+        document.getElementById('beacon-status').className = 'font-label-sm text-label-sm text-error uppercase tracking-wider';
+      } else if (color === 'YELLOW') {
+        el.className = 'cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-high shadow-[0_0_16px_rgba(255,214,0,0.35)] transition-all duration-200';
+        badge.classList.add('bg-secondary-fixed', 'text-on-secondary-fixed');
+        document.getElementById('beacon-status').innerText = 'Yellow Selected (+12 PTS)';
+        document.getElementById('beacon-status').className = 'font-label-sm text-label-sm text-secondary-fixed uppercase tracking-wider';
+      } else {
+        el.className = 'cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-high shadow-[0_0_16px_rgba(44,241,0,0.35)] transition-all duration-200';
+        badge.classList.add('bg-tertiary-container', 'text-on-tertiary-container');
+        document.getElementById('beacon-status').innerText = 'Green Selected (+15 PTS)';
+        document.getElementById('beacon-status').className = 'font-label-sm text-label-sm text-tertiary uppercase tracking-wider';
+      }
+
+      badge.innerHTML = '<span class="material-symbols-outlined text-[14px] font-bold">check</span>';
+      el.appendChild(badge);
+
+      updateSummary();
+    }
+
+    function setSuit(suit, colorClass, el) {
+      checkinState.cardSuit = suit;
+      checkinState.suitColorClass = colorClass || (suit === '♥' || suit === '♦' ? 'text-secondary' : 'text-primary');
+
+      document.querySelectorAll('.suit-btn').forEach(function(btn) {
+        btn.classList.remove('bg-surface-container-high', 'border-primary', 'border-secondary');
+        btn.classList.add('bg-surface-container-lowest');
+        if (!el && btn.innerText.includes(suit)) {
+          el = btn;
+        }
+      });
+      if (el) {
+        el.classList.remove('bg-surface-container-lowest');
+        el.classList.add('bg-surface-container-high');
+      }
+
+      updateCardDisplay();
+    }
+
+    function setRank(rank, points, el) {
+      checkinState.cardRank = rank;
+      checkinState.cardRankValue = points;
+
+      document.querySelectorAll('.rank-btn').forEach(function(btn) {
+        btn.className = 'rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center';
+        if (!el && (btn.innerText.startsWith(rank + ' ') || btn.innerText === rank)) {
+          el = btn;
+        }
+      });
+      if (el) {
+        el.className = 'rank-btn py-1.5 rounded bg-primary-container text-on-primary-container font-label-md text-label-md text-center font-bold';
+      }
+
+      updateCardDisplay();
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // OPTICAL SCANNER: Live QR Decoding & Auto-Population
+    // ─────────────────────────────────────────────────────────
+    var html5QrCode = null;
+    var isScanning = false;
+
+    function playCyberBeep() {
+      try {
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        var ctx = new AudioCtx();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.18);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.18);
+      } catch (e) {}
+    }
+
+    function playVictoryChirp() {
+      try {
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        var ctx = new AudioCtx();
+        var notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach(function(freq, idx) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+          gain.gain.setValueAtTime(0.25, ctx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + 0.22);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.08);
+          osc.stop(ctx.currentTime + idx * 0.08 + 0.22);
+        });
+      } catch (e) {}
+    }
+
+    async function toggleCameraScanner() {
+      if (isScanning) {
+        stopCameraScanner();
+      } else {
+        startCameraScanner();
+      }
+    }
+
+    async function startCameraScanner() {
+      var box = document.getElementById('camera-viewfinder-box');
+      var btnIcon = document.getElementById('camera-btn-icon');
+      var btnText = document.getElementById('camera-btn-text');
+      var statusText = document.getElementById('scanner-status-text');
+      var statusDot = document.getElementById('scanner-status-dot');
+
+      if (typeof Html5Qrcode === 'undefined') {
+        showNotification('Camera QR engine loading... please retry.', true);
+        return;
+      }
+
+      box.classList.remove('hidden');
+      statusText.innerText = 'CAMERA SCANNING';
+      statusDot.className = 'w-2 h-2 rounded-full bg-secondary-fixed animate-ping';
+      btnIcon.innerText = 'stop_circle';
+      btnText.innerText = 'Close Camera Scanner';
+      isScanning = true;
+
+      try {
+        if (!html5QrCode) {
+          html5QrCode = new Html5Qrcode('qr-reader');
+        }
+
+        var qrConfig = {
+          fps: 10,
+          qrbox: { width: 220, height: 220 },
+          aspectRatio: 1.0
+        };
+
+        await html5QrCode.start(
+          { facingMode: 'environment' },
+          qrConfig,
+          function(decodedText) {
+            handleDecodedQR(decodedText);
+          },
+          function(errorMessage) {
+            // Frame search ignore
+          }
+        );
+      } catch (err) {
+        console.error('Camera start error:', err);
+        statusText.innerText = 'CAMERA ERROR';
+        statusDot.className = 'w-2 h-2 rounded-full bg-error';
+        btnIcon.innerText = 'photo_camera';
+        btnText.innerText = 'Open Camera Scanner';
+        isScanning = false;
+        showNotification('Camera access denied or unavailable. Use "Simulate Squad Scan" for testing.', true);
+      }
+    }
+
+    function stopCameraScanner() {
+      if (html5QrCode && isScanning) {
+        html5QrCode.stop().then(function() {
+          cleanupScannerUI();
+        }).catch(function(err) {
+          console.warn('Stop scanner err:', err);
+          cleanupScannerUI();
+        });
+      } else {
+        cleanupScannerUI();
+      }
+    }
+
+    function cleanupScannerUI() {
+      var box = document.getElementById('camera-viewfinder-box');
+      var btnIcon = document.getElementById('camera-btn-icon');
+      var btnText = document.getElementById('camera-btn-text');
+      var statusText = document.getElementById('scanner-status-text');
+      var statusDot = document.getElementById('scanner-status-dot');
+
+      if (box) box.classList.add('hidden');
+      if (btnIcon) btnIcon.innerText = 'photo_camera';
+      if (btnText) btnText.innerText = 'Open Camera Scanner';
+      if (statusText) statusText.innerText = 'STANDBY';
+      if (statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-gray-500';
+      isScanning = false;
+    }
+
+    function handleManualCodeInput(el) {
+      var raw = el.value.replace(/\D/g, '');
+      if (raw.length > 6) raw = raw.slice(0, 6);
+      
+      // Auto-format e.g. "11 29 10"
+      var formatted = '';
+      if (raw.length <= 2) {
+        formatted = raw;
+      } else if (raw.length <= 4) {
+        formatted = raw.slice(0, 2) + ' ' + raw.slice(2);
+      } else {
+        formatted = raw.slice(0, 2) + ' ' + raw.slice(2, 4) + ' ' + raw.slice(4);
+      }
+      el.value = formatted;
+
+      // When all 6 digits are typed, auto-award immediately!
+      if (raw.length === 6) {
+        verifyManualCipherCode();
+      }
+    }
+
+    function handleDecodedQR(decodedText) {
+      try {
+        var teamId = '';
+        var teamName = '';
+        var rankNum = 9;
+        var rankCode = '9';
+        var suitSymbol = '♠';
+
+        if (decodedText.startsWith('TG|')) {
+          var parts = decodedText.split('|');
+          teamId = parts[1] || '';
+          teamName = parts[2] || '';
+          rankNum = parseInt(parts[3], 10) || 9;
+          rankCode = parts[4] || '9';
+          suitSymbol = parts[5] || '♠';
+          if (parts[6]) {
+            var subDigits = parts[6].replace(/\D/g, '');
+            if (subDigits.length === 6 && !teamId && Array.isArray(currentTeams)) {
+              var tt = parseInt(subDigits.slice(0, 2), 10);
+              var matched = currentTeams.find(function(t, idx) {
+                return (t.teamCode || (10 + (idx + 1))) === tt;
+              });
+              if (matched) teamId = matched._id;
+            }
+          }
+        } else {
+          var cleanDigits = decodedText.replace(/\D/g, '');
+          if (cleanDigits.length === 6) {
+            var minp = document.getElementById('manual-cipher-input');
+            if (minp) minp.value = cleanDigits;
+            verifyManualCipherCode();
+            return;
+          }
+          var json = JSON.parse(decodedText);
+          teamId = json.teamId || '';
+          teamName = json.teamName || json.teamCallsign || '';
+          rankNum = parseInt(json.rank || json.rankNumber || 9, 10);
+          rankCode = json.code || json.rankCode || '9';
+          suitSymbol = json.suit || '♠';
+        }
+
+        var selector = document.getElementById('team-selector');
+        if (selector && teamId) {
+          selector.value = teamId;
+        }
+
+        checkinState.cardRank = rankCode;
+        checkinState.cardRankValue = rankNum;
+        checkinState.cardSuit = suitSymbol;
+
+        playCyberBeep();
+
+        var banner = document.getElementById('scan-detected-banner');
+        if (banner) {
+          banner.classList.remove('hidden');
+          var selectedTeamObj = (currentTeams || []).find(function(t) { return t._id === teamId; });
+          var displaySquad = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : (teamName || 'Squad Verified');
+          var nameEl = document.getElementById('scan-result-team-name');
+          if (nameEl) nameEl.innerText = displaySquad;
+          var rEl = document.getElementById('scan-result-rank');
+          if (rEl) rEl.innerText = rankCode;
+          var sEl = document.getElementById('scan-result-suit');
+          if (sEl) sEl.innerText = suitSymbol;
+          var tagEl = document.getElementById('scan-result-pts-tag');
+          if (tagEl) tagEl.innerText = '+' + rankNum + ' PTS CARD';
+        }
+
+        stopCameraScanner();
+
+        // AUTOMATICALLY AWARD POINTS IN ONE CLICK/SCAN!
+        autoAwardCheckin(teamId, rankNum, suitSymbol, 'QR Scanner');
+      } catch (err) {
+        console.error('QR Decode error:', err);
+        showNotification('QR scanned but format was invalid.', true);
+      }
+    }
+
+    function simulateQRScan() {
+      var selector = document.getElementById('team-selector');
+      if (!selector || selector.options.length === 0) {
+        showNotification('No approved squads loaded to simulate scan.', true);
+        return;
+      }
+
+      var idx = selector.selectedIndex >= 0 ? selector.selectedIndex : 0;
+      var chosenTeamId = selector.options[idx] ? selector.options[idx].value : (currentTeams[0] ? currentTeams[0]._id : 'team_demo');
+      var chosenTeamName = (currentTeams[0] ? (currentTeams[0].name || currentTeams[0].callsign) : 'Squad');
+
+      var ranks = [
+        { code: 'A', num: 1 }, { code: '2', num: 2 }, { code: '5', num: 5 },
+        { code: '7', num: 7 }, { code: '8', num: 8 }, { code: '9', num: 9 },
+        { code: '10', num: 10 }, { code: 'J', num: 11 }, { code: 'Q', num: 12 }, { code: 'K', num: 13 }
+      ];
+      var suits = ['♠', '♥', '♦', '♣'];
+      var r = ranks[Math.floor(Math.random() * ranks.length)];
+      var s = suits[Math.floor(Math.random() * suits.length)];
+
+      var mockPayload = 'TG|' + chosenTeamId + '|' + chosenTeamName + '|' + r.num + '|' + r.code + '|' + s + '|112910';
+      handleDecodedQR(mockPayload);
+    }
+
+    function verifyManualCipherCode() {
+      var input = document.getElementById('manual-cipher-input');
+      var rawCode = (input.value || '').trim();
+
+      if (!rawCode) {
+        showNotification('Please enter the 6-digit code from the player card.', true);
+        return;
+      }
+
+      if (rawCode.startsWith('TG|')) {
+        handleDecodedQR(rawCode);
+        input.value = '';
+        return;
+      }
+
+      var selector = document.getElementById('team-selector');
+      var cleanDigits = rawCode.replace(/\D/g, '');
+      var rankCode = '9';
+      var rankNum = 9;
+      var suitSymbol = '♠';
+      var squadFound = null;
+      var targetTeamId = null;
+
+      var ranksMap = {
+        1: 'A', 2: '2', 3: '3', 4: '4', 5: '5',
+        6: '6', 7: '7', 8: '8', 9: '9', 10: '10',
+        11: 'J', 12: 'Q', 13: 'K'
+      };
+
+      // 6-Digit Cipher: [TT = Team 2 digits] [RR = Card Rank 2 digits (21-33)] [HH = Clue & Suit (10-61)]
+      if (cleanDigits.length === 6) {
+        var tt = parseInt(cleanDigits.slice(0, 2), 10);
+        var rr = parseInt(cleanDigits.slice(2, 4), 10);
+        var hh = parseInt(cleanDigits.slice(4, 6), 10);
+
+        if (rr >= 21 && rr <= 33) {
+          rankNum = rr - 20;
+          rankCode = ranksMap[rankNum] || String(rankNum);
+        }
+
+        if (hh >= 10 && hh <= 61) {
+          var suitIdx = (hh - 10) % 4;
+          suitSymbol = ['♠', '♥', '♦', '♣'][suitIdx] || '♠';
+        }
+
+        // Match squad by team code TT
+        if (Array.isArray(currentTeams) && currentTeams.length > 0) {
+          var matchedTeam = currentTeams.find(function(t, idx) {
+            var assignedCode = t.teamCode || (10 + (idx + 1));
+            var numMatch = (t.name || t.callsign || '').match(/\d+/);
+            var derivedNum = (numMatch && numMatch[0]) ? (parseInt(numMatch[0], 10) + 10) : 0;
+            return assignedCode === tt || derivedNum === tt || deriveTeamCode(t, currentTeams) === tt;
+          });
+          if (matchedTeam) {
+            targetTeamId = matchedTeam._id;
+            squadFound = matchedTeam.name || matchedTeam.callsign;
+            if (selector) selector.value = matchedTeam._id;
+          }
+        }
+
+        // If not matched via currentTeams, search select options
+        if (!targetTeamId && selector) {
+          for (var i = 0; i < selector.options.length; i++) {
+            var optText = selector.options[i].text;
+            if (deriveTeamCode(optText, currentTeams) === tt) {
+              selector.selectedIndex = i;
+              targetTeamId = selector.options[i].value;
+              squadFound = optText;
+              break;
+            }
+          }
+        }
+      } else {
+        // Fallback for alphanumeric codes
+        var tokens = rawCode.toUpperCase().split(/[-_\s|]+/);
+        var cleanTokens = tokens.filter(function(t) { return t && t !== 'TG'; });
+        var legacyRanks = {
+          'A': 1, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5,
+          '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+          'J': 11, '11': 11, 'Q': 12, '12': 12, 'K': 13, '13': 13
+        };
+        cleanTokens.forEach(function(token) {
+          if (selector) {
+            for (var i = 0; i < selector.options.length; i++) {
+              if (selector.options[i].text.toUpperCase().includes(token)) {
+                selector.selectedIndex = i;
+                targetTeamId = selector.options[i].value;
+                squadFound = selector.options[i].text;
+              }
+            }
+          }
+          if (legacyRanks[token] !== undefined) {
+            rankCode = token;
+            rankNum = legacyRanks[token];
+          }
+        });
+      }
+
+      if (!targetTeamId && selector && selector.value) {
+        targetTeamId = selector.value;
+        var opt = selector.options[selector.selectedIndex];
+        squadFound = opt ? opt.text : 'Selected Squad';
+      }
+
+      if (!targetTeamId) {
+        showNotification('Squad code (' + cleanDigits.slice(0, 2) + ') not recognized in live squads list.', true);
+        return;
+      }
+
+      checkinState.cardRank = rankCode;
+      checkinState.cardRankValue = rankNum;
+      checkinState.cardSuit = suitSymbol;
+
+      // Audio confirmation
+      playCyberBeep();
+
+      // Show Scan Detected Banner
+      var banner = document.getElementById('scan-detected-banner');
+      if (banner) {
+        banner.classList.remove('hidden');
+        var selectedTeamObj = (currentTeams || []).find(function(t) { return t._id === targetTeamId; });
+        var displaySquad = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : (squadFound || 'Squad Verified');
+        var nameEl = document.getElementById('scan-result-team-name');
+        if (nameEl) nameEl.innerText = displaySquad;
+        var rEl = document.getElementById('scan-result-rank');
+        if (rEl) rEl.innerText = rankCode;
+        var sEl = document.getElementById('scan-result-suit');
+        if (sEl) sEl.innerText = suitSymbol;
+        var tagEl = document.getElementById('scan-result-pts-tag');
+        if (tagEl) tagEl.innerText = '+' + rankNum + ' PTS CARD';
+      }
+
+      input.value = '';
+
+      // AUTOMATICALLY AWARD POINTS IN ONE GO!
+      autoAwardCheckin(targetTeamId, rankNum, suitSymbol, '6-Digit Code');
+    }
+
+    function updateCardDisplay() {
+      var rTop = document.getElementById('card-rank-top');
+      if (rTop) rTop.innerText = checkinState.cardRank;
+      var rBot = document.getElementById('card-rank-bot');
+      if (rBot) rBot.innerText = checkinState.cardRank;
+      var sTop = document.getElementById('card-suit-top');
+      if (sTop) sTop.innerText = checkinState.cardSuit;
+      var sBot = document.getElementById('card-suit-bot');
+      if (sBot) sBot.innerText = checkinState.cardSuit;
+      var cSuit = document.getElementById('card-center-suit');
+      if (cSuit) cSuit.innerText = checkinState.cardSuit;
+      var vLbl = document.getElementById('card-value-label');
+      if (vLbl) vLbl.innerText = 'Value: +' + checkinState.cardRankValue + ' Pts';
+      updateSummary();
+    }
+
+    function updateSummary() {
+      var total = checkinState.conePoints + checkinState.cardRankValue;
+      var fb = document.getElementById('formula-breakdown');
+      if (fb) fb.innerText = checkinState.conePoints + ' + ' + checkinState.cardRankValue + ' =';
+      var tp = document.getElementById('total-points');
+      if (tp) tp.innerText = total;
+      var sm = document.getElementById('summary-meta');
+      if (sm) {
+        var selector = document.getElementById('team-selector');
+        var teamName = (selector && selector.options[selector.selectedIndex]) ? selector.options[selector.selectedIndex].text : 'Squad';
+        sm.innerText = 'Formula: ' + checkinState.conePoints + ' (Cone) + ' + checkinState.cardRankValue + ' (Card) = ' + total + ' PTS.';
+      }
+    }
+
+    // Modal Control (Rule #2: Always show confirmation dialog before submit)
+    function openConfirmationModal() {
+      var selector = document.getElementById('team-selector');
+      if (!selector.value) {
+        showCheckinAlert('Please select an authorized squad from the list.', true);
+        return;
+      }
+
+      var selectedTeam = currentTeams.find(function(t) { return t._id === selector.value; });
+      var teamName = selectedTeam ? (selectedTeam.name || selectedTeam.callsign) : 'Selected Squad';
+
+      document.getElementById('modal-team-name').innerText = teamName;
+      document.getElementById('modal-zone-id').innerText = currentUser.zoneId || 'ZONE_01';
+      document.getElementById('modal-cone-color').innerText = checkinState.coneColor + ' (+' + checkinState.conePoints + ' PTS)';
+      document.getElementById('modal-card-info').innerText = checkinState.cardRank + checkinState.cardSuit + ' (+' + checkinState.cardRankValue + ' PTS)';
+      document.getElementById('modal-total-pts').innerText = '+' + (checkinState.conePoints + checkinState.cardRankValue) + ' PTS';
+
+      document.getElementById('confirmation-modal').classList.remove('hidden');
+    }
+
+    function closeConfirmationModal() {
+      document.getElementById('confirmation-modal').classList.add('hidden');
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // INSTANT AUTO-AWARD & SUBMISSION ENGINE
+    // ─────────────────────────────────────────────────────────
+    var activeOverridePayload = null;
+    var celebDismissTimer = null;
+
+    async function autoAwardCheckin(teamId, rankNum, suitSymbol, method, allowDuplicate) {
+      if (!teamId) {
+        showNotification('Cannot award: No squad selected or recognized in system.', true);
+        return;
+      }
+
+      var zoneId = currentUser.zoneId || 'ZONE_01';
+      var selectedTeamObj = currentTeams.find(function(t) { return t._id === teamId; });
+      var squadName = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : 'Squad';
+
+      var rankVal = (rankNum !== undefined && rankNum !== null) ? rankNum : (checkinState.cardRankValue || 13);
+      var suitSym = suitSymbol || checkinState.cardSuit || '♠';
+      var coneCol = checkinState.coneColor || 'YELLOW';
+      var conePts = checkinState.conePoints || 12;
+      var totalPts = conePts + rankVal;
+
+      showNotification('⚡ Transmitting Check-in for ' + squadName + ' (' + zoneId + ')...');
+
+      var payload = {
+        teamId: teamId,
+        zoneId: zoneId,
+        cone: coneCol,
+        cardRank: rankVal,
+        cardSuit: suitSym,
+        memberId: currentUser.callsign || 'marshal_station',
+        allowDuplicate: !!allowDuplicate
+      };
+
+      try {
+        var res = await fetch('/api/checkin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        var data = await res.json();
+
+        if (!data.success) {
+          if (data.alreadyVisited) {
+            showAlreadyVisitedPrompt(data.error || ('Squad "' + squadName + '" already completed ' + zoneId + '!'), payload);
+          } else {
+            showCheckinAlert(data.error || 'Check-in failed.', true);
+          }
+          return;
+        }
+
+        // Triumphant victory audio fanfare
+        playVictoryChirp();
+
+        // High-impact celebration modal overlay
+        showCheckinCelebration(data.teamName || squadName, data.pointsAwarded || totalPts, data.teamScore, zoneId, data.nextClueIndex, method);
+
+        // Instant telemetry reload
+        loadTeams();
+        loadRecentCheckins();
+
+      } catch (err) {
+        console.error('Auto-award failed:', err);
+        showCheckinAlert('Network transmission error: ' + err.message, true);
+      }
+    }
+
+    function showCheckinCelebration(teamName, points, totalScore, zoneId, nextClueIndex, method) {
+      var overlay = document.getElementById('celebration-overlay');
+      if (!overlay) return;
+
+      document.getElementById('celeb-team-name').innerText = teamName;
+      document.getElementById('celeb-station-zone').innerText = 'Station Cleared: ' + zoneId + ' (' + (method || 'Verified') + ')';
+      document.getElementById('celeb-points-awarded').innerText = '+' + points + ' PTS';
+      document.getElementById('celeb-total-score').innerText = (totalScore !== undefined ? totalScore : 'Updated') + ' PTS';
+      
+      var nextClueNum = (nextClueIndex !== undefined) ? (nextClueIndex + 1) : 2;
+      document.getElementById('celeb-next-clue-label').innerText = 'Next Clue #' + nextClueNum + ' is now live on squad phones!';
+
+      overlay.classList.remove('hidden');
+
+      // Countdown timer & auto re-arm scanner
+      var secondsLeft = 3;
+      var timerEl = document.getElementById('celeb-auto-timer');
+      if (timerEl) timerEl.innerText = 'Ready for next player in ' + secondsLeft + 's...';
+
+      if (celebDismissTimer) clearInterval(celebDismissTimer);
+      celebDismissTimer = setInterval(function() {
+        secondsLeft--;
+        if (secondsLeft > 0) {
+          if (timerEl) timerEl.innerText = 'Ready for next player in ' + secondsLeft + 's...';
+        } else {
+          clearInterval(celebDismissTimer);
+          dismissCelebration();
+        }
+      }, 1000);
+    }
+
+    function dismissCelebration() {
+      if (celebDismissTimer) clearInterval(celebDismissTimer);
+      var overlay = document.getElementById('celebration-overlay');
+      if (overlay) overlay.classList.add('hidden');
+      
+      // Clear manual input and re-arm camera scanner
+      var manualInput = document.getElementById('manual-cipher-input');
+      if (manualInput) manualInput.value = '';
+      
+      // Auto re-arm camera scanner for next participant in queue
+      startCameraScanner();
+    }
+
+    function showAlreadyVisitedPrompt(errorMsg, payload) {
+      activeOverridePayload = payload;
+      var modal = document.getElementById('already-visited-modal');
+      var msgEl = document.getElementById('already-visited-msg');
+      var forceBtn = document.getElementById('btn-force-award');
+      if (msgEl) msgEl.innerText = errorMsg;
+      if (forceBtn) {
+        forceBtn.onclick = function() {
+          dismissAlreadyVisited();
+          autoAwardCheckin(payload.teamId, payload.cardRank, payload.cardSuit, 'Force Override', true);
+        };
+      }
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function dismissAlreadyVisited() {
+      var modal = document.getElementById('already-visited-modal');
+      if (modal) modal.classList.add('hidden');
+      activeOverridePayload = null;
+    }
+
+    // Manual Submission fallback
+    async function submitCheckin() {
+      var selector = document.getElementById('team-selector');
+      var teamId = selector.value;
+      if (!teamId) {
+        showCheckinAlert('Please select a squad.', true);
+        return;
+      }
+      closeConfirmationModal();
+      await autoAwardCheckin(teamId, checkinState.cardRankValue, checkinState.cardSuit, 'Manual Confirmation');
+    }
+
+    function showCheckinAlert(msg, isError) {
+      var alertBox = document.getElementById('checkin-alert');
+      alertBox.classList.remove('hidden');
+      alertBox.innerText = msg;
+      if (isError) {
+        alertBox.className = 'p-3 rounded-xl border border-error/50 bg-error/10 text-error text-xs font-mono flex items-center gap-2';
+      } else {
+        alertBox.className = 'p-3 rounded-xl border border-green/50 bg-green/10 text-green text-xs font-mono flex items-center gap-2';
+      }
+      setTimeout(function() {
+        alertBox.classList.add('hidden');
+      }, 5000);
+    }
+
+    async function loadRecentCheckins() {
+      try {
+        var res = await fetch('/api/database/all');
+        var data = await res.json();
+        if (data.success && data.collections) {
+          var checkins = data.collections.checkins || [];
+          var teams = data.collections.teams || [];
+          var myZoneId = currentUser.zoneId || 'ZONE_01';
+          
+          var zoneCheckins = checkins.filter(function(c) { return c.zoneId === myZoneId; });
+          document.getElementById('telemetry-logged-count').innerText = zoneCheckins.length;
+
+          var list = document.getElementById('recent-checkins-list');
+          if (zoneCheckins.length === 0) {
+            list.innerHTML = '<div class="p-3 text-center text-xs font-mono text-gray-400 bg-surface-container-low rounded-lg">No check-ins logged at this station yet.</div>';
+            return;
+          }
+
+          var recent = zoneCheckins.slice(-3).reverse();
+          list.innerHTML = recent.map(function(c) {
+            var team = teams.find(function(t) { return t._id === c.teamId; });
+            var teamName = team ? (team.name || team.callsign) : c.teamId;
+            var rankSymbols = { 1: 'A', 11: 'J', 12: 'Q', 13: 'K' };
+            var rankStr = rankSymbols[c.cardRank] || c.cardRank;
+
+            return '<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low border border-cyan/10">' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="w-2 h-2 rounded-full bg-tertiary"></span>' +
+                '<span class="font-body-md text-body-md text-on-surface font-medium">' + teamName + '</span>' +
+              '</div>' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="font-label-sm text-label-sm text-on-surface-variant">' + c.cone + ' + ' + rankStr + c.cardSuit + '</span>' +
+                '<span class="font-label-md text-label-md text-tertiary font-bold">+' + c.points + ' PTS</span>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+      } catch (e) {
+        console.warn('Checkins load error:', e);
+      }
+    }
+  </script>
+</body></html>

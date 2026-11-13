@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Territory Grid // Admin Command Terminal & MongoDB Manager</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#070B14",
+            "surface-low": "#0C1220",
+            "surface-card": "#111A2E",
+            "surface-high": "#19243C",
+            "surface-border": "rgba(0, 240, 255, 0.25)",
+            cyan: "#00F0FF",
+            magenta: "#FF0055",
+            green: "#00FF88",
+            yellow: "#FFB800",
+            amber: "#FFD600",
+            error: "#FF4D4D"
+          },
+          fontFamily: {
+            headline: ["Space Grotesk", "sans-serif"],
+            body: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #070B14;
+      color: #DFE2F0;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    .hex-bg {
+      background-image: radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .neon-card {
+      background: rgba(17, 26, 46, 0.85);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(0, 240, 255, 0.05);
+    }
+    .json-code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body class="hex-bg flex flex-col justify-between selection:bg-cyan selection:text-black">
+
+  <!-- Top Fixed Admin Header -->
+  <header class="w-full bg-[#080E1C]/90 backdrop-blur-xl border-b border-cyan/25 sticky top-0 z-50 px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-magenta/20 border border-magenta/40 flex items-center justify-center text-magenta shadow-[0_0_12px_rgba(255,0,85,0.4)]">
+        <span class="material-symbols-outlined text-2xl">shield</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-base sm:text-lg font-headline font-bold text-white tracking-wide">COMMAND TERMINAL</h1>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-magenta/20 text-magenta border border-magenta/40 font-bold">GAME MASTER</span>
+        </div>
+        <p class="text-xs text-cyan font-mono">Logged in as: <span class="font-bold text-white">samay</span> • Club Fest Central</p>
+      </div>
+    </div>
+
+    <!-- Navigation View Tabs -->
+    <div class="flex items-center gap-1.5 bg-[#050914] p-1 rounded-xl border border-cyan/20">
+      <button onclick="switchTab('ops')" id="nav-btn-ops" 
+              class="px-3.5 py-1.5 text-xs font-headline font-bold rounded-lg bg-cyan text-black flex items-center gap-1.5 transition">
+        <span class="material-symbols-outlined text-base">dashboard</span>
+        <span>Operations</span>
+      </button>
+
+      <button onclick="switchTab('approvals')" id="nav-btn-approvals" 
+              class="px-3.5 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition relative">
+        <span class="material-symbols-outlined text-base">how_to_reg</span>
+        <span>Approvals</span>
+        <span id="badge-pending" class="px-1.5 py-0.2 rounded-full bg-yellow text-black font-mono font-bold text-[10px] ml-1">0</span>
+      </button>
+
+      <button onclick="switchTab('places')" id="nav-btn-places" 
+              class="px-3.5 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition">
+        <span class="material-symbols-outlined text-base">pin_drop</span>
+        <span>Places & Zones (<span id="badge-places-count">13</span>)</span>
+      </button>
+
+      <button onclick="switchTab('database')" id="nav-btn-database" 
+              class="px-3.5 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition">
+        <span class="material-symbols-outlined text-base">database</span>
+        <span>MongoDB Database</span>
+      </button>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="flex items-center gap-3">
+      <button onclick="exportDatabase()" title="Export MongoDB Backup"
+              class="px-3 py-1.5 rounded-lg border border-cyan/30 bg-cyan/10 hover:bg-cyan/20 text-cyan text-xs font-headline flex items-center gap-1.5 transition">
+        <span class="material-symbols-outlined text-sm">download</span>
+        <span class="hidden sm:inline">Export DB</span>
+      </button>
+      
+      <button onclick="signOut()" 
+              class="px-3 py-1.5 rounded-lg border border-red-500/40 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-headline font-bold flex items-center gap-1 transition">
+        <span class="material-symbols-outlined text-sm">logout</span>
+        <span>Logout</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="w-full max-w-6xl mx-auto p-4 sm:p-6 mb-auto space-y-6">
+
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- TAB 1: OPERATIONS HUD (TIMER, LEADERBOARD, QUICK ACTIONS) -->
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <div id="tab-content-ops" class="space-y-6">
+      
+      <!-- Top Tactical Mission Clock Card -->
+      <div class="neon-card rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
+          <div class="w-16 h-16 rounded-2xl bg-cyan/10 border border-cyan/40 flex items-center justify-center text-cyan shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+            <span class="material-symbols-outlined text-3xl">timer</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="w-2.5 h-2.5 rounded-full bg-green animate-ping"></span>
+              <span class="text-xs font-mono text-green uppercase tracking-widest font-bold" id="game-phase-badge">PLAYER PHASE // LIVE</span>
+            </div>
+            <div class="text-4xl sm:text-5xl font-headline font-black text-cyan tracking-wider drop-shadow-[0_0_15px_rgba(0,240,255,0.7)]" id="clock-display">
+              00:00:00
+            </div>
+          </div>
+        </div>
+
+        <!-- Clock Action Buttons -->
+        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <button onclick="togglePauseGame()" id="btn-pause-ops" 
+                  class="flex-1 md:flex-initial px-5 py-2.5 rounded-xl border border-yellow/40 bg-yellow/10 hover:bg-yellow/20 text-yellow text-xs font-headline font-bold flex items-center justify-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">pause_circle</span>
+            <span id="btn-pause-text">PAUSE OPS</span>
+          </button>
+
+          <button onclick="changeGameStatus('PLAYER_PHASE')" 
+                  class="flex-1 md:flex-initial px-5 py-2.5 rounded-xl border border-green/40 bg-green/10 hover:bg-green/20 text-green text-xs font-headline font-bold flex items-center justify-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">play_circle</span>
+            <span>START HUNT</span>
+          </button>
+
+          <button onclick="changeGameStatus('ENDED')" 
+                  class="flex-1 md:flex-initial px-5 py-2.5 rounded-xl border border-red-500/40 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-headline font-bold flex items-center justify-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">flag</span>
+            <span>END MATCH</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="neon-card rounded-2xl p-4 text-center">
+          <span class="material-symbols-outlined text-cyan text-2xl mb-1">groups</span>
+          <div class="text-2xl font-headline font-bold text-white" id="stat-teams-count">0</div>
+          <div class="text-[11px] font-mono text-gray-400 uppercase">Approved Teams</div>
+        </div>
+        <div class="neon-card rounded-2xl p-4 text-center">
+          <span class="material-symbols-outlined text-green text-2xl mb-1">verified_user</span>
+          <div class="text-2xl font-headline font-bold text-green" id="stat-marshals-count">0</div>
+          <div class="text-[11px] font-mono text-gray-400 uppercase">Field Marshals</div>
+        </div>
+        <div class="neon-card rounded-2xl p-4 text-center">
+          <span class="material-symbols-outlined text-yellow text-2xl mb-1">hourglass_top</span>
+          <div class="text-2xl font-headline font-bold text-yellow" id="stat-pending-count">0</div>
+          <div class="text-[11px] font-mono text-gray-400 uppercase">Pending Approvals</div>
+        </div>
+        <div class="neon-card rounded-2xl p-4 text-center">
+          <span class="material-symbols-outlined text-magenta text-2xl mb-1">emoji_events</span>
+          <div class="text-2xl font-headline font-bold text-magenta" id="stat-total-points">0</div>
+          <div class="text-[11px] font-mono text-gray-400 uppercase">Total Points Awarded</div>
+        </div>
+      </div>
+
+      <!-- Live Leaderboard Table -->
+      <div class="neon-card rounded-2xl p-6">
+        <div class="flex items-center justify-between border-b border-cyan/20 pb-4 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-cyan">emoji_events</span>
+            <h2 class="text-lg font-headline font-bold text-white">Live Leaderboard Standings</h2>
+          </div>
+          <button onclick="loadLeaderboard()" class="text-xs font-mono text-cyan hover:underline flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">refresh</span> Refresh
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead>
+              <tr class="text-gray-400 border-b border-cyan/10">
+                <th class="py-2.5 px-3">RANK</th>
+                <th class="py-2.5 px-3">SQUAD NAME</th>
+                <th class="py-2.5 px-3">STATUS</th>
+                <th class="py-2.5 px-3">CARDS DRAWN</th>
+                <th class="py-2.5 px-3">PROGRESS</th>
+                <th class="py-2.5 px-3 text-right">TOTAL POINTS</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-table-body" class="divide-y divide-cyan/5">
+              <tr>
+                <td colspan="6" class="py-6 text-center text-gray-400">Loading live squads...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- TAB 2: PENDING APPROVALS QUEUE (WAITING HALL AUTHORIZATION) -->
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <div id="tab-content-approvals" class="hidden space-y-6">
+      
+      <div class="neon-card rounded-2xl p-6">
+        <div class="flex items-center justify-between border-b border-cyan/20 pb-4 mb-6">
+          <div>
+            <h2 class="text-xl font-headline font-bold text-white">Pending Clearances (Waiting Hall)</h2>
+            <p class="text-xs font-mono text-gray-400 mt-1">
+              Teams and Marshals waiting for your approval to enter the Territory Grid app.
+            </p>
+          </div>
+          <button onclick="loadPendingApprovals()" class="px-4 py-2 rounded-xl bg-cyan/10 border border-cyan/30 text-cyan text-xs font-headline font-bold hover:bg-cyan/20 transition flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">refresh</span>
+            <span>Check Now</span>
+          </button>
+        </div>
+
+        <!-- Pending Items Container -->
+        <div id="pending-items-list" class="space-y-3">
+          <div class="text-center py-10 text-gray-400 text-xs font-mono">Checking pending queue...</div>
+        </div>
+      </div>
+
+      <!-- ───────────────────────────────────────────────────────────── -->
+      <!-- ACTIVE AUTHORIZED CLEARANCES (LIVE APPROVED ROSTER) -->
+      <!-- ───────────────────────────────────────────────────────────── -->
+      <div class="neon-card rounded-2xl p-6 border-green/30">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-green/20 pb-4 mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-green/20 border border-green/40 flex items-center justify-center text-green shadow-[0_0_12px_rgba(0,255,136,0.25)]">
+              <span class="material-symbols-outlined text-xl">verified</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-lg font-headline font-bold text-white">Active Authorized Clearances</h3>
+                <span id="badge-approved-total" class="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-green/20 text-green border border-green/30">
+                  0 ACTIVE
+                </span>
+              </div>
+              <p class="text-xs font-mono text-gray-400 mt-0.5">
+                Squads & Field Marshals authorized in the live grid. Real-time synchronized.
+              </p>
+            </div>
+          </div>
+          <button onclick="loadApprovedRoster()" class="px-4 py-2 rounded-xl bg-green/10 border border-green/30 text-green text-xs font-headline font-bold hover:bg-green/20 transition flex items-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-sm">refresh</span>
+            <span>Refresh Roster</span>
+          </button>
+        </div>
+
+        <!-- Live Approved Clearances List Container -->
+        <div id="approved-items-list" class="space-y-3">
+          <div class="text-center py-6 text-gray-400 text-xs font-mono">Loading active clearances...</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- TAB 3: MONGODB DATABASE EXPLORER -->
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <div id="tab-content-database" class="hidden space-y-6">
+      
+      <!-- Database Banner -->
+      <div class="neon-card rounded-2xl p-6 border-cyan/40">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-cyan/20 pb-4 mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-green/20 border border-green/40 flex items-center justify-center text-green shadow-[0_0_15px_rgba(0,255,136,0.4)]">
+              <span class="material-symbols-outlined text-2xl">database</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-lg font-headline font-bold text-white">MongoDB Collections Inspector</h2>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/40 font-bold flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span> CONNECTED
+                </span>
+              </div>
+              <p class="text-xs font-mono text-gray-400" id="db-host-info">mongodb://localhost:27017/territory_grid (Persistent Engine)</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="exportDatabase()" class="px-3.5 py-2 rounded-xl bg-cyan text-black font-headline font-bold text-xs flex items-center gap-1.5 hover:shadow-[0_0_15px_rgba(0,240,255,0.6)] transition">
+              <span class="material-symbols-outlined text-base">file_download</span>
+              <span>Export All JSON</span>
+            </button>
+            <button onclick="loadDatabaseData()" class="p-2 rounded-xl border border-cyan/30 text-cyan hover:bg-cyan/10 transition">
+              <span class="material-symbols-outlined text-base">refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Collection Selector Pills -->
+        <div class="flex flex-wrap gap-2 mb-6" id="collection-pills">
+          <button onclick="viewCollection('users')" id="col-btn-users" class="px-4 py-2 rounded-xl bg-cyan text-black font-mono text-xs font-bold transition">
+            users (<span id="count-users">0</span>)
+          </button>
+          <button onclick="viewCollection('teams')" id="col-btn-teams" class="px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition">
+            teams (<span id="count-teams">0</span>)
+          </button>
+          <button onclick="viewCollection('clues')" id="col-btn-clues" class="px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition">
+            clues (<span id="count-clues">0</span>)
+          </button>
+          <button onclick="viewCollection('checkins')" id="col-btn-checkins" class="px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition">
+            checkins (<span id="count-checkins">0</span>)
+          </button>
+          <button onclick="viewCollection('gameState')" id="col-btn-gameState" class="px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition">
+            gameState
+          </button>
+          <button onclick="viewCollection('system_logs')" id="col-btn-system_logs" class="px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition">
+            system_logs (<span id="count-logs">0</span>)
+          </button>
+        </div>
+
+        <!-- Search / Filter within collection -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="relative flex-1">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-lg">search</span>
+            <input type="text" id="collection-search" oninput="filterCollectionRecords()" placeholder="Filter records in this collection by ID, callsign, or name..." 
+                   class="w-full bg-[#0A101D] border border-cyan/20 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan transition font-mono">
+          </div>
+          <span class="text-xs font-mono text-gray-400" id="record-count-indicator">Showing 0 documents</span>
+        </div>
+
+        <!-- Collection Documents Viewer Container -->
+        <div id="collection-docs-container" class="space-y-3 max-h-[600px] overflow-y-auto pr-1">
+          <!-- Rendered dynamically -->
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- TAB 4: PLACES & ZONES MANAGER (ADMIN CONTROL OVER CAMPUS CHECKPOINTS) -->
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <div id="tab-content-places" class="hidden space-y-6">
+      
+      <!-- Top Zone Overview Banner -->
+      <div class="neon-card rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-2 py-0.5 rounded bg-cyan/20 border border-cyan/40 text-cyan text-[11px] font-mono font-bold uppercase">Game Master Architecture</span>
+            <span class="text-xs font-mono text-gray-400">Campus Checkpoints & Directives</span>
+          </div>
+          <h2 class="text-2xl font-headline font-bold text-white flex items-center gap-2">
+            <span>Places & Zone Clues Manager</span>
+          </h2>
+          <p class="text-xs text-gray-300 mt-1 max-w-xl font-body">
+            Manage the designated physical hunt stations across campus. Initially configured for 13 Zones (Zone 1 to Zone 13). Adding or updating places updates the player mission clues and Field Marshal station rosters in real-time.
+          </p>
+        </div>
+
+        <!-- Quick Summary Metrics -->
+        <div class="flex items-center gap-4 bg-[#050914] p-3 rounded-xl border border-cyan/20 shrink-0">
+          <div class="text-center px-3 border-r border-gray-800">
+            <div class="text-2xl font-mono font-bold text-cyan" id="places-total-count">13</div>
+            <div class="text-[10px] font-mono uppercase text-gray-400">Total Places</div>
+          </div>
+          <div class="text-center px-3 border-r border-gray-800">
+            <div class="text-2xl font-mono font-bold text-green" id="places-assigned-marshals">0</div>
+            <div class="text-[10px] font-mono uppercase text-gray-400">Active Marshals</div>
+          </div>
+          <div class="text-center px-2">
+            <button onclick="loadPlaces()" class="px-3 py-1.5 rounded-lg bg-cyan/10 hover:bg-cyan/20 text-cyan border border-cyan/30 text-xs font-headline font-semibold flex items-center gap-1 transition">
+              <span class="material-symbols-outlined text-sm">refresh</span>
+              <span>Re-sync</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Set Zone Count Tool & Add New Place Form -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Configure Number of Places Tool -->
+        <div class="neon-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center gap-2 border-b border-gray-800 pb-3">
+            <span class="material-symbols-outlined text-yellow text-lg">tune</span>
+            <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider">Configure Number of Zones</h3>
+          </div>
+          <p class="text-xs text-gray-400 font-body">
+            Quickly set the total number of zones for the event (e.g. 13, 14, 15). Expanding automatically creates new zones with default names.
+          </p>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Target Number of Zones</label>
+              <div class="flex gap-2">
+                <input type="number" id="input-target-zone-count" min="1" max="50" value="13" 
+                       class="w-24 bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white font-mono text-center focus:outline-none focus:border-cyan">
+                <button onclick="setTotalZonesCount()" class="flex-1 py-2 px-3 rounded-xl bg-cyan hover:bg-cyan/80 text-black text-xs font-headline font-bold uppercase transition flex items-center justify-center gap-1">
+                  <span class="material-symbols-outlined text-sm">check</span>
+                  <span>Set Zone Count</span>
+                </button>
+              </div>
+            </div>
+            <div class="pt-2 border-t border-gray-800">
+              <button onclick="resetTo13Zones()" class="w-full py-2 px-3 rounded-xl border border-yellow/40 bg-yellow/10 hover:bg-yellow/20 text-yellow text-xs font-headline font-semibold flex items-center justify-center gap-1.5 transition">
+                <span class="material-symbols-outlined text-sm">restart_alt</span>
+                <span>Reset to Standard 13 Zones</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 2 cols: Add / Edit Place Card Form -->
+        <div class="lg:col-span-2 neon-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-cyan text-lg">add_location_alt</span>
+              <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider" id="place-form-title">Add / Update Campus Place</h3>
+            </div>
+            <button id="btn-cancel-edit-place" onclick="cancelEditPlace()" class="hidden text-xs text-gray-400 hover:text-white font-mono flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">close</span> Cancel Edit
+            </button>
+          </div>
+
+          <form id="form-manage-place" onsubmit="event.preventDefault(); savePlace();" class="space-y-3">
+            <input type="hidden" id="place-edit-id" value="">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Zone Identifier *</label>
+                <input type="text" id="input-place-zone-id" placeholder="e.g. ZONE_14" required
+                       class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white font-mono uppercase focus:outline-none focus:border-cyan">
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Place Name / Location Title *</label>
+                <input type="text" id="input-place-label" placeholder="e.g. Zone 14 - Indoor Arena Foyer" required
+                       class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Mission Clue / Directive Hint *</label>
+              <textarea id="input-place-hint" rows="2" placeholder="Describe where players should search (e.g. Find the Yellow Beacon Cone near the solar pavilion...)" required
+                        class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan font-body"></textarea>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-[11px] font-mono text-gray-400">All connected phones update automatically</span>
+              <button type="submit" id="btn-save-place" class="py-2.5 px-6 rounded-xl bg-gradient-to-r from-cyan to-blue-500 hover:from-cyan/80 hover:to-blue-600 text-black text-xs font-headline font-bold uppercase transition flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,229,255,0.4)]">
+                <span class="material-symbols-outlined text-sm">save</span>
+                <span id="btn-save-place-text">Save / Add Place</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Places & Zones Cards Grid -->
+      <div class="neon-card rounded-2xl p-5 space-y-4">
+        <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-green text-lg">view_list</span>
+            <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider">Campus Checkpoint Directory (Zone 1 - Zone 13+)</h3>
+          </div>
+          <span class="text-xs font-mono text-cyan" id="places-grid-sublabel">Loading places...</span>
+        </div>
+
+        <div id="places-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // 1. Role Guard: Enforce Admin (samay)
+    (function checkAdminClearance() {
+      try {
+        var raw = localStorage.getItem('territory_grid_user') || sessionStorage.getItem('territory_grid_user');
+        var user = raw ? JSON.parse(raw) : null;
+        if (!user || user.role !== 'ADMIN') {
+          alert('Security Clearance Alert: Access restricted to Game Master Samay.');
+          window.location.href = 'login.html';
+        }
+      } catch (e) {
+        window.location.href = 'login.html';
+      }
+    })();
+
+    var activeTab = 'ops';
+    var activeCollection = 'users';
+    var cachedDbData = null;
+    var timerSeconds = 0;
+    var timerRunning = true;
+
+    window.addEventListener('DOMContentLoaded', function() {
+      loadLeaderboard();
+      loadPendingApprovals();
+      loadApprovedRoster();
+      loadPlaces();
+      loadDatabaseData();
+      startClock();
+      
+      // Auto-poll pending approvals and roster
+      setInterval(loadPendingApprovals, 2000);
+      setInterval(loadApprovedRoster, 3500);
+      setInterval(loadLeaderboard, 4000);
+    });
+
+    function signOut() {
+      localStorage.removeItem('territory_grid_user');
+      sessionStorage.removeItem('territory_grid_user');
+      window.location.href = 'login.html';
+    }
+
+    function switchTab(tab) {
+      activeTab = tab;
+      ['ops', 'approvals', 'places', 'database'].forEach(function(t) {
+        var content = document.getElementById('tab-content-' + t);
+        var btn = document.getElementById('nav-btn-' + t);
+        if (content && btn) {
+          if (t === tab) {
+            content.classList.remove('hidden');
+            btn.className = 'px-3.5 py-1.5 text-xs font-headline font-bold rounded-lg bg-cyan text-black flex items-center gap-1.5 transition';
+          } else {
+            content.classList.add('hidden');
+            btn.className = 'px-3.5 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition';
+          }
+        }
+      });
+
+      if (tab === 'database') loadDatabaseData();
+      if (tab === 'places') loadPlaces();
+      if (tab === 'approvals') { loadPendingApprovals(); loadApprovedRoster(); }
+      if (tab === 'ops') loadLeaderboard();
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // PLACES & ZONES MANAGER CONTROLLER
+    // ─────────────────────────────────────────────────────────────
+    var cachedPlacesList = [];
+
+    async function loadPlaces() {
+      try {
+        var res = await fetch('/api/clues?_t=' + Date.now(), { cache: 'no-store' });
+        var data = await res.json();
+        if (data.success && Array.isArray(data.clues)) {
+          cachedPlacesList = data.clues;
+          renderPlacesList(cachedPlacesList);
+          
+          var countEl = document.getElementById('badge-places-count');
+          var totalCountEl = document.getElementById('places-total-count');
+          if (countEl) countEl.innerText = cachedPlacesList.length;
+          if (totalCountEl) totalCountEl.innerText = cachedPlacesList.length;
+          
+          var nextZoneNum = cachedPlacesList.length + 1;
+          var nextZoneInput = document.getElementById('input-place-zone-id');
+          if (nextZoneInput && !document.getElementById('place-edit-id').value) {
+            nextZoneInput.placeholder = 'e.g. ZONE_' + String(nextZoneNum).padStart(2, '0');
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load places:', e);
+      }
+    }
+
+    function renderPlacesList(places) {
+      var container = document.getElementById('places-list-container');
+      var sublabel = document.getElementById('places-grid-sublabel');
+      if (!container) return;
+
+      if (!places || places.length === 0) {
+        container.innerHTML = '<div class="col-span-full p-8 text-center text-gray-400 font-mono text-sm bg-[#050914] rounded-xl border border-dashed border-gray-800">No campus places configured yet. Add Zone 1 to begin!</div>';
+        if (sublabel) sublabel.innerText = '0 Places Configured';
+        return;
+      }
+
+      if (sublabel) sublabel.innerText = places.length + ' Active Checkpoints Configured';
+
+      // Cross-reference assigned marshals from cachedDbData.users
+      var marshalsByZone = {};
+      var allMarshalsCount = 0;
+      if (cachedDbData && cachedDbData.users) {
+        cachedDbData.users.forEach(function(u) {
+          if (u.role === 'MEMBER') {
+            allMarshalsCount++;
+            var zid = (u.zoneId || 'ZONE_01').toUpperCase();
+            marshalsByZone[zid] = marshalsByZone[zid] || [];
+            marshalsByZone[zid].push(u.callsign || u.name);
+          }
+        });
+      }
+      var assignedMarshalsEl = document.getElementById('places-assigned-marshals');
+      if (assignedMarshalsEl) assignedMarshalsEl.innerText = allMarshalsCount;
+
+      container.innerHTML = places.map(function(place, idx) {
+        var zoneNum = idx + 1;
+        var zid = place.zoneId || ('ZONE_' + String(zoneNum).padStart(2, '0'));
+        var label = place.zoneLabel || ('Zone ' + zoneNum);
+        var hint = place.text || 'Directive hint unassigned';
+        var assigned = marshalsByZone[zid.toUpperCase()] || [];
+
+        return '<div class="bg-[#050914] rounded-xl p-4 border border-cyan/15 hover:border-cyan/40 transition flex flex-col justify-between space-y-3 relative overflow-hidden group shadow-lg">' +
+          '<div class="flex items-start justify-between gap-2">' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="px-2 py-0.5 rounded bg-cyan/15 border border-cyan/40 text-cyan font-mono font-bold text-xs">' + zid + '</span>' +
+              '<span class="text-xs font-mono text-gray-400 font-semibold">Checkpoint #' + zoneNum + '</span>' +
+            '</div>' +
+            '<div class="flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition">' +
+              '<button onclick="editPlace(\'' + place._id + '\')" title="Edit Place" class="w-7 h-7 rounded-lg bg-cyan/10 hover:bg-cyan/30 text-cyan flex items-center justify-center transition cursor-pointer">' +
+                '<span class="material-symbols-outlined text-[15px]">edit</span>' +
+              '</button>' +
+              '<button onclick="deletePlace(\'' + place._id + '\', \'' + label.replace(/'/g, "\\'") + '\')" title="Delete Place" class="w-7 h-7 rounded-lg bg-red-500/10 hover:bg-red-500/30 text-red-400 flex items-center justify-center transition cursor-pointer">' +
+                '<span class="material-symbols-outlined text-[15px]">delete</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          '<div>' +
+            '<h4 class="font-headline font-bold text-sm text-white leading-snug">' + label + '</h4>' +
+            '<p class="text-xs text-gray-300 font-body mt-1 bg-[#091122] p-2.5 rounded-lg border border-gray-800/80 leading-relaxed italic">“' + hint + '”</p>' +
+          '</div>' +
+          '<div class="pt-2 border-t border-gray-800 flex items-center justify-between text-[11px] font-mono">' +
+            '<span class="text-gray-400 flex items-center gap-1">' +
+              '<span class="material-symbols-outlined text-[14px] text-green">shield_person</span>' +
+              (assigned.length > 0 ? ('Marshals: ' + assigned.join(', ')) : '<span class="text-yellow">No Marshal Assigned</span>') +
+            '</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function editPlace(id) {
+      var place = cachedPlacesList.find(function(p) { return p._id === id; });
+      if (!place) return;
+      document.getElementById('place-edit-id').value = place._id;
+      document.getElementById('input-place-zone-id').value = place.zoneId || '';
+      document.getElementById('input-place-label').value = place.zoneLabel || '';
+      document.getElementById('input-place-hint').value = place.text || '';
+      document.getElementById('place-form-title').innerText = 'Edit Campus Place: ' + (place.zoneLabel || place.zoneId);
+      document.getElementById('btn-save-place-text').innerText = 'Update Place';
+      document.getElementById('btn-cancel-edit-place').classList.remove('hidden');
+      document.getElementById('form-manage-place').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function cancelEditPlace() {
+      document.getElementById('place-edit-id').value = '';
+      document.getElementById('input-place-zone-id').value = '';
+      document.getElementById('input-place-label').value = '';
+      document.getElementById('input-place-hint').value = '';
+      document.getElementById('place-form-title').innerText = 'Add / Update Campus Place';
+      document.getElementById('btn-save-place-text').innerText = 'Save / Add Place';
+      document.getElementById('btn-cancel-edit-place').classList.add('hidden');
+    }
+
+    async function savePlace() {
+      var editId = document.getElementById('place-edit-id').value;
+      var zoneId = document.getElementById('input-place-zone-id').value.trim();
+      var zoneLabel = document.getElementById('input-place-label').value.trim();
+      var text = document.getElementById('input-place-hint').value.trim();
+
+      if (!zoneId || !zoneLabel || !text) {
+        alert('Please fill out Zone ID, Place Name, and Clue Hint.');
+        return;
+      }
+
+      var saveBtn = document.getElementById('btn-save-place');
+      saveBtn.disabled = true;
+
+      try {
+        var payload = { _id: editId || undefined, zoneId: zoneId, zoneLabel: zoneLabel, text: text };
+        var res = await fetch('/api/admin/clues/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        var data = await res.json();
+        saveBtn.disabled = false;
+        if (!data.success) {
+          alert('Failed to save place: ' + (data.error || 'Server error'));
+          return;
+        }
+        cancelEditPlace();
+        loadPlaces();
+        loadDatabaseData();
+      } catch (e) {
+        saveBtn.disabled = false;
+        alert('Error saving place: ' + e.message);
+      }
+    }
+
+    async function deletePlace(id, label) {
+      if (!confirm('Are you sure you want to delete place "' + label + '"?')) return;
+      try {
+        var res = await fetch('/api/admin/clues/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ _id: id })
+        });
+        var data = await res.json();
+        if (!data.success) {
+          alert('Delete failed: ' + (data.error || 'Server error'));
+          return;
+        }
+        loadPlaces();
+        loadDatabaseData();
+      } catch (e) {
+        alert('Error deleting place: ' + e.message);
+      }
+    }
+
+    async function setTotalZonesCount() {
+      var count = parseInt(document.getElementById('input-target-zone-count').value, 10);
+      if (isNaN(count) || count < 1 || count > 50) {
+        alert('Please enter a valid count between 1 and 50.');
+        return;
+      }
+      if (!confirm('Configure total number of campus zones to ' + count + '?')) return;
+
+      try {
+        var res = await fetch('/api/admin/clues/reset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ count: count })
+        });
+        var data = await res.json();
+        if (!data.success) {
+          alert('Failed to update zone count: ' + (data.error || 'Server error'));
+          return;
+        }
+        loadPlaces();
+        loadDatabaseData();
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    async function resetTo13Zones() {
+      if (!confirm('Reset all campus zones back to the official default 13 Zones (Zone 1 to Zone 13)?')) return;
+      document.getElementById('input-target-zone-count').value = 13;
+      await setTotalZonesCount();
+    }
+
+    // Master Clock
+    function startClock() {
+      setInterval(function() {
+        if (timerRunning) {
+          timerSeconds++;
+          var h = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
+          var m = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
+          var s = String(timerSeconds % 60).padStart(2, '0');
+          var el = document.getElementById('clock-display');
+          if (el) el.innerText = h + ':' + m + ':' + s;
+        }
+      }, 1000);
+    }
+
+    function togglePauseGame() {
+      timerRunning = !timerRunning;
+      var btn = document.getElementById('btn-pause-text');
+      if (btn) btn.innerText = timerRunning ? 'PAUSE OPS' : 'RESUME OPS';
+    }
+
+    async function changeGameStatus(status) {
+      try {
+        await fetch('/api/game/state', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: status })
+        });
+        document.getElementById('game-phase-badge').innerText = status + ' // LIVE';
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Load Leaderboard
+    async function loadLeaderboard() {
+      try {
+        var res = await fetch('/api/teams?_t=' + Date.now(), { cache: 'no-store' });
+        var data = await res.json();
+        if (data.success) {
+          var teams = data.teams || [];
+          var approved = teams.filter(function(t) { return t.isApproved; });
+          approved.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
+
+          document.getElementById('stat-teams-count').innerText = approved.length;
+          
+          var totalPoints = approved.reduce(function(acc, t) { return acc + (t.score || 0); }, 0);
+          document.getElementById('stat-total-points').innerText = totalPoints;
+
+          var tbody = document.getElementById('leaderboard-table-body');
+          if (approved.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-gray-400">No approved squads playing yet. Approve squads from the Approvals tab.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = approved.map(function(t, idx) {
+            var cardsCount = (t.cards || []).length;
+            var rankBadge = idx === 0 ? '👑 #1' : (idx === 1 ? '🥈 #2' : (idx === 2 ? '🥉 #3' : '#' + (idx + 1)));
+            var scoreText = (t.score || 0) + ' PTS';
+            var statusBadge = (t.score > 0)
+              ? '<span class="px-2 py-0.5 rounded text-[10px] bg-green/20 text-green border border-green/30 font-semibold">ACTIVE</span>'
+              : '<span class="px-2 py-0.5 rounded text-[10px] bg-cyan/20 text-cyan border border-cyan/30 font-semibold">READY // DRAW PENDING</span>';
+
+            return '<tr class="hover:bg-cyan/5 transition-colors">' +
+              '<td class="py-3 px-3 font-bold text-cyan">' + rankBadge + '</td>' +
+              '<td class="py-3 px-3 font-bold text-white">' + (t.name || t.callsign) + '</td>' +
+              '<td class="py-3 px-3">' + statusBadge + '</td>' +
+              '<td class="py-3 px-3 text-gray-300">' + cardsCount + ' Cards</td>' +
+              '<td class="py-3 px-3 text-cyan">Zone Step ' + (t.currentClueIndex || 0) + '</td>' +
+              '<td class="py-3 px-3 text-right font-bold text-green text-sm">' + scoreText + '</td>' +
+            '</tr>';
+          }).join('');
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    var pendingItemsCache = {};
+    var isLoadingPending = false;
+    var isLoadingRoster = false;
+
+    // Load Pending Approvals (Waiting Hall)
+    async function loadPendingApprovals() {
+      if (isLoadingPending) return;
+      isLoadingPending = true;
+      try {
+        var res = await fetch('/api/admin/pending?_t=' + Date.now(), { cache: 'no-store' });
+        var data = await res.json();
+        if (data.success) {
+          var pendingTeams = data.teams || [];
+          var pendingMarshals = (data.users || []).filter(function(u) { return u.role === 'MEMBER'; });
+          var realCount = pendingTeams.length + pendingMarshals.length;
+
+          document.getElementById('badge-pending').innerText = realCount;
+          document.getElementById('stat-pending-count').innerText = realCount;
+
+          var listContainer = document.getElementById('pending-items-list');
+          if (realCount === 0) {
+            listContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-mono text-xs">No pending requests. All squads and marshals are clear!</div>';
+            pendingItemsCache = {};
+            return;
+          }
+
+          var html = '';
+          pendingItemsCache = {};
+
+          // Pending Teams
+          pendingTeams.forEach(function(team) {
+            pendingItemsCache['TEAM_' + team._id] = team;
+            html += '<div id="card-pending-TEAM-' + team._id + '" class="neon-card rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 border-yellow/30 bg-[#091122] transition-all duration-300">' +
+              '<div class="flex items-center gap-3">' +
+                '<div class="w-10 h-10 rounded-lg bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan">' +
+                  '<span class="material-symbols-outlined">sports_esports</span>' +
+                '</div>' +
+                '<div>' +
+                  '<div class="flex items-center gap-2">' +
+                    '<h4 class="font-headline font-bold text-white text-sm">' + (team.name || team.callsign) + '</h4>' +
+                    '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan/20 text-cyan border border-cyan/30">SQUAD</span>' +
+                  '</div>' +
+                  '<p class="text-xs text-gray-400 font-mono">Callsign: <b>' + (team.callsign || team.name) + '</b> • Registered: ' + (team.createdAt ? new Date(team.createdAt).toLocaleTimeString() : 'Recent') + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="flex items-center gap-2" id="actions-TEAM-' + team._id + '">' +
+                '<button onclick="approveEntity(\'TEAM\', \'' + team._id + '\')" class="px-4 py-2 rounded-xl bg-green text-black font-headline font-bold text-xs flex items-center gap-1 hover:shadow-[0_0_12px_rgba(0,255,136,0.6)] active:scale-95 transition cursor-pointer">' +
+                  '<span class="material-symbols-outlined text-sm">check</span> <span>APPROVE SQUAD</span>' +
+                '</button>' +
+                '<button onclick="rejectEntity(\'TEAM\', \'' + team._id + '\')" class="px-3 py-2 rounded-xl bg-red-500/20 text-red-400 font-headline font-bold text-xs hover:bg-red-500/30 active:scale-95 transition cursor-pointer">' +
+                  '<span class="material-symbols-outlined text-sm">close</span>' +
+                '</button>' +
+              '</div>' +
+            '</div>';
+          });
+
+          // Pending Users (Marshals)
+          pendingMarshals.forEach(function(user) {
+            pendingItemsCache['USER_' + user._id] = user;
+            html += '<div id="card-pending-USER-' + user._id + '" class="neon-card rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 border-green/30 bg-[#091122] transition-all duration-300">' +
+              '<div class="flex items-center gap-3">' +
+                '<div class="w-10 h-10 rounded-lg bg-green/20 border border-green/40 flex items-center justify-center text-green">' +
+                  '<span class="material-symbols-outlined">verified</span>' +
+                '</div>' +
+                '<div>' +
+                  '<div class="flex items-center gap-2">' +
+                    '<h4 class="font-headline font-bold text-white text-sm">' + user.name + '</h4>' +
+                    '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30">FIELD MARSHAL</span>' +
+                  '</div>' +
+                  '<p class="text-xs text-gray-400 font-mono">Callsign: <b>' + user.callsign + '</b> • Station: <b>' + (user.zoneLabel || user.zoneId || 'Unassigned') + '</b></p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="flex items-center gap-2" id="actions-USER-' + user._id + '">' +
+                '<button onclick="approveEntity(\'USER\', \'' + user._id + '\')" class="px-4 py-2 rounded-xl bg-green text-black font-headline font-bold text-xs flex items-center gap-1 hover:shadow-[0_0_12px_rgba(0,255,136,0.6)] active:scale-95 transition cursor-pointer">' +
+                  '<span class="material-symbols-outlined text-sm">check</span> <span>APPROVE MARSHAL</span>' +
+                '</button>' +
+                '<button onclick="rejectEntity(\'USER\', \'' + user._id + '\')" class="px-3 py-2 rounded-xl bg-red-500/20 text-red-400 font-headline font-bold text-xs hover:bg-red-500/30 active:scale-95 transition cursor-pointer">' +
+                  '<span class="material-symbols-outlined text-sm">close</span>' +
+                '</button>' +
+              '</div>' +
+            '</div>';
+          });
+
+          listContainer.innerHTML = html;
+        }
+      } catch (e) {
+        console.error('Pending load error:', e);
+      } finally {
+        isLoadingPending = false;
+      }
+    }
+
+    // Load Active Authorized Clearances (Live Roster directly on Approvals tab)
+    async function loadApprovedRoster() {
+      if (isLoadingRoster) return;
+      isLoadingRoster = true;
+      try {
+        var [teamsRes, usersRes] = await Promise.all([
+          fetch('/api/teams?_t=' + Date.now(), { cache: 'no-store' }),
+          fetch('/api/database?collection=users&_t=' + Date.now(), { cache: 'no-store' })
+        ]);
+        var teamsData = await teamsRes.json();
+        var usersData = await usersRes.json();
+
+        var approvedTeams = (teamsData.teams || []).filter(function(t) { return t.isApproved; });
+        var approvedMarshals = (usersData.data || []).filter(function(u) { return u.isApproved && u.role === 'MEMBER'; });
+        var totalActive = approvedTeams.length + approvedMarshals.length;
+
+        var badge = document.getElementById('badge-approved-total');
+        if (badge) badge.innerText = totalActive + ' ACTIVE';
+        document.getElementById('stat-teams-count').innerText = approvedTeams.length;
+        document.getElementById('stat-marshals-count').innerText = approvedMarshals.length;
+
+        var container = document.getElementById('approved-items-list');
+        if (!container) return;
+
+        if (totalActive === 0) {
+          container.innerHTML = '<div class="text-center py-6 text-gray-400 text-xs font-mono">No active clearances yet. Approvals from the queue above will instantly appear here.</div>';
+          return;
+        }
+
+        var html = '';
+        // Approved Squads
+        approvedTeams.forEach(function(team) {
+          html += '<div class="neon-card rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 border-cyan/30 bg-[#071322] hover:border-cyan/60 transition">' +
+            '<div class="flex items-center gap-3">' +
+              '<div class="w-9 h-9 rounded-lg bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan shadow-[0_0_8px_rgba(0,229,255,0.3)]">' +
+                '<span class="material-symbols-outlined text-lg">groups</span>' +
+              '</div>' +
+              '<div>' +
+                '<div class="flex items-center gap-2">' +
+                  '<h4 class="font-headline font-bold text-white text-sm">' + (team.name || team.callsign) + '</h4>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan/20 text-cyan border border-cyan/30">SQUAD</span>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30 flex items-center gap-1 font-semibold">' +
+                    '<span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span> LIVE IN GRID' +
+                  '</span>' +
+                '</div>' +
+                '<p class="text-xs text-gray-400 font-mono mt-0.5">' +
+                  'Callsign: <b class="text-gray-200">' + (team.callsign || team.name) + '</b> • Score: <b class="text-green">' + (team.score || 0) + ' PTS</b> • Cards: <b class="text-cyan">' + (team.cards ? team.cards.length : 0) + '</b> • Zone Step: <b>' + (team.currentClueIndex || 0) + '</b>' +
+                '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex items-center gap-2">' +
+              '<button onclick="rejectEntity(\'TEAM\', \'' + team._id + '\')" title="Revoke clearance" class="px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 font-headline font-bold text-[11px] hover:bg-red-500/20 active:scale-95 transition cursor-pointer flex items-center gap-1">' +
+                '<span class="material-symbols-outlined text-xs">block</span> <span>REVOKE</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        });
+
+        // Approved Marshals
+        approvedMarshals.forEach(function(user) {
+          html += '<div class="neon-card rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 border-green/30 bg-[#061814] hover:border-green/60 transition">' +
+            '<div class="flex items-center gap-3">' +
+              '<div class="w-9 h-9 rounded-lg bg-green/20 border border-green/40 flex items-center justify-center text-green shadow-[0_0_8px_rgba(0,255,136,0.3)]">' +
+                '<span class="material-symbols-outlined text-lg">verified_user</span>' +
+              '</div>' +
+              '<div>' +
+                '<div class="flex items-center gap-2">' +
+                  '<h4 class="font-headline font-bold text-white text-sm">' + user.name + '</h4>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30">FIELD MARSHAL</span>' +
+                  '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30 flex items-center gap-1 font-semibold">' +
+                    '<span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span> STATION READY' +
+                  '</span>' +
+                '</div>' +
+                '<p class="text-xs text-gray-400 font-mono mt-0.5">' +
+                  'Callsign: <b class="text-gray-200">' + user.callsign + '</b> • Station: <b class="text-yellow">' + (user.zoneLabel || user.zoneId || 'Zone Station') + '</b>' +
+                '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex items-center gap-2">' +
+              '<button onclick="rejectEntity(\'USER\', \'' + user._id + '\')" title="Revoke clearance" class="px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 font-headline font-bold text-[11px] hover:bg-red-500/20 active:scale-95 transition cursor-pointer flex items-center gap-1">' +
+                '<span class="material-symbols-outlined text-xs">block</span> <span>REVOKE</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        });
+
+        container.innerHTML = html;
+      } catch (e) {
+        console.error('Roster load error:', e);
+      } finally {
+        isLoadingRoster = false;
+      }
+    }
+
+    // Instant Optimistic Approval (0ms Perceived Lag)
+    async function approveEntity(type, id) {
+      var cardId = 'card-pending-' + type + '-' + id;
+      var cardEl = document.getElementById(cardId);
+      var actionsEl = document.getElementById('actions-' + type + '-' + id);
+
+      // 1. INSTANT OPTIMISTIC UI FEEDBACK
+      if (actionsEl) {
+        actionsEl.innerHTML = '<span class="px-3 py-1.5 rounded-lg bg-green text-black font-headline font-bold text-xs flex items-center gap-1 shadow-[0_0_15px_rgba(0,255,136,0.8)] animate-pulse">' +
+          '<span class="material-symbols-outlined text-sm">check_circle</span> <span>AUTHORIZED!</span>' +
+        '</span>';
+      }
+
+      if (cardEl) {
+        cardEl.style.borderColor = '#00ff88';
+        cardEl.style.boxShadow = '0 0 20px rgba(0,255,136,0.4)';
+        setTimeout(function() {
+          if (cardEl && cardEl.parentNode) {
+            cardEl.remove();
+            var listContainer = document.getElementById('pending-items-list');
+            if (listContainer && listContainer.children.length === 0) {
+              listContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-mono text-xs">No pending requests. All squads and marshals are clear!</div>';
+            }
+          }
+        }, 400);
+      }
+
+      // Update counters optimistically
+      var curPending = parseInt(document.getElementById('badge-pending').innerText || '0', 10);
+      if (curPending > 0) {
+        document.getElementById('badge-pending').innerText = curPending - 1;
+        document.getElementById('stat-pending-count').innerText = curPending - 1;
+      }
+
+      // 2. DISPATCH SERVER REQUEST IN BACKGROUND
+      try {
+        var res = await fetch('/api/admin/approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: type, id: id })
+        });
+        var data = await res.json();
+        if (data.success) {
+          // Refresh live roster & leaderboard silently
+          loadApprovedRoster();
+          loadLeaderboard();
+          loadDatabaseData();
+        } else {
+          alert('Approval error: ' + (data.error || 'Server rejected'));
+          loadPendingApprovals();
+          loadApprovedRoster();
+        }
+      } catch (e) {
+        alert('Approval network error: ' + e.message);
+        loadPendingApprovals();
+        loadApprovedRoster();
+      }
+    }
+
+    // Instant Optimistic Rejection
+    async function rejectEntity(type, id) {
+      if (!confirm('Are you sure you want to reject/revoke clearance for this entry?')) return;
+      var cardPending = document.getElementById('card-pending-' + type + '-' + id);
+      if (cardPending) {
+        cardPending.style.opacity = '0.3';
+        cardPending.style.transform = 'scale(0.95)';
+        setTimeout(function() {
+          if (cardPending && cardPending.parentNode) cardPending.remove();
+        }, 300);
+      }
+
+      try {
+        var res = await fetch('/api/admin/reject', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: type, id: id })
+        });
+        var data = await res.json();
+        if (data.success) {
+          loadPendingApprovals();
+          loadApprovedRoster();
+          loadLeaderboard();
+          loadDatabaseData();
+        }
+      } catch (e) {
+        alert('Reject error: ' + e.message);
+        loadPendingApprovals();
+        loadApprovedRoster();
+      }
+    }
+
+    // Load MongoDB Database Data
+    async function loadDatabaseData() {
+      try {
+        var res = await fetch('/api/database/all');
+        var data = await res.json();
+        if (data.success) {
+          cachedDbData = data.collections;
+          
+          document.getElementById('count-users').innerText = (cachedDbData.users || []).length;
+          document.getElementById('count-teams').innerText = (cachedDbData.teams || []).length;
+          document.getElementById('count-clues').innerText = (cachedDbData.clues || []).length;
+          document.getElementById('count-checkins').innerText = (cachedDbData.checkins || []).length;
+          document.getElementById('count-logs').innerText = (cachedDbData.system_logs || []).length;
+
+          // Count marshals
+          var marshals = (cachedDbData.users || []).filter(function(u) { return u.role === 'MEMBER' && u.isApproved; });
+          document.getElementById('stat-marshals-count').innerText = marshals.length;
+
+          renderCollectionDocuments();
+        }
+      } catch (e) {
+        console.error('Database load error:', e);
+      }
+    }
+
+    function viewCollection(colName) {
+      activeCollection = colName;
+      ['users', 'teams', 'clues', 'checkins', 'gameState', 'system_logs'].forEach(function(c) {
+        var btn = document.getElementById('col-btn-' + c);
+        if (btn) {
+          if (c === colName) {
+            btn.className = 'px-4 py-2 rounded-xl bg-cyan text-black font-mono text-xs font-bold transition';
+          } else {
+            btn.className = 'px-4 py-2 rounded-xl bg-[#091122] text-gray-300 border border-cyan/20 font-mono text-xs font-bold hover:text-white transition';
+          }
+        }
+      });
+      renderCollectionDocuments();
+    }
+
+    function renderCollectionDocuments() {
+      if (!cachedDbData) return;
+      var docs = cachedDbData[activeCollection];
+      var container = document.getElementById('collection-docs-container');
+      var filterText = (document.getElementById('collection-search').value || '').toLowerCase().trim();
+
+      if (activeCollection === 'gameState') {
+        container.innerHTML = '<div class="bg-[#050914] border border-cyan/30 rounded-xl p-4 font-mono text-xs text-cyan overflow-x-auto"><pre>' + JSON.stringify(docs, null, 2) + '</pre></div>';
+        document.getElementById('record-count-indicator').innerText = '1 document in collection gameState';
+        return;
+      }
+
+      var list = Array.isArray(docs) ? docs : [];
+      if (filterText) {
+        list = list.filter(function(item) {
+          return JSON.stringify(item).toLowerCase().indexOf(filterText) !== -1;
+        });
+      }
+
+      document.getElementById('record-count-indicator').innerText = 'Showing ' + list.length + ' documents in collection ' + activeCollection;
+
+      if (list.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-gray-400 font-mono text-xs">No documents found matching criteria.</div>';
+        return;
+      }
+
+      container.innerHTML = list.map(function(doc, idx) {
+        var docId = doc._id || ('doc_' + idx);
+        var title = doc.name || doc.callsign || doc.action || docId;
+        var approvalBadge = '';
+        if (typeof doc.isApproved !== 'undefined') {
+          approvalBadge = doc.isApproved 
+            ? '<span class="px-2 py-0.5 rounded text-[10px] bg-green/20 text-green border border-green/30">APPROVED</span>'
+            : '<span class="px-2 py-0.5 rounded text-[10px] bg-yellow/20 text-yellow border border-yellow/30">PENDING</span>';
+        }
+
+        return '<div class="neon-card rounded-xl p-3.5 bg-[#0A101D] border border-cyan/20">' +
+          '<div class="flex items-center justify-between mb-2">' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="text-cyan font-bold font-mono text-xs">' + title + '</span>' +
+              '<span class="text-[10px] font-mono text-gray-500">_id: ' + docId + '</span>' +
+              approvalBadge +
+            '</div>' +
+            '<button onclick="toggleDocJson(\'' + docId + '\')" class="text-[11px] font-mono text-cyan hover:underline">Toggle JSON</button>' +
+          '</div>' +
+          '<div id="doc-json-' + docId + '" class="bg-[#050914] p-3 rounded-lg font-mono text-[11px] text-gray-300 overflow-x-auto max-h-48">' +
+            '<pre>' + JSON.stringify(doc, null, 2) + '</pre>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function toggleDocJson(id) {
+      var el = document.getElementById('doc-json-' + id);
+      if (el) el.classList.toggle('hidden');
+    }
+
+    function filterCollectionRecords() {
+      renderCollectionDocuments();
+    }
+
+    function exportDatabase() {
+      window.open('/api/database/export', '_blank');
+    }
+  </script>
+</body>
+</html>
