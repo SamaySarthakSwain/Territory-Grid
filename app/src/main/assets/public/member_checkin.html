@@ -547,11 +547,11 @@
         var raw = localStorage.getItem('territory_grid_user') || sessionStorage.getItem('territory_grid_user');
         currentUser = raw ? JSON.parse(raw) : null;
         if (!currentUser) {
-          window.location.href = 'login.html';
+          window.location.href = 'login.html?logout=true';
           return;
         }
         if (!currentUser.isApproved && currentUser.role !== 'ADMIN') {
-          window.location.href = 'login.html';
+          window.location.href = 'login.html?logout=true';
           return;
         }
         if (currentUser.role === 'PLAYER') {
@@ -560,7 +560,7 @@
           return;
         }
       } catch (e) {
-        window.location.href = 'login.html';
+        window.location.href = 'login.html?logout=true';
       }
     })();
 
@@ -658,7 +658,7 @@
     function signOutUser() {
       localStorage.removeItem('territory_grid_user');
       sessionStorage.removeItem('territory_grid_user');
-      window.location.href = 'login.html';
+      window.location.href = 'login.html?logout=true';
     }
 
     
@@ -667,7 +667,7 @@
       if (confirm('Sign out from Field Marshal station (' + zone + ')?')) {
         localStorage.removeItem('territory_grid_user');
         sessionStorage.removeItem('territory_grid_user');
-        window.location.href = 'login.html';
+        window.location.href = 'login.html?logout=true';
       }
     }
 

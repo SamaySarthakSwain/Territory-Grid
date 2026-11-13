@@ -844,7 +844,7 @@
     function signOut() {
       localStorage.removeItem('territory_grid_user');
       sessionStorage.removeItem('territory_grid_user');
-      window.location.href = 'login.html';
+      window.location.href = 'login.html?logout=true';
     }
 
     function switchTab(tab) {
@@ -1135,6 +1135,12 @@
         var badgeEl = document.getElementById('game-phase-badge');
         var pauseBtnText = document.getElementById('btn-pause-text');
 
+        // Clear countdown timer when not in COUNTDOWN status
+        if (serverGameState !== 'COUNTDOWN' && adminCountdownTimer) {
+          clearInterval(adminCountdownTimer);
+          adminCountdownTimer = null;
+        }
+
         if (serverGameState === 'COUNTDOWN') {
           var endsAt = data.countdownEndsAt || (gs && gs.countdownEndsAt);
           if (endsAt) {
@@ -1144,11 +1150,6 @@
             }
           } else if (!adminCountdownTimer) {
             startAdminLocalCountdown(new Date(Date.now() + (countdownSec || 10) * 1000).toISOString());
-          }
-        } else {
-          if (adminCountdownTimer) {
-            clearInterval(adminCountdownTimer);
-            adminCountdownTimer = null;
           }
         } else if (serverGameState === 'PLAYER_PHASE') {
           if (badgeEl) {

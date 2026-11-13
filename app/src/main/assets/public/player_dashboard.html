@@ -1012,7 +1012,7 @@
         var raw = localStorage.getItem('territory_grid_user') || sessionStorage.getItem('territory_grid_user');
         currentUser = raw ? JSON.parse(raw) : null;
         if (!currentUser) {
-          window.location.href = 'login.html';
+          window.location.href = 'login.html?logout=true';
           return;
         }
         if (currentUser.role === 'MEMBER') {
@@ -1029,7 +1029,7 @@
                 localStorage.setItem('territory_grid_user', JSON.stringify(currentUser));
                 sessionStorage.setItem('territory_grid_user', JSON.stringify(currentUser));
               } else {
-                window.location.href = 'login.html';
+                window.location.href = 'login.html?logout=true';
               }
             })
             .catch(function() {
@@ -1055,7 +1055,7 @@
         } catch(err){}
 
       } catch (e) {
-        window.location.href = 'login.html';
+        window.location.href = 'login.html?logout=true';
       }
     })();
 
@@ -1361,7 +1361,7 @@
     function signOutUser() {
       localStorage.removeItem('territory_grid_user');
       sessionStorage.removeItem('territory_grid_user');
-      window.location.href = 'login.html';
+      window.location.href = 'login.html?logout=true';
     }
 
     

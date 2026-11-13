@@ -216,7 +216,7 @@ async function runAudit() {
     }
 
     if (testMarshalId || testMarshalCallsign) {
-      await wait(800);
+      await wait(1400);
       const approveMarshal = await request('/api/admin/approve-user', { method: 'POST' }, {
         userId: testMarshalId,
         id: testMarshalId || testMarshalCallsign,
