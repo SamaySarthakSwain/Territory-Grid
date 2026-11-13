@@ -465,9 +465,9 @@
           }
         }
       }, 1000);
-      // Poll teams every 4 seconds
-      setInterval(loadTeams, 5000 + Math.floor(Math.random()*1000));
-      setInterval(loadRecentCheckins, 5000);
+      // Poll teams every 2-2.5 seconds for instant check-in roster sync
+      setInterval(loadTeams, 2200 + Math.floor(Math.random()*400));
+      setInterval(loadRecentCheckins, 2500);
     });
 
     function signOutUser() {

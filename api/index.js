@@ -1253,20 +1253,15 @@ function ensureUniqueTeamCodes(teams) {
       if (atlasDb) {
         const rawTeams = await atlasDb.collection('teams').find().toArray();
         const teams = ensureUniqueTeamCodes(rawTeams);
-        for (const t of teams) {
-          await atlasDb.collection('teams').updateOne({ _id: t._id }, { $set: { teamCode: t.teamCode } });
-        }
-        return sendJson(res, 200, { success: true, teams });
+        return sendJson(res, 200, { success: true, teams }, 'public, max-age=1, s-maxage=1, stale-while-revalidate=1', req);
       }
       memoryStore.load();
       ensureUniqueTeamCodes(memoryStore.collections.teams);
-      memoryStore.save();
-      return sendJson(res, 200, { success: true, teams: memoryStore.collections.teams });
+      return sendJson(res, 200, { success: true, teams: memoryStore.collections.teams }, 'public, max-age=1, s-maxage=1, stale-while-revalidate=1', req);
     }
 
     // ─────────────────────────────────────────────────────────
     // 10b. GET /api/clues (Mission Directives & Checkpoint Places)
-    // Only returns places where a Field Marshal has registered (unless all=true or role=ADMIN/MEMBER)
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/clues' && req.method === 'GET') {
       const showAll = query.all === 'true' || query.role === 'ADMIN' || query.role === 'MEMBER';
@@ -1276,13 +1271,13 @@ function ensureUniqueTeamCodes(teams) {
         const marshals = await atlasDb.collection('users').find({ role: 'MEMBER', zoneId: { $ne: null } }).toArray();
         const activeZoneMap = {};
         marshals.forEach(m => {
-          const z = (m.zoneId || '').toUpperCase().trim();
+          const z = (m.zoneId || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
           if (!activeZoneMap[z]) activeZoneMap[z] = [];
           activeZoneMap[z].push(m.callsign || m.name);
         });
 
         const allClues = rawClues.map(c => {
-          const z = (c.zoneId || '').toUpperCase().trim();
+          const z = (c.zoneId || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
           const assignedMarshals = activeZoneMap[z] || [];
           return {
             ...c,
@@ -1292,7 +1287,7 @@ function ensureUniqueTeamCodes(teams) {
           };
         });
 
-        if (showAll) {
+        if (showAll || allClues.filter(c => c.hasMarshal).length === 0) {
           return sendJson(res, 200, {
             success: true,
             clues: allClues,
@@ -1304,10 +1299,10 @@ function ensureUniqueTeamCodes(teams) {
         const playerClues = allClues.filter(c => c.hasMarshal);
         return sendJson(res, 200, {
           success: true,
-          clues: playerClues,
+          clues: playerClues.length > 0 ? playerClues : allClues,
           totalCount: playerClues.length,
           allPlacesCount: allClues.length,
-          waitingForMarshals: playerClues.length === 0
+          waitingForMarshals: false
         });
       }
 
@@ -1315,13 +1310,13 @@ function ensureUniqueTeamCodes(teams) {
       const marshals = (memoryStore.collections.users || []).filter(u => u.role === 'MEMBER' && u.zoneId);
       const activeZoneMap = {};
       marshals.forEach(m => {
-        const z = (m.zoneId || '').toUpperCase().trim();
+        const z = (m.zoneId || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
         if (!activeZoneMap[z]) activeZoneMap[z] = [];
         activeZoneMap[z].push(m.callsign || m.name);
       });
 
       const allClues = (memoryStore.collections.clues || []).map(c => {
-        const z = (c.zoneId || '').toUpperCase().trim();
+        const z = (c.zoneId || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
         const assignedMarshals = activeZoneMap[z] || [];
         return {
           ...c,
@@ -1331,7 +1326,7 @@ function ensureUniqueTeamCodes(teams) {
         };
       });
 
-      if (showAll) {
+      if (showAll || allClues.filter(c => c.hasMarshal).length === 0) {
         return sendJson(res, 200, {
           success: true,
           clues: allClues,
@@ -1343,10 +1338,10 @@ function ensureUniqueTeamCodes(teams) {
       const playerClues = allClues.filter(c => c.hasMarshal);
       return sendJson(res, 200, {
         success: true,
-        clues: playerClues,
+        clues: playerClues.length > 0 ? playerClues : allClues,
         totalCount: playerClues.length,
         allPlacesCount: allClues.length,
-        waitingForMarshals: playerClues.length === 0
+        waitingForMarshals: false
       });
     }
 
@@ -1622,7 +1617,7 @@ function ensureUniqueTeamCodes(teams) {
       team.currentClueIndex = (team.currentClueIndex || 0) + 1;
       team.updatedAt = new Date().toISOString();
 
-      memoryStore.save();
+      await memoryStore.syncToCloud();
       memoryStore.logEvent('CHECKIN', `Team "${team.name}" awarded +${totalPoints} PTS at ${zoneId} (Total: ${team.score} PTS)`);
 
       return sendJson(res, 200, {

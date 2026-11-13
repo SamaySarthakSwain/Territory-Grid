@@ -1212,12 +1212,12 @@
       }, 1000);
 
       loadCluesAndSync();
-      // Adaptive Jittered Sync Engine (Engineered for 1,000+ Concurrent Operatives)
+      // High-frequency real-time squad synchronization engine (~1.6s interval)
       function scheduleNextTeamSync() {
-        var jitter = Math.floor(Math.random() * 800);
+        var jitter = Math.floor(Math.random() * 400);
         setTimeout(function() {
           syncTeamData().finally(scheduleNextTeamSync);
-        }, 3200 + jitter);
+        }, 1600 + jitter);
       }
       scheduleNextTeamSync();
 
@@ -1267,10 +1267,10 @@
 
     async function loadCluesAndSync() {
       try {
-        var res = await fetch(apiUrl('/api/clues?_t=') + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/clues?all=true&_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
-        if (data.success) {
-          allClues = data.clues || [];
+        if (data.success && Array.isArray(data.clues)) {
+          allClues = data.clues;
         }
       } catch (e) {
         console.warn('Failed to load clues:', e);
@@ -1324,13 +1324,14 @@
             // Flash mission directive card in glowing amber
             var clueCard = document.getElementById('active-clue-directive-card');
             if (clueCard) {
-              clueCard.classList.add('ring-4', 'ring-[#FFD600]', 'shadow-[0_0_50px_rgba(255,214,0,0.4)]');
+              clueCard.classList.add('ring-4', 'ring-[#FFD600]', 'shadow-[0_0_50px_rgba(255,214,0,0.5)]');
               setTimeout(function() {
-                clueCard.classList.remove('ring-4', 'ring-[#FFD600]', 'shadow-[0_0_50px_rgba(255,214,0,0.4)]');
+                clueCard.classList.remove('ring-4', 'ring-[#FFD600]', 'shadow-[0_0_50px_rgba(255,214,0,0.5)]');
               }, 4000);
             }
-            // Rotate card for the new checkpoint objective!
+            // Rotate card instantly for the new checkpoint objective!
             rotateCardCipher(true);
+            showPlayerNotification('🎯 NEW LOCATION UNLOCKED! Checkpoint #' + (currentClueIdx + 1) + ' directive active.');
           }
 
           lastRecordedScore = myTeam.score || 0;
@@ -1367,26 +1368,26 @@
           // Render collected deck
           renderDeck(cards);
 
-          // 3. Active Clue Directive
+          // 3. Active Clue Directive & Next Location Display
           var currentIdx = myTeam.currentClueIndex || 0;
           if (!allClues || allClues.length === 0) {
             document.getElementById('active-checkpoint-label').innerText = 'STANDBY FOR DEPLOYMENT';
-            document.getElementById('active-zone-badge').innerText = 'AWAITING MARSHALS';
-            document.getElementById('active-clue-text').innerHTML = '⏳ <b>FIELD MARSHALS DEPLOYING</b><br>Field Marshals are taking station at designated campus checkpoints. Mission clues will unlock automatically as soon as marshals take station!';
-            document.getElementById('team-zone-label').innerText = 'Awaiting Marshal Stations';
+            document.getElementById('active-zone-badge').innerText = 'AWAITING STATIONS';
+            document.getElementById('active-clue-text').innerHTML = '⏳ <b>FIELD DIRECTIVES DEPLOYING</b><br>Field Marshals are taking station at designated campus checkpoints. Directives will unlock as soon as stations open!';
+            document.getElementById('team-zone-label').innerText = 'Awaiting Checkpoint Stations';
           } else if (currentIdx >= allClues.length) {
             document.getElementById('active-checkpoint-label').innerText = 'FINAL OBJECTIVE CLEARED';
             document.getElementById('active-zone-badge').innerText = 'COMPLETED';
-            document.getElementById('active-clue-text').innerHTML = '🏆 <b>ALL CHECKPOINTS COMPLETED!</b> Return to Game Master Central for final scoring!';
-            document.getElementById('team-zone-label').innerText = 'All ' + allClues.length + ' Checkpoints Completed';
+            document.getElementById('active-clue-text').innerHTML = '🏆 <b>ALL CAMPUS CHECKPOINTS COMPLETED!</b> Return to Game Master Samay for final scoring & victory ceremony!';
+            document.getElementById('team-zone-label').innerText = 'All ' + allClues.length + ' Checkpoints Cleared';
           } else {
-            var clueId = (myTeam.clueOrder && myTeam.clueOrder[currentIdx]) || allClues[currentIdx]._id;
-            var activeClue = allClues.find(function(c) { return c._id === clueId; }) || allClues[currentIdx];
+            var clueId = (myTeam.clueOrder && myTeam.clueOrder[currentIdx]) || (allClues[currentIdx] ? allClues[currentIdx]._id : null);
+            var activeClue = (allClues.find(function(c) { return c._id === clueId; })) || allClues[currentIdx % allClues.length] || allClues[0];
             
             document.getElementById('active-checkpoint-label').innerText = 'Beacon Checkpoint #' + String(currentIdx + 1).padStart(2, '0') + ' (of ' + allClues.length + ')';
             document.getElementById('active-zone-badge').innerText = (activeClue.zoneId || 'SECTOR').toUpperCase();
-            document.getElementById('active-clue-text').innerText = '“' + activeClue.text + '”';
-            document.getElementById('team-zone-label').innerText = 'Active Hunt • ' + (activeClue.zoneLabel || activeClue.zoneId);
+            document.getElementById('active-clue-text').innerText = '“' + (activeClue.text || 'Proceed to campus station') + '”';
+            document.getElementById('team-zone-label').innerText = 'Next Location: ' + (activeClue.zoneLabel || activeClue.zoneId || 'Station Area');
           }
 
           if (cards.length > 0) {

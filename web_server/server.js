@@ -1213,7 +1213,7 @@ const server = http.createServer(async (req, res) => {
         team.currentClueIndex = (team.currentClueIndex || 0) + 1;
         team.updatedAt = new Date().toISOString();
 
-        db.save();
+        await db.syncToCloud();
         db.logEvent('CHECKIN', `Team "${team.name}" awarded +${totalPoints} PTS at ${zoneId} (Total: ${team.score} PTS)`);
 
         return sendJson(res, 200, {

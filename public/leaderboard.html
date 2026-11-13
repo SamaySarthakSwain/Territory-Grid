@@ -262,6 +262,13 @@
     var currentFilter = 'OVERALL';
     var remainingHuntSeconds = 3120;
 
+    function apiUrl(endpoint) {
+      if (typeof window !== 'undefined' && window.__TERRITORY_GRID_API_URL__) {
+        return window.__TERRITORY_GRID_API_URL__.replace(/\/+$/, '') + endpoint;
+      }
+      return endpoint;
+    }
+
     // 1. Session Detection
     try {
       var rawUser = localStorage.getItem('territory_grid_user') || sessionStorage.getItem('territory_grid_user');
@@ -336,7 +343,7 @@
     // 2. Synchronized 52-Minute Game State Clock
     async function syncGameStateClock() {
       try {
-        var res = await fetch('/api/game/state?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/game/state?_t=' + Date.now()), { cache: 'no-store' });
         var data = await res.json();
         if (!data.success) return;
 
@@ -396,7 +403,7 @@
     // 4. Main Refresh & Live Data Hydration
     async function refreshLeaderboard(showToast) {
       try {
-        var res = await fetch('/api/teams?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/teams?_t=' + Date.now()), { cache: 'no-store' });
         var data = await res.json();
         if (!data.success) return;
 
@@ -780,9 +787,9 @@
       syncGameStateClock();
       refreshLeaderboard();
 
-      // Poll sync every 3 seconds
-      setInterval(refreshLeaderboard, 4000 + Math.floor(Math.random()*1000));
-      setInterval(syncGameStateClock, 3500 + Math.floor(Math.random()*800));
+      // Poll sync every 1.8-2.2 seconds for ultra-responsive live score tracking
+      setInterval(refreshLeaderboard, 1800 + Math.floor(Math.random()*400));
+      setInterval(syncGameStateClock, 3000 + Math.floor(Math.random()*500));
     });
   </script>
 </body>
