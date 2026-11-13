@@ -286,7 +286,7 @@
           <!-- Admin Quick Hint (Shown only when Admin is selected) -->
           <div id="admin-credentials-hint" class="hidden p-3 rounded-xl bg-magenta/10 border border-magenta/30 text-xs font-mono text-magenta flex items-center gap-2">
             <span class="material-symbols-outlined text-sm">lock</span>
-            <span>RESTRICTED ACCESS: Enter ID "samay" and password "samay" to access the Admin Terminal.</span>
+            <span>RESTRICTED PROTOCOL // Authorized Command Personnel Only.</span>
           </div>
 
           <!-- Submit Button -->
@@ -326,7 +326,7 @@
         <h2 class="text-2xl font-headline font-extrabold text-white mb-2">WAITING FOR GAME MASTER</h2>
         
         <p class="text-xs sm:text-sm text-gray-300 max-w-md mx-auto mb-6">
-          Your credentials for <span class="text-cyan font-bold" id="waiting-callsign">Callsign</span> (<span class="text-white font-semibold" id="waiting-role">Squad</span>) have been submitted to Game Master <b>Samay</b>.
+          Your credentials for <span class="text-cyan font-bold" id="waiting-callsign">Callsign</span> (<span class="text-white font-semibold" id="waiting-role">Squad</span>) have been submitted for Game Master clearance.
         </p>
 
         <!-- Live Sync Status Box -->
@@ -366,7 +366,7 @@
 
   <!-- Footer Notice -->
   <footer class="w-full max-w-4xl mx-auto py-3 text-center text-[11px] font-mono text-gray-400 border-t border-cyan/10">
-    TERRITORY GRID v2.6 // CLUB FEST ADVENTURE // GAME MASTER: SAMAY
+    TERRITORY GRID v2.6 // CLUB FEST ADVENTURE // OPERATIONAL COMMAND
   </footer>
 
   <!-- SCRIPT LOGIC: PORTALS, REGISTRATION, APPROVAL WAITING HALL -->
@@ -387,7 +387,7 @@
         if (urlParams.get('restricted') === 'admin') {
           clearSession();
           setTimeout(function() {
-            showAlert('Access Denied: Only Game Master Samay (ID: samay) can access the Admin Command Terminal.', true);
+            showAlert('Access Denied: Command Terminal requires authorized credentials.', true);
             selectPortal('ADMIN');
           }, 150);
         }
@@ -530,7 +530,7 @@
         // Do NOT auto-fill admin credentials - require manual entry of samay / samay
         var callsignInput = document.getElementById('input-callsign');
         var passInput = document.getElementById('input-password');
-        if (callsignInput) { callsignInput.value = ''; callsignInput.placeholder = 'Enter Admin ID (samay)'; }
+        if (callsignInput) { callsignInput.value = ''; callsignInput.placeholder = 'Enter Command ID'; }
         if (passInput) { passInput.value = ''; passInput.placeholder = 'Enter Admin Password'; }
       } else if (role === 'MEMBER') {
         if (modeToggleGroup) modeToggleGroup.classList.remove('hidden');
@@ -657,7 +657,7 @@
       }
 
       if (currentRole === 'ADMIN' && (callsign.toLowerCase() !== 'samay' || password !== 'samay')) {
-        showAlert('Security Rejection: Game Master Terminal access is strictly restricted. Only ID "samay" and password "samay" is authorized.', true);
+        showAlert('Clearance Rejected: Invalid Command ID or Access Key.', true);
         return;
       }
 
@@ -800,7 +800,7 @@
         } else if (isManual) {
           var pollTimer = document.getElementById('poll-timer');
           if (pollTimer) {
-            pollTimer.innerText = 'Waiting for Game Master Samay approval... (Checked just now)';
+            pollTimer.innerText = 'Waiting for Game Master approval... (Checked just now)';
           }
         }
       } catch (e) {

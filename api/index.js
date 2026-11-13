@@ -389,7 +389,7 @@ module.exports = async (req, res) => {
 
       const normalizedCallsign = callsign.trim().toLowerCase();
       if (normalizedCallsign === 'samay') {
-        return sendJson(res, 400, { success: false, error: 'Callsign "samay" is reserved for Game Master Admin.' });
+        return sendJson(res, 400, { success: false, error: 'This callsign is reserved.' });
       }
 
       if (atlasDb) {
@@ -536,7 +536,7 @@ module.exports = async (req, res) => {
         } else {
           return sendJson(res, 401, {
             success: false,
-            error: 'Clearance Denied: Admin portal is strictly restricted to Game Master Samay. Invalid ID or password.'
+            error: 'Clearance Rejected: Invalid Command ID or Access Key.'
           });
         }
       }
