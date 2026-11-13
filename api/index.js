@@ -55,7 +55,7 @@ class MemoryStore {
     this.collections = {
       users: [DEFAULT_ADMIN],
       teams: [],
-      clues: DEFAULT_CLUES,
+      clues: [],
       checkins: [],
       gameState: {
         status: 'LOBBY',
@@ -134,12 +134,7 @@ async function getMongoDb() {
     if (!adminUser) {
       await usersCol.insertOne(DEFAULT_ADMIN);
     }
-    const cluesCol = mongoDbInstance.collection('clues');
-    const clueCount = await cluesCol.countDocuments();
-    if (clueCount === 0) {
-      await cluesCol.insertMany(DEFAULT_CLUES);
-    }
-
+    // Ensure clues collection exists without auto-seeding dummy places (Game Master adds places manually)
     return mongoDbInstance;
   } catch (err) {
     console.error('[MongoDB Atlas Connection Error, falling back to memory store]:', err.message);
@@ -695,15 +690,89 @@ module.exports = async (req, res) => {
     }
 
     // ─────────────────────────────────────────────────────────
-    // 10b. GET /api/clues (All Places & Zones)
+    // 10b. GET /api/clues (Mission Directives & Checkpoint Places)
+    // Only returns places where a Field Marshal has registered (unless all=true or role=ADMIN/MEMBER)
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/clues' && req.method === 'GET') {
+      const showAll = query.all === 'true' || query.role === 'ADMIN' || query.role === 'MEMBER';
+
       if (atlasDb) {
-        const clues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
-        return sendJson(res, 200, { success: true, clues });
+        const rawClues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
+        const marshals = await atlasDb.collection('users').find({ role: 'MEMBER', zoneId: { $ne: null } }).toArray();
+        const activeZoneMap = {};
+        marshals.forEach(m => {
+          const z = (m.zoneId || '').toUpperCase().trim();
+          if (!activeZoneMap[z]) activeZoneMap[z] = [];
+          activeZoneMap[z].push(m.callsign || m.name);
+        });
+
+        const allClues = rawClues.map(c => {
+          const z = (c.zoneId || '').toUpperCase().trim();
+          const assignedMarshals = activeZoneMap[z] || [];
+          return {
+            ...c,
+            hasMarshal: assignedMarshals.length > 0,
+            marshals: assignedMarshals,
+            marshalCount: assignedMarshals.length
+          };
+        });
+
+        if (showAll) {
+          return sendJson(res, 200, {
+            success: true,
+            clues: allClues,
+            totalCount: allClues.length,
+            activeCount: allClues.filter(c => c.hasMarshal).length
+          });
+        }
+
+        const playerClues = allClues.filter(c => c.hasMarshal);
+        return sendJson(res, 200, {
+          success: true,
+          clues: playerClues,
+          totalCount: playerClues.length,
+          allPlacesCount: allClues.length,
+          waitingForMarshals: playerClues.length === 0
+        });
       }
+
       memoryStore.load();
-      return sendJson(res, 200, { success: true, clues: memoryStore.collections.clues });
+      const marshals = (memoryStore.collections.users || []).filter(u => u.role === 'MEMBER' && u.zoneId);
+      const activeZoneMap = {};
+      marshals.forEach(m => {
+        const z = (m.zoneId || '').toUpperCase().trim();
+        if (!activeZoneMap[z]) activeZoneMap[z] = [];
+        activeZoneMap[z].push(m.callsign || m.name);
+      });
+
+      const allClues = (memoryStore.collections.clues || []).map(c => {
+        const z = (c.zoneId || '').toUpperCase().trim();
+        const assignedMarshals = activeZoneMap[z] || [];
+        return {
+          ...c,
+          hasMarshal: assignedMarshals.length > 0,
+          marshals: assignedMarshals,
+          marshalCount: assignedMarshals.length
+        };
+      });
+
+      if (showAll) {
+        return sendJson(res, 200, {
+          success: true,
+          clues: allClues,
+          totalCount: allClues.length,
+          activeCount: allClues.filter(c => c.hasMarshal).length
+        });
+      }
+
+      const playerClues = allClues.filter(c => c.hasMarshal);
+      return sendJson(res, 200, {
+        success: true,
+        clues: playerClues,
+        totalCount: playerClues.length,
+        allPlacesCount: allClues.length,
+        waitingForMarshals: playerClues.length === 0
+      });
     }
 
     // ─────────────────────────────────────────────────────────
@@ -766,6 +835,22 @@ module.exports = async (req, res) => {
       memoryStore.collections.clues = memoryStore.collections.clues.filter(c => c._id !== _id);
       memoryStore.save();
       return sendJson(res, 200, { success: true, message: 'Place deleted successfully.', clues: memoryStore.collections.clues });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 10f. POST /api/admin/clues/clear (Clear all places for clean manual setup)
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/clues/clear' && req.method === 'POST') {
+      if (atlasDb) {
+        await atlasDb.collection('clues').deleteMany({});
+        return sendJson(res, 200, { success: true, message: 'All campus places cleared successfully.', clues: [] });
+      }
+
+      memoryStore.load();
+      memoryStore.collections.clues = [];
+      memoryStore.save();
+      memoryStore.logEvent('CLEAR_PLACES', 'Game Master cleared all campus places.');
+      return sendJson(res, 200, { success: true, message: 'All campus places cleared successfully.', clues: [] });
     }
 
     // ─────────────────────────────────────────────────────────

@@ -200,19 +200,7 @@
               <span class="material-symbols-outlined absolute left-3 top-3 text-green text-lg">location_on</span>
               <select id="input-zone" 
                       class="w-full bg-[#0A101D] border border-green/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-green focus:ring-1 focus:ring-green transition font-body">
-                <option value="ZONE_01">Zone 1 - Library Arch (ZONE_01)</option>
-                <option value="ZONE_02">Zone 2 - Solar Obelisk (ZONE_02)</option>
-                <option value="ZONE_03">Zone 3 - Clocktower Terrace (ZONE_03)</option>
-                <option value="ZONE_04">Zone 4 - Glasshouse Botanical (ZONE_04)</option>
-                <option value="ZONE_05">Zone 5 - Skybridge Concourse (ZONE_05)</option>
-                <option value="ZONE_06">Zone 6 - Amphitheater Canopy (ZONE_06)</option>
-                <option value="ZONE_07">Zone 7 - Science Basin (ZONE_07)</option>
-                <option value="ZONE_08">Zone 8 - Student Pavilion (ZONE_08)</option>
-                <option value="ZONE_09">Zone 9 - North Telecom Pylon (ZONE_09)</option>
-                <option value="ZONE_10">Zone 10 - Turf Perimeter (ZONE_10)</option>
-                <option value="ZONE_11">Zone 11 - Energy Innovation Hub (ZONE_11)</option>
-                <option value="ZONE_12">Zone 12 - Innovation Arena (ZONE_12)</option>
-                <option value="ZONE_13">Zone 13 - Central Concourse (ZONE_13)</option>
+                <option value="" disabled selected>Loading campus places from Game Master...</option>
               </select>
             </div>
           </div>
@@ -340,21 +328,35 @@
       }
 
       selectPortal('PLAYER');
+
+      // Auto-refresh station dropdown for marshals every 3 seconds
+      setInterval(function() {
+        if (currentRole === 'MEMBER' && currentMode === 'register') {
+          loadDynamicStations();
+        }
+      }, 3000);
     });
 
     async function loadDynamicStations() {
       try {
-        var res = await fetch('/api/clues?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch('/api/clues?all=true&_t=' + Date.now(), { cache: 'no-store' });
         var data = await res.json();
+        var sel = document.getElementById('input-zone');
+        if (!sel) return;
+
         if (data.success && Array.isArray(data.clues) && data.clues.length > 0) {
-          var sel = document.getElementById('input-zone');
-          if (sel) {
-            sel.innerHTML = data.clues.map(function(c, idx) {
-              var zId = c.zoneId || ('ZONE_' + String(idx + 1).padStart(2, '0'));
-              var label = c.zoneLabel || ('Zone ' + (idx + 1));
-              return '<option value="' + zId + '">' + label + ' (' + zId + ')</option>';
-            }).join('');
+          var currentVal = sel.value;
+          sel.innerHTML = data.clues.map(function(c, idx) {
+            var zId = (c.zoneId || ('ZONE_' + String(idx + 1).padStart(2, '0'))).toUpperCase();
+            var label = c.zoneLabel || ('Zone ' + (idx + 1));
+            var marshalTag = (c.hasMarshal || (c.marshals && c.marshals.length > 0)) ? ' [Marshal on Station]' : '';
+            return '<option value="' + zId + '">' + label + ' (' + zId + ')' + marshalTag + '</option>';
+          }).join('');
+          if (currentVal && Array.from(sel.options).some(function(o) { return o.value === currentVal; })) {
+            sel.value = currentVal;
           }
+        } else {
+          sel.innerHTML = '<option value="" disabled selected>⚠️ No campus places created by Game Master yet</option>';
         }
       } catch (e) {
         console.warn('Failed to load dynamic stations:', e);
@@ -448,6 +450,7 @@
           btnSubmit.className = 'w-full py-3 px-6 rounded-xl bg-green text-black font-headline font-bold text-sm tracking-wider uppercase hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] active:scale-98 transition flex items-center justify-center gap-2 mt-6';
         }
         updateFormModeUI();
+        loadDynamicStations();
       } else { // PLAYER
         if (modeToggleGroup) modeToggleGroup.classList.remove('hidden');
         if (adminHint) adminHint.classList.add('hidden');

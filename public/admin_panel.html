@@ -373,26 +373,30 @@
       <div class="neon-card rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
           <div class="flex items-center gap-2 mb-1">
-            <span class="px-2 py-0.5 rounded bg-cyan/20 border border-cyan/40 text-cyan text-[11px] font-mono font-bold uppercase">Game Master Architecture</span>
+            <span class="px-2 py-0.5 rounded bg-cyan/20 border border-cyan/40 text-cyan text-[11px] font-mono font-bold uppercase">Manual Checkpoint Control</span>
             <span class="text-xs font-mono text-gray-400">Campus Checkpoints & Directives</span>
           </div>
           <h2 class="text-2xl font-headline font-bold text-white flex items-center gap-2">
             <span>Places & Zone Clues Manager</span>
           </h2>
           <p class="text-xs text-gray-300 mt-1 max-w-xl font-body">
-            Manage the designated physical hunt stations across campus. Initially configured for 13 Zones (Zone 1 to Zone 13). Adding or updating places updates the player mission clues and Field Marshal station rosters in real-time.
+            Create physical checkpoint locations and mission clue directives manually. As soon as you add a place, it immediately appears in the Field Marshal's station dropdown. Players are <b>only shown places where a Field Marshal has registered</b>.
           </p>
         </div>
 
         <!-- Quick Summary Metrics -->
-        <div class="flex items-center gap-4 bg-[#050914] p-3 rounded-xl border border-cyan/20 shrink-0">
+        <div class="flex items-center gap-3 bg-[#050914] p-3 rounded-xl border border-cyan/20 shrink-0">
           <div class="text-center px-3 border-r border-gray-800">
-            <div class="text-2xl font-mono font-bold text-cyan" id="places-total-count">13</div>
+            <div class="text-2xl font-mono font-bold text-cyan" id="places-total-count">0</div>
             <div class="text-[10px] font-mono uppercase text-gray-400">Total Places</div>
           </div>
           <div class="text-center px-3 border-r border-gray-800">
             <div class="text-2xl font-mono font-bold text-green" id="places-assigned-marshals">0</div>
-            <div class="text-[10px] font-mono uppercase text-gray-400">Active Marshals</div>
+            <div class="text-[10px] font-mono uppercase text-gray-400">Staffed (Visible)</div>
+          </div>
+          <div class="text-center px-3 border-r border-gray-800">
+            <div class="text-2xl font-mono font-bold text-yellow" id="places-unstaffed-count">0</div>
+            <div class="text-[10px] font-mono uppercase text-gray-400">Unstaffed (Hidden)</div>
           </div>
           <div class="text-center px-2">
             <button onclick="loadPlaces()" class="px-3 py-1.5 rounded-lg bg-cyan/10 hover:bg-cyan/20 text-cyan border border-cyan/30 text-xs font-headline font-semibold flex items-center gap-1 transition">
@@ -403,36 +407,38 @@
         </div>
       </div>
 
-      <!-- Quick Set Zone Count Tool & Add New Place Form -->
+      <!-- Add New Place Form & Quick Info Panel -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Left: Configure Number of Places Tool -->
-        <div class="neon-card rounded-2xl p-5 space-y-4">
-          <div class="flex items-center gap-2 border-b border-gray-800 pb-3">
-            <span class="material-symbols-outlined text-yellow text-lg">tune</span>
-            <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider">Configure Number of Zones</h3>
-          </div>
-          <p class="text-xs text-gray-400 font-body">
-            Quickly set the total number of zones for the event (e.g. 13, 14, 15). Expanding automatically creates new zones with default names.
-          </p>
+        <!-- Left: Hunt Station Architecture & Reset -->
+        <div class="neon-card rounded-2xl p-5 space-y-4 flex flex-col justify-between">
           <div class="space-y-3">
-            <div>
-              <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Target Number of Zones</label>
-              <div class="flex gap-2">
-                <input type="number" id="input-target-zone-count" min="1" max="50" value="13" 
-                       class="w-24 bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white font-mono text-center focus:outline-none focus:border-cyan">
-                <button onclick="setTotalZonesCount()" class="flex-1 py-2 px-3 rounded-xl bg-cyan hover:bg-cyan/80 text-black text-xs font-headline font-bold uppercase transition flex items-center justify-center gap-1">
-                  <span class="material-symbols-outlined text-sm">check</span>
-                  <span>Set Zone Count</span>
-                </button>
+            <div class="flex items-center gap-2 border-b border-gray-800 pb-3">
+              <span class="material-symbols-outlined text-yellow text-lg">verified_user</span>
+              <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider">Hunt Station Rules</h3>
+            </div>
+            
+            <div class="space-y-2 text-xs font-body text-gray-300">
+              <div class="flex items-start gap-2 bg-[#091122] p-2.5 rounded-lg border border-gray-800/80">
+                <span class="material-symbols-outlined text-cyan text-sm mt-0.5 shrink-0">edit_location</span>
+                <span><b>1. Manual Setup:</b> Places are never generated automatically. Create your campus places and hints below.</span>
+              </div>
+              <div class="flex items-start gap-2 bg-[#091122] p-2.5 rounded-lg border border-gray-800/80">
+                <span class="material-symbols-outlined text-green text-sm mt-0.5 shrink-0">sync_alt</span>
+                <span><b>2. Instant Marshal Sync:</b> Added places instantly populate the station dropdown during Marshal registration.</span>
+              </div>
+              <div class="flex items-start gap-2 bg-[#091122] p-2.5 rounded-lg border border-gray-800/80">
+                <span class="material-symbols-outlined text-yellow text-sm mt-0.5 shrink-0">visibility_lock</span>
+                <span><b>3. Player Filter:</b> Only places where a Field Marshal has registered are shown to players!</span>
               </div>
             </div>
-            <div class="pt-2 border-t border-gray-800">
-              <button onclick="resetTo13Zones()" class="w-full py-2 px-3 rounded-xl border border-yellow/40 bg-yellow/10 hover:bg-yellow/20 text-yellow text-xs font-headline font-semibold flex items-center justify-center gap-1.5 transition">
-                <span class="material-symbols-outlined text-sm">restart_alt</span>
-                <span>Reset to Standard 13 Zones</span>
-              </button>
-            </div>
+          </div>
+
+          <div class="pt-3 border-t border-gray-800">
+            <button onclick="clearAllPlaces()" class="w-full py-2 px-3 rounded-xl border border-red-500/40 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-headline font-semibold flex items-center justify-center gap-1.5 transition">
+              <span class="material-symbols-outlined text-sm">delete_sweep</span>
+              <span>Clear All Places (Reset)</span>
+            </button>
           </div>
         </div>
 
@@ -441,7 +447,7 @@
           <div class="flex items-center justify-between border-b border-gray-800 pb-3">
             <div class="flex items-center gap-2">
               <span class="material-symbols-outlined text-cyan text-lg">add_location_alt</span>
-              <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider" id="place-form-title">Add / Update Campus Place</h3>
+              <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider" id="place-form-title">Add Campus Place & Mission Clue</h3>
             </div>
             <button id="btn-cancel-edit-place" onclick="cancelEditPlace()" class="hidden text-xs text-gray-400 hover:text-white font-mono flex items-center gap-1">
               <span class="material-symbols-outlined text-xs">close</span> Cancel Edit
@@ -452,25 +458,25 @@
             <input type="hidden" id="place-edit-id" value="">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Zone Identifier *</label>
-                <input type="text" id="input-place-zone-id" placeholder="e.g. ZONE_14" required
+                <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Zone Code (Optional)</label>
+                <input type="text" id="input-place-zone-id" placeholder="e.g. ZONE_01"
                        class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white font-mono uppercase focus:outline-none focus:border-cyan">
               </div>
               <div class="sm:col-span-2">
                 <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Place Name / Location Title *</label>
-                <input type="text" id="input-place-label" placeholder="e.g. Zone 14 - Indoor Arena Foyer" required
+                <input type="text" id="input-place-label" placeholder="e.g. Library Plaza Arch" required
                        class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan">
               </div>
             </div>
 
             <div>
               <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Mission Clue / Directive Hint *</label>
-              <textarea id="input-place-hint" rows="2" placeholder="Describe where players should search (e.g. Find the Yellow Beacon Cone near the solar pavilion...)" required
+              <textarea id="input-place-hint" rows="2" placeholder="Describe where players should search (e.g. Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!)" required
                         class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan font-body"></textarea>
             </div>
 
             <div class="flex items-center justify-between pt-1">
-              <span class="text-[11px] font-mono text-gray-400">All connected phones update automatically</span>
+              <span class="text-[11px] font-mono text-gray-400">Instantly synced to Marshal dropdown & Player hunt sequence</span>
               <button type="submit" id="btn-save-place" class="py-2.5 px-6 rounded-xl bg-gradient-to-r from-cyan to-blue-500 hover:from-cyan/80 hover:to-blue-600 text-black text-xs font-headline font-bold uppercase transition flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,229,255,0.4)]">
                 <span class="material-symbols-outlined text-sm">save</span>
                 <span id="btn-save-place-text">Save / Add Place</span>
@@ -486,7 +492,7 @@
         <div class="flex items-center justify-between border-b border-gray-800 pb-3">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-green text-lg">view_list</span>
-            <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider">Campus Checkpoint Directory (Zone 1 - Zone 13+)</h3>
+            <h3 class="font-headline font-bold text-sm text-white uppercase tracking-wider">Campus Checkpoint Directory</h3>
           </div>
           <span class="text-xs font-mono text-cyan" id="places-grid-sublabel">Loading places...</span>
         </div>
@@ -571,7 +577,7 @@
 
     async function loadPlaces() {
       try {
-        var res = await fetch('/api/clues?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch('/api/clues?all=true&_t=' + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (data.success && Array.isArray(data.clues)) {
           cachedPlacesList = data.clues;
@@ -599,37 +605,53 @@
       if (!container) return;
 
       if (!places || places.length === 0) {
-        container.innerHTML = '<div class="col-span-full p-8 text-center text-gray-400 font-mono text-sm bg-[#050914] rounded-xl border border-dashed border-gray-800">No campus places configured yet. Add Zone 1 to begin!</div>';
+        container.innerHTML = '<div class="col-span-full p-8 text-center text-gray-400 font-mono text-sm bg-[#050914] rounded-xl border border-dashed border-gray-800">No campus places created yet. Fill out the form above to add your first checkpoint!</div>';
         if (sublabel) sublabel.innerText = '0 Places Configured';
+        var assignedMarshalsEl = document.getElementById('places-assigned-marshals');
+        var unstaffedEl = document.getElementById('places-unstaffed-count');
+        if (assignedMarshalsEl) assignedMarshalsEl.innerText = '0';
+        if (unstaffedEl) unstaffedEl.innerText = '0';
         return;
       }
 
-      if (sublabel) sublabel.innerText = places.length + ' Active Checkpoints Configured';
-
-      // Cross-reference assigned marshals from cachedDbData.users
+      // Cross-reference assigned marshals from cachedDbData.users or place.marshals
       var marshalsByZone = {};
-      var allMarshalsCount = 0;
       if (cachedDbData && cachedDbData.users) {
         cachedDbData.users.forEach(function(u) {
-          if (u.role === 'MEMBER') {
-            allMarshalsCount++;
-            var zid = (u.zoneId || 'ZONE_01').toUpperCase();
+          if (u.role === 'MEMBER' && u.zoneId) {
+            var zid = (u.zoneId || '').toUpperCase().trim();
             marshalsByZone[zid] = marshalsByZone[zid] || [];
-            marshalsByZone[zid].push(u.callsign || u.name);
+            if (!marshalsByZone[zid].includes(u.callsign || u.name)) {
+              marshalsByZone[zid].push(u.callsign || u.name);
+            }
           }
         });
       }
+
+      var staffedCount = 0;
+      places.forEach(function(p) {
+        var zid = (p.zoneId || '').toUpperCase().trim();
+        var assigned = (marshalsByZone[zid] && marshalsByZone[zid].length > 0) ? marshalsByZone[zid] : (p.marshals || []);
+        if (assigned.length > 0 || p.hasMarshal) staffedCount++;
+      });
+      var unstaffedCount = places.length - staffedCount;
+
       var assignedMarshalsEl = document.getElementById('places-assigned-marshals');
-      if (assignedMarshalsEl) assignedMarshalsEl.innerText = allMarshalsCount;
+      var unstaffedEl = document.getElementById('places-unstaffed-count');
+      if (assignedMarshalsEl) assignedMarshalsEl.innerText = staffedCount;
+      if (unstaffedEl) unstaffedEl.innerText = unstaffedCount;
+
+      if (sublabel) sublabel.innerText = places.length + ' Checkpoints (' + staffedCount + ' Staffed & Active for Players)';
 
       container.innerHTML = places.map(function(place, idx) {
         var zoneNum = idx + 1;
-        var zid = place.zoneId || ('ZONE_' + String(zoneNum).padStart(2, '0'));
+        var zid = (place.zoneId || ('ZONE_' + String(zoneNum).padStart(2, '0'))).toUpperCase();
         var label = place.zoneLabel || ('Zone ' + zoneNum);
         var hint = place.text || 'Directive hint unassigned';
-        var assigned = marshalsByZone[zid.toUpperCase()] || [];
+        var assigned = (marshalsByZone[zid] && marshalsByZone[zid].length > 0) ? marshalsByZone[zid] : (place.marshals || []);
+        var isStaffed = assigned.length > 0 || place.hasMarshal;
 
-        return '<div class="bg-[#050914] rounded-xl p-4 border border-cyan/15 hover:border-cyan/40 transition flex flex-col justify-between space-y-3 relative overflow-hidden group shadow-lg">' +
+        return '<div class="bg-[#050914] rounded-xl p-4 border ' + (isStaffed ? 'border-green/30' : 'border-yellow/20') + ' hover:border-cyan/50 transition flex flex-col justify-between space-y-3 relative overflow-hidden group shadow-lg">' +
           '<div class="flex items-start justify-between gap-2">' +
             '<div class="flex items-center gap-2">' +
               '<span class="px-2 py-0.5 rounded bg-cyan/15 border border-cyan/40 text-cyan font-mono font-bold text-xs">' + zid + '</span>' +
@@ -649,10 +671,10 @@
             '<p class="text-xs text-gray-300 font-body mt-1 bg-[#091122] p-2.5 rounded-lg border border-gray-800/80 leading-relaxed italic">“' + hint + '”</p>' +
           '</div>' +
           '<div class="pt-2 border-t border-gray-800 flex items-center justify-between text-[11px] font-mono">' +
-            '<span class="text-gray-400 flex items-center gap-1">' +
-              '<span class="material-symbols-outlined text-[14px] text-green">shield_person</span>' +
-              (assigned.length > 0 ? ('Marshals: ' + assigned.join(', ')) : '<span class="text-yellow">No Marshal Assigned</span>') +
-            '</span>' +
+            (isStaffed ?
+              '<span class="px-2 py-0.5 rounded bg-green/20 border border-green/40 text-green font-mono font-bold text-[11px] flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span>ACTIVE • ' + assigned.join(', ') + '</span><span class="text-[10px] text-cyan font-bold uppercase tracking-wider">Visible to Players</span>' :
+              '<span class="px-2 py-0.5 rounded bg-yellow/20 border border-yellow/40 text-yellow font-mono font-bold text-[11px] flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-yellow"></span>UNSTAFFED</span><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Hidden from Players</span>'
+            ) +
           '</div>' +
         '</div>';
       }).join('');
@@ -676,7 +698,7 @@
       document.getElementById('input-place-zone-id').value = '';
       document.getElementById('input-place-label').value = '';
       document.getElementById('input-place-hint').value = '';
-      document.getElementById('place-form-title').innerText = 'Add / Update Campus Place';
+      document.getElementById('place-form-title').innerText = 'Add Campus Place & Mission Clue';
       document.getElementById('btn-save-place-text').innerText = 'Save / Add Place';
       document.getElementById('btn-cancel-edit-place').classList.add('hidden');
     }
@@ -687,9 +709,15 @@
       var zoneLabel = document.getElementById('input-place-label').value.trim();
       var text = document.getElementById('input-place-hint').value.trim();
 
-      if (!zoneId || !zoneLabel || !text) {
-        alert('Please fill out Zone ID, Place Name, and Clue Hint.');
+      if (!zoneLabel || !text) {
+        alert('Please fill out Place Name and Clue Directive Hint.');
         return;
+      }
+
+      // If Zone ID was left blank, auto-suggest next zone
+      if (!zoneId) {
+        var nextNum = cachedPlacesList.length + 1;
+        zoneId = 'ZONE_' + String(nextNum).padStart(2, '0');
       }
 
       var saveBtn = document.getElementById('btn-save-place');
@@ -737,36 +765,24 @@
       }
     }
 
-    async function setTotalZonesCount() {
-      var count = parseInt(document.getElementById('input-target-zone-count').value, 10);
-      if (isNaN(count) || count < 1 || count > 50) {
-        alert('Please enter a valid count between 1 and 50.');
-        return;
-      }
-      if (!confirm('Configure total number of campus zones to ' + count + '?')) return;
-
+    async function clearAllPlaces() {
+      if (!confirm('⚠️ CLEAR ALL CAMPUS PLACES?\n\nThis will remove all campus locations and clue hints from the database so you can add your places from scratch.\n\nContinue?')) return;
       try {
-        var res = await fetch('/api/admin/clues/reset', {
+        var res = await fetch('/api/admin/clues/clear', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ count: count })
+          headers: { 'Content-Type': 'application/json' }
         });
         var data = await res.json();
         if (!data.success) {
-          alert('Failed to update zone count: ' + (data.error || 'Server error'));
+          alert('Clear failed: ' + (data.error || 'Server error'));
           return;
         }
+        cancelEditPlace();
         loadPlaces();
         loadDatabaseData();
       } catch (e) {
-        alert('Error: ' + e.message);
+        alert('Error clearing places: ' + e.message);
       }
-    }
-
-    async function resetTo13Zones() {
-      if (!confirm('Reset all campus zones back to the official default 13 Zones (Zone 1 to Zone 13)?')) return;
-      document.getElementById('input-target-zone-count').value = 13;
-      await setTotalZonesCount();
     }
 
     // Master Clock

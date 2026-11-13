@@ -198,11 +198,11 @@
             </div>
             <div class="flex flex-col">
               <span class="font-label-sm text-label-sm uppercase tracking-widest text-[#FFD600] font-bold">Active Mission Directive</span>
-              <span class="font-label-sm text-label-sm text-on-surface-variant" id="active-checkpoint-label">Beacon Checkpoint #01</span>
+              <span class="font-label-sm text-label-sm text-on-surface-variant" id="active-checkpoint-label">Connecting to Station...</span>
             </div>
           </div>
           <span class="px-2 py-0.5 rounded-full bg-[#FFD600]/15 text-[#FFD600] font-label-sm text-label-sm font-bold uppercase tracking-wider" id="active-zone-badge">
-            TARGET ZONE
+            STANDBY
           </span>
         </div>
 
@@ -210,7 +210,7 @@
         <div class="bg-surface-container-highest/60 p-3 rounded-lg flex items-start gap-2.5 border border-outline-variant/30">
           <span class="material-symbols-outlined text-[#FFD600] text-[20px] shrink-0 mt-0.5">lightbulb</span>
           <p class="font-headline-sm text-headline-sm text-on-surface font-semibold leading-snug" id="active-clue-text">
-            “Locate the <span class="text-[#FFD600] drop-shadow-[0_0_8px_rgba(255,214,0,0.6)]">Yellow Beacon Cone</span> nestled near the library plaza & colonnade arch!”
+            Connecting to campus grid... Active checkpoints with registered Field Marshals will appear here.
           </p>
         </div>
 
@@ -966,17 +966,22 @@
 
           // 3. Active Clue Directive
           var currentIdx = myTeam.currentClueIndex || 0;
-          if (currentIdx >= allClues.length && allClues.length > 0) {
+          if (!allClues || allClues.length === 0) {
+            document.getElementById('active-checkpoint-label').innerText = 'STANDBY FOR DEPLOYMENT';
+            document.getElementById('active-zone-badge').innerText = 'AWAITING MARSHALS';
+            document.getElementById('active-clue-text').innerHTML = '⏳ <b>FIELD MARSHALS DEPLOYING</b><br>Field Marshals are taking station at designated campus checkpoints. Mission clues will unlock automatically as soon as marshals take station!';
+            document.getElementById('team-zone-label').innerText = 'Awaiting Marshal Stations';
+          } else if (currentIdx >= allClues.length) {
             document.getElementById('active-checkpoint-label').innerText = 'FINAL OBJECTIVE CLEARED';
             document.getElementById('active-zone-badge').innerText = 'COMPLETED';
             document.getElementById('active-clue-text').innerHTML = '🏆 <b>ALL CHECKPOINTS COMPLETED!</b> Return to Game Master Central for final scoring!';
-            document.getElementById('team-zone-label').innerText = 'All Zones Completed';
-          } else if (allClues.length > 0) {
+            document.getElementById('team-zone-label').innerText = 'All ' + allClues.length + ' Checkpoints Completed';
+          } else {
             var clueId = (myTeam.clueOrder && myTeam.clueOrder[currentIdx]) || allClues[currentIdx]._id;
             var activeClue = allClues.find(function(c) { return c._id === clueId; }) || allClues[currentIdx];
             
-            document.getElementById('active-checkpoint-label').innerText = 'Beacon Checkpoint #' + String(currentIdx + 1).padStart(2, '0');
-            document.getElementById('active-zone-badge').innerText = activeClue.zoneId || 'SECTOR';
+            document.getElementById('active-checkpoint-label').innerText = 'Beacon Checkpoint #' + String(currentIdx + 1).padStart(2, '0') + ' (of ' + allClues.length + ')';
+            document.getElementById('active-zone-badge').innerText = (activeClue.zoneId || 'SECTOR').toUpperCase();
             document.getElementById('active-clue-text').innerText = '“' + activeClue.text + '”';
             document.getElementById('team-zone-label').innerText = 'Active Hunt • ' + (activeClue.zoneLabel || activeClue.zoneId);
           }

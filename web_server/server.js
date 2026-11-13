@@ -77,23 +77,9 @@ class MongoDatabase {
       changed = true;
     }
 
-    // 2. Ensure Initial Tactical Clues (13 Zones for the Club Fest)
-    if (!this.collections.clues || this.collections.clues.length === 0) {
-      this.collections.clues = [
-        { _id: 'clue_01', text: 'Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!', zoneId: 'ZONE_01', zoneLabel: 'Zone 1 - Library Arch' },
-        { _id: 'clue_02', text: 'Search the courtyard perimeter behind the ancient bronze solar obelisk.', zoneId: 'ZONE_02', zoneLabel: 'Zone 2 - Solar Obelisk' },
-        { _id: 'clue_03', text: 'Ascend the terrace staircase overlooking the historic clocktower.', zoneId: 'ZONE_03', zoneLabel: 'Zone 3 - Clocktower Terrace' },
-        { _id: 'clue_04', text: 'Investigate the botanical garden glasshouse south perimeter.', zoneId: 'ZONE_04', zoneLabel: 'Zone 4 - Glasshouse Botanical' },
-        { _id: 'clue_05', text: 'Cross the pedestrian skybridge connecting science hall 1 & 2.', zoneId: 'ZONE_05', zoneLabel: 'Zone 5 - Skybridge Concourse' },
-        { _id: 'clue_06', text: 'Look beneath the concrete amphitheater canopy seating.', zoneId: 'ZONE_06', zoneLabel: 'Zone 6 - Amphitheater Canopy' },
-        { _id: 'clue_07', text: 'Find the water fountain basin near the science auditorium.', zoneId: 'ZONE_07', zoneLabel: 'Zone 7 - Science Basin' },
-        { _id: 'clue_08', text: 'Check the shaded colonnade behind student center pavilion.', zoneId: 'ZONE_08', zoneLabel: 'Zone 8 - Student Pavilion' },
-        { _id: 'clue_09', text: 'Locate the red telecom antenna pylon on north concourse.', zoneId: 'ZONE_09', zoneLabel: 'Zone 9 - North Telecom Pylon' },
-        { _id: 'clue_10', text: 'Scan the perimeter fence surrounding the athletic turf field.', zoneId: 'ZONE_10', zoneLabel: 'Zone 10 - Turf Perimeter' },
-        { _id: 'clue_11', text: 'Find the solar energy charging station outside the REC technology workshop.', zoneId: 'ZONE_11', zoneLabel: 'Zone 11 - Energy Innovation Hub' },
-        { _id: 'clue_12', text: 'Spot the green beacon marker stationed near the robotics exhibition arena.', zoneId: 'ZONE_12', zoneLabel: 'Zone 12 - Innovation Arena' },
-        { _id: 'clue_13', text: 'Reach the central ceremonial flagpole lawn overlooking the grand quadrangle.', zoneId: 'ZONE_13', zoneLabel: 'Zone 13 - Central Concourse' }
-      ];
+    // 2. Ensure Clues Collection Exists (No Automatic Seeding - Admin creates places manually)
+    if (!this.collections.clues) {
+      this.collections.clues = [];
       changed = true;
     }
 
@@ -519,12 +505,52 @@ const server = http.createServer(async (req, res) => {
         });
       }
 
-      // 10b. GET /api/clues (All clues for Mission Directives)
+      // 10b. GET /api/clues (Mission Directives & Checkpoint Places)
+      // Only returns places where a Field Marshal has registered (unless all=true or role=ADMIN/MEMBER)
       if (pathname === '/api/clues' && req.method === 'GET') {
         db.load();
+        const urlObj = new URL(req.url, 'http://localhost');
+        const showAll = urlObj.searchParams.get('all') === 'true' || 
+                        urlObj.searchParams.get('role') === 'ADMIN' || 
+                        urlObj.searchParams.get('role') === 'MEMBER';
+
+        // Find all registered marshals and the zones they are assigned to
+        const marshals = (db.collections.users || []).filter(u => u.role === 'MEMBER' && u.zoneId);
+        const activeZoneMap = {};
+        marshals.forEach(m => {
+          const z = (m.zoneId || '').toUpperCase().trim();
+          if (!activeZoneMap[z]) activeZoneMap[z] = [];
+          activeZoneMap[z].push(m.callsign || m.name);
+        });
+
+        const allClues = (db.collections.clues || []).map(c => {
+          const z = (c.zoneId || '').toUpperCase().trim();
+          const assignedMarshals = activeZoneMap[z] || [];
+          return {
+            ...c,
+            hasMarshal: assignedMarshals.length > 0,
+            marshals: assignedMarshals,
+            marshalCount: assignedMarshals.length
+          };
+        });
+
+        if (showAll) {
+          return sendJson(res, 200, {
+            success: true,
+            clues: allClues,
+            totalCount: allClues.length,
+            activeCount: allClues.filter(c => c.hasMarshal).length
+          });
+        }
+
+        // For Players: ONLY show places where a marshal has registered!
+        const playerClues = allClues.filter(c => c.hasMarshal);
         return sendJson(res, 200, {
           success: true,
-          clues: db.collections.clues
+          clues: playerClues,
+          totalCount: playerClues.length,
+          allPlacesCount: allClues.length,
+          waitingForMarshals: playerClues.length === 0
         });
       }
 
@@ -566,6 +592,15 @@ const server = http.createServer(async (req, res) => {
         db.collections.clues = db.collections.clues.filter(c => c._id !== _id);
         db.save();
         return sendJson(res, 200, { success: true, message: 'Place deleted successfully.', clues: db.collections.clues });
+      }
+
+      // 10f. POST /api/admin/clues/clear (Clear all places for clean manual setup)
+      if (pathname === '/api/admin/clues/clear' && req.method === 'POST') {
+        db.load();
+        db.collections.clues = [];
+        db.save();
+        db.logEvent('CLEAR_PLACES', 'Game Master cleared all campus places.');
+        return sendJson(res, 200, { success: true, message: 'All campus places cleared successfully.', clues: [] });
       }
 
       // 10e. POST /api/admin/clues/reset (Reset or Set Number of Zones)

@@ -10,140 +10,103 @@
       "createdAt": "2026-11-12T16:49:28.254Z"
     },
     {
-      "_id": "user_1794526706167_uinqz",
-      "callsign": "team1",
-      "name": "team1",
+      "_id": "user_1794529946724_65ird",
+      "callsign": "marshal_alpha",
+      "name": "Marshal Alpha",
+      "role": "MEMBER",
+      "password": "password123",
+      "teamId": null,
+      "zoneId": "ZONE_01",
+      "zoneLabel": "Library Arch Colonnade",
+      "isApproved": false,
+      "createdAt": "2026-11-13T00:32:26.724Z"
+    },
+    {
+      "_id": "user_1794529946727_fb6ee",
+      "callsign": "marshal_gamma",
+      "name": "Marshal Gamma",
+      "role": "MEMBER",
+      "password": "password123",
+      "teamId": null,
+      "zoneId": "ZONE_03",
+      "zoneLabel": "Tech Innovation Hub",
+      "isApproved": false,
+      "createdAt": "2026-11-13T00:32:26.727Z"
+    },
+    {
+      "_id": "user_1794529946730_51pe6",
+      "callsign": "squad_phoenix",
+      "name": "Squad Phoenix",
       "role": "PLAYER",
-      "password": "team1",
-      "teamId": "team_1794526706167_0ie1p",
+      "password": "password123",
+      "teamId": "team_1794529946730_7rjj1",
       "zoneId": null,
       "zoneLabel": null,
       "isApproved": true,
-      "createdAt": "2026-11-12T23:38:26.168Z"
-    },
-    {
-      "_id": "user_1794526731882_4sl8t",
-      "callsign": "marshal1",
-      "name": "marshal1",
-      "role": "MEMBER",
-      "password": "marshal1",
-      "teamId": null,
-      "zoneId": "ZONE_01",
-      "zoneLabel": "Zone 1 - Library Arch (ZONE_01)",
-      "isApproved": true,
-      "createdAt": "2026-11-12T23:38:51.882Z"
+      "createdAt": "2026-11-13T00:32:26.730Z"
     }
   ],
   "teams": [
     {
-      "_id": "team_1794526706167_0ie1p",
-      "name": "team1",
-      "callsign": "team1",
-      "score": 0,
-      "cards": [],
-      "clueOrder": [
-        "clue_01",
-        "clue_02",
-        "clue_03",
-        "clue_04",
-        "clue_05",
-        "clue_12",
-        "clue_06",
-        "clue_07",
-        "clue_10",
-        "clue_11",
-        "clue_08",
-        "clue_13",
-        "clue_09"
+      "_id": "team_1794529946730_7rjj1",
+      "name": "Squad Phoenix",
+      "callsign": "squad_phoenix",
+      "score": 20,
+      "cards": [
+        {
+          "rank": 8,
+          "suit": "♠",
+          "zoneId": "ZONE_01",
+          "awardedAt": "2026-11-13T00:32:26.735Z"
+        }
       ],
-      "currentClueIndex": 0,
-      "visitedZones": [],
+      "clueOrder": [
+        "clue_mwe8sork",
+        "clue_mwe8sorh",
+        "clue_mwe8sorj"
+      ],
+      "currentClueIndex": 1,
+      "visitedZones": [
+        "ZONE_01"
+      ],
       "isApproved": true,
-      "createdAt": "2026-11-12T23:38:26.168Z",
-      "updatedAt": "2026-11-13T00:04:09.874Z"
+      "createdAt": "2026-11-13T00:32:26.730Z",
+      "updatedAt": "2026-11-13T00:32:26.735Z"
     }
   ],
   "clues": [
     {
-      "_id": "clue_01",
-      "text": "Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!",
+      "_id": "clue_mwe8sorh",
       "zoneId": "ZONE_01",
-      "zoneLabel": "Zone 1 - Library Arch"
+      "zoneLabel": "Library Arch Colonnade",
+      "text": "Locate the Yellow Beacon Cone near the library plaza arch!"
     },
     {
-      "_id": "clue_02",
-      "text": "Search the courtyard perimeter behind the ancient bronze solar obelisk.",
+      "_id": "clue_mwe8sorj",
       "zoneId": "ZONE_02",
-      "zoneLabel": "Zone 2 - Solar Obelisk"
+      "zoneLabel": "Solar Obelisk Courtyard",
+      "text": "Search behind the ancient bronze solar obelisk."
     },
     {
-      "_id": "clue_03",
-      "text": "Ascend the terrace staircase overlooking the historic clocktower.",
+      "_id": "clue_mwe8sork",
       "zoneId": "ZONE_03",
-      "zoneLabel": "Zone 3 - Clocktower Terrace"
-    },
-    {
-      "_id": "clue_04",
-      "text": "Investigate the botanical garden glasshouse south perimeter.",
-      "zoneId": "ZONE_04",
-      "zoneLabel": "Zone 4 - Glasshouse Botanical"
-    },
-    {
-      "_id": "clue_05",
-      "text": "Cross the pedestrian skybridge connecting science hall 1 & 2.",
-      "zoneId": "ZONE_05",
-      "zoneLabel": "Zone 5 - Skybridge Concourse"
-    },
-    {
-      "_id": "clue_06",
-      "text": "Look beneath the concrete amphitheater canopy seating.",
-      "zoneId": "ZONE_06",
-      "zoneLabel": "Zone 6 - Amphitheater Canopy"
-    },
-    {
-      "_id": "clue_07",
-      "text": "Find the water fountain basin near the science auditorium.",
-      "zoneId": "ZONE_07",
-      "zoneLabel": "Zone 7 - Science Basin"
-    },
-    {
-      "_id": "clue_08",
-      "text": "Check the shaded colonnade behind student center pavilion.",
-      "zoneId": "ZONE_08",
-      "zoneLabel": "Zone 8 - Student Pavilion"
-    },
-    {
-      "_id": "clue_09",
-      "text": "Locate the red telecom antenna pylon on north concourse.",
-      "zoneId": "ZONE_09",
-      "zoneLabel": "Zone 9 - North Telecom Pylon"
-    },
-    {
-      "_id": "clue_10",
-      "text": "Scan the perimeter fence surrounding the athletic turf field.",
-      "zoneId": "ZONE_10",
-      "zoneLabel": "Zone 10 - Turf Perimeter"
-    },
-    {
-      "_id": "clue_11",
-      "text": "Find the solar energy charging station outside the REC technology workshop.",
-      "zoneId": "ZONE_11",
-      "zoneLabel": "Zone 11 - Energy Innovation Hub"
-    },
-    {
-      "_id": "clue_12",
-      "text": "Spot the green beacon marker stationed near the robotics exhibition arena.",
-      "zoneId": "ZONE_12",
-      "zoneLabel": "Zone 12 - Innovation Arena"
-    },
-    {
-      "_id": "clue_13",
-      "text": "Reach the central ceremonial flagpole lawn overlooking the grand quadrangle.",
-      "zoneId": "ZONE_13",
-      "zoneLabel": "Zone 13 - Central Concourse"
+      "zoneLabel": "Tech Innovation Hub",
+      "text": "Find the beacon cone outside the robotics workshop."
     }
   ],
-  "checkins": [],
+  "checkins": [
+    {
+      "_id": "team_1794529946730_7rjj1_ZONE_01_1794529946734",
+      "teamId": "team_1794529946730_7rjj1",
+      "zoneId": "ZONE_01",
+      "memberId": "marshal_station",
+      "cone": "YELLOW",
+      "cardRank": 8,
+      "cardSuit": "♠",
+      "points": 20,
+      "timestamp": "2026-11-13T00:32:26.735Z"
+    }
+  ],
   "gameState": {
     "status": "LOBBY",
     "startedAt": null,
@@ -152,6 +115,48 @@
     "totalPausedMs": 0
   },
   "system_logs": [
+    {
+      "_id": "log_1794529946735_rv2o",
+      "action": "CHECKIN",
+      "details": "Team \"Squad Phoenix\" awarded +20 PTS at ZONE_01 (Total: 20 PTS)",
+      "timestamp": "2026-11-13T00:32:26.735Z"
+    },
+    {
+      "_id": "log_1794529946733_xrfa",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad Phoenix\" (team_1794529946730_7rjj1)",
+      "timestamp": "2026-11-13T00:32:26.733Z"
+    },
+    {
+      "_id": "log_1794529946730_su1b",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"squad_phoenix\" (Pending Approval)",
+      "timestamp": "2026-11-13T00:32:26.730Z"
+    },
+    {
+      "_id": "log_1794529946728_ihc6",
+      "action": "REGISTER",
+      "details": "MEMBER registered: \"marshal_gamma\" (Pending Approval)",
+      "timestamp": "2026-11-13T00:32:26.728Z"
+    },
+    {
+      "_id": "log_1794529946725_9bsi",
+      "action": "REGISTER",
+      "details": "MEMBER registered: \"marshal_alpha\" (Pending Approval)",
+      "timestamp": "2026-11-13T00:32:26.725Z"
+    },
+    {
+      "_id": "log_1794529946710_h0if",
+      "action": "CLEAR_PLACES",
+      "details": "Game Master cleared all campus places.",
+      "timestamp": "2026-11-13T00:32:26.710Z"
+    },
+    {
+      "_id": "log_1794529922089_h2rw",
+      "action": "CLEAR_PLACES",
+      "details": "Game Master cleared all campus places.",
+      "timestamp": "2026-11-13T00:32:02.089Z"
+    },
     {
       "_id": "log_1794528249876_ls9q",
       "action": "CHECKIN",
