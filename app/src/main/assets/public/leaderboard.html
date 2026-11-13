@@ -84,6 +84,36 @@
   </script>
   <style>
     button, a, input, select { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    button {
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: pointer;
+      transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), filter 0.15s ease, opacity 0.15s ease;
+    }
+    button:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+    button > * {
+      pointer-events: none;
+    }
+    @keyframes tacticalShimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton-shimmer {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(0,240,255,0.12) 50%, rgba(255,255,255,0.03) 75%);
+      background-size: 200% 100%;
+      animation: tacticalShimmer 1.4s infinite linear;
+      border-radius: 0.5rem;
+    }
+    @keyframes cyberFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-cyber-fade {
+      animation: cyberFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
     @layer base {
       html, body { width: 100vw; margin: 0; padding: 0; }
       body { overscroll-behavior: none; background-color: #0f131d; }
@@ -286,13 +316,13 @@
       var nav = document.getElementById('leaderboard-bottom-nav');
       if (!nav) return;
       if (!currentUser) {
-        nav.innerHTML = '<a href="login.html" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-on-surface-variant hover:text-primary transition active:scale-95"><span class="material-symbols-outlined text-[24px]">login</span><span class="font-mono text-[11px] uppercase tracking-wider">Sign In</span></a><button class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-primary-container font-bold"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-mono text-[11px] uppercase tracking-wider">Rank</span></button>';
+        nav.innerHTML = '<a href="login.html" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-on-surface-variant hover:text-primary transition active:scale-95"><span class="material-symbols-outlined text-[24px]">login</span><span class="font-mono text-[11px] uppercase tracking-wider">Sign In</span></a><button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-primary-container font-bold cursor-pointer"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-mono text-[11px] uppercase tracking-wider">Rank</span></button>';
       } else if (currentUser.role === 'MEMBER') {
-        nav.innerHTML = '<a href="member_checkin.html" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-on-surface-variant hover:text-primary transition active:scale-95"><span class="material-symbols-outlined text-[24px]">verified</span><span class="font-mono text-[11px] uppercase tracking-wider">Station</span></a><button class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-primary-container font-bold"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-mono text-[11px] uppercase tracking-wider">Rank</span></button><button onclick="handleHeaderUserClick()" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-on-surface-variant hover:text-error transition active:scale-95"><span class="material-symbols-outlined text-[24px]">logout</span><span class="font-mono text-[11px] uppercase tracking-wider">Sign Out</span></button>';
+        nav.innerHTML = '<a href="member_checkin.html" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-on-surface-variant hover:text-primary transition active:scale-95"><span class="material-symbols-outlined text-[24px]">verified</span><span class="font-mono text-[11px] uppercase tracking-wider">Station</span></a><button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-primary-container font-bold cursor-pointer"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-mono text-[11px] uppercase tracking-wider">Rank</span></button><button onclick="handleHeaderUserClick()" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-on-surface-variant hover:text-error transition active:scale-95"><span class="material-symbols-outlined text-[24px]">logout</span><span class="font-mono text-[11px] uppercase tracking-wider">Sign Out</span></button>';
       } else if (currentUser.role === 'ADMIN') {
-        nav.innerHTML = '<a href="admin_panel.html" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-on-surface-variant hover:text-primary transition active:scale-95"><span class="material-symbols-outlined text-[24px]">tune</span><span class="font-mono text-[11px] uppercase tracking-wider">Control</span></a><button class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-primary-container font-bold"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-mono text-[11px] uppercase tracking-wider">Rank</span></button><button onclick="handleHeaderUserClick()" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-on-surface-variant hover:text-error transition active:scale-95"><span class="material-symbols-outlined text-[24px]">logout</span><span class="font-mono text-[11px] uppercase tracking-wider">Sign Out</span></button>';
+        nav.innerHTML = '<a href="admin_panel.html" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-on-surface-variant hover:text-primary transition active:scale-95"><span class="material-symbols-outlined text-[24px]">tune</span><span class="font-mono text-[11px] uppercase tracking-wider">Control</span></a><button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-primary-container font-bold cursor-pointer"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-mono text-[11px] uppercase tracking-wider">Rank</span></button><button onclick="handleHeaderUserClick()" class="flex flex-col items-center justify-center gap-1 w-24 h-14 text-on-surface-variant hover:text-error transition active:scale-95"><span class="material-symbols-outlined text-[24px]">logout</span><span class="font-mono text-[11px] uppercase tracking-wider">Sign Out</span></button>';
       } else {
-        nav.innerHTML = '<a href="player_dashboard.html" class="flex flex-col items-center justify-center gap-1 w-20 h-14 text-on-surface-variant hover:text-primary transition active:scale-95"><span class="material-symbols-outlined text-[24px]">radar</span><span class="font-mono text-[10px] uppercase tracking-wider">Hunt</span></a><a href="player_dashboard.html" class="flex flex-col items-center justify-center gap-1 w-20 h-14 text-on-surface-variant hover:text-primary transition active:scale-95"><span class="material-symbols-outlined text-[24px]">style</span><span class="font-mono text-[10px] uppercase tracking-wider">Card</span></a><button class="flex flex-col items-center justify-center gap-1 w-20 h-14 text-primary-container font-bold"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-mono text-[10px] uppercase tracking-wider">Rank</span></button><button onclick="handleHeaderUserClick()" class="flex flex-col items-center justify-center gap-1 w-20 h-14 text-on-surface-variant hover:text-error transition active:scale-95"><span class="material-symbols-outlined text-[24px]">logout</span><span class="font-mono text-[10px] uppercase tracking-wider">Sign Out</span></button>';
+        nav.innerHTML = '<a href="player_dashboard.html" class="flex flex-col items-center justify-center gap-1 w-20 h-14 text-on-surface-variant hover:text-primary transition active:scale-95"><span class="material-symbols-outlined text-[24px]">radar</span><span class="font-mono text-[10px] uppercase tracking-wider">Hunt</span></a><a href="player_dashboard.html" class="flex flex-col items-center justify-center gap-1 w-20 h-14 text-on-surface-variant hover:text-primary transition active:scale-95"><span class="material-symbols-outlined text-[24px]">style</span><span class="font-mono text-[10px] uppercase tracking-wider">Card</span></a><button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex flex-col items-center justify-center gap-1 w-20 h-14 text-primary-container font-bold cursor-pointer"><span class="material-symbols-outlined text-[24px]">emoji_events</span><span class="font-mono text-[10px] uppercase tracking-wider">Rank</span></button><button onclick="handleHeaderUserClick()" class="flex flex-col items-center justify-center gap-1 w-20 h-14 text-on-surface-variant hover:text-error transition active:scale-95"><span class="material-symbols-outlined text-[24px]">logout</span><span class="font-mono text-[10px] uppercase tracking-wider">Sign Out</span></button>';
       }
     }
 
@@ -432,6 +462,7 @@
       }
     }
 
+    var lastLeaderboardRenderHash = '';
     function applyFilterAndRender() {
       var sorted = cachedTeams.slice();
 
@@ -464,6 +495,16 @@
           return cb - ca;
         });
       }
+
+      // Smart Diffing: Prevent unconditional DOM replacement
+      var currentHash = currentFilter + '_' + JSON.stringify(sorted.map(function(t){
+        return [t._id, t.score, (t.visitedZones||[]).length, (t.cards||[]).length];
+      }));
+      var pContainer = document.getElementById('podium-slots-container');
+      if (currentHash === lastLeaderboardRenderHash && pContainer && pContainer.children.length > 0) {
+        return; // Skip re-render!
+      }
+      lastLeaderboardRenderHash = currentHash;
 
       renderPodium(sorted);
       renderContenders(sorted);

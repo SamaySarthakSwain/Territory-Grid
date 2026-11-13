@@ -50,6 +50,33 @@
 
   <style>
     button, a, input, select { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    button {
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: pointer;
+      transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), filter 0.15s ease, opacity 0.15s ease;
+    }
+    button:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+    button > * {
+      pointer-events: none;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    @keyframes tacticalShimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton-shimmer {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(0,240,255,0.12) 50%, rgba(255,255,255,0.03) 75%);
+      background-size: 200% 100%;
+      animation: tacticalShimmer 1.4s infinite linear;
+      border-radius: 0.5rem;
+    }
     body {
       background-color: #070B14;
       color: #DFE2F0;
