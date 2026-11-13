@@ -501,9 +501,21 @@ const server = http.createServer(async (req, res) => {
       // 10. GET /api/teams (All teams for Leaderboard & Marshal Check-in)
       if (pathname === '/api/teams' && req.method === 'GET') {
         db.load();
+        const teams = (db.collections.teams || []).map((t, idx) => {
+          if (!t.teamCode) {
+            const numMatch = (t.name || t.callsign || '').match(/\d+/);
+            if (numMatch && numMatch[0]) {
+              const n = parseInt(numMatch[0], 10);
+              t.teamCode = (n >= 1 && n <= 89) ? (10 + n) : (n >= 10 && n <= 99 ? n : (10 + (idx + 1)));
+            } else {
+              t.teamCode = 10 + (idx + 1);
+            }
+          }
+          return t;
+        });
         return sendJson(res, 200, {
           success: true,
-          teams: db.collections.teams
+          teams: teams
         });
       }
 
@@ -603,7 +615,51 @@ const server = http.createServer(async (req, res) => {
       if (pathname === '/api/checkin' && req.method === 'POST') {
         db.load();
         const body = await parseBody(req);
-        const { teamId, zoneId, cone, cardRank, cardSuit, memberId, allowDuplicate } = body;
+        let { teamId, zoneId, cone, cardRank, cardSuit, memberId, allowDuplicate, code, qrPayload } = body;
+
+        // Auto-decode 6-digit code or QR payload if passed
+        const rawCode = String(code || qrPayload || '').trim();
+        if (rawCode) {
+          if (rawCode.startsWith('TG|')) {
+            const parts = rawCode.split('|');
+            if (!teamId && parts[1]) teamId = parts[1];
+            if (!cardRank && parts[3]) cardRank = parseInt(parts[3], 10);
+            if (!cardSuit && parts[5]) cardSuit = parts[5];
+            if (parts[6] && !code) code = parts[6];
+          }
+          
+          const cleanDigits = (code || rawCode).replace(/\D/g, '');
+          if (cleanDigits.length === 6) {
+            const tt = parseInt(cleanDigits.slice(0, 2), 10);
+            const rr = parseInt(cleanDigits.slice(2, 4), 10);
+            const hh = parseInt(cleanDigits.slice(4, 6), 10);
+
+            // Match team by TT
+            if (!teamId && Array.isArray(db.collections.teams)) {
+              const matchedTeam = db.collections.teams.find((t, idx) => {
+                const assignedCode = t.teamCode || (10 + (idx + 1));
+                const numMatch = (t.name || t.callsign || '').match(/\d+/);
+                const derivedNum = (numMatch && numMatch[0]) ? (parseInt(numMatch[0], 10) + 10) : 0;
+                return assignedCode === tt || derivedNum === tt;
+              });
+              if (matchedTeam) teamId = matchedTeam._id;
+            }
+
+            // Derive card rank (21..33 -> 1..13)
+            if (!cardRank && rr >= 21 && rr <= 33) {
+              cardRank = rr - 20;
+            }
+
+            // Derive place/zone & suit (10..61)
+            if (hh >= 10 && hh <= 61) {
+              const clueIdx = Math.floor((hh - 10) / 4);
+              const suitIdx = (hh - 10) % 4;
+              const suits = ['♠', '♥', '♦', '♣'];
+              if (!cardSuit) cardSuit = suits[suitIdx] || '♠';
+              if (!zoneId) zoneId = 'ZONE_' + String(clueIdx + 1).padStart(2, '0');
+            }
+          }
+        }
 
         const team = db.collections.teams.find(t => 
           t._id === teamId || (t.callsign && t.callsign.toLowerCase() === (teamId || '').toLowerCase())

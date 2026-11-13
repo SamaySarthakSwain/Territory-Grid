@@ -85,18 +85,62 @@
         </div>
       </div>
 
-      <!-- OPTICAL SCANNER: Live QR Code Checkpoint Terminal -->
-      <div class="relative w-full rounded-xl bg-surface-container-high/90 backdrop-blur-xl p-4 shadow-xl flex flex-col gap-3 border-2 border-primary/40 relative overflow-hidden">
-        
-        <!-- Scanner Header -->
+      <!-- HIDDEN SQUAD SELECTOR (Preserves background telemetry sync) -->
+      <select class="hidden" id="team-selector"></select>
+
+      <!-- ACTION 1: Select Beacon Cone Colour -->
+      <div class="relative w-full rounded-2xl bg-surface-container p-4 shadow-xl flex flex-col gap-3 border-2 border-primary/40">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary shadow-[0_0_12px_rgba(0,229,255,0.4)]">
-              <span class="material-symbols-outlined text-[20px]">qr_code_scanner</span>
+            <span class="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-mono text-sm font-bold border border-primary/40">1</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface font-bold uppercase tracking-wider">Select Cone Colour</span>
+          </div>
+          <span class="font-label-sm text-label-sm text-secondary-fixed uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-secondary-fixed/15 border border-secondary-fixed/30" id="beacon-status">Yellow Selected (+12 PTS)</span>
+        </div>
+        
+        <!-- 3-State Interactive Beacon Tiles -->
+        <div class="grid grid-cols-3 gap-3">
+          <!-- YELLOW CONE (Selected Default) -->
+          <button class="cone-btn relative flex flex-col items-center justify-between p-3.5 rounded-xl bg-surface-container-high shadow-[0_0_20px_rgba(255,214,0,0.4)] border-2 border-[#FFD600] transition-all duration-200 cursor-pointer" onclick="selectCone('YELLOW', 12, this)" type="button">
+            <div class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center shadow-md">
+              <span class="material-symbols-outlined text-[14px] font-bold">check</span>
             </div>
+            <div class="w-10 h-10 rounded-full bg-secondary-container/40 flex items-center justify-center text-secondary-fixed mb-1 shadow-inner">
+              <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">change_history</span>
+            </div>
+            <span class="font-headline-sm text-headline-sm text-secondary-fixed font-bold leading-tight">Yellow</span>
+            <span class="font-label-sm text-label-sm text-secondary-fixed uppercase font-bold mt-1">+12 PTS</span>
+          </button>
+
+          <!-- RED CONE -->
+          <button class="cone-btn relative flex flex-col items-center justify-between p-3.5 rounded-xl bg-surface-container-lowest border border-white/10 hover:border-error/40 transition-all duration-200 cursor-pointer" onclick="selectCone('RED', 10, this)" type="button">
+            <div class="w-10 h-10 rounded-full bg-error-container/40 flex items-center justify-center text-error mb-1">
+              <span class="material-symbols-outlined text-[26px]">change_history</span>
+            </div>
+            <span class="font-headline-sm text-headline-sm text-on-surface font-bold leading-tight">Red</span>
+            <span class="font-label-sm text-label-sm text-error uppercase font-bold mt-1">+10 PTS</span>
+          </button>
+          
+          <!-- GREEN CONE -->
+          <button class="cone-btn relative flex flex-col items-center justify-between p-3.5 rounded-xl bg-surface-container-lowest border border-white/10 hover:border-tertiary/40 transition-all duration-200 cursor-pointer" onclick="selectCone('GREEN', 15, this)" type="button">
+            <div class="w-10 h-10 rounded-full bg-tertiary-container/30 flex items-center justify-center text-tertiary mb-1">
+              <span class="material-symbols-outlined text-[26px]">change_history</span>
+            </div>
+            <span class="font-headline-sm text-headline-sm text-on-surface font-bold leading-tight">Green</span>
+            <span class="font-label-sm text-label-sm text-tertiary uppercase font-bold mt-1">+15 PTS</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ACTION 2: Scan QR OR Enter 6-Digit Code (Auto-Awards Points!) -->
+      <div class="relative w-full rounded-2xl bg-surface-container-high/90 backdrop-blur-xl p-4 shadow-xl flex flex-col gap-3 border-2 border-primary/40 overflow-hidden">
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-mono text-sm font-bold border border-primary/40">2</span>
             <div>
-              <h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-wide">Optical Checkpoint Scanner</h2>
-              <p class="text-[11px] font-mono text-gray-400">Scan player's dynamic QR cipher to auto-verify squad & card</p>
+              <h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-wide">Scan QR Code or Enter 6-Digit Code</h2>
+              <p class="text-[11px] font-mono text-gray-400">Card points + Cone points will be awarded automatically!</p>
             </div>
           </div>
           <span id="scanner-status-badge" class="px-2.5 py-1 rounded-full bg-surface-container-lowest text-on-surface-variant font-mono text-[11px] font-bold uppercase tracking-wider border border-white/10 flex items-center gap-1.5">
@@ -105,28 +149,23 @@
           </span>
         </div>
 
-        <!-- Scanner Action Buttons -->
+        <!-- Scanner Controls: Camera Scan + Test Simulator -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
-          <button id="btn-toggle-camera" type="button" onclick="toggleCameraScanner()" class="h-11 rounded-lg bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold font-label-md flex items-center justify-center gap-2 shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
-            <span class="material-symbols-outlined text-[20px]" id="camera-btn-icon">photo_camera</span>
+          <button id="btn-toggle-camera" type="button" onclick="toggleCameraScanner()" class="h-12 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold font-label-md flex items-center justify-center gap-2 shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
+            <span class="material-symbols-outlined text-[22px]" id="camera-btn-icon">photo_camera</span>
             <span id="camera-btn-text">Open Camera Scanner</span>
           </button>
           
-          <button id="btn-simulate-scan" type="button" onclick="simulateQRScan()" class="h-11 rounded-lg bg-surface-container-lowest hover:bg-surface-container-highest text-secondary-fixed border border-secondary-fixed/40 font-bold font-label-md flex items-center justify-center gap-2 active:scale-[0.98] transition cursor-pointer">
+          <button id="btn-simulate-scan" type="button" onclick="simulateQRScan()" class="h-12 rounded-xl bg-surface-container-lowest hover:bg-surface-container-highest text-secondary-fixed border border-secondary-fixed/40 font-bold font-label-md flex items-center justify-center gap-2 active:scale-[0.98] transition cursor-pointer">
             <span class="material-symbols-outlined text-[20px]">bolt</span>
             <span>Simulate Squad Scan (Test)</span>
           </button>
         </div>
 
-        <!-- Live Camera Viewfinder Modal / Expandable Container -->
+        <!-- Live Camera Viewfinder Modal -->
         <div id="camera-viewfinder-box" class="hidden relative rounded-xl overflow-hidden bg-black border border-primary/50 shadow-[0_0_24px_rgba(0,229,255,0.25)] flex flex-col items-center justify-center p-2 min-h-[260px]">
-          <!-- Video element populated by html5-qrcode -->
           <div id="qr-reader" class="w-full max-w-[360px] rounded-lg overflow-hidden"></div>
-
-          <!-- Futuristic HUD Scanning Overlay Lines -->
           <div class="absolute inset-x-6 top-1/2 -translate-y-1/2 h-0.5 bg-[#00e5ff] shadow-[0_0_12px_#00e5ff] animate-pulse pointer-events-none"></div>
-
-          <!-- Close Scanner Bar -->
           <div class="w-full bg-black/80 backdrop-blur-md p-2 mt-2 rounded flex items-center justify-between text-xs font-mono text-gray-300 border-t border-white/10 z-20">
             <span class="flex items-center gap-1.5 text-primary">
               <span class="material-symbols-outlined text-[16px] animate-spin">cyclone</span> Center Player's QR in Frame
@@ -137,7 +176,7 @@
           </div>
         </div>
 
-        <!-- Scan Result HUD Banner (Shown when a QR code is detected!) -->
+        <!-- Scan Result HUD Banner (Transient confirmation) -->
         <div id="scan-detected-banner" class="hidden p-3 rounded-lg bg-primary/15 border border-primary/50 shadow-[0_0_20px_rgba(0,229,255,0.2)] flex items-center justify-between">
           <div class="flex items-center gap-3">
             <div id="scan-result-card-badge" class="w-10 h-12 rounded bg-surface-container-lowest border border-primary flex flex-col items-center justify-center shadow-md">
@@ -146,199 +185,35 @@
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <span class="text-xs font-mono text-[#00e5ff] font-bold uppercase tracking-wider">QR VERIFIED // SQUAD ACQUIRED</span>
+                <span class="text-xs font-mono text-[#00e5ff] font-bold uppercase tracking-wider">SQUAD ACQUIRED & AWARDED</span>
                 <span class="text-[10px] px-1.5 py-0.5 rounded bg-secondary-fixed/20 text-secondary-fixed font-mono font-bold" id="scan-result-pts-tag">+13 PTS CARD</span>
               </div>
               <p class="font-headline-sm text-headline-sm text-on-surface font-bold" id="scan-result-team-name">Squad Alpha</p>
             </div>
           </div>
-          <button onclick="openConfirmationModal()" type="button" class="px-3.5 py-2 rounded-lg bg-primary text-on-primary font-bold text-xs uppercase tracking-wider shadow-[0_0_12px_rgba(0,229,255,0.5)] hover:scale-105 active:scale-95 transition cursor-pointer">
-            Verify & Award
-          </button>
         </div>
 
-        <!-- MANUAL CIPHER CODE ENTRY (6-Digit Code Fallback) -->
-        <div class="mt-1 pt-2.5 border-t border-outline-variant/30 flex flex-col gap-1.5">
+        <!-- MANUAL 6-DIGIT CODE ENTRY (Direct Auto-Award on 6 digits or Enter) -->
+        <div class="pt-2.5 border-t border-outline-variant/30 flex flex-col gap-2">
           <div class="flex items-center justify-between">
             <span class="text-xs font-mono text-gray-200 font-bold uppercase flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[16px] text-secondary-fixed">pin</span>
-              Manual 6-Digit Cipher Entry
+              <span class="material-symbols-outlined text-[18px] text-secondary-fixed">pin</span>
+              Enter Player's 6-Digit Code
             </span>
-            <span class="text-[10px] font-mono text-gray-400">Easy keypad entry</span>
+            <span class="text-[11px] font-mono text-primary font-bold">Auto-awards immediately on 6th digit!</span>
           </div>
           <div class="flex gap-2">
             <div class="relative flex-1">
-              <input type="text" id="manual-cipher-input" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="Enter 6-digit code e.g. 513347" class="w-full h-11 bg-surface-container-lowest text-on-surface font-mono text-sm tracking-widest uppercase px-3 rounded-lg border border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition" onkeydown="if(event.key==='Enter') verifyManualCipherCode()">
+              <input type="text" id="manual-cipher-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="e.g. 11 29 10" class="w-full h-12 bg-surface-container-lowest text-white font-mono text-lg font-bold tracking-[0.2em] uppercase px-4 rounded-xl border-2 border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition" oninput="handleManualCodeInput(this)" onkeydown="if(event.key==='Enter') verifyManualCipherCode()">
             </div>
-            <button onclick="verifyManualCipherCode()" type="button" class="h-11 px-4 rounded-lg bg-gradient-to-r from-secondary-fixed/30 to-secondary-container/40 hover:from-secondary-fixed/40 hover:to-secondary-container/50 text-secondary-fixed border border-secondary-fixed/50 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 active:scale-95 transition cursor-pointer shrink-0">
-              <span class="material-symbols-outlined text-[16px]">check_circle</span>
-              <span>Verify Code</span>
+            <button onclick="verifyManualCipherCode()" type="button" class="h-12 px-5 rounded-xl bg-gradient-to-r from-tertiary-container to-secondary-fixed text-black font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(44,241,0,0.4)] active:scale-95 transition cursor-pointer shrink-0">
+              <span class="material-symbols-outlined text-[18px]">verified</span>
+              <span>Award</span>
             </button>
           </div>
         </div>
 
       </div>
-
-      <!-- STEP 1: Select Arrived Team -->
-      <div class="relative w-full rounded-xl bg-surface-container p-space-md shadow-lg flex flex-col gap-space-sm border border-primary-container/20">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20 text-primary font-label-sm text-label-sm">01</span>
-            <label class="font-label-md text-label-md text-on-surface uppercase tracking-wider" for="team-selector">Arrived Squad</label>
-          </div>
-          <span class="font-label-sm text-label-sm text-tertiary uppercase flex items-center gap-1">
-            <span class="material-symbols-outlined text-[14px]">sensors</span> Station Beacon Locked
-          </span>
-        </div>
-        <div class="relative w-full mt-1">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary">
-            <span class="material-symbols-outlined text-[20px]">groups</span>
-          </div>
-          <select class="w-full h-12 bg-surface-container-lowest text-on-surface font-body-lg text-body-lg pl-10 pr-10 rounded-lg appearance-none focus:outline-none focus:ring-1 focus:ring-primary-container transition-colors" id="team-selector" onchange="updateSummary()">
-            <option value="">Loading authorized squads...</option>
-          </select>
-          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-on-surface-variant">
-            <span class="material-symbols-outlined text-[20px]">expand_more</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 2: Cone Color / Target Beacon Selector -->
-      <div class="relative w-full rounded-xl bg-surface-container p-space-md shadow-lg flex flex-col gap-space-sm border border-primary-container/20">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20 text-primary font-label-sm text-label-sm">02</span>
-            <span class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Station Beacon Cone Color</span>
-          </div>
-          <span class="font-label-sm text-label-sm text-secondary-fixed uppercase tracking-wider" id="beacon-status">Yellow Selected</span>
-        </div>
-        
-        <!-- 3-State Interactive Beacon Tiles -->
-        <div class="grid grid-cols-3 gap-space-sm mt-1">
-          <!-- RED CONE -->
-          <button class="cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-lowest transition-all duration-200" onclick="selectCone('RED', 10, this)" type="button">
-            <div class="w-8 h-8 rounded-full bg-error-container/40 flex items-center justify-center text-error mb-1">
-              <span class="material-symbols-outlined text-[22px]">change_history</span>
-            </div>
-            <span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Red</span>
-            <span class="font-label-sm text-label-sm text-error uppercase font-bold mt-0.5">+10 PTS</span>
-          </button>
-          
-          <!-- YELLOW CONE (Selected Default) -->
-          <button class="cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-high shadow-[0_0_16px_rgba(255,214,0,0.35)] transition-all duration-200" onclick="selectCone('YELLOW', 12, this)" type="button">
-            <div class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center shadow-md">
-              <span class="material-symbols-outlined text-[14px] font-bold">check</span>
-            </div>
-            <div class="w-8 h-8 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary-fixed mb-1">
-              <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">change_history</span>
-            </div>
-            <span class="font-headline-sm text-headline-sm text-secondary-fixed leading-tight">Yellow</span>
-            <span class="font-label-sm text-label-sm text-secondary-fixed uppercase font-bold mt-0.5">+12 PTS</span>
-          </button>
-          
-          <!-- GREEN CONE -->
-          <button class="cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-lowest transition-all duration-200" onclick="selectCone('GREEN', 15, this)" type="button">
-            <div class="w-8 h-8 rounded-full bg-tertiary-container/30 flex items-center justify-center text-tertiary mb-1">
-              <span class="material-symbols-outlined text-[22px]">change_history</span>
-            </div>
-            <span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Green</span>
-            <span class="font-label-sm text-label-sm text-tertiary uppercase font-bold mt-0.5">+15 PTS</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- STEP 3: Playing Card Drawn by Team -->
-      <div class="relative w-full rounded-xl bg-surface-container p-space-md shadow-lg flex flex-col gap-space-md border border-primary-container/20">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20 text-primary font-label-sm text-label-sm">03</span>
-            <span class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Select Drawn Playing Card</span>
-          </div>
-          <div class="flex items-center gap-1.5 bg-surface-container-highest px-2.5 py-1 rounded-full">
-            <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
-            <span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Scoring Active</span>
-          </div>
-        </div>
-
-        <!-- Central Interactive Dynamic Card Preview -->
-        <div class="relative w-full py-2 flex items-center justify-center">
-          <div class="relative w-44 h-60 rounded-xl bg-surface-container-low border border-primary-container/40 flex flex-col justify-between p-4 shadow-[0_0_24px_rgba(0,229,255,0.3)] transition-all duration-300 z-10" id="hologram-card">
-            <div class="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-primary/5 rounded-xl pointer-events-none"></div>
-            <!-- Top Pip -->
-            <div class="flex items-center justify-between relative z-10">
-              <div class="flex flex-col items-center">
-                <span class="font-headline-lg text-headline-lg text-primary leading-none font-bold" id="card-rank-top">K</span>
-                <span class="font-headline-sm text-headline-sm text-primary leading-none" id="card-suit-top">♠</span>
-              </div>
-              <span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-high text-primary uppercase tracking-widest font-bold">CARD</span>
-            </div>
-            <!-- Center Tactical Suit Display -->
-            <div class="flex flex-col items-center justify-center relative z-10 my-auto">
-              <div class="relative w-20 h-20 rounded-full bg-surface-container flex items-center justify-center shadow-inner">
-                <span class="font-headline-xl text-headline-xl text-primary drop-shadow-[0_0_12px_rgba(0,229,255,0.7)] leading-none select-none" id="card-center-suit">♠</span>
-              </div>
-              <span class="font-label-sm text-label-sm text-primary uppercase font-bold mt-2 tracking-wider" id="card-value-label">Value: +13 Pts</span>
-            </div>
-            <!-- Bottom Pip (Inverted) -->
-            <div class="flex items-center justify-between relative z-10 rotate-180">
-              <div class="flex flex-col items-center">
-                <span class="font-headline-lg text-headline-lg text-primary leading-none font-bold" id="card-rank-bot">K</span>
-                <span class="font-headline-sm text-headline-sm text-primary leading-none" id="card-suit-bot">♠</span>
-              </div>
-              <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">TG-CIPHER</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Suit Selector Buttons -->
-        <div class="flex flex-col gap-2 pt-1 border-t border-outline-variant/30">
-          <span class="text-xs font-mono text-gray-400 uppercase">1. Select Card Suit:</span>
-          <div class="flex justify-between items-center gap-2">
-            <button class="suit-btn flex-1 py-1.5 rounded-lg bg-surface-container-high text-primary font-headline-sm text-headline-sm text-center border border-primary/40" onclick="setSuit('♠', 'text-primary', this)" type="button">♠ Spades</button>
-            <button class="suit-btn flex-1 py-1.5 rounded-lg bg-surface-container-lowest text-secondary font-headline-sm text-headline-sm text-center border border-secondary/20" onclick="setSuit('♥', 'text-secondary', this)" type="button">♥ Hearts</button>
-            <button class="suit-btn flex-1 py-1.5 rounded-lg bg-surface-container-lowest text-secondary font-headline-sm text-headline-sm text-center border border-secondary/20" onclick="setSuit('♦', 'text-secondary', this)" type="button">♦ Diamonds</button>
-            <button class="suit-btn flex-1 py-1.5 rounded-lg bg-surface-container-lowest text-primary font-headline-sm text-headline-sm text-center border border-primary/20" onclick="setSuit('♣', 'text-primary', this)" type="button">♣ Clubs</button>
-          </div>
-
-          <!-- Rank Selector Grid: Ace (1) to King (13) -->
-          <span class="text-xs font-mono text-gray-400 uppercase mt-2">2. Select Card Rank:</span>
-          <div class="grid grid-cols-7 gap-1.5" id="ranks-grid">
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('A', 1, this)" type="button">A (1)</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('2', 2, this)" type="button">2</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('3', 3, this)" type="button">3</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('4', 4, this)" type="button">4</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('5', 5, this)" type="button">5</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('6', 6, this)" type="button">6</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('7', 7, this)" type="button">7</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('8', 8, this)" type="button">8</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('9', 9, this)" type="button">9</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('10', 10, this)" type="button">10</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('J', 11, this)" type="button">J (11)</button>
-            <button class="rank-btn py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-highest font-label-md text-label-md text-on-surface text-center" onclick="setRank('Q', 12, this)" type="button">Q (12)</button>
-            <button class="rank-btn py-1.5 rounded bg-primary-container text-on-primary-container font-label-md text-label-md text-center font-bold" onclick="setRank('K', 13, this)" type="button">K (13)</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Live Award Calculation Display -->
-      <div class="relative w-full rounded-xl bg-surface-container-high p-space-md overflow-hidden shadow-2xl flex flex-col items-center text-center gap-1 border border-green/30">
-        <div class="flex items-center gap-1.5 text-secondary-fixed">
-          <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
-          <span class="font-label-lg text-label-lg uppercase tracking-widest">Points to be Awarded</span>
-        </div>
-        <div class="flex items-baseline justify-center gap-2 mt-1">
-          <span class="font-headline-lg text-headline-lg text-on-surface tracking-tight" id="formula-breakdown">12 + 13 =</span>
-          <span class="font-headline-xl-mobile text-headline-xl-mobile text-tertiary font-bold drop-shadow-[0_0_12px_rgba(44,241,0,0.6)]" id="total-points">25</span>
-          <span class="font-label-md text-label-md text-tertiary uppercase font-bold tracking-wider">PTS</span>
-        </div>
-        <span class="font-body-sm text-body-sm text-on-surface-variant" id="summary-meta">Formula: Cone Value + Card Rank points.</span>
-      </div>
-
-      <!-- Primary Action Button -->
-      <button class="relative w-full h-14 rounded-xl bg-tertiary-container text-on-tertiary-container flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(44,241,0,0.45)] hover:shadow-[0_0_32px_rgba(44,241,0,0.7)] active:scale-[0.98] transition-all font-bold" id="transmit-btn" onclick="openConfirmationModal()" type="button">
-        <span class="material-symbols-outlined text-[24px]">verified</span>
-        <span class="font-label-lg text-label-lg uppercase tracking-wider font-bold">Transmit Score & Unlock Next Clue</span>
-      </button>
 
       <!-- Alert Banner -->
       <div id="checkin-alert" class="hidden p-3 rounded-xl border text-xs font-mono flex items-center gap-2"></div>
@@ -830,76 +705,98 @@
       isScanning = false;
     }
 
+    function handleManualCodeInput(el) {
+      var raw = el.value.replace(/\D/g, '');
+      if (raw.length > 6) raw = raw.slice(0, 6);
+      
+      // Auto-format e.g. "11 29 10"
+      var formatted = '';
+      if (raw.length <= 2) {
+        formatted = raw;
+      } else if (raw.length <= 4) {
+        formatted = raw.slice(0, 2) + ' ' + raw.slice(2);
+      } else {
+        formatted = raw.slice(0, 2) + ' ' + raw.slice(2, 4) + ' ' + raw.slice(4);
+      }
+      el.value = formatted;
+
+      // When all 6 digits are typed, auto-award immediately!
+      if (raw.length === 6) {
+        verifyManualCipherCode();
+      }
+    }
+
     function handleDecodedQR(decodedText) {
       try {
         var teamId = '';
         var teamName = '';
-        var rankNum = 1;
-        var rankCode = 'A';
+        var rankNum = 9;
+        var rankCode = '9';
         var suitSymbol = '♠';
 
         if (decodedText.startsWith('TG|')) {
           var parts = decodedText.split('|');
           teamId = parts[1] || '';
           teamName = parts[2] || '';
-          rankNum = parseInt(parts[3], 10) || 1;
-          rankCode = parts[4] || 'A';
+          rankNum = parseInt(parts[3], 10) || 9;
+          rankCode = parts[4] || '9';
           suitSymbol = parts[5] || '♠';
+          if (parts[6]) {
+            var subDigits = parts[6].replace(/\D/g, '');
+            if (subDigits.length === 6 && !teamId && Array.isArray(currentTeams)) {
+              var tt = parseInt(subDigits.slice(0, 2), 10);
+              var matched = currentTeams.find(function(t, idx) {
+                return (t.teamCode || (10 + (idx + 1))) === tt;
+              });
+              if (matched) teamId = matched._id;
+            }
+          }
         } else {
+          var cleanDigits = decodedText.replace(/\D/g, '');
+          if (cleanDigits.length === 6) {
+            var minp = document.getElementById('manual-cipher-input');
+            if (minp) minp.value = cleanDigits;
+            verifyManualCipherCode();
+            return;
+          }
           var json = JSON.parse(decodedText);
           teamId = json.teamId || '';
           teamName = json.teamName || json.teamCallsign || '';
-          rankNum = parseInt(json.rank || json.rankNumber || 1, 10);
-          rankCode = json.code || json.rankCode || 'A';
+          rankNum = parseInt(json.rank || json.rankNumber || 9, 10);
+          rankCode = json.code || json.rankCode || '9';
           suitSymbol = json.suit || '♠';
         }
 
-        // 1. Select Team in dropdown
         var selector = document.getElementById('team-selector');
-        var matched = false;
-        for (var i = 0; i < selector.options.length; i++) {
-          var opt = selector.options[i];
-          if (opt.value === teamId || (teamName && opt.text.toLowerCase().includes(teamName.toLowerCase()))) {
-            selector.selectedIndex = i;
-            matched = true;
-            break;
-          }
+        if (selector && teamId) {
+          selector.value = teamId;
         }
 
-        // 2. Select Suit
-        var isRed = suitSymbol === '♥' || suitSymbol === '♦';
-        var colorClass = isRed ? 'text-secondary' : 'text-primary';
-        setSuit(suitSymbol, colorClass);
+        checkinState.cardRank = rankCode;
+        checkinState.cardRankValue = rankNum;
+        checkinState.cardSuit = suitSymbol;
 
-        // 3. Select Rank
-        setRank(rankCode, rankNum);
-
-        // 4. Audio confirmation chirp
         playCyberBeep();
 
-        // 5. Update Scan Detected Banner
         var banner = document.getElementById('scan-detected-banner');
         if (banner) {
           banner.classList.remove('hidden');
-          var selectedTeamObj = currentTeams.find(function(t) { return t._id === selector.value; });
+          var selectedTeamObj = (currentTeams || []).find(function(t) { return t._id === teamId; });
           var displaySquad = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : (teamName || 'Squad Verified');
-          document.getElementById('scan-result-team-name').innerText = displaySquad;
-          document.getElementById('scan-result-rank').innerText = rankCode;
-          document.getElementById('scan-result-suit').innerText = suitSymbol;
-          document.getElementById('scan-result-rank').className = 'font-bold text-sm leading-none ' + colorClass;
-          document.getElementById('scan-result-suit').className = 'text-sm leading-none ' + colorClass;
-          document.getElementById('scan-result-pts-tag').innerText = '+' + rankNum + ' PTS CARD';
+          var nameEl = document.getElementById('scan-result-team-name');
+          if (nameEl) nameEl.innerText = displaySquad;
+          var rEl = document.getElementById('scan-result-rank');
+          if (rEl) rEl.innerText = rankCode;
+          var sEl = document.getElementById('scan-result-suit');
+          if (sEl) sEl.innerText = suitSymbol;
+          var tagEl = document.getElementById('scan-result-pts-tag');
+          if (tagEl) tagEl.innerText = '+' + rankNum + ' PTS CARD';
         }
 
-        // 6. Stop scanner so it doesn't double-scan
         stopCameraScanner();
 
-        // 7. Update calculated summary points
-        updateSummary();
-
-        // 8. AUTO-AWARD POINTS & ADVANCE CLUE IMMEDIATELY!
-        var awardedTeamId = selector.value || teamId;
-        autoAwardCheckin(awardedTeamId, rankNum, suitSymbol, 'QR Scanner');
+        // AUTOMATICALLY AWARD POINTS IN ONE CLICK/SCAN!
+        autoAwardCheckin(teamId, rankNum, suitSymbol, 'QR Scanner');
       } catch (err) {
         console.error('QR Decode error:', err);
         showNotification('QR scanned but format was invalid.', true);
@@ -908,14 +805,14 @@
 
     function simulateQRScan() {
       var selector = document.getElementById('team-selector');
-      if (!selector || selector.options.length <= 1) {
+      if (!selector || selector.options.length === 0) {
         showNotification('No approved squads loaded to simulate scan.', true);
         return;
       }
 
-      var idx = selector.selectedIndex > 0 ? selector.selectedIndex : (Math.floor(Math.random() * (selector.options.length - 1)) + 1);
-      var chosenTeamId = selector.options[idx].value;
-      var chosenTeamName = selector.options[idx].text.split(' (')[0];
+      var idx = selector.selectedIndex >= 0 ? selector.selectedIndex : 0;
+      var chosenTeamId = selector.options[idx] ? selector.options[idx].value : (currentTeams[0] ? currentTeams[0]._id : 'team_demo');
+      var chosenTeamName = (currentTeams[0] ? (currentTeams[0].name || currentTeams[0].callsign) : 'Squad');
 
       var ranks = [
         { code: 'A', num: 1 }, { code: '2', num: 2 }, { code: '5', num: 5 },
@@ -926,7 +823,7 @@
       var r = ranks[Math.floor(Math.random() * ranks.length)];
       var s = suits[Math.floor(Math.random() * suits.length)];
 
-      var mockPayload = 'TG|' + chosenTeamId + '|' + chosenTeamName + '|' + r.num + '|' + r.code + '|' + s + '|' + Math.floor(Math.random() * 9000 + 1000).toString(16).toUpperCase();
+      var mockPayload = 'TG|' + chosenTeamId + '|' + chosenTeamName + '|' + r.num + '|' + r.code + '|' + s + '|112910';
       handleDecodedQR(mockPayload);
     }
 
@@ -935,7 +832,7 @@
       var rawCode = (input.value || '').trim();
 
       if (!rawCode) {
-        showNotification('Please enter the 6-digit cipher code from the player card.', true);
+        showNotification('Please enter the 6-digit code from the player card.', true);
         return;
       }
 
@@ -947,10 +844,11 @@
 
       var selector = document.getElementById('team-selector');
       var cleanDigits = rawCode.replace(/\D/g, '');
-      var rankCode = 'K';
-      var rankNum = 13;
+      var rankCode = '9';
+      var rankNum = 9;
       var suitSymbol = '♠';
       var squadFound = null;
+      var targetTeamId = null;
 
       var ranksMap = {
         1: 'A', 2: '2', 3: '3', 4: '4', 5: '5',
@@ -958,41 +856,51 @@
         11: 'J', 12: 'Q', 13: 'K'
       };
 
-      // 6-Digit Cipher: [TT = Team 2 digits] [RR = Card Rank 2 digits (21-33)] [CC = Salt 2 digits]
+      // 6-Digit Cipher: [TT = Team 2 digits] [RR = Card Rank 2 digits (21-33)] [HH = Clue & Suit (10-61)]
       if (cleanDigits.length === 6) {
         var tt = parseInt(cleanDigits.slice(0, 2), 10);
         var rr = parseInt(cleanDigits.slice(2, 4), 10);
-        var calculatedRank = rr - 20;
+        var hh = parseInt(cleanDigits.slice(4, 6), 10);
 
-        if (calculatedRank >= 1 && calculatedRank <= 13) {
-          rankNum = calculatedRank;
-          rankCode = ranksMap[rankNum];
+        if (rr >= 21 && rr <= 33) {
+          rankNum = rr - 20;
+          rankCode = ranksMap[rankNum] || String(rankNum);
+        }
+
+        if (hh >= 10 && hh <= 61) {
+          var suitIdx = (hh - 10) % 4;
+          suitSymbol = ['♠', '♥', '♦', '♣'][suitIdx] || '♠';
         }
 
         // Match squad by team code TT
         if (Array.isArray(currentTeams) && currentTeams.length > 0) {
-          var matchedTeam = currentTeams.find(function(t) {
-            return deriveTeamCode(t.callsign || t.name, currentTeams) === tt;
+          var matchedTeam = currentTeams.find(function(t, idx) {
+            var assignedCode = t.teamCode || (10 + (idx + 1));
+            var numMatch = (t.name || t.callsign || '').match(/\d+/);
+            var derivedNum = (numMatch && numMatch[0]) ? (parseInt(numMatch[0], 10) + 10) : 0;
+            return assignedCode === tt || derivedNum === tt || deriveTeamCode(t, currentTeams) === tt;
           });
           if (matchedTeam) {
-            selector.value = matchedTeam._id;
+            targetTeamId = matchedTeam._id;
             squadFound = matchedTeam.name || matchedTeam.callsign;
+            if (selector) selector.value = matchedTeam._id;
           }
         }
 
         // If not matched via currentTeams, search select options
-        if (!squadFound && selector) {
-          for (var i = 1; i < selector.options.length; i++) {
+        if (!targetTeamId && selector) {
+          for (var i = 0; i < selector.options.length; i++) {
             var optText = selector.options[i].text;
             if (deriveTeamCode(optText, currentTeams) === tt) {
               selector.selectedIndex = i;
+              targetTeamId = selector.options[i].value;
               squadFound = optText;
               break;
             }
           }
         }
       } else {
-        // Fallback for legacy alphanumeric codes e.g. TG-ALPHA-K-8492
+        // Fallback for alphanumeric codes
         var tokens = rawCode.toUpperCase().split(/[-_\s|]+/);
         var cleanTokens = tokens.filter(function(t) { return t && t !== 'TG'; });
         var legacyRanks = {
@@ -1001,10 +909,13 @@
           'J': 11, '11': 11, 'Q': 12, '12': 12, 'K': 13, '13': 13
         };
         cleanTokens.forEach(function(token) {
-          for (var i = 0; i < selector.options.length; i++) {
-            if (selector.options[i].text.toUpperCase().includes(token)) {
-              selector.selectedIndex = i;
-              squadFound = selector.options[i].text;
+          if (selector) {
+            for (var i = 0; i < selector.options.length; i++) {
+              if (selector.options[i].text.toUpperCase().includes(token)) {
+                selector.selectedIndex = i;
+                targetTeamId = selector.options[i].value;
+                squadFound = selector.options[i].text;
+              }
             }
           }
           if (legacyRanks[token] !== undefined) {
@@ -1014,20 +925,20 @@
         });
       }
 
-      // If team already chosen manually in Step 1, accept that
-      if (!squadFound && selector && selector.value) {
+      if (!targetTeamId && selector && selector.value) {
+        targetTeamId = selector.value;
         var opt = selector.options[selector.selectedIndex];
         squadFound = opt ? opt.text : 'Selected Squad';
       }
 
-      if (!squadFound && (!selector || !selector.value)) {
-        showNotification('Squad code (' + cleanDigits.slice(0, 2) + ') not recognized. Please choose squad in Step 1.', true);
+      if (!targetTeamId) {
+        showNotification('Squad code (' + cleanDigits.slice(0, 2) + ') not recognized in live squads list.', true);
         return;
       }
 
-      // Set rank & suit
-      setRank(rankCode, rankNum);
-      setSuit(suitSymbol, 'text-primary');
+      checkinState.cardRank = rankCode;
+      checkinState.cardRankValue = rankNum;
+      checkinState.cardSuit = suitSymbol;
 
       // Audio confirmation
       playCyberBeep();
@@ -1036,50 +947,52 @@
       var banner = document.getElementById('scan-detected-banner');
       if (banner) {
         banner.classList.remove('hidden');
-        var selectedTeamObj = currentTeams.find(function(t) { return t._id === selector.value; });
+        var selectedTeamObj = (currentTeams || []).find(function(t) { return t._id === targetTeamId; });
         var displaySquad = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : (squadFound || 'Squad Verified');
-        document.getElementById('scan-result-team-name').innerText = displaySquad;
-        document.getElementById('scan-result-rank').innerText = rankCode;
-        document.getElementById('scan-result-suit').innerText = suitSymbol;
-        document.getElementById('scan-result-pts-tag').innerText = '+' + rankNum + ' PTS (6-DIGIT CODE)';
+        var nameEl = document.getElementById('scan-result-team-name');
+        if (nameEl) nameEl.innerText = displaySquad;
+        var rEl = document.getElementById('scan-result-rank');
+        if (rEl) rEl.innerText = rankCode;
+        var sEl = document.getElementById('scan-result-suit');
+        if (sEl) sEl.innerText = suitSymbol;
+        var tagEl = document.getElementById('scan-result-pts-tag');
+        if (tagEl) tagEl.innerText = '+' + rankNum + ' PTS CARD';
       }
 
-      updateSummary();
       input.value = '';
 
-      // AUTO-AWARD POINTS & ADVANCE CLUE IMMEDIATELY!
-      autoAwardCheckin(selector.value, rankNum, suitSymbol, '6-Digit Cipher');
+      // AUTOMATICALLY AWARD POINTS IN ONE GO!
+      autoAwardCheckin(targetTeamId, rankNum, suitSymbol, '6-Digit Code');
     }
 
     function updateCardDisplay() {
-      document.getElementById('card-rank-top').innerText = checkinState.cardRank;
-      document.getElementById('card-rank-bot').innerText = checkinState.cardRank;
-      document.getElementById('card-suit-top').innerText = checkinState.cardSuit;
-      document.getElementById('card-suit-bot').innerText = checkinState.cardSuit;
-      document.getElementById('card-center-suit').innerText = checkinState.cardSuit;
-
-      var suitEls = [
-        document.getElementById('card-suit-top'),
-        document.getElementById('card-suit-bot'),
-        document.getElementById('card-center-suit')
-      ];
-      suitEls.forEach(function(el) {
-        el.className = el.className.replace(/text-(primary|secondary)/g, '');
-        el.classList.add(checkinState.suitColorClass);
-      });
-
-      document.getElementById('card-value-label').innerText = 'Value: +' + checkinState.cardRankValue + ' Pts';
+      var rTop = document.getElementById('card-rank-top');
+      if (rTop) rTop.innerText = checkinState.cardRank;
+      var rBot = document.getElementById('card-rank-bot');
+      if (rBot) rBot.innerText = checkinState.cardRank;
+      var sTop = document.getElementById('card-suit-top');
+      if (sTop) sTop.innerText = checkinState.cardSuit;
+      var sBot = document.getElementById('card-suit-bot');
+      if (sBot) sBot.innerText = checkinState.cardSuit;
+      var cSuit = document.getElementById('card-center-suit');
+      if (cSuit) cSuit.innerText = checkinState.cardSuit;
+      var vLbl = document.getElementById('card-value-label');
+      if (vLbl) vLbl.innerText = 'Value: +' + checkinState.cardRankValue + ' Pts';
       updateSummary();
     }
 
     function updateSummary() {
       var total = checkinState.conePoints + checkinState.cardRankValue;
-      document.getElementById('formula-breakdown').innerText = checkinState.conePoints + ' + ' + checkinState.cardRankValue + ' =';
-      document.getElementById('total-points').innerText = total;
-
-      var selector = document.getElementById('team-selector');
-      var teamName = selector.options[selector.selectedIndex] ? selector.options[selector.selectedIndex].text : 'Squad';
-      document.getElementById('summary-meta').innerText = 'Formula: ' + checkinState.conePoints + ' (Cone) + ' + checkinState.cardRankValue + ' (Card) = ' + total + ' PTS allocated directly to ' + teamName + '.';
+      var fb = document.getElementById('formula-breakdown');
+      if (fb) fb.innerText = checkinState.conePoints + ' + ' + checkinState.cardRankValue + ' =';
+      var tp = document.getElementById('total-points');
+      if (tp) tp.innerText = total;
+      var sm = document.getElementById('summary-meta');
+      if (sm) {
+        var selector = document.getElementById('team-selector');
+        var teamName = (selector && selector.options[selector.selectedIndex]) ? selector.options[selector.selectedIndex].text : 'Squad';
+        sm.innerText = 'Formula: ' + checkinState.conePoints + ' (Cone) + ' + checkinState.cardRankValue + ' (Card) = ' + total + ' PTS.';
+      }
     }
 
     // Modal Control (Rule #2: Always show confirmation dialog before submit)

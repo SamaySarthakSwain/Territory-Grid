@@ -498,39 +498,43 @@
     var isCardFlipped = false;
     var cachedTeamsList = [];
 
-    // Deterministic 2-Digit Team Code Engine (Unique for every squad)
+    // Deterministic 2-Digit Team Code Engine (Unique for every squad 10..99)
     function deriveTeamCode(strOrTeam, teamsList) {
       var str = '';
-      if (typeof strOrTeam === 'string') {
-        str = strOrTeam;
-      } else if (strOrTeam && typeof strOrTeam === 'object') {
+      var teamObj = null;
+      if (strOrTeam && typeof strOrTeam === 'object') {
+        teamObj = strOrTeam;
         str = strOrTeam.callsign || strOrTeam.name || strOrTeam._id || 'SQUAD';
+      } else if (typeof strOrTeam === 'string') {
+        str = strOrTeam;
       } else {
         str = 'SQUAD';
       }
-      str = str.toUpperCase().trim();
+      str = String(str).trim();
 
-      // If team name contains explicit number e.g. "Team 1", "Squad 5"
+      if (teamObj && teamObj.teamCode && teamObj.teamCode >= 10 && teamObj.teamCode <= 99) {
+        return teamObj.teamCode;
+      }
+
       var numMatch = str.match(/\d+/);
       if (numMatch && numMatch[0]) {
         var n = parseInt(numMatch[0], 10);
+        if (n >= 1 && n <= 89) return 10 + n;
         if (n >= 10 && n <= 99) return n;
-        if (n < 10) return 10 + n;
       }
 
-      // If teamsList available, derive index offset to guarantee 100% squad uniqueness
       if (Array.isArray(teamsList) && teamsList.length > 0) {
+        var strUpper = str.toUpperCase();
         var idx = teamsList.findIndex(function(t) {
-          return (t.callsign && t.callsign.toUpperCase() === str) ||
-                 (t.name && t.name.toUpperCase() === str) ||
+          return (t.callsign && t.callsign.toUpperCase() === strUpper) ||
+                 (t.name && t.name.toUpperCase() === strUpper) ||
                  (t._id && t._id === str);
         });
         if (idx !== -1) {
-          return 11 + (idx % 88);
+          return 10 + (idx % 89);
         }
       }
 
-      // Deterministic hash fallback (11-98)
       var hash = 0;
       for (var i = 0; i < str.length; i++) {
         hash = (hash * 31 + str.charCodeAt(i)) % 88;
@@ -538,20 +542,26 @@
       return 11 + Math.abs(hash);
     }
 
-    // 6-Digit Cipher: [TT = Team 2 digits] [RR = Card Rank 2 digits (21-33)] [CC = Rotating Salt 2 digits]
-    function generateSixDigitCipher(callsign, rankValue, tokenSalt, teamsList) {
-      var tt = deriveTeamCode(callsign, teamsList);
-      var rr = 20 + rankValue; // 21 (Ace) through 33 (King)
-      var saltNum = 0;
-      if (typeof tokenSalt === 'string') {
-        for (var i = 0; i < tokenSalt.length; i++) {
-          saltNum = (saltNum * 16 + (parseInt(tokenSalt[i], 16) || 0)) % 90;
-        }
-      } else if (typeof tokenSalt === 'number') {
-        saltNum = tokenSalt % 90;
-      }
-      var cc = 10 + ((tt * 3 + rr * 7 + saltNum) % 89);
-      return '' + tt + rr + cc;
+    // Deterministic Checkpoint Card Engine (Unique across all 13 places, all 13 cards, all teams)
+    function getCheckpointCard(team, clueIdx, teamsList) {
+      var tt = deriveTeamCode(team, teamsList);
+      var cIdx = parseInt(clueIdx, 10) || 0;
+      var rankIdx = Math.abs((tt * 3 + cIdx * 7)) % 13;
+      var suitIdx = Math.abs((tt * 5 + cIdx * 3)) % 4;
+      var rankObj = CARD_RANKS[rankIdx];
+      var suitObj = CARD_SUITS[suitIdx];
+      var rr = 20 + rankObj.value;
+      var hh = 10 + (cIdx * 4 + suitIdx);
+      var code = '' + tt + rr + hh;
+      return {
+        rank: rankObj.value,
+        code: rankObj.code,
+        suit: suitObj.symbol,
+        isRed: suitObj.isRed,
+        sixDigitCode: code,
+        token: '' + hh,
+        clueIdx: cIdx
+      };
     }
 
     function toggleCardFlip(targetState) {
@@ -587,25 +597,12 @@
       }
     }
 
-    function generateRandomCipherCard() {
-      var r = CARD_RANKS[Math.floor(Math.random() * CARD_RANKS.length)];
-      var s = CARD_SUITS[Math.floor(Math.random() * CARD_SUITS.length)];
-      var token = Math.floor(1000 + Math.random() * 9000).toString(16).toUpperCase();
-      return {
-        rank: r.value,
-        code: r.code,
-        suit: s.symbol,
-        isRed: s.isRed,
-        token: token
-      };
-    }
-
     function rotateCardCipher(animate) {
-      activeCipherCard = generateRandomCipherCard();
+      var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (currentUser && currentUser.currentClueIndex !== undefined ? currentUser.currentClueIndex : 0);
+      activeCipherCard = getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
 
       var flipper = document.getElementById('card-flipper');
       if (animate && flipper) {
-        // Subtle cyber shimmer during silent 30s rotation
         flipper.style.filter = 'brightness(1.35) drop-shadow(0 0 16px rgba(0,229,255,0.7))';
         setTimeout(function() {
           applyCardVisuals(activeCipherCard);
@@ -702,12 +699,14 @@
         el.style.color = color;
       });
 
-      // Generate 6-Digit Manual Code: TT RR CC (Unique per team & card level)
+      // Generate 6-Digit Manual Code: TT RR HH (Unique per team, place/hint, card rank, suit)
       var teamId = (currentUser && currentUser.teamId) ? currentUser.teamId : (currentMyTeam ? currentMyTeam._id : 'team_demo');
       var squadCallsign = (currentUser && currentUser.callsign) ? currentUser.callsign.toUpperCase() : (currentMyTeam ? (currentMyTeam.callsign || currentMyTeam.name || 'SQUAD').toUpperCase() : 'SQUAD');
       
-      var sixDigitRaw = generateSixDigitCipher(squadCallsign, card.rank, card.token, cachedTeamsList);
-      var formattedSixDigit = sixDigitRaw.slice(0, 3) + ' ' + sixDigitRaw.slice(3);
+      var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (card.clueIdx || 0);
+      var checkCard = card.sixDigitCode ? card : getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
+      var sixDigitRaw = checkCard.sixDigitCode;
+      var formattedSixDigit = sixDigitRaw.slice(0, 2) + ' ' + sixDigitRaw.slice(2, 4) + ' ' + sixDigitRaw.slice(4, 6);
 
       if (manualCodeEl) {
         manualCodeEl.innerText = formattedSixDigit;
@@ -841,12 +840,8 @@
       if (!currentUser) return;
       document.getElementById('header-callsign-badge').innerText = currentUser.callsign || 'SQUAD';
       
-      // Initialize dynamic cyber card cipher
+      // Initialize deterministic checkpoint card cipher
       rotateCardCipher(false);
-      // Silent 30-second rotation (User mandate: do not tell players when card swaps)
-      setInterval(function() {
-        rotateCardCipher(true);
-      }, 30000);
 
       loadCluesAndSync();
       // Fast live sync every 1.5 seconds for instantaneous clue & score updates

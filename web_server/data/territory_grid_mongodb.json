@@ -8,9 +8,61 @@
       "password": "samay",
       "isApproved": true,
       "createdAt": "2026-11-12T16:49:28.254Z"
+    },
+    {
+      "_id": "user_1794526706167_uinqz",
+      "callsign": "team1",
+      "name": "team1",
+      "role": "PLAYER",
+      "password": "team1",
+      "teamId": "team_1794526706167_0ie1p",
+      "zoneId": null,
+      "zoneLabel": null,
+      "isApproved": true,
+      "createdAt": "2026-11-12T23:38:26.168Z"
+    },
+    {
+      "_id": "user_1794526731882_4sl8t",
+      "callsign": "marshal1",
+      "name": "marshal1",
+      "role": "MEMBER",
+      "password": "marshal1",
+      "teamId": null,
+      "zoneId": "ZONE_01",
+      "zoneLabel": "Zone 1 - Library Arch (ZONE_01)",
+      "isApproved": true,
+      "createdAt": "2026-11-12T23:38:51.882Z"
     }
   ],
-  "teams": [],
+  "teams": [
+    {
+      "_id": "team_1794526706167_0ie1p",
+      "name": "team1",
+      "callsign": "team1",
+      "score": 0,
+      "cards": [],
+      "clueOrder": [
+        "clue_01",
+        "clue_02",
+        "clue_03",
+        "clue_04",
+        "clue_05",
+        "clue_12",
+        "clue_06",
+        "clue_07",
+        "clue_10",
+        "clue_11",
+        "clue_08",
+        "clue_13",
+        "clue_09"
+      ],
+      "currentClueIndex": 0,
+      "visitedZones": [],
+      "isApproved": true,
+      "createdAt": "2026-11-12T23:38:26.168Z",
+      "updatedAt": "2026-11-13T00:04:09.874Z"
+    }
+  ],
   "clues": [
     {
       "_id": "clue_01",
@@ -99,5 +151,42 @@
     "pausedAt": null,
     "totalPausedMs": 0
   },
-  "system_logs": []
+  "system_logs": [
+    {
+      "_id": "log_1794528249876_ls9q",
+      "action": "CHECKIN",
+      "details": "Team \"team1\" awarded +20 PTS at ZONE_01 (Total: 20 PTS)",
+      "timestamp": "2026-11-13T00:04:09.877Z"
+    },
+    {
+      "_id": "log_1794526753813_b6cw",
+      "action": "APPROVE_USER",
+      "details": "Marshal authorized: \"marshal1\" (MEMBER)",
+      "timestamp": "2026-11-12T23:39:13.813Z"
+    },
+    {
+      "_id": "log_1794526751638_elzv",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"team1\" (team_1794526706167_0ie1p)",
+      "timestamp": "2026-11-12T23:39:11.638Z"
+    },
+    {
+      "_id": "log_1794526739094_pe4k",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-12T23:38:59.094Z"
+    },
+    {
+      "_id": "log_1794526731883_ia86",
+      "action": "REGISTER",
+      "details": "MEMBER registered: \"marshal1\" (Pending Approval)",
+      "timestamp": "2026-11-12T23:38:51.883Z"
+    },
+    {
+      "_id": "log_1794526706170_7btz",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"team1\" (Pending Approval)",
+      "timestamp": "2026-11-12T23:38:26.170Z"
+    }
+  ]
 }
