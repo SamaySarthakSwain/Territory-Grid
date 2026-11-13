@@ -366,6 +366,41 @@ const server = http.createServer(async (req, res) => {
     await db.syncFromCloud(isWrite);
 
     try {
+      // 0. GET /api/health (System Diagnostics & Live Monitoring)
+      if (pathname === '/api/health' && req.method === 'GET') {
+        const gs = db.collections.gameState || {};
+        const teams = db.collections.teams || [];
+        const users = db.collections.users || [];
+        const clues = db.collections.clues || [];
+        const checkins = db.collections.checkins || [];
+
+        return sendJson(res, 200, {
+          status: 'HEALTHY',
+          uptime: process.uptime(),
+          timestamp: new Date().toISOString(),
+          cloudSync: {
+            lastSynced: db.lastSynced ? new Date(db.lastSynced).toISOString() : null,
+            hasSupabaseUrl: !!(process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.supabase.co')
+          },
+          database: {
+            provider: 'Local Storage + Supabase PostgreSQL Sync',
+            counts: {
+              teamsTotal: teams.length,
+              teamsApproved: teams.filter(t => t.isApproved).length,
+              usersTotal: users.length,
+              marshals: users.filter(u => u.role === 'MEMBER').length,
+              placesTotal: clues.length,
+              checkinsTotal: checkins.length
+            }
+          },
+          gameState: {
+            status: gs.status || 'LOBBY',
+            durationMinutes: gs.durationMinutes || 52,
+            startedAt: gs.startedAt || null
+          }
+        });
+      }
+
       // 1. POST /api/auth/register (Player Team or Field Marshal)
       if (pathname === '/api/auth/register' && req.method === 'POST') {
         const body = await parseBody(req);

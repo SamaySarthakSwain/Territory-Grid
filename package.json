@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "node web_server/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node scripts/system_health_audit.js",
+    "audit": "node scripts/system_health_audit.js",
+    "sync": "node scripts/sync_web_assets.js"
   },
   "repository": {
     "type": "git",

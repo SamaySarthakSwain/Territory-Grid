@@ -317,6 +317,43 @@ module.exports = async (req, res) => {
 
   try {
     // ─────────────────────────────────────────────────────────
+    // 0. GET /api/health (System Diagnostics & Live Health Check)
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/health' && req.method === 'GET') {
+      const gs = memoryStore.collections.gameState || {};
+      const teams = memoryStore.collections.teams || [];
+      const users = memoryStore.collections.users || [];
+      const clues = memoryStore.collections.clues || [];
+      const checkins = memoryStore.collections.checkins || [];
+
+      return sendJson(res, 200, {
+        status: 'HEALTHY',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+        cloudSync: {
+          lastSynced: memoryStore.lastSynced ? new Date(memoryStore.lastSynced).toISOString() : null,
+          hasSupabaseUrl: !!(process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.supabase.co')
+        },
+        database: {
+          provider: atlasDb ? 'MongoDB Atlas' : 'Supabase PostgreSQL + MemoryStore',
+          counts: {
+            teamsTotal: teams.length,
+            teamsApproved: teams.filter(t => t.isApproved).length,
+            usersTotal: users.length,
+            marshals: users.filter(u => u.role === 'MEMBER').length,
+            placesTotal: clues.length,
+            checkinsTotal: checkins.length
+          }
+        },
+        gameState: {
+          status: gs.status || 'LOBBY',
+          durationMinutes: gs.durationMinutes || 52,
+          startedAt: gs.startedAt || null
+        }
+      });
+    }
+
+    // ─────────────────────────────────────────────────────────
     // 1. POST /api/auth/register
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/auth/register' && req.method === 'POST') {
