@@ -120,6 +120,9 @@ async function runAudit() {
       report('System Health status is HEALTHY', health.json.status === 'HEALTHY');
       report('Database provider is connected', !!health.json.database);
       report('Cloud sync telemetry active', !!health.json.cloudSync);
+      if (health.json.monitoring && health.json.monitoring.sentry) {
+        report('Sentry monitoring telemetry active', health.json.monitoring.sentry.enabled === true || health.json.monitoring.sentry.dsnConfigured === true);
+      }
     }
   } catch (err) {
     report('GET /api/health accessible', false, err.message);

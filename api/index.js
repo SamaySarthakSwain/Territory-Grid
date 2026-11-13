@@ -5,6 +5,21 @@ const url = require('url');
 const fs = require('fs');
 const path = require('path');
 
+// ─────────────────────────────────────────────────────────────
+// Sentry Distributed Cloud Monitoring & Telemetry
+// ─────────────────────────────────────────────────────────────
+let Sentry = null;
+try {
+  Sentry = require('@sentry/node');
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN || 'https://64ed31aa42506c7bec5e03386192c279@o4512425106538496.ingest.us.sentry.io/4512425126330368',
+    environment: process.env.NODE_ENV || 'production',
+    tracesSampleRate: 1.0,
+  });
+} catch (e) {
+  // Sentry fallback if package not available in local isolated run
+}
+
 // Determine storage mode: Real MongoDB Atlas vs Fallback In-Memory/JSON
 const MONGODB_URI = process.env.MONGODB_URI;
 let MongoClient = null;
@@ -333,6 +348,14 @@ module.exports = async (req, res) => {
         cloudSync: {
           lastSynced: memoryStore.lastSynced ? new Date(memoryStore.lastSynced).toISOString() : null,
           hasSupabaseUrl: !!(process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.supabase.co')
+        },
+        monitoring: {
+          sentry: {
+            enabled: !!Sentry,
+            project: 'territory-grid',
+            organization: 'nist-university-pv',
+            dsnConfigured: true
+          }
         },
         database: {
           provider: atlasDb ? 'MongoDB Atlas' : 'Supabase PostgreSQL + MemoryStore',
@@ -1778,6 +1801,7 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
     return sendJson(res, 404, { success: false, error: 'API endpoint not found: ' + pathname });
   } catch (err) {
     console.error('Serverless Error:', err);
+    if (Sentry) Sentry.captureException(err);
     return sendJson(res, 500, { success: false, error: err.message });
   }
 };

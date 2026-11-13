@@ -7,6 +7,21 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
+// ─────────────────────────────────────────────────────────────
+// Sentry Distributed Cloud Monitoring & Telemetry
+// ─────────────────────────────────────────────────────────────
+let Sentry = null;
+try {
+  Sentry = require('@sentry/node');
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN || 'https://64ed31aa42506c7bec5e03386192c279@o4512425106538496.ingest.us.sentry.io/4512425126330368',
+    environment: process.env.NODE_ENV || 'production',
+    tracesSampleRate: 1.0,
+  });
+} catch (e) {
+  // Sentry fallback
+}
+
 const PORT = process.env.PORT || 8088;
 const DATA_DIR = path.join(__dirname, 'data');
 const DB_FILE = path.join(DATA_DIR, 'territory_grid_mongodb.json');
@@ -381,6 +396,14 @@ const server = http.createServer(async (req, res) => {
           cloudSync: {
             lastSynced: db.lastSynced ? new Date(db.lastSynced).toISOString() : null,
             hasSupabaseUrl: !!(process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.supabase.co')
+          },
+          monitoring: {
+            sentry: {
+              enabled: !!Sentry,
+              project: 'territory-grid',
+              organization: 'nist-university-pv',
+              dsnConfigured: true
+            }
           },
           database: {
             provider: 'Local Storage + Supabase PostgreSQL Sync',
@@ -1354,6 +1377,7 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 404, { success: false, error: 'API endpoint not found' });
     } catch (apiErr) {
       console.error('API Error:', apiErr);
+      if (Sentry) Sentry.captureException(apiErr);
       return sendJson(res, 500, { success: false, error: apiErr.message });
     }
   }
