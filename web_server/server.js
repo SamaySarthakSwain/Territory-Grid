@@ -48,11 +48,14 @@ class MongoDatabase {
   }
 
   load() {
-    if (fs.existsSync(DB_FILE)) {
+    if ((!this.collections.users || this.collections.users.length <= 1) && fs.existsSync(DB_FILE)) {
       try {
         const raw = fs.readFileSync(DB_FILE, 'utf8');
-        this.collections = JSON.parse(raw);
-        console.log('[MongoDB Engine] Loaded collections from persistent storage.');
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object' && Array.isArray(parsed.users) && parsed.users.length > 0) {
+          this.collections = parsed;
+          console.log('[MongoDB Engine] Loaded collections from persistent storage.');
+        }
       } catch (e) {
         console.error('[MongoDB Engine] Failed to parse DB file, initializing clean state.', e);
       }
@@ -362,7 +365,7 @@ const server = http.createServer(async (req, res) => {
         };
 
         db.collections.users.push(newUser);
-        db.save();
+        await db.syncToCloud();
         db.logEvent('REGISTER', `${newUser.role} registered: "${newUser.callsign}" (Pending Approval)`);
 
         return sendJson(res, 201, {
@@ -457,6 +460,7 @@ const server = http.createServer(async (req, res) => {
 
       // 3. GET /api/auth/status (Waiting Hall Live Polling)
       if (pathname === '/api/auth/status' && req.method === 'GET') {
+        await db.syncFromCloud(false);
         db.load();
         const userId = parsedUrl.query.id;
         const callsign = parsedUrl.query.callsign;
@@ -521,6 +525,7 @@ const server = http.createServer(async (req, res) => {
 
       // 4. GET /api/admin/pending (List all pending approvals with auto-heal sync)
       if (pathname === '/api/admin/pending' && req.method === 'GET') {
+        await db.syncFromCloud(true);
         db.load();
 
         // Bi-directional Auto-Heal: Sync team & user approval status
@@ -634,7 +639,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         if (approvedAny) {
-          db.save();
+          await db.syncToCloud();
           const logAction = approvedRole === 'MEMBER' ? 'APPROVE_USER' : 'APPROVE_TEAM';
           const logMsg = approvedRole === 'MEMBER'
             ? `Field Marshal authorized: "${approvedName}" (${cleanId})`

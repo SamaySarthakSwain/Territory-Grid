@@ -89,16 +89,14 @@ class MemoryStore {
 
   load() {
     try {
-      if (fs.existsSync(this.filePath)) {
+      if ((!this.collections.users || this.collections.users.length <= 1) && fs.existsSync(this.filePath)) {
         const raw = fs.readFileSync(this.filePath, 'utf8');
         const parsed = JSON.parse(raw);
-        if (parsed && typeof parsed === 'object') {
+        if (parsed && typeof parsed === 'object' && Array.isArray(parsed.users) && parsed.users.length > 0) {
           this.collections = parsed;
         }
       }
-    } catch (e) {
-      // keep defaults
-    }
+    } catch (e) {}
   }
 
   save() {
@@ -501,6 +499,7 @@ module.exports = async (req, res) => {
     // 3. GET /api/auth/status
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/auth/status' && req.method === 'GET') {
+      await memoryStore.syncFromCloud(false);
       const userId = parsedUrl.query.id;
       const callsign = parsedUrl.query.callsign;
 
@@ -619,6 +618,7 @@ module.exports = async (req, res) => {
     // 4. GET /api/admin/pending
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/admin/pending' && req.method === 'GET') {
+      await memoryStore.syncFromCloud(true);
       if (atlasDb) {
         // Auto-heal approval status in Atlas
         try {
