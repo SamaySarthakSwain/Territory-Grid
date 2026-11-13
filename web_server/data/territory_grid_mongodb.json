@@ -18,7 +18,7 @@
       "teamId": null,
       "zoneId": "ZONE_01",
       "zoneLabel": "Library Arch Colonnade",
-      "isApproved": false,
+      "isApproved": true,
       "createdAt": "2026-11-13T00:32:26.724Z"
     },
     {
@@ -44,6 +44,42 @@
       "zoneLabel": null,
       "isApproved": true,
       "createdAt": "2026-11-13T00:32:26.730Z"
+    },
+    {
+      "_id": "user_1794530270106_amsr1",
+      "callsign": "marshal1",
+      "name": "marshal1",
+      "role": "MEMBER",
+      "password": "marshal1",
+      "teamId": null,
+      "zoneId": "ZONE 1",
+      "zoneLabel": "Atrium (ZONE 1)",
+      "isApproved": true,
+      "createdAt": "2026-11-13T00:37:50.106Z"
+    },
+    {
+      "_id": "user_1794530305536_awbz7",
+      "callsign": "team1",
+      "name": "team1",
+      "role": "PLAYER",
+      "password": "team1",
+      "teamId": "team_1794530305536_hh9o3",
+      "zoneId": null,
+      "zoneLabel": null,
+      "isApproved": true,
+      "createdAt": "2026-11-13T00:38:25.536Z"
+    },
+    {
+      "_id": "user_1794530360535_pe3gd",
+      "callsign": "squad_titan",
+      "name": "Squad Titan",
+      "role": "PLAYER",
+      "password": "password123",
+      "teamId": "team_1794530360535_dwzex",
+      "zoneId": null,
+      "zoneLabel": null,
+      "isApproved": true,
+      "createdAt": "2026-11-13T00:39:20.535Z"
     }
   ],
   "teams": [
@@ -71,27 +107,47 @@
       ],
       "isApproved": true,
       "createdAt": "2026-11-13T00:32:26.730Z",
-      "updatedAt": "2026-11-13T00:32:26.735Z"
+      "updatedAt": "2026-11-13T00:32:26.735Z",
+      "teamCode": 11
+    },
+    {
+      "_id": "team_1794530305536_hh9o3",
+      "name": "team1",
+      "callsign": "team1",
+      "score": 0,
+      "cards": [],
+      "clueOrder": [
+        "clue_mwe8yofo"
+      ],
+      "currentClueIndex": 0,
+      "visitedZones": [],
+      "isApproved": true,
+      "createdAt": "2026-11-13T00:38:25.536Z",
+      "updatedAt": "2026-11-13T00:38:25.536Z",
+      "teamCode": 11
+    },
+    {
+      "_id": "team_1794530360535_dwzex",
+      "name": "Squad Titan",
+      "callsign": "squad_titan",
+      "score": 0,
+      "cards": [],
+      "clueOrder": [
+        "clue_mwe8yofo"
+      ],
+      "currentClueIndex": 0,
+      "visitedZones": [],
+      "isApproved": true,
+      "createdAt": "2026-11-13T00:39:20.535Z",
+      "updatedAt": "2026-11-13T00:39:20.535Z"
     }
   ],
   "clues": [
     {
-      "_id": "clue_mwe8sorh",
-      "zoneId": "ZONE_01",
-      "zoneLabel": "Library Arch Colonnade",
-      "text": "Locate the Yellow Beacon Cone near the library plaza arch!"
-    },
-    {
-      "_id": "clue_mwe8sorj",
-      "zoneId": "ZONE_02",
-      "zoneLabel": "Solar Obelisk Courtyard",
-      "text": "Search behind the ancient bronze solar obelisk."
-    },
-    {
-      "_id": "clue_mwe8sork",
-      "zoneId": "ZONE_03",
-      "zoneLabel": "Tech Innovation Hub",
-      "text": "Find the beacon cone outside the robotics workshop."
+      "_id": "clue_mwe8yofo",
+      "zoneId": "ZONE 1",
+      "zoneLabel": "Atrium",
+      "text": "Atrium hint"
     }
   ],
   "checkins": [
@@ -115,6 +171,48 @@
     "totalPausedMs": 0
   },
   "system_logs": [
+    {
+      "_id": "log_1794530369497_siol",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad Titan\" (team_1794530360535_dwzex)",
+      "timestamp": "2026-11-13T00:39:29.497Z"
+    },
+    {
+      "_id": "log_1794530360536_dzin",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"squad_titan\" (Pending Approval)",
+      "timestamp": "2026-11-13T00:39:20.536Z"
+    },
+    {
+      "_id": "log_1794530311255_84vm",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"team1\" (team_1794530305536_hh9o3)",
+      "timestamp": "2026-11-13T00:38:31.255Z"
+    },
+    {
+      "_id": "log_1794530305537_j7r7",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"team1\" (Pending Approval)",
+      "timestamp": "2026-11-13T00:38:25.537Z"
+    },
+    {
+      "_id": "log_1794530274853_oh9q",
+      "action": "APPROVE_USER",
+      "details": "Marshal authorized: \"marshal1\" (MEMBER)",
+      "timestamp": "2026-11-13T00:37:54.853Z"
+    },
+    {
+      "_id": "log_1794530273106_1uzw",
+      "action": "APPROVE_USER",
+      "details": "Marshal authorized: \"marshal_alpha\" (MEMBER)",
+      "timestamp": "2026-11-13T00:37:53.106Z"
+    },
+    {
+      "_id": "log_1794530270107_uwzn",
+      "action": "REGISTER",
+      "details": "MEMBER registered: \"marshal1\" (Pending Approval)",
+      "timestamp": "2026-11-13T00:37:50.108Z"
+    },
     {
       "_id": "log_1794529946735_rv2o",
       "action": "CHECKIN",

@@ -175,7 +175,7 @@
         <div class="neon-card rounded-2xl p-4 text-center">
           <span class="material-symbols-outlined text-cyan text-2xl mb-1">groups</span>
           <div class="text-2xl font-headline font-bold text-white" id="stat-teams-count">0</div>
-          <div class="text-[11px] font-mono text-gray-400 uppercase">Approved Teams</div>
+          <div class="text-[11px] font-mono text-gray-400 uppercase">Active (<span id="stat-registered-count" class="text-cyan font-bold">0</span> Registered)</div>
         </div>
         <div class="neon-card rounded-2xl p-4 text-center">
           <span class="material-symbols-outlined text-green text-2xl mb-1">verified_user</span>
@@ -194,16 +194,27 @@
         </div>
       </div>
 
-      <!-- Live Leaderboard Table -->
+      <!-- Live Leaderboard Standings (Active Teams) -->
       <div class="neon-card rounded-2xl p-6">
-        <div class="flex items-center justify-between border-b border-cyan/20 pb-4 mb-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-cyan/20 pb-4 mb-4 gap-3">
           <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-cyan">emoji_events</span>
-            <h2 class="text-lg font-headline font-bold text-white">Live Leaderboard Standings</h2>
+            <span class="material-symbols-outlined text-cyan text-2xl">emoji_events</span>
+            <div>
+              <h2 class="text-lg font-headline font-bold text-white flex items-center gap-2">
+                <span>Live Leaderboard Standings</span>
+                <span class="px-2 py-0.5 rounded-full bg-green/20 text-green border border-green/40 text-[10px] font-mono font-bold flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span>ACTIVE HUNTING
+                </span>
+              </h2>
+              <p class="text-xs text-gray-400 font-body">Real-time standings of authorized squads actively competing on campus.</p>
+            </div>
           </div>
-          <button onclick="loadLeaderboard()" class="text-xs font-mono text-cyan hover:underline flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">refresh</span> Refresh
-          </button>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-cyan bg-cyan/10 px-2.5 py-1 rounded-lg border border-cyan/30" id="leaderboard-active-count">0 Active Squads</span>
+            <button onclick="loadLeaderboard()" class="px-3 py-1.5 rounded-lg bg-cyan/10 hover:bg-cyan/20 text-cyan border border-cyan/30 text-xs font-headline font-semibold flex items-center gap-1 transition cursor-pointer">
+              <span class="material-symbols-outlined text-sm">refresh</span> Refresh
+            </button>
+          </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -212,15 +223,62 @@
               <tr class="text-gray-400 border-b border-cyan/10">
                 <th class="py-2.5 px-3">RANK</th>
                 <th class="py-2.5 px-3">SQUAD NAME</th>
-                <th class="py-2.5 px-3">STATUS</th>
-                <th class="py-2.5 px-3">CARDS DRAWN</th>
-                <th class="py-2.5 px-3">PROGRESS</th>
+                <th class="py-2.5 px-3">CODE</th>
+                <th class="py-2.5 px-3">HUNT STATUS</th>
+                <th class="py-2.5 px-3">CARDS</th>
+                <th class="py-2.5 px-3">CHECKPOINT</th>
                 <th class="py-2.5 px-3 text-right">TOTAL POINTS</th>
               </tr>
             </thead>
             <tbody id="leaderboard-table-body" class="divide-y divide-cyan/5">
               <tr>
-                <td colspan="6" class="py-6 text-center text-gray-400">Loading live squads...</td>
+                <td colspan="7" class="py-6 text-center text-gray-400">Loading active squads...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ───────────────────────────────────────────────────────────── -->
+      <!-- SUB-SECTION: REGISTERED TEAMS DIRECTORY & CLEARANCE OVERVIEW -->
+      <!-- ───────────────────────────────────────────────────────────── -->
+      <div class="neon-card rounded-2xl p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-cyan/20 pb-4 gap-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-cyan text-2xl">groups</span>
+            <div>
+              <h3 class="text-lg font-headline font-bold text-white flex items-center gap-2">
+                <span>Registered Squads Directory</span>
+                <span class="px-2 py-0.5 rounded bg-cyan/20 border border-cyan/40 text-cyan text-[10px] font-mono font-bold" id="badge-total-registered-teams">0 TOTAL</span>
+              </h3>
+              <p class="text-xs text-gray-400 font-body">All squads registered for Territory Grid • Live clearance state and quick authorization.</p>
+            </div>
+          </div>
+
+          <!-- Filter Pills -->
+          <div class="flex items-center gap-1.5 bg-[#050914] p-1 rounded-xl border border-gray-800 self-start sm:self-auto text-xs font-mono">
+            <button onclick="setRegisteredTeamsFilter('all')" id="filter-btn-all" class="px-3 py-1 rounded-lg bg-cyan text-black font-bold transition">All (<span id="count-filter-all">0</span>)</button>
+            <button onclick="setRegisteredTeamsFilter('active')" id="filter-btn-active" class="px-3 py-1 rounded-lg text-gray-400 hover:text-white transition">Active (<span id="count-filter-active">0</span>)</button>
+            <button onclick="setRegisteredTeamsFilter('pending')" id="filter-btn-pending" class="px-3 py-1 rounded-lg text-gray-400 hover:text-white transition">Pending (<span id="count-filter-pending">0</span>)</button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead>
+              <tr class="text-gray-400 border-b border-gray-800">
+                <th class="py-2.5 px-3">SQUAD NAME</th>
+                <th class="py-2.5 px-3">CODE</th>
+                <th class="py-2.5 px-3">CLEARANCE STATUS</th>
+                <th class="py-2.5 px-3">CURRENT PROGRESS</th>
+                <th class="py-2.5 px-3">CARDS</th>
+                <th class="py-2.5 px-3">POINTS</th>
+                <th class="py-2.5 px-3 text-right">ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="registered-teams-table-body" class="divide-y divide-gray-800/60">
+              <tr>
+                <td colspan="7" class="py-6 text-center text-gray-400 font-mono">Loading registered squads...</td>
               </tr>
             </tbody>
           </table>
@@ -818,48 +876,154 @@
       }
     }
 
-    // Load Leaderboard
+    var cachedRegisteredTeams = [];
+    var registeredTeamsFilter = 'all'; // 'all', 'active', 'pending'
+
+    // Load Leaderboard and Registered Teams Directory
     async function loadLeaderboard() {
       try {
         var res = await fetch('/api/teams?_t=' + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (data.success) {
-          var teams = data.teams || [];
-          var approved = teams.filter(function(t) { return t.isApproved; });
+          var allTeams = data.teams || [];
+          cachedRegisteredTeams = allTeams;
+
+          // Categorize teams
+          var approved = allTeams.filter(function(t) { return t.isApproved; });
+          var pending = allTeams.filter(function(t) { return !t.isApproved; });
+          
           approved.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
 
-          document.getElementById('stat-teams-count').innerText = approved.length;
-          
-          var totalPoints = approved.reduce(function(acc, t) { return acc + (t.score || 0); }, 0);
-          document.getElementById('stat-total-points').innerText = totalPoints;
+          // Update summary counters
+          var statTeams = document.getElementById('stat-teams-count');
+          var statReg = document.getElementById('stat-registered-count');
+          var statPoints = document.getElementById('stat-total-points');
+          var badgeTotal = document.getElementById('badge-total-registered-teams');
+          var countAll = document.getElementById('count-filter-all');
+          var countAct = document.getElementById('count-filter-active');
+          var countPend = document.getElementById('count-filter-pending');
+          var activeCountEl = document.getElementById('leaderboard-active-count');
 
-          var tbody = document.getElementById('leaderboard-table-body');
-          if (approved.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-gray-400">No approved squads playing yet. Approve squads from the Approvals tab.</td></tr>';
-            return;
+          if (statTeams) statTeams.innerText = approved.length;
+          if (statReg) statReg.innerText = allTeams.length;
+          if (badgeTotal) badgeTotal.innerText = allTeams.length + ' SQUADS';
+          if (countAll) countAll.innerText = allTeams.length;
+          if (countAct) countAct.innerText = approved.length;
+          if (countPend) countPend.innerText = pending.length;
+          if (activeCountEl) activeCountEl.innerText = approved.length + ' Active Squads';
+
+          var totalPoints = approved.reduce(function(acc, t) { return acc + (t.score || 0); }, 0);
+          if (statPoints) statPoints.innerText = totalPoints;
+
+          // 1. Render Active Teams Live Leaderboard
+          var tbodyLeaderboard = document.getElementById('leaderboard-table-body');
+          if (tbodyLeaderboard) {
+            if (approved.length === 0) {
+              tbodyLeaderboard.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-400 font-mono text-xs bg-[#050914] rounded-xl border border-dashed border-gray-800">' +
+                '<div class="flex flex-col items-center gap-1.5">' +
+                  '<span class="material-symbols-outlined text-yellow text-2xl">pending</span>' +
+                  '<span>No squads currently active on the grid.</span>' +
+                  (pending.length > 0 ? ('<span class="text-cyan font-bold">' + pending.length + ' registered squad(s) awaiting approval in the directory below!</span>') : '<span class="text-gray-500">Waiting for teams to register.</span>') +
+                '</div>' +
+              '</td></tr>';
+            } else {
+              tbodyLeaderboard.innerHTML = approved.map(function(t, idx) {
+                var cardsCount = (t.cards || []).length;
+                var rankBadge = idx === 0 ? '👑 #1' : (idx === 1 ? '🥈 #2' : (idx === 2 ? '🥉 #3' : '#' + (idx + 1)));
+                var scoreText = (t.score || 0) + ' PTS';
+                var isHunting = (t.score > 0) || ((t.visitedZones || []).length > 0);
+                var statusBadge = isHunting
+                  ? '<span class="px-2 py-0.5 rounded text-[10px] bg-green/20 text-green border border-green/30 font-bold flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span>ACTIVE HUNTING</span>'
+                  : '<span class="px-2 py-0.5 rounded text-[10px] bg-cyan/20 text-cyan border border-cyan/30 font-bold flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-cyan"></span>ON GRID // READY</span>';
+                
+                var teamCodeBadge = '<span class="px-2 py-0.5 rounded bg-cyan/10 border border-cyan/30 text-cyan font-mono font-bold text-xs">TG-' + (t.teamCode || (10 + (idx + 1))) + '</span>';
+                var checkpointText = 'Checkpoint #' + ((t.currentClueIndex || 0) + 1);
+
+                return '<tr class="hover:bg-cyan/5 transition-colors">' +
+                  '<td class="py-3 px-3 font-bold text-cyan text-sm">' + rankBadge + '</td>' +
+                  '<td class="py-3 px-3">' +
+                    '<div class="font-bold text-white text-sm">' + (t.name || t.callsign) + '</div>' +
+                    '<div class="text-[11px] text-gray-400 font-mono">@' + t.callsign + '</div>' +
+                  '</td>' +
+                  '<td class="py-3 px-3">' + teamCodeBadge + '</td>' +
+                  '<td class="py-3 px-3">' + statusBadge + '</td>' +
+                  '<td class="py-3 px-3 text-gray-300">' + cardsCount + ' Cards</td>' +
+                  '<td class="py-3 px-3 text-cyan">' + checkpointText + '</td>' +
+                  '<td class="py-3 px-3 text-right font-bold text-green text-sm">' + scoreText + '</td>' +
+                '</tr>';
+              }).join('');
+            }
           }
 
-          tbody.innerHTML = approved.map(function(t, idx) {
-            var cardsCount = (t.cards || []).length;
-            var rankBadge = idx === 0 ? '👑 #1' : (idx === 1 ? '🥈 #2' : (idx === 2 ? '🥉 #3' : '#' + (idx + 1)));
-            var scoreText = (t.score || 0) + ' PTS';
-            var statusBadge = (t.score > 0)
-              ? '<span class="px-2 py-0.5 rounded text-[10px] bg-green/20 text-green border border-green/30 font-semibold">ACTIVE</span>'
-              : '<span class="px-2 py-0.5 rounded text-[10px] bg-cyan/20 text-cyan border border-cyan/30 font-semibold">READY // DRAW PENDING</span>';
-
-            return '<tr class="hover:bg-cyan/5 transition-colors">' +
-              '<td class="py-3 px-3 font-bold text-cyan">' + rankBadge + '</td>' +
-              '<td class="py-3 px-3 font-bold text-white">' + (t.name || t.callsign) + '</td>' +
-              '<td class="py-3 px-3">' + statusBadge + '</td>' +
-              '<td class="py-3 px-3 text-gray-300">' + cardsCount + ' Cards</td>' +
-              '<td class="py-3 px-3 text-cyan">Zone Step ' + (t.currentClueIndex || 0) + '</td>' +
-              '<td class="py-3 px-3 text-right font-bold text-green text-sm">' + scoreText + '</td>' +
-            '</tr>';
-          }).join('');
+          // 2. Render Registered Teams Sub-section Table
+          renderRegisteredTeamsTable();
         }
       } catch (e) {
-        console.error(e);
+        console.error('Error loading leaderboard:', e);
       }
+    }
+
+    function setRegisteredTeamsFilter(filter) {
+      registeredTeamsFilter = filter;
+      ['all', 'active', 'pending'].forEach(function(f) {
+        var btn = document.getElementById('filter-btn-' + f);
+        if (btn) {
+          if (f === filter) {
+            btn.className = 'px-3 py-1 rounded-lg bg-cyan text-black font-bold transition';
+          } else {
+            btn.className = 'px-3 py-1 rounded-lg text-gray-400 hover:text-white transition';
+          }
+        }
+      });
+      renderRegisteredTeamsTable();
+    }
+
+    function renderRegisteredTeamsTable() {
+      var tbody = document.getElementById('registered-teams-table-body');
+      if (!tbody) return;
+
+      var teams = cachedRegisteredTeams.slice();
+      if (registeredTeamsFilter === 'active') {
+        teams = teams.filter(function(t) { return t.isApproved; });
+      } else if (registeredTeamsFilter === 'pending') {
+        teams = teams.filter(function(t) { return !t.isApproved; });
+      }
+
+      if (teams.length === 0) {
+        var msg = registeredTeamsFilter === 'pending' ? 'No squads pending clearance. All registered squads are authorized!' :
+                  (registeredTeamsFilter === 'active' ? 'No active squads authorized yet.' : 'No squads registered yet. Teams can register from the login screen.');
+        tbody.innerHTML = '<tr><td colspan="7" class="py-6 text-center text-gray-400 font-mono text-xs">' + msg + '</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = teams.map(function(t, idx) {
+        var isApproved = !!t.isApproved;
+        var statusBadge = isApproved
+          ? '<span class="px-2.5 py-0.5 rounded-full bg-green/15 border border-green/40 text-green font-mono text-[11px] font-bold flex items-center gap-1.5 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green"></span>APPROVED & ACTIVE</span>'
+          : '<span class="px-2.5 py-0.5 rounded-full bg-yellow/15 border border-yellow/40 text-yellow font-mono text-[11px] font-bold flex items-center gap-1.5 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-yellow animate-pulse"></span>PENDING CLEARANCE</span>';
+
+        var code = t.teamCode ? ('TG-' + t.teamCode) : ('TG-' + (10 + (idx + 1)));
+        var checkpoint = isApproved ? ('Checkpoint #' + ((t.currentClueIndex || 0) + 1)) : 'Awaiting Approval';
+        var scoreText = (t.score || 0) + ' PTS';
+        var cardsCount = (t.cards || []).length + ' Cards';
+
+        var actionHtml = isApproved
+          ? '<span class="text-xs font-mono text-cyan flex items-center justify-end gap-1"><span class="material-symbols-outlined text-sm">verified</span> Active on Grid</span>'
+          : '<button onclick="approveEntity(\'TEAM\', \'' + t._id + '\')" class="px-3 py-1 rounded-lg bg-green hover:bg-green/80 text-black font-headline font-bold text-xs uppercase flex items-center gap-1 ml-auto transition shadow-[0_0_10px_rgba(0,255,136,0.3)] cursor-pointer"><span class="material-symbols-outlined text-sm">check_circle</span><span>Quick Approve</span></button>';
+
+        return '<tr class="hover:bg-cyan/5 transition-colors">' +
+          '<td class="py-3 px-3">' +
+            '<div class="font-bold text-white text-sm">' + (t.name || t.callsign) + '</div>' +
+            '<div class="text-[11px] text-gray-400 font-mono">@' + t.callsign + '</div>' +
+          '</td>' +
+          '<td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-gray-800 text-gray-300 font-mono text-xs font-semibold">' + code + '</span></td>' +
+          '<td class="py-3 px-3">' + statusBadge + '</td>' +
+          '<td class="py-3 px-3 text-cyan">' + checkpoint + '</td>' +
+          '<td class="py-3 px-3 text-gray-300">' + cardsCount + '</td>' +
+          '<td class="py-3 px-3 text-green font-bold">' + scoreText + '</td>' +
+          '<td class="py-3 px-3 text-right">' + actionHtml + '</td>' +
+        '</tr>';
+      }).join('');
     }
 
     var pendingItemsCache = {};
@@ -973,6 +1137,8 @@
         var badge = document.getElementById('badge-approved-total');
         if (badge) badge.innerText = totalActive + ' ACTIVE';
         document.getElementById('stat-teams-count').innerText = approvedTeams.length;
+        var regCountEl = document.getElementById('stat-registered-count');
+        if (regCountEl) regCountEl.innerText = teams.length;
         document.getElementById('stat-marshals-count').innerText = approvedMarshals.length;
 
         var container = document.getElementById('approved-items-list');
