@@ -542,17 +542,23 @@
       return 11 + Math.abs(hash);
     }
 
-    // Deterministic Checkpoint Card Engine (Unique across all 13 places, all 13 cards, all teams)
-    function getCheckpointCard(team, clueIdx, teamsList) {
+    // Deterministic Checkpoint Card Engine (Rotates dynamic cipher card every 30 seconds)
+    var cardShuffleStep = Math.floor(Date.now() / 30000);
+    var lastRotatedSlot = cardShuffleStep;
+
+    function getCheckpointCard(team, clueIdx, teamsList, shuffleStep) {
       var tt = deriveTeamCode(team, teamsList);
       var cIdx = parseInt(clueIdx, 10) || 0;
-      var rankIdx = Math.abs((tt * 3 + cIdx * 7)) % 13;
-      var suitIdx = Math.abs((tt * 5 + cIdx * 3)) % 4;
+      var step = (shuffleStep !== undefined) ? shuffleStep : cardShuffleStep;
+
+      // Rotates across all 13 card ranks (1..13) and 4 suits every 30 seconds
+      var rankIdx = Math.abs((tt * 3 + cIdx * 7 + step * 5)) % 13;
+      var suitIdx = Math.abs((tt * 5 + cIdx * 3 + step)) % 4;
       var rankObj = CARD_RANKS[rankIdx];
       var suitObj = CARD_SUITS[suitIdx];
-      var rr = 20 + rankObj.value;
-      var hh = 10 + (cIdx * 4 + suitIdx);
-      var code = '' + tt + rr + hh;
+      var rr = 20 + rankObj.value; // 21 to 33
+      var hh = 10 + ((cIdx * 4 + suitIdx + (step % 10)) % 52); // 10 to 61
+      var code = '' + tt + rr + String(hh).padStart(2, '0');
       return {
         rank: rankObj.value,
         code: rankObj.code,
@@ -560,7 +566,8 @@
         isRed: suitObj.isRed,
         sixDigitCode: code,
         token: '' + hh,
-        clueIdx: cIdx
+        clueIdx: cIdx,
+        step: step
       };
     }
 
@@ -599,17 +606,27 @@
 
     function rotateCardCipher(animate) {
       var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (currentUser && currentUser.currentClueIndex !== undefined ? currentUser.currentClueIndex : 0);
-      activeCipherCard = getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
+      activeCipherCard = getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList, cardShuffleStep);
 
       var flipper = document.getElementById('card-flipper');
       if (animate && flipper) {
-        flipper.style.filter = 'brightness(1.35) drop-shadow(0 0 16px rgba(0,229,255,0.7))';
+        flipper.style.transition = 'filter 0.3s ease, transform 0.3s ease';
+        flipper.style.filter = 'brightness(1.45) drop-shadow(0 0 22px rgba(0,229,255,0.85))';
         setTimeout(function() {
           applyCardVisuals(activeCipherCard);
           flipper.style.filter = 'none';
-        }, 220);
+        }, 260);
       } else {
         applyCardVisuals(activeCipherCard);
+      }
+    }
+
+    function checkAndRotateCard(animate) {
+      var currentSlot = Math.floor(Date.now() / 30000);
+      if (currentSlot !== lastRotatedSlot) {
+        lastRotatedSlot = currentSlot;
+        cardShuffleStep = currentSlot;
+        rotateCardCipher(animate);
       }
     }
 
@@ -704,7 +721,7 @@
       var squadCallsign = (currentUser && currentUser.callsign) ? currentUser.callsign.toUpperCase() : (currentMyTeam ? (currentMyTeam.callsign || currentMyTeam.name || 'SQUAD').toUpperCase() : 'SQUAD');
       
       var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (card.clueIdx || 0);
-      var checkCard = card.sixDigitCode ? card : getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
+      var checkCard = (card && card.sixDigitCode) ? card : getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList, cardShuffleStep);
       var sixDigitRaw = checkCard.sixDigitCode;
       var formattedSixDigit = sixDigitRaw.slice(0, 2) + ' ' + sixDigitRaw.slice(2, 4) + ' ' + sixDigitRaw.slice(4, 6);
 
@@ -841,7 +858,13 @@
       document.getElementById('header-callsign-badge').innerText = currentUser.callsign || 'SQUAD';
       
       // Initialize deterministic checkpoint card cipher
-      rotateCardCipher(false);
+      checkAndRotateCard(false);
+
+      // AUTOMATIC 30-SECOND DYNAMIC CARD SHUFFLE ENGINE
+      // Smoothly shuffles holographic cards and updates cipher code every 30 seconds
+      setInterval(function() {
+        checkAndRotateCard(true);
+      }, 1000);
 
       loadCluesAndSync();
       // Fast live sync every 1.5 seconds for instantaneous clue & score updates
