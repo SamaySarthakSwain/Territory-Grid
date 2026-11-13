@@ -232,53 +232,7 @@
     </div>
   </main>
 
-  <!-- CONFIRMATION MODAL (Strict Engineering Rule #2) -->
-  <div id="confirmation-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-[#0F1626] border border-cyan/40 rounded-2xl p-6 shadow-[0_0_40px_rgba(0,240,255,0.3)] space-y-4">
-      <div class="flex items-center gap-3 border-b border-cyan/20 pb-3">
-        <div class="w-10 h-10 rounded-xl bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan">
-          <span class="material-symbols-outlined text-2xl">task_alt</span>
-        </div>
-        <div>
-          <h3 class="font-headline font-bold text-white text-base">CONFIRM CHECKPOINT SUBMISSION</h3>
-          <p class="text-xs text-gray-400 font-mono">Verify scoring details before transmitting</p>
-        </div>
-      </div>
-
-      <div class="space-y-2.5 font-mono text-xs bg-[#091122] p-4 rounded-xl border border-cyan/20">
-        <div class="flex justify-between items-center text-gray-300">
-          <span>SQUAD NAME:</span>
-          <span class="text-white font-bold" id="modal-team-name">Team</span>
-        </div>
-        <div class="flex justify-between items-center text-gray-300">
-          <span>GRID ZONE:</span>
-          <span class="text-cyan font-bold" id="modal-zone-id">ZONE_01</span>
-        </div>
-        <div class="flex justify-between items-center text-gray-300">
-          <span>CONE COLOR:</span>
-          <span class="text-yellow font-bold" id="modal-cone-color">YELLOW (+12 PTS)</span>
-        </div>
-        <div class="flex justify-between items-center text-gray-300">
-          <span>DRAWN CARD:</span>
-          <span class="text-primary font-bold" id="modal-card-info">K♠ (+13 PTS)</span>
-        </div>
-        <div class="flex justify-between items-center text-gray-300 pt-2 border-t border-cyan/20">
-          <span class="text-sm font-bold text-white">TOTAL AWARD:</span>
-          <span class="text-sm font-bold text-green" id="modal-total-pts">+25 PTS</span>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3 pt-2">
-        <button onclick="closeConfirmationModal()" class="flex-1 py-2.5 rounded-xl border border-gray-600 hover:border-gray-400 text-gray-300 text-xs font-headline font-bold uppercase transition">
-          Cancel / Edit
-        </button>
-        <button onclick="submitCheckin()" id="btn-modal-confirm" class="flex-1 py-2.5 rounded-xl bg-green text-black text-xs font-headline font-bold uppercase hover:shadow-[0_0_15px_rgba(0,255,136,0.6)] transition flex items-center justify-center gap-1">
-          <span class="material-symbols-outlined text-base">check</span>
-          <span>Confirm & Transmit</span>
-        </button>
-      </div>
-    </div>
-  </div>
+  
 
   <!-- HIGH-IMPACT CELEBRATION MODAL OVERLAY (Shown on Instant Auto-Award) -->
   <div id="celebration-overlay" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
@@ -436,6 +390,44 @@
       }
     })();
 
+    
+    // Live Synchronized Game State & 52-Minute Clock Sync
+    var marshalRemainingHuntSeconds = 3120;
+    var marshalGameState = 'LOBBY';
+
+    async function syncMarshalGameState() {
+      try {
+        var res = await fetch('/api/game/state?_t=' + Date.now(), { cache: 'no-store' });
+        var data = await res.json();
+        if (!data.success) return;
+
+        var gs = data.state || {};
+        marshalGameState = gs.status || 'LOBBY';
+        var remSec = data.remainingSeconds !== undefined ? data.remainingSeconds : 3120;
+        marshalRemainingHuntSeconds = remSec;
+
+        var clockEl = document.getElementById('telemetry-hunt-clock');
+        var statusEl = document.getElementById('telemetry-game-status');
+
+        if (clockEl) {
+          var m = Math.floor(remSec / 60);
+          var s = remSec % 60;
+          clockEl.innerText = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        }
+
+        if (statusEl) {
+          statusEl.innerText = marshalGameState;
+          if (marshalGameState === 'PLAYER_PHASE') {
+            statusEl.className = 'font-headline-sm text-headline-sm text-green';
+          } else if (marshalGameState === 'COUNTDOWN') {
+            statusEl.className = 'font-headline-sm text-headline-sm text-[#FFD600] animate-pulse';
+          } else {
+            statusEl.className = 'font-headline-sm text-headline-sm text-primary';
+          }
+        }
+      } catch (e) {}
+    }
+  
     window.addEventListener('DOMContentLoaded', function() {
       if (!currentUser) return;
       
@@ -450,6 +442,19 @@
 
       loadTeams();
       loadRecentCheckins();
+      syncMarshalGameState();
+      setInterval(syncMarshalGameState, 2000);
+      setInterval(function() {
+        if (marshalGameState === "PLAYER_PHASE" && marshalRemainingHuntSeconds > 0) {
+          marshalRemainingHuntSeconds--;
+          var clockEl = document.getElementById("telemetry-hunt-clock");
+          if (clockEl) {
+            var m = Math.floor(marshalRemainingHuntSeconds / 60);
+            var s = marshalRemainingHuntSeconds % 60;
+            clockEl.innerText = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+          }
+        }
+      }, 1000);
       // Poll teams every 4 seconds
       setInterval(loadTeams, 4000);
       setInterval(loadRecentCheckins, 5000);
@@ -981,28 +986,7 @@
     }
 
     // Modal Control (Rule #2: Always show confirmation dialog before submit)
-    function openConfirmationModal() {
-      var selector = document.getElementById('team-selector');
-      if (!selector.value) {
-        showCheckinAlert('Please select an authorized squad from the list.', true);
-        return;
-      }
-
-      var selectedTeam = currentTeams.find(function(t) { return t._id === selector.value; });
-      var teamName = selectedTeam ? (selectedTeam.name || selectedTeam.callsign) : 'Selected Squad';
-
-      document.getElementById('modal-team-name').innerText = teamName;
-      document.getElementById('modal-zone-id').innerText = currentUser.zoneId || 'ZONE_01';
-      document.getElementById('modal-cone-color').innerText = checkinState.coneColor + ' (+' + checkinState.conePoints + ' PTS)';
-      document.getElementById('modal-card-info').innerText = checkinState.cardRank + checkinState.cardSuit + ' (+' + checkinState.cardRankValue + ' PTS)';
-      document.getElementById('modal-total-pts').innerText = '+' + (checkinState.conePoints + checkinState.cardRankValue) + ' PTS';
-
-      document.getElementById('confirmation-modal').classList.remove('hidden');
-    }
-
-    function closeConfirmationModal() {
-      document.getElementById('confirmation-modal').classList.add('hidden');
-    }
+    
 
     // ─────────────────────────────────────────────────────────
     // INSTANT AUTO-AWARD & SUBMISSION ENGINE

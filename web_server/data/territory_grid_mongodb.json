@@ -146,12 +146,35 @@
   ],
   "gameState": {
     "status": "LOBBY",
+    "durationMinutes": 52,
+    "durationSeconds": 3120,
     "startedAt": null,
-    "endedAt": null,
+    "endsAt": null,
+    "countdownStartAt": null,
+    "countdownEndsAt": null,
     "pausedAt": null,
-    "totalPausedMs": 0
+    "totalPausedMs": 0,
+    "endedAt": null
   },
   "system_logs": [
+    {
+      "_id": "log_1794533033990_ohev",
+      "action": "GAME_STATUS",
+      "details": "Game Master reset game state to LOBBY standby.",
+      "timestamp": "2026-11-13T01:23:53.990Z"
+    },
+    {
+      "_id": "log_1794533020621_rvbw",
+      "action": "GAME_STATUS",
+      "details": "10s Countdown completed! Game is now LIVE in PLAYER_PHASE (52 Minutes).",
+      "timestamp": "2026-11-13T01:23:40.621Z"
+    },
+    {
+      "_id": "log_1794532987239_2p6y",
+      "action": "GAME_STATUS",
+      "details": "Game Master initiated 10s countdown for 52-minute hunt.",
+      "timestamp": "2026-11-13T01:23:07.239Z"
+    },
     {
       "_id": "log_1794531420200_gus7",
       "action": "CHECKIN",
