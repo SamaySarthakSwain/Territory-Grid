@@ -73,6 +73,7 @@
       "cards": [],
       "score": 0,
       "callsign": "squad_live_1794549641232",
+      "teamCode": 14,
       "clueOrder": [
         "clue_mwe8yofo"
       ],
@@ -193,8 +194,8 @@
   ],
   "gameState": {
     "endsAt": "2026-11-13T03:22:12.622Z",
-    "status": "PLAYER_PHASE",
-    "endedAt": null,
+    "status": "ENDED",
+    "endedAt": "2026-11-13T06:36:42.106Z",
     "pausedAt": null,
     "startedAt": "2026-11-13T02:30:12.622Z",
     "totalPausedMs": 0,
@@ -204,6 +205,12 @@
     "countdownStartAt": "2026-11-13T02:30:02.622Z"
   },
   "system_logs": [
+    {
+      "_id": "log_1794551802106_g8x4",
+      "action": "GAME_STATUS",
+      "details": "52-Minute Hunt duration expired. Match concluded.",
+      "timestamp": "2026-11-13T06:36:42.106Z"
+    },
     {
       "_id": "log_1794549645525_zmgd",
       "action": "APPROVE_TEAM",
