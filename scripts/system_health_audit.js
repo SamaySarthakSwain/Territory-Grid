@@ -83,7 +83,7 @@ async function request(urlPath, options = {}, body = null, retries = 3) {
         req.end();
       });
     } catch (err) {
-      if (attempt < retries && (err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT' || err.message.includes('hang up'))) {
+      if (attempt < retries) {
         await wait(1500 * attempt);
         continue;
       }
