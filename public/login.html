@@ -326,6 +326,14 @@
 
     // Initialize page
     window.addEventListener('DOMContentLoaded', function() {
+      // Clear session if explicit logout requested via query parameter
+      try {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('logout') === 'true' || urlParams.get('switch') === 'true' || urlParams.get('clear') === 'true') {
+          clearSession();
+        }
+      } catch (e) {}
+
       loadDynamicStations();
       // Check if user is already authenticated
       var session = getStoredSession();
@@ -351,7 +359,7 @@
 
     async function loadDynamicStations() {
       try {
-        var res = await fetch(apiUrl('/api/clues?all=true&_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/clues?all=true&_t=' + Date.now()), { cache: 'no-store' });
         var data = await res.json();
         var sel = document.getElementById('input-zone');
         if (!sel) return;
@@ -678,7 +686,7 @@
         var uid = userId || session._id || session.id || '';
         var csign = session.callsign || '';
 
-        var res = await fetch(apiUrl('/api/auth/status?id=' + encodeURIComponent(uid) + '&callsign=' + encodeURIComponent(csign) + '&_t=' + Date.now(), {
+        var res = await fetch(apiUrl('/api/auth/status?id=' + encodeURIComponent(uid) + '&callsign=' + encodeURIComponent(csign) + '&_t=' + Date.now()), {
           cache: 'no-store'
         });
         var data = await res.json();

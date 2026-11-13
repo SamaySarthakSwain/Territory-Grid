@@ -16,7 +16,7 @@ destDirs.forEach(dest => {
   files.forEach(file => {
     const srcPath = path.join(srcDir, file);
     const destPath = path.join(dest, file);
-    if (fs.statSync(srcPath).isFile()) {
+    if (fs.statSync(srcPath).isFile() && !file.endsWith('.apk')) {
       fs.copyFileSync(srcPath, destPath);
       console.log(`Copied ${file} -> ${dest}`);
     }
