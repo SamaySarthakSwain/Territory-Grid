@@ -59,8 +59,65 @@ class MongoDatabase {
     }
   }
 
+  ensureUniqueTeamCodes() {
+    if (!Array.isArray(this.collections.teams)) {
+      this.collections.teams = [];
+      return false;
+    }
+    const teams = this.collections.teams;
+    const usedCodes = new Set();
+    let changed = false;
+
+    // Pass 1: Prioritize teams with numeric names/callsigns (e.g. team1 -> 11, team2 -> 12, squad5 -> 15)
+    teams.forEach(t => {
+      const numMatch = (t.name || t.callsign || '').match(/\d+/);
+      if (numMatch && numMatch[0]) {
+        const n = parseInt(numMatch[0], 10);
+        const code = (n >= 1 && n <= 89) ? (10 + n) : (n >= 11 && n <= 99 ? n : null);
+        if (code && !usedCodes.has(code)) {
+          if (t.teamCode !== code) changed = true;
+          t.teamCode = code;
+          usedCodes.add(code);
+        }
+      }
+    });
+
+    // Pass 2: Keep existing teamCode if valid and not conflicting
+    teams.forEach(t => {
+      if (t.teamCode && t.teamCode >= 11 && t.teamCode <= 99 && !usedCodes.has(t.teamCode)) {
+        usedCodes.add(t.teamCode);
+      } else if (t.teamCode && usedCodes.has(t.teamCode)) {
+        const numMatch = (t.name || t.callsign || '').match(/\d+/);
+        const n = (numMatch && numMatch[0]) ? parseInt(numMatch[0], 10) : 0;
+        if (t.teamCode !== (10 + n)) {
+          delete t.teamCode;
+          changed = true;
+        }
+      }
+    });
+
+    // Pass 3: Fill missing teamCodes with next available integer in [11..99]
+    let nextCode = 11;
+    teams.forEach(t => {
+      if (!t.teamCode) {
+        while (usedCodes.has(nextCode) && nextCode <= 99) {
+          nextCode++;
+        }
+        t.teamCode = nextCode;
+        usedCodes.add(nextCode);
+        changed = true;
+      }
+    });
+
+    if (changed) {
+      this.save();
+    }
+    return changed;
+  }
+
   ensureDefaults() {
     let changed = false;
+    if (this.ensureUniqueTeamCodes()) changed = true;
 
     // 1. Ensure Fixed Game Master Admin (samay / samay)
     const adminExists = this.collections.users.some(u => u.callsign === 'samay' || u.role === 'ADMIN');
@@ -487,21 +544,10 @@ const server = http.createServer(async (req, res) => {
       // 10. GET /api/teams (All teams for Leaderboard & Marshal Check-in)
       if (pathname === '/api/teams' && req.method === 'GET') {
         db.load();
-        const teams = (db.collections.teams || []).map((t, idx) => {
-          if (!t.teamCode) {
-            const numMatch = (t.name || t.callsign || '').match(/\d+/);
-            if (numMatch && numMatch[0]) {
-              const n = parseInt(numMatch[0], 10);
-              t.teamCode = (n >= 1 && n <= 89) ? (10 + n) : (n >= 10 && n <= 99 ? n : (10 + (idx + 1)));
-            } else {
-              t.teamCode = 10 + (idx + 1);
-            }
-          }
-          return t;
-        });
+        db.ensureUniqueTeamCodes();
         return sendJson(res, 200, {
           success: true,
-          teams: teams
+          teams: db.collections.teams
         });
       }
 
@@ -669,15 +715,21 @@ const server = http.createServer(async (req, res) => {
             const rr = parseInt(cleanDigits.slice(2, 4), 10);
             const hh = parseInt(cleanDigits.slice(4, 6), 10);
 
-            // Match team by TT
-            if (!teamId && Array.isArray(db.collections.teams)) {
-              const matchedTeam = db.collections.teams.find((t, idx) => {
-                const assignedCode = t.teamCode || (10 + (idx + 1));
-                const numMatch = (t.name || t.callsign || '').match(/\d+/);
-                const derivedNum = (numMatch && numMatch[0]) ? (parseInt(numMatch[0], 10) + 10) : 0;
-                return assignedCode === tt || derivedNum === tt;
-              });
-              if (matchedTeam) teamId = matchedTeam._id;
+            // Match team strictly by TT from 6-digit cipher code
+            if (Array.isArray(db.collections.teams)) {
+              let matchedTeam = db.collections.teams.find(t => t.teamCode === tt);
+              if (!matchedTeam && tt >= 11 && tt <= 99) {
+                const targetCallsign = 'team' + (tt - 10);
+                matchedTeam = db.collections.teams.find(t => 
+                  (t.callsign || '').toLowerCase() === targetCallsign.toLowerCase() ||
+                  (t.name || '').toLowerCase() === targetCallsign.toLowerCase()
+                );
+              }
+              if (matchedTeam) {
+                teamId = matchedTeam._id;
+              } else if (!teamId) {
+                return sendJson(res, 400, { success: false, error: `Squad code (${tt}) does not match any registered team.` });
+              }
             }
 
             // Derive card rank (21..33 -> 1..13)

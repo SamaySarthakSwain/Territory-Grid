@@ -872,31 +872,22 @@
           suitSymbol = ['♠', '♥', '♦', '♣'][suitIdx] || '♠';
         }
 
-        // Match squad by team code TT
+        // Match squad strictly by team code TT (100% collision-free)
         if (Array.isArray(currentTeams) && currentTeams.length > 0) {
-          var matchedTeam = currentTeams.find(function(t, idx) {
-            var assignedCode = t.teamCode || (10 + (idx + 1));
+          var matchedTeam = currentTeams.find(function(t) {
+            if (t.teamCode === tt) return true;
             var numMatch = (t.name || t.callsign || '').match(/\d+/);
-            var derivedNum = (numMatch && numMatch[0]) ? (parseInt(numMatch[0], 10) + 10) : 0;
-            return assignedCode === tt || derivedNum === tt || deriveTeamCode(t, currentTeams) === tt;
+            if (numMatch && numMatch[0]) {
+              var n = parseInt(numMatch[0], 10);
+              var code = (n >= 1 && n <= 89) ? (10 + n) : (n >= 10 && n <= 99 ? n : 0);
+              if (code === tt) return true;
+            }
+            return false;
           });
           if (matchedTeam) {
             targetTeamId = matchedTeam._id;
             squadFound = matchedTeam.name || matchedTeam.callsign;
             if (selector) selector.value = matchedTeam._id;
-          }
-        }
-
-        // If not matched via currentTeams, search select options
-        if (!targetTeamId && selector) {
-          for (var i = 0; i < selector.options.length; i++) {
-            var optText = selector.options[i].text;
-            if (deriveTeamCode(optText, currentTeams) === tt) {
-              selector.selectedIndex = i;
-              targetTeamId = selector.options[i].value;
-              squadFound = optText;
-              break;
-            }
           }
         }
       } else {
@@ -925,14 +916,8 @@
         });
       }
 
-      if (!targetTeamId && selector && selector.value) {
-        targetTeamId = selector.value;
-        var opt = selector.options[selector.selectedIndex];
-        squadFound = opt ? opt.text : 'Selected Squad';
-      }
-
       if (!targetTeamId) {
-        showNotification('Squad code (' + cleanDigits.slice(0, 2) + ') not recognized in live squads list.', true);
+        showNotification('Squad code (' + (cleanDigits.length >= 2 ? cleanDigits.slice(0, 2) : rawCode) + ') does not match any registered squad.', true);
         return;
       }
 
@@ -962,7 +947,7 @@
       input.value = '';
 
       // AUTOMATICALLY AWARD POINTS IN ONE GO!
-      autoAwardCheckin(targetTeamId, rankNum, suitSymbol, '6-Digit Code');
+      autoAwardCheckin(targetTeamId, rankNum, suitSymbol, '6-Digit Code', false, cleanDigits);
     }
 
     function updateCardDisplay() {
@@ -1025,7 +1010,7 @@
     var activeOverridePayload = null;
     var celebDismissTimer = null;
 
-    async function autoAwardCheckin(teamId, rankNum, suitSymbol, method, allowDuplicate) {
+    async function autoAwardCheckin(teamId, rankNum, suitSymbol, method, allowDuplicate, rawCipherCode) {
       if (!teamId) {
         showNotification('Cannot award: No squad selected or recognized in system.', true);
         return;
@@ -1050,6 +1035,7 @@
         cardRank: rankVal,
         cardSuit: suitSym,
         memberId: currentUser.callsign || 'marshal_station',
+        code: rawCipherCode || undefined,
         allowDuplicate: !!allowDuplicate
       };
 

@@ -662,31 +662,66 @@ module.exports = async (req, res) => {
       }
     }
 
+function ensureUniqueTeamCodes(teams) {
+  if (!Array.isArray(teams)) return [];
+  const usedCodes = new Set();
+
+  // Pass 1: Prioritize teams with numeric names/callsigns (e.g. team1 -> 11, team2 -> 12)
+  teams.forEach(t => {
+    const numMatch = (t.name || t.callsign || '').match(/\d+/);
+    if (numMatch && numMatch[0]) {
+      const n = parseInt(numMatch[0], 10);
+      const code = (n >= 1 && n <= 89) ? (10 + n) : (n >= 11 && n <= 99 ? n : null);
+      if (code && !usedCodes.has(code)) {
+        t.teamCode = code;
+        usedCodes.add(code);
+      }
+    }
+  });
+
+  // Pass 2: Keep existing teamCode if valid and not conflicting
+  teams.forEach(t => {
+    if (t.teamCode && t.teamCode >= 11 && t.teamCode <= 99 && !usedCodes.has(t.teamCode)) {
+      usedCodes.add(t.teamCode);
+    } else if (t.teamCode && usedCodes.has(t.teamCode)) {
+      const numMatch = (t.name || t.callsign || '').match(/\d+/);
+      const n = (numMatch && numMatch[0]) ? parseInt(numMatch[0], 10) : 0;
+      if (t.teamCode !== (10 + n)) {
+        delete t.teamCode;
+      }
+    }
+  });
+
+  // Pass 3: Fill missing teamCodes with next available integer in [11..99]
+  let nextCode = 11;
+  teams.forEach(t => {
+    if (!t.teamCode) {
+      while (usedCodes.has(nextCode) && nextCode <= 99) {
+        nextCode++;
+      }
+      t.teamCode = nextCode;
+      usedCodes.add(nextCode);
+    }
+  });
+  return teams;
+}
+
     // ─────────────────────────────────────────────────────────
     // 10. GET /api/teams
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/teams' && req.method === 'GET') {
-      const attachTeamCode = (list) => (list || []).map((t, idx) => {
-        if (!t.teamCode) {
-          const numMatch = (t.name || t.callsign || '').match(/\d+/);
-          if (numMatch && numMatch[0]) {
-            const n = parseInt(numMatch[0], 10);
-            t.teamCode = (n >= 1 && n <= 89) ? (10 + n) : (n >= 10 && n <= 99 ? n : (10 + (idx + 1)));
-          } else {
-            t.teamCode = 10 + (idx + 1);
-          }
-        }
-        return t;
-      });
-
       if (atlasDb) {
         const rawTeams = await atlasDb.collection('teams').find().toArray();
-        const teams = attachTeamCode(rawTeams);
+        const teams = ensureUniqueTeamCodes(rawTeams);
+        for (const t of teams) {
+          await atlasDb.collection('teams').updateOne({ _id: t._id }, { $set: { teamCode: t.teamCode } });
+        }
         return sendJson(res, 200, { success: true, teams });
       }
       memoryStore.load();
-      const teams = attachTeamCode(memoryStore.collections.teams);
-      return sendJson(res, 200, { success: true, teams });
+      ensureUniqueTeamCodes(memoryStore.collections.teams);
+      memoryStore.save();
+      return sendJson(res, 200, { success: true, teams: memoryStore.collections.teams });
     }
 
     // ─────────────────────────────────────────────────────────
@@ -913,22 +948,27 @@ module.exports = async (req, res) => {
           const rr = parseInt(cleanDigits.slice(2, 4), 10);
           const hh = parseInt(cleanDigits.slice(4, 6), 10);
 
-          // Match team by TT
-          if (!teamId) {
-            let candidateTeams = [];
-            if (atlasDb) {
-              candidateTeams = await atlasDb.collection('teams').find().toArray();
-            } else {
-              memoryStore.load();
-              candidateTeams = memoryStore.collections.teams || [];
-            }
-            const matchedTeam = candidateTeams.find((t, idx) => {
-              const assignedCode = t.teamCode || (10 + (idx + 1));
-              const numMatch = (t.name || t.callsign || '').match(/\d+/);
-              const derivedNum = (numMatch && numMatch[0]) ? (parseInt(numMatch[0], 10) + 10) : 0;
-              return assignedCode === tt || derivedNum === tt;
-            });
-            if (matchedTeam) teamId = matchedTeam._id;
+          // Match team strictly by TT from 6-digit cipher code
+          let candidateTeams = [];
+          if (atlasDb) {
+            candidateTeams = await atlasDb.collection('teams').find().toArray();
+          } else {
+            memoryStore.load();
+            candidateTeams = memoryStore.collections.teams || [];
+          }
+          ensureUniqueTeamCodes(candidateTeams);
+          let matchedTeam = candidateTeams.find(t => t.teamCode === tt);
+          if (!matchedTeam && tt >= 11 && tt <= 99) {
+            const targetCallsign = 'team' + (tt - 10);
+            matchedTeam = candidateTeams.find(t => 
+              (t.callsign || '').toLowerCase() === targetCallsign.toLowerCase() ||
+              (t.name || '').toLowerCase() === targetCallsign.toLowerCase()
+            );
+          }
+          if (matchedTeam) {
+            teamId = matchedTeam._id;
+          } else if (!teamId) {
+            return sendJson(res, 400, { success: false, error: `Squad code (${tt}) does not match any registered team.` });
           }
 
           // Derive card rank (21..33 -> 1..13)

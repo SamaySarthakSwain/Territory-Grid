@@ -22,18 +22,6 @@
       "createdAt": "2026-11-13T00:32:26.724Z"
     },
     {
-      "_id": "user_1794529946727_fb6ee",
-      "callsign": "marshal_gamma",
-      "name": "Marshal Gamma",
-      "role": "MEMBER",
-      "password": "password123",
-      "teamId": null,
-      "zoneId": "ZONE_03",
-      "zoneLabel": "Tech Innovation Hub",
-      "isApproved": false,
-      "createdAt": "2026-11-13T00:32:26.727Z"
-    },
-    {
       "_id": "user_1794529946730_51pe6",
       "callsign": "squad_phoenix",
       "name": "Squad Phoenix",
@@ -68,18 +56,6 @@
       "zoneLabel": null,
       "isApproved": true,
       "createdAt": "2026-11-13T00:38:25.536Z"
-    },
-    {
-      "_id": "user_1794530360535_pe3gd",
-      "callsign": "squad_titan",
-      "name": "Squad Titan",
-      "role": "PLAYER",
-      "password": "password123",
-      "teamId": "team_1794530360535_dwzex",
-      "zoneId": null,
-      "zoneLabel": null,
-      "isApproved": true,
-      "createdAt": "2026-11-13T00:39:20.535Z"
     }
   ],
   "teams": [
@@ -108,38 +84,32 @@
       "isApproved": true,
       "createdAt": "2026-11-13T00:32:26.730Z",
       "updatedAt": "2026-11-13T00:32:26.735Z",
-      "teamCode": 11
+      "teamCode": 12
     },
     {
       "_id": "team_1794530305536_hh9o3",
       "name": "team1",
       "callsign": "team1",
-      "score": 0,
-      "cards": [],
+      "score": 21,
+      "cards": [
+        {
+          "rank": 9,
+          "suit": "♠",
+          "zoneId": "ZONE_01",
+          "awardedAt": "2026-11-13T00:57:00.199Z"
+        }
+      ],
       "clueOrder": [
         "clue_mwe8yofo"
       ],
-      "currentClueIndex": 0,
-      "visitedZones": [],
+      "currentClueIndex": 1,
+      "visitedZones": [
+        "ZONE_01"
+      ],
       "isApproved": true,
       "createdAt": "2026-11-13T00:38:25.536Z",
-      "updatedAt": "2026-11-13T00:38:25.536Z",
+      "updatedAt": "2026-11-13T00:57:00.199Z",
       "teamCode": 11
-    },
-    {
-      "_id": "team_1794530360535_dwzex",
-      "name": "Squad Titan",
-      "callsign": "squad_titan",
-      "score": 0,
-      "cards": [],
-      "clueOrder": [
-        "clue_mwe8yofo"
-      ],
-      "currentClueIndex": 0,
-      "visitedZones": [],
-      "isApproved": true,
-      "createdAt": "2026-11-13T00:39:20.535Z",
-      "updatedAt": "2026-11-13T00:39:20.535Z"
     }
   ],
   "clues": [
@@ -161,6 +131,17 @@
       "cardSuit": "♠",
       "points": 20,
       "timestamp": "2026-11-13T00:32:26.735Z"
+    },
+    {
+      "_id": "team_1794530305536_hh9o3_ZONE_01_1794531420199",
+      "teamId": "team_1794530305536_hh9o3",
+      "zoneId": "ZONE_01",
+      "memberId": "marshal_station",
+      "cone": "YELLOW",
+      "cardRank": 9,
+      "cardSuit": "♠",
+      "points": 21,
+      "timestamp": "2026-11-13T00:57:00.199Z"
     }
   ],
   "gameState": {
@@ -171,6 +152,24 @@
     "totalPausedMs": 0
   },
   "system_logs": [
+    {
+      "_id": "log_1794531420200_gus7",
+      "action": "CHECKIN",
+      "details": "Team \"team1\" awarded +21 PTS at ZONE_01 (Total: 21 PTS)",
+      "timestamp": "2026-11-13T00:57:00.200Z"
+    },
+    {
+      "_id": "log_1794530480691_05ub",
+      "action": "REJECT_TEAM",
+      "details": "Squad rejected and removed: team_1794530360535_dwzex",
+      "timestamp": "2026-11-13T00:41:20.691Z"
+    },
+    {
+      "_id": "log_1794530474479_svg0",
+      "action": "REJECT_USER",
+      "details": "Operative rejected and removed: user_1794529946727_fb6ee",
+      "timestamp": "2026-11-13T00:41:14.479Z"
+    },
     {
       "_id": "log_1794530369497_siol",
       "action": "APPROVE_TEAM",
