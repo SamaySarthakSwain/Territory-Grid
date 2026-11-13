@@ -255,17 +255,36 @@ function parseBody(req) {
   });
 }
 
-function sendJson(res, statusCode, data) {
-  res.writeHead(statusCode, {
+function sendJson(res, statusCode, data, cacheControl = null, req = null) {
+  const headers = {
     'Content-Type': 'application/json; charset=UTF-8',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
-    'Pragma': 'no-cache',
-    'Expires': '0'
-  });
-  res.end(JSON.stringify(data));
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, If-None-Match',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+  };
+
+  if (cacheControl) {
+    headers['Cache-Control'] = cacheControl;
+  } else {
+    headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+    headers['Pragma'] = 'no-cache';
+    headers['Expires'] = '0';
+  }
+
+  const jsonStr = JSON.stringify(data);
+
+  // ETag conditional validation (HTTP 304 Not Modified)
+  if (req && req.headers && req.method === 'GET') {
+    const etag = 'W/"' + jsonStr.length + '-' + (data.state ? (data.state.status + '-' + (data.state.startedAt || '')) : '') + '"';
+    headers['ETag'] = etag;
+    if (req.headers['if-none-match'] === etag) {
+      res.writeHead(304, headers);
+      return res.end();
+    }
+  }
+
+  res.writeHead(statusCode, headers);
+  res.end(jsonStr);
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -1087,7 +1106,7 @@ module.exports = async (req, res) => {
           countdownSeconds: countdownSeconds,
           durationSeconds: gs.durationSeconds,
           durationMinutes: gs.durationMinutes
-        });
+        }, 'public, max-age=1, s-maxage=1, stale-while-revalidate=2', req);
       }
 
       if (req.method === 'POST') {

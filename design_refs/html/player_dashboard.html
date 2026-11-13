@@ -1212,12 +1212,24 @@
       }, 1000);
 
       loadCluesAndSync();
-      // Fast live sync every 1.5 seconds for instantaneous clue & score updates
-      setInterval(syncTeamData, 1500);
+      // Adaptive Jittered Sync Engine (Engineered for 1,000+ Concurrent Operatives)
+      function scheduleNextTeamSync() {
+        var jitter = Math.floor(Math.random() * 800);
+        setTimeout(function() {
+          syncTeamData().finally(scheduleNextTeamSync);
+        }, 3200 + jitter);
+      }
+      scheduleNextTeamSync();
 
-      // Fast game state sync every 1.5 seconds & continuous 1s timer countdown
+      function scheduleNextGameStateSync() {
+        var jitter = Math.floor(Math.random() * 800);
+        var baseDelay = currentGameState === 'PLAYER_PHASE' ? 3600 : 2500;
+        setTimeout(function() {
+          syncGameState().finally(scheduleNextGameStateSync);
+        }, baseDelay + jitter);
+      }
       syncGameState();
-      setInterval(syncGameState, 1500);
+      scheduleNextGameStateSync();
       setInterval(function() {
         if (currentGameState === 'PLAYER_PHASE' && serverRemainingHuntSeconds > 0) {
           serverRemainingHuntSeconds--;

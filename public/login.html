@@ -641,11 +641,16 @@
       document.getElementById('waiting-role').innerText = role === 'MEMBER' ? 'Field Marshal' : 'Player Squad';
       document.getElementById('poll-timer').innerText = 'Live auto-sync active (1.5s)...';
 
-      // Start live fast polling every 1.5 seconds
+      // High-concurrency jittered polling (handles 1,000+ concurrent entrants)
       if (pollInterval) clearInterval(pollInterval);
-      pollInterval = setInterval(function() {
-        checkApprovalStatus(userId, role, false);
-      }, 1200);
+      function scheduleNextClearancePoll() {
+        if (!document.getElementById('view-waiting-hall') || document.getElementById('view-waiting-hall').classList.contains('hidden')) return;
+        var jitter = Math.floor(Math.random() * 600);
+        pollInterval = setTimeout(function() {
+          checkApprovalStatus(userId, role, false).finally(scheduleNextClearancePoll);
+        }, 2200 + jitter);
+      }
+      scheduleNextClearancePoll();
     }
 
     async function manualCheckApprovalNow() {
