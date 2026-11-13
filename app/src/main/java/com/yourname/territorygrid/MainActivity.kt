@@ -2,6 +2,7 @@ package com.yourname.territorygrid
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -101,6 +104,19 @@ class MainActivity : ComponentActivity() {
                     progressBar.visibility = View.GONE
                 }
 
+                @TargetApi(Build.VERSION_CODES.M)
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?
+                ) {
+                    super.onReceivedError(view, request, error)
+                    if (request?.isForMainFrame == true) {
+                        view?.loadUrl(localFallbackUrl)
+                    }
+                }
+
+                @Suppress("DEPRECATION")
                 override fun onReceivedError(
                     view: WebView?,
                     errorCode: Int,
@@ -108,8 +124,7 @@ class MainActivity : ComponentActivity() {
                     failingUrl: String?
                 ) {
                     super.onReceivedError(view, errorCode, description, failingUrl)
-                    if (failingUrl?.startsWith("http") == true) {
-                        // Offline fallback to bundled web assets
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M && failingUrl == liveUrl) {
                         view?.loadUrl(localFallbackUrl)
                     }
                 }

@@ -10,6 +10,9 @@ const url = require('url');
 const PORT = process.env.PORT || 8088;
 const DATA_DIR = path.join(__dirname, 'data');
 const DB_FILE = path.join(DATA_DIR, 'territory_grid_mongodb.json');
+
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.supabase.co';
+const SUPABASE_ANON = process.env.SUPABASE_ANON || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmdXVmemx4c2t1cmF0dnFndW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTc5NzcsImV4cCI6MjA4NjczMzk3N30.jVCPESQvxOO9ExUTzyNZGyn8kBob4rj3aOZcxC2NLs8';
 const STATIC_DIR = path.join(__dirname, '..', 'design_refs', 'html');
 
 if (!fs.existsSync(DATA_DIR)) {
@@ -62,6 +65,70 @@ class MongoDatabase {
     } catch (e) {
       console.error('[MongoDB Engine] Failed to save DB file:', e);
     }
+    this.syncToCloud().catch(() => {});
+  }
+
+  async syncFromCloud(force = false) {
+    const now = Date.now();
+    if (!this.lastSynced) this.lastSynced = 0;
+    if (!force && (now - this.lastSynced < 800) && Array.isArray(this.collections.users) && this.collections.users.length > 0) {
+      return this.collections;
+    }
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store?key=eq.main_store&select=*`, {
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Cache-Control': 'no-cache'
+        },
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const rows = await res.json();
+        if (rows && rows.length > 0 && rows[0].data) {
+          this.collections = rows[0].data;
+          this.lastSynced = Date.now();
+          this.ensureDefaults();
+          try {
+            fs.writeFileSync(DB_FILE, JSON.stringify(this.collections, null, 2), 'utf8');
+          } catch(e){}
+          return this.collections;
+        }
+      }
+    } catch(e) {}
+    this.load();
+    return this.collections;
+  }
+
+  async syncToCloud() {
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(this.collections, null, 2), 'utf8');
+    } catch (e) {}
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      await fetch(`${SUPABASE_URL}/rest/v1/territory_store`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({
+          key: 'main_store',
+          data: this.collections,
+          updated_at: new Date().toISOString()
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      this.lastSynced = Date.now();
+    } catch(e){}
   }
 
   ensureUniqueTeamCodes() {
@@ -235,6 +302,9 @@ const server = http.createServer(async (req, res) => {
 
   // ── REST API ROUTES ───────────────────────────────────────────
   if (pathname.startsWith('/api/')) {
+    const isWrite = req.method !== 'GET' && req.method !== 'HEAD';
+    await db.syncFromCloud(isWrite);
+
     try {
       // 1. POST /api/auth/register (Player Team or Field Marshal)
       if (pathname === '/api/auth/register' && req.method === 'POST') {

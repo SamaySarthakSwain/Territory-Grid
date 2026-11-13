@@ -132,6 +132,15 @@
   </style>
   <script src="/vendor/qrcode.bundle.js"></script>
   <script>
+    // Resilient API Base Resolver (Works in APK file:// and web https://)
+    function apiUrl(path) {
+      var base = '';
+      if (window.location.protocol === 'file:' || window.location.origin === 'null' || !window.location.origin.startsWith('http')) {
+        base = 'https://territory-grid-delta.vercel.app';
+      }
+      return base + path;
+    }
+
     if (typeof QRCode === 'undefined') {
       var qrs = document.createElement('script');
       qrs.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js';
@@ -949,7 +958,7 @@
         }
         // If stored clearance flag is missing/false, verify with server before redirecting
         if (!currentUser.isApproved && currentUser.role !== 'ADMIN') {
-          fetch('/api/auth/status?id=' + encodeURIComponent(currentUser._id || '') + '&callsign=' + encodeURIComponent(currentUser.callsign || '') + '&_t=' + Date.now(), { cache: 'no-store' })
+          fetch(apiUrl('/api/auth/status?id=') + encodeURIComponent(currentUser._id || '') + '&callsign=' + encodeURIComponent(currentUser.callsign || '') + '&_t=' + Date.now(), { cache: 'no-store' })
             .then(function(r) { return r.json(); })
             .then(function(d) {
               if (d && d.isApproved) {
@@ -1132,7 +1141,7 @@
 
     async function syncGameState() {
       try {
-        var res = await fetch('/api/game/state?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/game/state?_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (!data.success) return;
 
@@ -1246,7 +1255,7 @@
 
     async function loadCluesAndSync() {
       try {
-        var res = await fetch('/api/clues?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/clues?_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (data.success) {
           allClues = data.clues || [];
@@ -1259,7 +1268,7 @@
 
     async function syncTeamData() {
       try {
-        var res = await fetch('/api/teams?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/teams?_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (!data.success) return;
 

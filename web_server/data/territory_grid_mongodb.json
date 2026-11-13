@@ -1,99 +1,34 @@
 {
-  "users": [
+  "clues": [
     {
-      "_id": "user_admin_samay",
-      "callsign": "samay",
-      "name": "Game Master Samay",
-      "role": "ADMIN",
-      "password": "samay",
-      "isApproved": true,
-      "createdAt": "2026-11-12T16:49:28.254Z"
-    },
-    {
-      "_id": "user_1794529946724_65ird",
-      "callsign": "marshal_alpha",
-      "name": "Marshal Alpha",
-      "role": "MEMBER",
-      "password": "password123",
-      "teamId": null,
-      "zoneId": "ZONE_01",
-      "zoneLabel": "Library Arch Colonnade",
-      "isApproved": true,
-      "createdAt": "2026-11-13T00:32:26.724Z"
-    },
-    {
-      "_id": "user_1794529946730_51pe6",
-      "callsign": "squad_phoenix",
-      "name": "Squad Phoenix",
-      "role": "PLAYER",
-      "password": "password123",
-      "teamId": "team_1794529946730_7rjj1",
-      "zoneId": null,
-      "zoneLabel": null,
-      "isApproved": true,
-      "createdAt": "2026-11-13T00:32:26.730Z"
-    },
-    {
-      "_id": "user_1794530270106_amsr1",
-      "callsign": "marshal1",
-      "name": "marshal1",
-      "role": "MEMBER",
-      "password": "marshal1",
-      "teamId": null,
+      "_id": "clue_mwe8yofo",
+      "text": "Atrium hint",
       "zoneId": "ZONE 1",
-      "zoneLabel": "Atrium (ZONE 1)",
-      "isApproved": true,
-      "createdAt": "2026-11-13T00:37:50.106Z"
-    },
-    {
-      "_id": "user_1794530305536_awbz7",
-      "callsign": "team1",
-      "name": "team1",
-      "role": "PLAYER",
-      "password": "team1",
-      "teamId": "team_1794530305536_hh9o3",
-      "zoneId": null,
-      "zoneLabel": null,
-      "isApproved": true,
-      "createdAt": "2026-11-13T00:38:25.536Z"
-    },
-    {
-      "_id": "user_1794538075019_7jmkd",
-      "callsign": "test_temp_squad",
-      "name": "Temporary Test Squad",
-      "role": "PLAYER",
-      "password": "password123",
-      "teamId": "team_1794538075019_woae4",
-      "zoneId": null,
-      "zoneLabel": null,
-      "isApproved": true,
-      "createdAt": "2026-11-13T02:47:55.019Z"
+      "zoneLabel": "Atrium"
     }
   ],
   "teams": [
     {
       "_id": "team_1794529946730_7rjj1",
       "name": "Squad Phoenix",
-      "callsign": "squad_phoenix",
-      "score": 0,
       "cards": [],
+      "score": 0,
+      "callsign": "squad_phoenix",
+      "teamCode": 12,
       "clueOrder": [
         "clue_mwe8sork",
         "clue_mwe8sorh",
         "clue_mwe8sorj"
       ],
-      "currentClueIndex": 0,
-      "visitedZones": [],
-      "isApproved": true,
       "createdAt": "2026-11-13T00:32:26.730Z",
       "updatedAt": "2026-11-13T00:32:26.735Z",
-      "teamCode": 12
+      "isApproved": true,
+      "visitedZones": [],
+      "currentClueIndex": 0
     },
     {
       "_id": "team_1794530305536_hh9o3",
       "name": "team1",
-      "callsign": "team1",
-      "score": 21,
       "cards": [
         {
           "rank": 9,
@@ -102,69 +37,197 @@
           "awardedAt": "2026-11-13T00:57:00.199Z"
         }
       ],
+      "score": 21,
+      "callsign": "team1",
+      "teamCode": 11,
       "clueOrder": [
         "clue_mwe8yofo"
       ],
-      "currentClueIndex": 1,
+      "createdAt": "2026-11-13T00:38:25.536Z",
+      "updatedAt": "2026-11-13T00:57:00.199Z",
+      "isApproved": true,
       "visitedZones": [
         "ZONE_01"
       ],
-      "isApproved": true,
-      "createdAt": "2026-11-13T00:38:25.536Z",
-      "updatedAt": "2026-11-13T00:57:00.199Z",
-      "teamCode": 11
+      "currentClueIndex": 1
     },
     {
       "_id": "team_1794538075019_woae4",
       "name": "Temporary Test Squad",
-      "callsign": "test_temp_squad",
-      "score": 0,
       "cards": [],
+      "score": 0,
+      "callsign": "test_temp_squad",
+      "teamCode": 13,
       "clueOrder": [
         "clue_mwe8yofo"
       ],
-      "currentClueIndex": 0,
-      "visitedZones": [],
-      "isApproved": true,
       "createdAt": "2026-11-13T02:47:55.019Z",
       "updatedAt": "2026-11-13T02:47:55.019Z",
-      "teamCode": 13
+      "isApproved": true,
+      "visitedZones": [],
+      "currentClueIndex": 0
+    },
+    {
+      "_id": "team_1794549642680_we7qe",
+      "name": "Live Squad Beta",
+      "cards": [],
+      "score": 0,
+      "callsign": "squad_live_1794549641232",
+      "clueOrder": [
+        "clue_mwe8yofo"
+      ],
+      "createdAt": "2026-11-13T06:00:42.680Z",
+      "updatedAt": "2026-11-13T06:00:42.680Z",
+      "isApproved": true,
+      "visitedZones": [],
+      "currentClueIndex": 0
     }
   ],
-  "clues": [
+  "users": [
     {
-      "_id": "clue_mwe8yofo",
+      "_id": "user_admin_samay",
+      "name": "Game Master Samay",
+      "role": "ADMIN",
+      "callsign": "samay",
+      "password": "samay",
+      "createdAt": "2026-11-12T16:49:28.254Z",
+      "isApproved": true
+    },
+    {
+      "_id": "user_1794529946724_65ird",
+      "name": "Marshal Alpha",
+      "role": "MEMBER",
+      "teamId": null,
+      "zoneId": "ZONE_01",
+      "callsign": "marshal_alpha",
+      "password": "password123",
+      "createdAt": "2026-11-13T00:32:26.724Z",
+      "zoneLabel": "Library Arch Colonnade",
+      "isApproved": true
+    },
+    {
+      "_id": "user_1794529946730_51pe6",
+      "name": "Squad Phoenix",
+      "role": "PLAYER",
+      "teamId": "team_1794529946730_7rjj1",
+      "zoneId": null,
+      "callsign": "squad_phoenix",
+      "password": "password123",
+      "createdAt": "2026-11-13T00:32:26.730Z",
+      "zoneLabel": null,
+      "isApproved": true
+    },
+    {
+      "_id": "user_1794530270106_amsr1",
+      "name": "marshal1",
+      "role": "MEMBER",
+      "teamId": null,
       "zoneId": "ZONE 1",
-      "zoneLabel": "Atrium",
-      "text": "Atrium hint"
+      "callsign": "marshal1",
+      "password": "marshal1",
+      "createdAt": "2026-11-13T00:37:50.106Z",
+      "zoneLabel": "Atrium (ZONE 1)",
+      "isApproved": true
+    },
+    {
+      "_id": "user_1794530305536_awbz7",
+      "name": "team1",
+      "role": "PLAYER",
+      "teamId": "team_1794530305536_hh9o3",
+      "zoneId": null,
+      "callsign": "team1",
+      "password": "team1",
+      "createdAt": "2026-11-13T00:38:25.536Z",
+      "zoneLabel": null,
+      "isApproved": true
+    },
+    {
+      "_id": "user_1794538075019_7jmkd",
+      "name": "Temporary Test Squad",
+      "role": "PLAYER",
+      "teamId": "team_1794538075019_woae4",
+      "zoneId": null,
+      "callsign": "test_temp_squad",
+      "password": "password123",
+      "createdAt": "2026-11-13T02:47:55.019Z",
+      "zoneLabel": null,
+      "isApproved": true
+    },
+    {
+      "_id": "user_1794549617683_vaxcy",
+      "name": "Live Field Marshal Test",
+      "role": "MEMBER",
+      "teamId": null,
+      "zoneId": "ZONE_01",
+      "callsign": "marshal_live_1794549616215",
+      "password": "password123",
+      "createdAt": "2026-11-13T06:00:17.683Z",
+      "zoneLabel": "Zone 1 - Campus Station",
+      "isApproved": true
+    },
+    {
+      "_id": "user_1794549642680_90nn6",
+      "name": "Live Squad Beta",
+      "role": "PLAYER",
+      "teamId": "team_1794549642680_we7qe",
+      "zoneId": null,
+      "callsign": "squad_live_1794549641232",
+      "password": "password123",
+      "createdAt": "2026-11-13T06:00:42.680Z",
+      "zoneLabel": null,
+      "isApproved": true
     }
   ],
   "checkins": [
     {
       "_id": "team_1794530305536_hh9o3_ZONE_01_1794531420199",
+      "cone": "YELLOW",
+      "points": 21,
       "teamId": "team_1794530305536_hh9o3",
       "zoneId": "ZONE_01",
-      "memberId": "marshal_station",
-      "cone": "YELLOW",
       "cardRank": 9,
       "cardSuit": "♠",
-      "points": 21,
+      "memberId": "marshal_station",
       "timestamp": "2026-11-13T00:57:00.199Z"
     }
   ],
   "gameState": {
+    "endsAt": "2026-11-13T03:22:12.622Z",
     "status": "PLAYER_PHASE",
+    "endedAt": null,
+    "pausedAt": null,
+    "startedAt": "2026-11-13T02:30:12.622Z",
+    "totalPausedMs": 0,
+    "countdownEndsAt": "2026-11-13T02:30:12.622Z",
     "durationMinutes": 52,
     "durationSeconds": 3120,
-    "startedAt": "2026-11-13T02:30:12.622Z",
-    "endsAt": "2026-11-13T03:22:12.622Z",
-    "countdownStartAt": "2026-11-13T02:30:02.622Z",
-    "countdownEndsAt": "2026-11-13T02:30:12.622Z",
-    "pausedAt": null,
-    "totalPausedMs": 0,
-    "endedAt": null
+    "countdownStartAt": "2026-11-13T02:30:02.622Z"
   },
   "system_logs": [
+    {
+      "_id": "log_1794549645525_zmgd",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Live Squad Beta\" (team_1794549642680_we7qe)",
+      "timestamp": "2026-11-13T06:00:45.525Z"
+    },
+    {
+      "_id": "log_1794549643624_b27a",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_live_1794549641232\" registered.",
+      "timestamp": "2026-11-13T06:00:43.624Z"
+    },
+    {
+      "_id": "log_1794549620575_sl3i",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Live Field Marshal Test\" (user_1794549617683_vaxcy)",
+      "timestamp": "2026-11-13T06:00:20.575Z"
+    },
+    {
+      "_id": "log_1794549618730_iuvg",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_live_1794549616215\" registered.",
+      "timestamp": "2026-11-13T06:00:18.730Z"
+    },
     {
       "_id": "log_1794541968741_8k9b",
       "action": "REMOVE_TEAM",

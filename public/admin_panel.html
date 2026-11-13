@@ -12,6 +12,15 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    // Resilient API Base Resolver (Works in APK file:// and web https://)
+    function apiUrl(path) {
+      var base = '';
+      if (window.location.protocol === 'file:' || window.location.origin === 'null' || !window.location.origin.startsWith('http')) {
+        base = 'https://territory-grid-delta.vercel.app';
+      }
+      return base + path;
+    }
+
     tailwind.config = {
       darkMode: "class",
       theme: {
@@ -716,7 +725,7 @@
 
     async function loadPlaces() {
       try {
-        var res = await fetch('/api/clues?all=true&_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/clues?all=true&_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (data.success && Array.isArray(data.clues)) {
           cachedPlacesList = data.clues;
@@ -864,7 +873,7 @@
 
       try {
         var payload = { _id: editId || undefined, zoneId: zoneId, zoneLabel: zoneLabel, text: text };
-        var res = await fetch('/api/admin/clues/save', {
+        var res = await fetch(apiUrl('/api/admin/clues/save'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -887,7 +896,7 @@
     async function deletePlace(id, label) {
       if (!confirm('Are you sure you want to delete place "' + label + '"?')) return;
       try {
-        var res = await fetch('/api/admin/clues/delete', {
+        var res = await fetch(apiUrl('/api/admin/clues/delete'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ _id: id })
@@ -907,7 +916,7 @@
     async function clearAllPlaces() {
       if (!confirm('⚠️ CLEAR ALL CAMPUS PLACES?\n\nThis will remove all campus locations and clue hints from the database so you can add your places from scratch.\n\nContinue?')) return;
       try {
-        var res = await fetch('/api/admin/clues/clear', {
+        var res = await fetch(apiUrl('/api/admin/clues/clear'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' }
         });
@@ -939,7 +948,7 @@
 
     async function syncAdminGameState() {
       try {
-        var res = await fetch('/api/game/state?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/game/state?_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (!data.success) return;
 
@@ -1023,7 +1032,7 @@
         if (!confirm('Game is already underway. Do you want to re-initiate the 10-second countdown for a fresh 52-minute hunt?')) return;
       }
       try {
-        var res = await fetch('/api/game/state', {
+        var res = await fetch(apiUrl('/api/game/state'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'COUNTDOWN', countdownSeconds: 10, durationMinutes: 52 })
@@ -1037,7 +1046,7 @@
     async function togglePauseGame() {
       try {
         var action = (serverGameState === 'PAUSED') ? 'RESUME' : 'PAUSE';
-        await fetch('/api/game/state', {
+        await fetch(apiUrl('/api/game/state'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: action })
@@ -1051,7 +1060,7 @@
     async function endMatch() {
       if (!confirm('Are you sure you want to END the match now? All operative check-ins will be locked.')) return;
       try {
-        await fetch('/api/game/state', {
+        await fetch(apiUrl('/api/game/state'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'ENDED' })
@@ -1065,7 +1074,7 @@
     async function resetGameToLobby() {
       if (!confirm('Reset game state back to LOBBY standby (52:00)? Players will return to the 3D Waiting Screen.')) return;
       try {
-        await fetch('/api/game/state', {
+        await fetch(apiUrl('/api/game/state'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'RESET' })
@@ -1082,7 +1091,7 @@
       } else if (status === 'ENDED') {
         endMatch();
       } else {
-        await fetch('/api/game/state', {
+        await fetch(apiUrl('/api/game/state'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: status })
@@ -1097,7 +1106,7 @@
     // Load Leaderboard and Registered Teams Directory
     async function loadLeaderboard() {
       try {
-        var res = await fetch('/api/teams?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/teams?_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (data.success) {
           var allTeams = data.teams || [];
@@ -1259,7 +1268,7 @@
       if (isLoadingPending) return;
       isLoadingPending = true;
       try {
-        var res = await fetch('/api/admin/pending?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/admin/pending?_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (data.success) {
           // Filter out entities currently being processed to prevent UI flicker
@@ -1392,7 +1401,7 @@
       }
 
       try {
-        var res = await fetch('/api/admin/approve', {
+        var res = await fetch(apiUrl('/api/admin/approve'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: type, id: id })
@@ -1432,7 +1441,7 @@
       }
 
       try {
-        var res = await fetch('/api/admin/reject', {
+        var res = await fetch(apiUrl('/api/admin/reject'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: type, id: id })
@@ -1454,7 +1463,7 @@
     // Load MongoDB Database Data
     async function loadDatabaseData() {
       try {
-        var res = await fetch('/api/database/all');
+        var res = await fetch(apiUrl('/api/database/all'));
         var data = await res.json();
         if (data.success) {
           cachedDbData = data.collections;
@@ -1564,7 +1573,7 @@
         return;
       }
       try {
-        var res = await fetch('/api/admin/teams/reset-points', {
+        var res = await fetch(apiUrl('/api/admin/teams/reset-points'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ teamId: teamId })
@@ -1589,7 +1598,7 @@
         return;
       }
       try {
-        var res = await fetch('/api/admin/teams/remove', {
+        var res = await fetch(apiUrl('/api/admin/teams/remove'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ teamId: teamId })
@@ -1622,7 +1631,7 @@
       if (isLoadingLogs) return;
       isLoadingLogs = true;
       try {
-        var res = await fetch('/api/admin/logs?limit=250&_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/admin/logs?limit=250&_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (data.success && Array.isArray(data.logs)) {
           cachedAdminLogs = data.logs;
@@ -1801,7 +1810,7 @@
         return;
       }
       try {
-        var res = await fetch('/api/admin/logs/clear', { method: 'POST' });
+        var res = await fetch(apiUrl('/api/admin/logs/clear'), { method: 'POST' });
         var data = await res.json();
         if (data.success) {
           showAdminToast('Mission audit trail cleared', 'success');
@@ -1846,7 +1855,7 @@
       if (activeTab === 'history') {
         loadAdminLogs();
       } else {
-        fetch('/api/admin/logs?limit=1&_t=' + Date.now(), { cache: 'no-store' })
+        fetch(apiUrl('/api/admin/logs?limit=1&_t=') + Date.now(), { cache: 'no-store' })
           .then(function(r) { return r.json(); })
           .then(function(d) {
             if (d && typeof d.total !== 'undefined') {

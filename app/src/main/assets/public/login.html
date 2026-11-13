@@ -12,6 +12,15 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    // Resilient API Base Resolver (Works in APK file:// and web https://)
+    function apiUrl(path) {
+      var base = '';
+      if (window.location.protocol === 'file:' || window.location.origin === 'null' || !window.location.origin.startsWith('http')) {
+        base = 'https://territory-grid-delta.vercel.app';
+      }
+      return base + path;
+    }
+
     tailwind.config = {
       darkMode: "class",
       theme: {
@@ -342,7 +351,7 @@
 
     async function loadDynamicStations() {
       try {
-        var res = await fetch('/api/clues?all=true&_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/clues?all=true&_t=' + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         var sel = document.getElementById('input-zone');
         if (!sel) return;
@@ -359,7 +368,7 @@
             sel.value = currentVal;
           }
         } else {
-          sel.innerHTML = '<option value="" disabled selected>⚠️ No campus places created by Game Master yet</option>';
+          sel.innerHTML = '<option value="ZONE_01" selected>Campus Sector Alpha (ZONE_01 - Default)</option>';
         }
       } catch (e) {
         console.warn('Failed to load dynamic stations:', e);
@@ -559,8 +568,8 @@
       var password = document.getElementById('input-password').value.trim();
       var name = document.getElementById('input-name').value.trim();
       var zoneElem = document.getElementById('input-zone');
-      var zoneId = zoneElem ? zoneElem.value : null;
-      var zoneLabel = zoneElem ? zoneElem.options[zoneElem.selectedIndex].text : null;
+      var zoneId = (zoneElem && zoneElem.value) ? zoneElem.value : (currentRole === 'MEMBER' ? 'ZONE_01' : null);
+      var zoneLabel = (zoneElem && zoneElem.selectedIndex >= 0 && zoneElem.options[zoneElem.selectedIndex]) ? zoneElem.options[zoneElem.selectedIndex].text : (currentRole === 'MEMBER' ? 'Sector Alpha (ZONE_01)' : null);
 
       if (!callsign || !password) {
         showAlert('Please fill in callsign and access key.', true);
@@ -583,7 +592,7 @@
       btn.classList.add('opacity-70');
 
       try {
-        var res = await fetch(endpoint, {
+        var res = await fetch(apiUrl(endpoint), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -636,7 +645,7 @@
       if (pollInterval) clearInterval(pollInterval);
       pollInterval = setInterval(function() {
         checkApprovalStatus(userId, role, false);
-      }, 1500);
+      }, 1200);
     }
 
     async function manualCheckApprovalNow() {
@@ -664,7 +673,7 @@
         var uid = userId || session._id || session.id || '';
         var csign = session.callsign || '';
 
-        var res = await fetch('/api/auth/status?id=' + encodeURIComponent(uid) + '&callsign=' + encodeURIComponent(csign) + '&_t=' + Date.now(), {
+        var res = await fetch(apiUrl('/api/auth/status?id=' + encodeURIComponent(uid) + '&callsign=' + encodeURIComponent(csign) + '&_t=' + Date.now(), {
           cache: 'no-store'
         });
         var data = await res.json();

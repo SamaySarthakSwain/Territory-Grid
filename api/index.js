@@ -47,7 +47,12 @@ const DEFAULT_ADMIN = {
 };
 
 // ─────────────────────────────────────────────────────────────
-// In-Memory / File-based Document Engine (Fallback Mode)
+// Supabase Real-Time Cloud Store Configuration
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.supabase.co';
+const SUPABASE_ANON = process.env.SUPABASE_ANON || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmdXVmemx4c2t1cmF0dnFndW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTc5NzcsImV4cCI6MjA4NjczMzk3N30.jVCPESQvxOO9ExUTzyNZGyn8kBob4rj3aOZcxC2NLs8';
+
+// ─────────────────────────────────────────────────────────────
+// Cloud-Backed Persistent Document Engine (Zero Data Loss)
 // ─────────────────────────────────────────────────────────────
 class MemoryStore {
   constructor() {
@@ -55,7 +60,7 @@ class MemoryStore {
     this.collections = {
       users: [DEFAULT_ADMIN],
       teams: [],
-      clues: [],
+      clues: DEFAULT_CLUES,
       checkins: [],
       gameState: {
         status: 'LOBBY',
@@ -73,11 +78,12 @@ class MemoryStore {
         {
           _id: 'log_init',
           action: 'SYSTEM_INIT',
-          details: 'Territory Grid Vercel Engine active.',
+          details: 'Territory Grid Cloud Engine active.',
           timestamp: new Date().toISOString()
         }
       ]
     };
+    this.lastSynced = 0;
     this.load();
   }
 
@@ -85,7 +91,10 @@ class MemoryStore {
     try {
       if (fs.existsSync(this.filePath)) {
         const raw = fs.readFileSync(this.filePath, 'utf8');
-        this.collections = JSON.parse(raw);
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          this.collections = parsed;
+        }
       }
     } catch (e) {
       // keep defaults
@@ -100,16 +109,94 @@ class MemoryStore {
     } catch (e) {
       // ignore in read-only environments
     }
+    // Asynchronously push to Supabase cloud store
+    this.syncToCloud().catch(err => console.warn('[CloudStore background save warning]:', err.message));
+  }
+
+  async syncFromCloud(force = false) {
+    const now = Date.now();
+    // Use fast in-memory cache for GET polls within 600ms
+    if (!force && (now - this.lastSynced < 600) && Array.isArray(this.collections.users) && this.collections.users.length > 0) {
+      return this.collections;
+    }
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store?key=eq.main_store&select=*`, {
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Cache-Control': 'no-cache'
+        },
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const rows = await res.json();
+        if (rows && rows.length > 0 && rows[0].data) {
+          this.collections = rows[0].data;
+          this.lastSynced = Date.now();
+          // Write to local cache
+          try {
+            const dir = path.dirname(this.filePath);
+            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+            fs.writeFileSync(this.filePath, JSON.stringify(this.collections, null, 2), 'utf8');
+          } catch(e){}
+          return this.collections;
+        }
+      }
+    } catch (e) {
+      console.warn('[CloudStore syncFromCloud]:', e.message);
+    }
+    this.load();
+    return this.collections;
+  }
+
+  async syncToCloud() {
+    try {
+      const dir = path.dirname(this.filePath);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(this.filePath, JSON.stringify(this.collections, null, 2), 'utf8');
+    } catch (e) {}
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({
+          key: 'main_store',
+          data: this.collections,
+          updated_at: new Date().toISOString()
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      this.lastSynced = Date.now();
+      return res.ok;
+    } catch (e) {
+      console.warn('[CloudStore syncToCloud]:', e.message);
+      return false;
+    }
   }
 
   logEvent(action, details) {
+    if (!Array.isArray(this.collections.system_logs)) {
+      this.collections.system_logs = [];
+    }
     this.collections.system_logs.unshift({
       _id: 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
       action,
       details,
       timestamp: new Date().toISOString()
     });
-    if (this.collections.system_logs.length > 200) this.collections.system_logs.pop();
+    if (this.collections.system_logs.length > 300) this.collections.system_logs.pop();
     this.save();
   }
 }
@@ -204,6 +291,10 @@ module.exports = async (req, res) => {
   if (!pathname.startsWith('/api')) {
     pathname = '/api' + (pathname.startsWith('/') ? '' : '/') + pathname;
   }
+
+  // Sync fresh state from Supabase Cloud Store
+  const isWrite = req.method !== 'GET' && req.method !== 'HEAD';
+  await memoryStore.syncFromCloud(isWrite);
 
   const atlasDb = await getMongoDb();
 
@@ -324,7 +415,7 @@ module.exports = async (req, res) => {
       };
 
       memoryStore.collections.users.push(newUser);
-      memoryStore.save();
+      await memoryStore.syncToCloud();
       memoryStore.logEvent('REGISTER', `${newUser.role} "${newUser.callsign}" registered.`);
 
       return sendJson(res, 201, {
@@ -712,7 +803,7 @@ module.exports = async (req, res) => {
       }
 
       if (approvedAny) {
-        memoryStore.save();
+        await memoryStore.syncToCloud();
         const logAction = approvedRole === 'MEMBER' ? 'APPROVE_USER' : 'APPROVE_TEAM';
         const logMsg = approvedRole === 'MEMBER'
           ? 'Field Marshal authorized: "' + approvedName + '" (' + cleanId + ')'

@@ -7,6 +7,15 @@
   </style>
   <script src="/vendor/html5-qrcode.min.js"></script>
   <script>
+    // Resilient API Base Resolver (Works in APK file:// and web https://)
+    function apiUrl(path) {
+      var base = '';
+      if (window.location.protocol === 'file:' || window.location.origin === 'null' || !window.location.origin.startsWith('http')) {
+        base = 'https://territory-grid-delta.vercel.app';
+      }
+      return base + path;
+    }
+
     if (typeof Html5Qrcode === 'undefined') {
       var h5s = document.createElement('script');
       h5s.src = 'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
@@ -398,7 +407,7 @@
 
     async function syncMarshalGameState() {
       try {
-        var res = await fetch('/api/game/state?_t=' + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/game/state?_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (!data.success) return;
 
@@ -487,7 +496,7 @@
 
     async function loadTeams() {
       try {
-        var res = await fetch('/api/teams');
+        var res = await fetch(apiUrl('/api/teams'));
         var data = await res.json();
         if (data.success) {
           currentTeams = (data.teams || []).filter(function(t) { return t.isApproved; });
@@ -1035,7 +1044,7 @@
       };
 
       try {
-        var res = await fetch('/api/checkin', {
+        var res = await fetch(apiUrl('/api/checkin'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -1161,7 +1170,7 @@
 
     async function loadRecentCheckins() {
       try {
-        var res = await fetch('/api/database/all');
+        var res = await fetch(apiUrl('/api/database/all'));
         var data = await res.json();
         if (data.success && data.collections) {
           var checkins = data.collections.checkins || [];
