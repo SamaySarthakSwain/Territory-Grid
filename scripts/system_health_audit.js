@@ -103,8 +103,10 @@ function wait(ms) {
 async function runAudit() {
   const auditTimestamp = Date.now();
   const testSquadCallsign = `audit_sq_${auditTimestamp.toString().slice(-6)}`;
+  const testSquad2Callsign = `audit_sq2_${auditTimestamp.toString().slice(-6)}`;
   const testMarshalCallsign = `audit_mr_${auditTimestamp.toString().slice(-6)}`;
   let testTeamId = null;
+  let testTeam2Id = null;
   let testUserId = null;
   let testMarshalId = null;
   let activeStations = [];
@@ -145,6 +147,17 @@ async function runAudit() {
     if (regSquad.json && regSquad.json.user) {
       testUserId = regSquad.json.user._id;
       testTeamId = regSquad.json.user.teamId;
+    }
+
+    // 2a-2. Register Second Operative Squad for balanced routing
+    const regSquad2 = await request('/api/auth/register', { method: 'POST' }, {
+      role: 'PLAYER',
+      callsign: testSquad2Callsign,
+      name: `Audit Squad 2 ${testSquad2Callsign}`,
+      password: 'password123'
+    });
+    if (regSquad2.json && regSquad2.json.user) {
+      testTeam2Id = regSquad2.json.user.teamId;
     }
 
     // 2b. Register Field Marshal
@@ -198,11 +211,18 @@ async function runAudit() {
       report('Admin approves operative squad (HTTP 200)', approveTeam.status === 200 && approveTeam.json.success === true);
     }
 
-    if (testMarshalId) {
+    if (testTeam2Id) {
+      await request('/api/admin/approve-team', { method: 'POST' }, { teamId: testTeam2Id });
+    }
+
+    if (testMarshalId || testMarshalCallsign) {
+      await wait(800);
       const approveMarshal = await request('/api/admin/approve-user', { method: 'POST' }, {
-        userId: testMarshalId
+        userId: testMarshalId,
+        id: testMarshalId || testMarshalCallsign,
+        callsign: testMarshalCallsign
       });
-      report('Admin approves field marshal (HTTP 200)', approveMarshal.status === 200 && approveMarshal.json.success === true);
+      report('Admin approves field marshal (HTTP 200)', approveMarshal.status === 200 && approveMarshal.json && approveMarshal.json.success === true);
     }
 
     // Verify team is now approved on GET /api/teams
@@ -243,7 +263,8 @@ async function runAudit() {
     });
 
     const uniqueTargetCount = Object.keys(distribution).length;
-    report('Squads are equally divided across stations (no single bottleneck)', uniqueTargetCount >= Math.min(2, K), JSON.stringify(distribution));
+    const requiredMin = Math.min(K, teamsList.length);
+    report('Squads are equally divided across stations (no single bottleneck)', uniqueTargetCount >= Math.min(2, requiredMin), JSON.stringify(distribution));
   } catch (err) {
     report('Checkpoint route engine execution', false, err.message);
   }
