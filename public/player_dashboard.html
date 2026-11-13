@@ -1267,6 +1267,10 @@
 
         if (newStatus === 'COUNTDOWN') {
           var endsAt = data.countdownEndsAt || (gs && gs.countdownEndsAt);
+          // ── Immediately show countdown overlay, don't wait ──
+          var countdownOverlayEarly = document.getElementById('gaming-countdown-overlay');
+          if (countdownOverlayEarly) countdownOverlayEarly.classList.remove('hidden');
+          if (waitingHall) waitingHall.classList.add('hidden');
           if (endsAt) {
             var endsMs = new Date(endsAt).getTime();
             if (!playerCountdownTimer || Math.abs(playerCountdownEndsAtMs - endsMs) > 1200) {
@@ -1316,9 +1320,14 @@
       checkAndRotateCard(false);
 
       // AUTOMATIC 30-SECOND DYNAMIC CARD SHUFFLE ENGINE
-      // Smoothly shuffles holographic cards and updates cipher code every 30 seconds
+      // Checks every 1s if a 30s rotation is due (keeps time accurate without calling rotate every 1s)
+      var _lastCardRotateTime = Date.now();
       setInterval(function() {
-        checkAndRotateCard(true);
+        var now = Date.now();
+        if (now - _lastCardRotateTime >= 30000) {
+          _lastCardRotateTime = now;
+          checkAndRotateCard(true);
+        }
       }, 1000);
 
       loadCluesAndSync();

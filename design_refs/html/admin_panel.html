@@ -837,15 +837,8 @@
       try { startClock(); } catch(e) { console.error('Clock start error:', e); }
       
       // Auto-poll pending approvals and roster safely
-      setInterval(function() {
-        try { loadPendingApprovals(); } catch(e) {}
-      }, 2000);
-      setInterval(function() {
-        try { loadApprovedRoster(); } catch(e) {}
-      }, 2200);
-      setInterval(function() {
-        try { loadLeaderboard(); } catch(e) {}
-      }, 2400);
+      // ── Smart Tab-Aware Polling (replaces raw setIntervals to prevent DOM thrashing) ──
+      scheduleAdminTabPoll();
     });
 
     function signOut() {
@@ -1422,7 +1415,15 @@
 
     function startClock() {
       syncAdminGameState();
-      setInterval(syncAdminGameState, 1000);
+      // ── Smart game-state polling: fast in LOBBY/COUNTDOWN, slow during PLAYER_PHASE ──
+      function scheduleAdminGameStateSync() {
+        var delay = (serverGameState === 'LOBBY' || serverGameState === 'COUNTDOWN') ? 800 : 2000;
+        setTimeout(function() {
+          syncAdminGameState().catch(function(){}).finally(scheduleAdminGameStateSync);
+        }, delay);
+      }
+      scheduleAdminGameStateSync();
+      // ── Local 1-second clock tick (no server call) for smooth display ──
       setInterval(function() {
         if (serverGameState === 'PLAYER_PHASE' && serverRemainingSeconds > 0) {
           serverRemainingSeconds--;
@@ -1826,10 +1827,26 @@
         var teamsData = await teamsRes.json();
         var dbData = await dbRes.json();
 
-        var approvedTeams = (teamsData.teams || []).filter(function(t) { return t.isApproved; });
+        // ── Fix: Only show REAL approved teams — exclude any admins from the users list ──
+        var approvedTeams = (teamsData.teams || []).filter(function(t) { return t.isApproved === true; });
         var allUsers = (dbData.collections && dbData.collections.users) ? dbData.collections.users : [];
-        var approvedMarshals = allUsers.filter(function(u) { return u.isApproved && u.role === 'MEMBER'; });
+        // Only show MEMBER-role users who are explicitly approved, never ADMIN or pending users
+        var approvedMarshals = allUsers.filter(function(u) { 
+          return u.isApproved === true && u.role === 'MEMBER' && u.username !== 'samay';
+        });
         var totalActive = approvedTeams.length + approvedMarshals.length;
+        
+        // ── Smart hash diffing: skip full re-render if data hasn't changed ──
+        var newRosterHash = JSON.stringify(
+          approvedTeams.map(function(t) { return [t._id, t.score, t.isApproved, t.currentClueIndex]; }).concat(
+          approvedMarshals.map(function(u) { return [u._id, u.isApproved, u.role]; }))
+        );
+        if (newRosterHash === lastRenderedApprovedHash && document.getElementById('approved-items-list') && 
+            document.getElementById('approved-items-list').children.length > 0 &&
+            !document.getElementById('skeleton-approved')) {
+          return; // No change — skip DOM update
+        }
+        lastRenderedApprovedHash = newRosterHash;
 
         var badge = document.getElementById('badge-approved-total');
         if (badge) badge.innerText = totalActive + ' ACTIVE';

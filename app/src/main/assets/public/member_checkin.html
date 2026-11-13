@@ -636,8 +636,23 @@
         }
       }, 1000);
       // Poll teams every 2-2.5 seconds for instant check-in roster sync
-      setInterval(loadTeams, 2200 + Math.floor(Math.random()*400));
-      setInterval(loadRecentCheckins, 2500);
+            // ── Smart polling: schedule rather than fire unconditionally, to prevent DOM thrash ──
+      function scheduleMarshalTeamPoll() {
+        setTimeout(function() {
+          loadTeams().catch(function(){}).finally(function() {
+            scheduleMarshalTeamPoll();
+          });
+        }, 2200 + Math.floor(Math.random() * 400));
+      }
+      function scheduleMarshalCheckinPoll() {
+        setTimeout(function() {
+          loadRecentCheckins().catch(function(){}).finally(function() {
+            scheduleMarshalCheckinPoll();
+          });
+        }, 2600 + Math.floor(Math.random() * 400));
+      }
+      scheduleMarshalTeamPoll();
+      scheduleMarshalCheckinPoll();
     });
 
     function signOutUser() {
@@ -664,6 +679,9 @@
       }
     }
 
+    var _lastMarshalTeamsHash = '';
+    var _lastMarshalCheckinsHash = '';
+    
     async function loadTeams() {
       try {
         var cluesRes = await fetch(apiUrl('/api/clues?all=true&_t=' + Date.now()));
@@ -722,14 +740,22 @@
               return;
             }
 
-            var optionsHtml = currentTeams.map(function(t, idx) {
-              var isTargetMe = assignedSquads.some(function(as) { return as._id === t._id; });
-              var prefix = isTargetMe ? '🎯 [ASSIGNED HERE] ' : '';
-              return '<option value="' + t._id + '">' + prefix + (t.name || t.callsign) + ' (Score: ' + (t.score || 0) + ' pts)</option>';
-            }).join('');
-
-            selector.innerHTML = optionsHtml;
-            if (selectedVal) selector.value = selectedVal;
+            var newTeamHash = currentTeams.map(function(t) {
+              return t._id + ':' + (t.score||0) + ':' + (t.currentClueIndex||0);
+            }).join('|');
+            
+            // Only rebuild selector HTML if data actually changed (prevents detaching DOM)
+            if (newTeamHash !== _lastMarshalTeamsHash) {
+              _lastMarshalTeamsHash = newTeamHash;
+              var optionsHtml = currentTeams.map(function(t, idx) {
+                var isTargetMe = assignedSquads.some(function(as) { return as._id === t._id; });
+                var prefix = isTargetMe ? '🎯 [ASSIGNED HERE] ' : '';
+                return '<option value="' + t._id + '">' + prefix + (t.name || t.callsign) + ' (Score: ' + (t.score || 0) + ' pts)</option>';
+              }).join('');
+              var prevVal = selector.value;
+              selector.innerHTML = optionsHtml;
+              if (prevVal) selector.value = prevVal;
+            }
           }
 
           updateSummary();
