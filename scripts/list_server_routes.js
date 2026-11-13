@@ -1,0 +1,8 @@
+const fs = require('fs');
+const content = fs.readFileSync('web_server/server.js', 'utf8');
+const lines = content.split('\n');
+lines.forEach((l, idx) => {
+  if (l.includes("pathname === '/api") || l.includes("pathname === '/api/") || l.includes("pathname.startsWith('/api")) {
+    console.log((idx+1) + ': ' + l.trim());
+  }
+});
