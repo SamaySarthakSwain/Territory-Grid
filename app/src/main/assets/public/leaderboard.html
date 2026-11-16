@@ -89,10 +89,11 @@
       user-select: none;
       -webkit-user-select: none;
       cursor: pointer;
-      transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), filter 0.15s ease, opacity 0.15s ease;
+      transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease, box-shadow 0.2s ease, opacity 0.18s ease;
+      will-change: transform;
     }
     button:active:not(:disabled) {
-      transform: scale(0.96);
+      transform: scale(0.95) translateZ(0);
     }
     button > * {
       pointer-events: none;
@@ -108,11 +109,49 @@
       border-radius: 0.5rem;
     }
     @keyframes cyberFadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translate3d(0, 8px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
     }
     .animate-cyber-fade {
-      animation: cyberFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: cyberFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+      will-change: transform, opacity;
+    }
+
+    /* 60FPS Elastic Spring Modal Pop */
+    @keyframes scaleUp {
+      0% {
+        opacity: 0;
+        transform: scale3d(0.85, 0.85, 1) translateY(18px);
+        filter: blur(6px);
+      }
+      65% {
+        transform: scale3d(1.025, 1.025, 1) translateY(-2px);
+        filter: blur(0px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale3d(1, 1, 1) translateY(0);
+        filter: blur(0px);
+      }
+    }
+    .animate-scaleUp {
+      animation: scaleUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+      will-change: transform, opacity, filter;
+    }
+
+    /* Gold Champion Aura Pulsing Ring */
+    @keyframes goldPodiumPulse {
+      0%, 100% {
+        border-color: rgba(255, 215, 0, 0.55);
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.35), inset 0 0 15px rgba(255, 215, 0, 0.15);
+      }
+      50% {
+        border-color: rgba(255, 215, 0, 1);
+        box-shadow: 0 0 50px rgba(255, 215, 0, 0.75), inset 0 0 25px rgba(255, 215, 0, 0.35);
+      }
+    }
+    .gold-podium-aura {
+      animation: goldPodiumPulse 3.2s ease-in-out infinite;
     }
     @layer base {
       html, body { width: 100vw; margin: 0; padding: 0; }
@@ -604,7 +643,7 @@
           '<span class="font-mono text-base text-primary-container font-black tracking-tight">' + r1Score + '</span>' +
           '<span class="font-mono text-[9px] text-primary font-bold uppercase tracking-wider">pts</span>' +
           '</div></div>' +
-          '<div class="w-full h-32 bg-gradient-to-t from-surface-container-high via-surface-container-highest to-primary-container/20 rounded-t-xl flex flex-col items-center justify-between p-2 shadow-[0_0_28px_rgba(0,229,255,0.25)] relative overflow-hidden border-t-2 border-primary-container">' +
+          '<div class="w-full h-32 bg-gradient-to-t from-surface-container-high via-surface-container-highest to-primary-container/20 rounded-t-xl flex flex-col items-center justify-between p-2 shadow-[0_0_28px_rgba(0,229,255,0.25)] relative overflow-hidden border-t-2 border-primary-container gold-podium-aura">' +
           '<div class="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary-container to-transparent"></div>' +
           '<div class="flex flex-col items-center gap-1 mt-1 z-10">' +
           '<div class="flex items-center gap-1 bg-surface-container-lowest/80 px-2 py-0.5 rounded-md border border-white/5">' +
@@ -703,7 +742,7 @@
         var isMe = currentUser && (t._id === currentUser.teamId || t.name === currentUser.name || t.callsign === currentUser.callsign);
         var rowBorder = isMe ? 'border-2 border-primary shadow-[0_0_15px_rgba(0,229,255,0.25)] bg-primary-container/10' : 'border border-white/5 bg-surface-container-low/90';
 
-        return '<div class="group ' + rowBorder + ' backdrop-blur-md rounded-xl p-3 shadow-md flex flex-col gap-2 relative overflow-hidden transition active:scale-[0.99]">' +
+        return '<div class="group ' + rowBorder + ' backdrop-blur-md rounded-xl p-3 shadow-md flex flex-col gap-2 relative overflow-hidden transition active:scale-[0.99] animate-cyber-fade" style="animation-delay: ' + (idx * 0.04) + 's">' +
           '<div class="flex items-center justify-between">' +
           '<div class="flex items-center gap-3 min-w-0">' +
           '<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center font-mono text-xs font-bold ' + (isMe ? 'text-primary bg-primary/20' : 'text-on-surface-variant') + '">' +

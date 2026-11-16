@@ -41,1821 +41,1868 @@
       "password": "samay",
       "createdAt": "2026-11-13T00:00:00.000Z",
       "isApproved": true
+    },
+    {
+      "_id": "user_1794843412374_2vzxd",
+      "callsign": "m1_mwjffb19",
+      "name": "Field Marshal One",
+      "role": "MEMBER",
+      "password": "pass",
+      "teamId": null,
+      "zoneId": "ZONE_01",
+      "zoneLabel": "Station 1 - Library Arch",
+      "isApproved": true,
+      "createdAt": "2026-11-16T15:36:52.374Z"
+    },
+    {
+      "_id": "user_1794843412378_g9eo1",
+      "callsign": "m2_mwjffb19",
+      "name": "Field Marshal LHC",
+      "role": "MEMBER",
+      "password": "pass",
+      "teamId": null,
+      "zoneId": "LHC",
+      "zoneLabel": "Lecture Hall Complex",
+      "isApproved": true,
+      "createdAt": "2026-11-16T15:36:52.378Z"
     }
   ],
-  "checkins": [],
+  "checkins": [
+    {
+      "_id": "team_1794843412384_stu5k_LHC_1794843412404",
+      "teamId": "team_1794843412384_stu5k",
+      "zoneId": "LHC",
+      "memberId": "marshal_1",
+      "cone": "GREEN",
+      "cardRank": 13,
+      "cardSuit": "♠",
+      "points": 28,
+      "timestamp": "2026-11-16T15:36:52.404Z"
+    },
+    {
+      "_id": "team_1794843412384_stu5k_ZONE_01_1794843412408",
+      "teamId": "team_1794843412384_stu5k",
+      "zoneId": "ZONE_01",
+      "memberId": "marshal_2",
+      "cone": "YELLOW",
+      "cardRank": 12,
+      "cardSuit": "♥",
+      "points": 24,
+      "timestamp": "2026-11-16T15:36:52.408Z"
+    }
+  ],
   "gameState": {
-    "endsAt": null,
-    "status": "LOBBY",
+    "endsAt": "2026-11-16T15:10:06.376Z",
+    "status": "PLAYER_PHASE",
     "endedAt": null,
     "pausedAt": null,
-    "startedAt": null,
+    "startedAt": "2026-11-16T14:18:06.376Z",
     "totalPausedMs": 0,
-    "countdownEndsAt": null,
+    "countdownEndsAt": "2026-11-16T14:18:06.376Z",
     "durationMinutes": 52,
     "durationSeconds": 3120,
-    "countdownStartAt": null
+    "countdownStartAt": "2026-11-16T14:17:56.376Z"
   },
   "system_logs": [
     {
-      "_id": "log_1794842181327_3no4",
+      "_id": "log_1794843412409_76fp",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +24 PTS at ZONE_01 (Total: 52 PTS)",
+      "timestamp": "2026-11-16T15:36:52.409Z"
+    },
+    {
+      "_id": "log_1794843412405_em1r",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T15:36:52.405Z"
+    },
+    {
+      "_id": "log_1794843412398_2gh2",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794843412384_stu5k)",
+      "timestamp": "2026-11-16T15:36:52.398Z"
+    },
+    {
+      "_id": "log_1794843412395_4jae",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal LHC\" (user_1794843412378_g9eo1)",
+      "timestamp": "2026-11-16T15:36:52.395Z"
+    },
+    {
+      "_id": "log_1794843412389_bfzt",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal One\" (user_1794843412374_2vzxd)",
+      "timestamp": "2026-11-16T15:36:52.389Z"
+    },
+    {
+      "_id": "log_1794843412385_pbfr",
+      "action": "REGISTER",
+      "details": "PLAYER \"bravo_mwjffb19\" registered.",
+      "timestamp": "2026-11-16T15:36:52.385Z"
+    },
+    {
+      "_id": "log_1794843412379_5fzo",
+      "action": "REGISTER",
+      "details": "MEMBER \"m2_mwjffb19\" registered.",
+      "timestamp": "2026-11-16T15:36:52.379Z"
+    },
+    {
+      "_id": "log_1794843412375_7lav",
+      "action": "REGISTER",
+      "details": "MEMBER \"m1_mwjffb19\" registered.",
+      "timestamp": "2026-11-16T15:36:52.375Z"
+    },
+    {
+      "_id": "log_1794843412371_2myk",
       "action": "PURGE_ALL_TEAMS",
-      "details": "Game Master permanently purged all squads (19) and non-admin operatives.",
-      "timestamp": "2026-11-16T15:16:21.327Z"
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T15:36:52.371Z"
     },
     {
-      "_id": "log_1794842181325_flh7",
+      "_id": "log_1794842172114_6a2t",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_168832\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T15:16:12.114Z"
+    },
+    {
+      "_id": "log_1794842172084_fy9d",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal 2 audit_mr2_168832\" (user_1794842170145_ritxf)",
+      "timestamp": "2026-11-16T15:16:12.084Z"
+    },
+    {
+      "_id": "log_1794842171565_ujrp",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_168832\" (user_1794842170141_cczyt)",
+      "timestamp": "2026-11-16T15:16:11.565Z"
+    },
+    {
+      "_id": "log_1794842170159_cdi8",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_168832\" (team_1794842170137_3xzxe)",
+      "timestamp": "2026-11-16T15:16:10.159Z"
+    },
+    {
+      "_id": "log_1794842170155_xx5t",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_168832\" (team_1794842170132_s4cpa)",
+      "timestamp": "2026-11-16T15:16:10.155Z"
+    },
+    {
+      "_id": "log_1794842170145_n7ma",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_168832\" registered.",
+      "timestamp": "2026-11-16T15:16:10.146Z"
+    },
+    {
+      "_id": "log_1794842170142_6s5c",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_168832\" registered.",
+      "timestamp": "2026-11-16T15:16:10.142Z"
+    },
+    {
+      "_id": "log_1794842170138_xu3u",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_168832\" registered.",
+      "timestamp": "2026-11-16T15:16:10.138Z"
+    },
+    {
+      "_id": "log_1794842170133_de13",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_168832\" registered.",
+      "timestamp": "2026-11-16T15:16:10.133Z"
+    },
+    {
+      "_id": "log_1794842161752_hsxd",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +24 PTS at ZONE_01 (Total: 52 PTS)",
+      "timestamp": "2026-11-16T15:16:01.752Z"
+    },
+    {
+      "_id": "log_1794842161748_jmkt",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T15:16:01.748Z"
+    },
+    {
+      "_id": "log_1794842161739_o1fi",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794842161724_l62ga)",
+      "timestamp": "2026-11-16T15:16:01.739Z"
+    },
+    {
+      "_id": "log_1794842161733_zmu5",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal LHC\" (user_1794842161717_qoapu)",
+      "timestamp": "2026-11-16T15:16:01.733Z"
+    },
+    {
+      "_id": "log_1794842161730_2ms3",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal One\" (user_1794842161713_9e7l6)",
+      "timestamp": "2026-11-16T15:16:01.730Z"
+    },
+    {
+      "_id": "log_1794842161725_plzl",
+      "action": "REGISTER",
+      "details": "PLAYER \"bravo_mwjeoi1j\" registered.",
+      "timestamp": "2026-11-16T15:16:01.725Z"
+    },
+    {
+      "_id": "log_1794842161718_jcgb",
+      "action": "REGISTER",
+      "details": "MEMBER \"m2_mwjeoi1j\" registered.",
+      "timestamp": "2026-11-16T15:16:01.718Z"
+    },
+    {
+      "_id": "log_1794842161714_653l",
+      "action": "REGISTER",
+      "details": "MEMBER \"m1_mwjeoi1j\" registered.",
+      "timestamp": "2026-11-16T15:16:01.714Z"
+    },
+    {
+      "_id": "log_1794842161711_b7jd",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (4) and non-admin operatives.",
+      "timestamp": "2026-11-16T15:16:01.711Z"
+    },
+    {
+      "_id": "log_1794842106791_caa9",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_103625\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T15:15:06.791Z"
+    },
+    {
+      "_id": "log_1794842106753_n3uz",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal 2 audit_mr2_103625\" (user_1794842104821_9b78k)",
+      "timestamp": "2026-11-16T15:15:06.753Z"
+    },
+    {
+      "_id": "log_1794842106244_5muv",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_103625\" (user_1794842104817_gp8zp)",
+      "timestamp": "2026-11-16T15:15:06.244Z"
+    },
+    {
+      "_id": "log_1794842104835_u7xj",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_103625\" (team_1794842104813_xu3m7)",
+      "timestamp": "2026-11-16T15:15:04.835Z"
+    },
+    {
+      "_id": "log_1794842104831_2rqc",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_103625\" (team_1794842104809_zr8dc)",
+      "timestamp": "2026-11-16T15:15:04.831Z"
+    },
+    {
+      "_id": "log_1794842104822_s0pa",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_103625\" registered.",
+      "timestamp": "2026-11-16T15:15:04.822Z"
+    },
+    {
+      "_id": "log_1794842104817_2jfg",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_103625\" registered.",
+      "timestamp": "2026-11-16T15:15:04.817Z"
+    },
+    {
+      "_id": "log_1794842104814_mhpr",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_103625\" registered.",
+      "timestamp": "2026-11-16T15:15:04.814Z"
+    },
+    {
+      "_id": "log_1794842104810_isl6",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_103625\" registered.",
+      "timestamp": "2026-11-16T15:15:04.810Z"
+    },
+    {
+      "_id": "log_1794842082025_n1fh",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_078513\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T15:14:42.025Z"
+    },
+    {
+      "_id": "log_1794842081979_0i0b",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal 2 audit_mr2_078513\" (user_1794842080023_s12qj)",
+      "timestamp": "2026-11-16T15:14:41.979Z"
+    },
+    {
+      "_id": "log_1794842081461_corm",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_078513\" (user_1794842080019_bva35)",
+      "timestamp": "2026-11-16T15:14:41.461Z"
+    },
+    {
+      "_id": "log_1794842080043_4mvj",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_078513\" (team_1794842080016_0zjmx)",
+      "timestamp": "2026-11-16T15:14:40.043Z"
+    },
+    {
+      "_id": "log_1794842080039_k0x9",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_078513\" (team_1794842080011_dh9tr)",
+      "timestamp": "2026-11-16T15:14:40.039Z"
+    },
+    {
+      "_id": "log_1794842080024_jy6z",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_078513\" registered.",
+      "timestamp": "2026-11-16T15:14:40.024Z"
+    },
+    {
+      "_id": "log_1794842080020_xnye",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_078513\" registered.",
+      "timestamp": "2026-11-16T15:14:40.020Z"
+    },
+    {
+      "_id": "log_1794842080017_2xst",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_078513\" registered.",
+      "timestamp": "2026-11-16T15:14:40.017Z"
+    },
+    {
+      "_id": "log_1794842080012_rzbi",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_078513\" registered.",
+      "timestamp": "2026-11-16T15:14:40.012Z"
+    },
+    {
+      "_id": "log_1794842070601_pbhr",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +24 PTS at ZONE_01 (Total: 52 PTS)",
+      "timestamp": "2026-11-16T15:14:30.601Z"
+    },
+    {
+      "_id": "log_1794842070594_jlkl",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T15:14:30.594Z"
+    },
+    {
+      "_id": "log_1794842070579_clba",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794842070562_1afg3)",
+      "timestamp": "2026-11-16T15:14:30.579Z"
+    },
+    {
+      "_id": "log_1794842070574_x2ot",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal LHC\" (user_1794842070551_jmmuc)",
+      "timestamp": "2026-11-16T15:14:30.574Z"
+    },
+    {
+      "_id": "log_1794842070569_iq8x",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal One\" (user_1794842070543_6omgy)",
+      "timestamp": "2026-11-16T15:14:30.569Z"
+    },
+    {
+      "_id": "log_1794842070563_2fqg",
+      "action": "REGISTER",
+      "details": "PLAYER \"bravo_mwjemjgw\" registered.",
+      "timestamp": "2026-11-16T15:14:30.563Z"
+    },
+    {
+      "_id": "log_1794842070552_r6r8",
+      "action": "REGISTER",
+      "details": "MEMBER \"m2_mwjemjgw\" registered.",
+      "timestamp": "2026-11-16T15:14:30.552Z"
+    },
+    {
+      "_id": "log_1794842070544_kjcf",
+      "action": "REGISTER",
+      "details": "MEMBER \"m1_mwjemjgw\" registered.",
+      "timestamp": "2026-11-16T15:14:30.544Z"
+    },
+    {
+      "_id": "log_1794842070536_ebmj",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T15:14:30.536Z"
+    },
+    {
+      "_id": "log_1794840357150_k2wy",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_353781\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T14:45:57.150Z"
+    },
+    {
+      "_id": "log_1794840357130_cook",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal 2 audit_mr2_353781\" (user_1794840355192_thy16)",
+      "timestamp": "2026-11-16T14:45:57.130Z"
+    },
+    {
+      "_id": "log_1794840356618_6ulr",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_353781\" (user_1794840355189_hdver)",
+      "timestamp": "2026-11-16T14:45:56.618Z"
+    },
+    {
+      "_id": "log_1794840355204_236r",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_353781\" (team_1794840355185_a5ivj)",
+      "timestamp": "2026-11-16T14:45:55.204Z"
+    },
+    {
+      "_id": "log_1794840355200_vnsx",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_353781\" (team_1794840355182_s9wx6)",
+      "timestamp": "2026-11-16T14:45:55.201Z"
+    },
+    {
+      "_id": "log_1794840355193_1huo",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_353781\" registered.",
+      "timestamp": "2026-11-16T14:45:55.193Z"
+    },
+    {
+      "_id": "log_1794840355190_8jnz",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_353781\" registered.",
+      "timestamp": "2026-11-16T14:45:55.190Z"
+    },
+    {
+      "_id": "log_1794840355186_xn2i",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_353781\" registered.",
+      "timestamp": "2026-11-16T14:45:55.186Z"
+    },
+    {
+      "_id": "log_1794840355183_fm0m",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_353781\" registered.",
+      "timestamp": "2026-11-16T14:45:55.183Z"
+    },
+    {
+      "_id": "log_1794840347419_sosv",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +24 PTS at ZONE_01 (Total: 52 PTS)",
+      "timestamp": "2026-11-16T14:45:47.419Z"
+    },
+    {
+      "_id": "log_1794840347415_w0nr",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T14:45:47.415Z"
+    },
+    {
+      "_id": "log_1794840347407_xs9m",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794840347392_x2r3h)",
+      "timestamp": "2026-11-16T14:45:47.407Z"
+    },
+    {
+      "_id": "log_1794840347404_gte9",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal LHC\" (user_1794840347386_msohc)",
+      "timestamp": "2026-11-16T14:45:47.404Z"
+    },
+    {
+      "_id": "log_1794840347397_bud8",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal One\" (user_1794840347384_i1hks)",
+      "timestamp": "2026-11-16T14:45:47.397Z"
+    },
+    {
+      "_id": "log_1794840347393_hyx2",
+      "action": "REGISTER",
+      "details": "PLAYER \"bravo_mwjdlmjw\" registered.",
+      "timestamp": "2026-11-16T14:45:47.393Z"
+    },
+    {
+      "_id": "log_1794840347387_jbh2",
+      "action": "REGISTER",
+      "details": "MEMBER \"m2_mwjdlmjw\" registered.",
+      "timestamp": "2026-11-16T14:45:47.387Z"
+    },
+    {
+      "_id": "log_1794840347384_2pwi",
+      "action": "REGISTER",
+      "details": "MEMBER \"m1_mwjdlmjw\" registered.",
+      "timestamp": "2026-11-16T14:45:47.384Z"
+    },
+    {
+      "_id": "log_1794840347381_8gur",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (17) and non-admin operatives.",
+      "timestamp": "2026-11-16T14:45:47.381Z"
+    },
+    {
+      "_id": "log_1794839997325_vebs",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad 20 Phoenix\" (team_1794839983597_f1mn0)",
+      "timestamp": "2026-11-16T14:39:57.325Z"
+    },
+    {
+      "_id": "log_1794839994201_cdum",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad 11 Phoenix\" (team_1794839964002_q6l8x)",
+      "timestamp": "2026-11-16T14:39:54.201Z"
+    },
+    {
+      "_id": "log_1794839993501_c02z",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad 09 Phoenix\" (team_1794839961491_g4sag)",
+      "timestamp": "2026-11-16T14:39:53.501Z"
+    },
+    {
+      "_id": "log_1794839992808_xeif",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad 07 Phoenix\" (team_1794839960780_7je3b)",
+      "timestamp": "2026-11-16T14:39:52.808Z"
+    },
+    {
+      "_id": "log_1794839991759_9t0x",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad 04 Phoenix\" (team_1794839959400_027rw)",
+      "timestamp": "2026-11-16T14:39:51.759Z"
+    },
+    {
+      "_id": "log_1794839989957_cmis",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal Zone 12 - Innovation Arena\" (user_1794839957662_rsq8y)",
+      "timestamp": "2026-11-16T14:39:49.957Z"
+    },
+    {
+      "_id": "log_1794839989298_4k17",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal Zone 10 - Turf Perimeter\" (user_1794839956860_v02nn)",
+      "timestamp": "2026-11-16T14:39:49.298Z"
+    },
+    {
+      "_id": "log_1794839988298_7sgr",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal Zone 7 - Science Basin\" (user_1794839955630_ckqoi)",
+      "timestamp": "2026-11-16T14:39:48.298Z"
+    },
+    {
+      "_id": "log_1794839986835_5w1r",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal Zone 4 - Glasshouse Botanical\" (user_1794839954517_ncz7h)",
+      "timestamp": "2026-11-16T14:39:46.835Z"
+    },
+    {
+      "_id": "log_1794839985668_ugby",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal Zone 2 - Solar Obelisk\" (user_1794839953735_ua6nc)",
+      "timestamp": "2026-11-16T14:39:45.668Z"
+    },
+    {
+      "_id": "log_1794839983598_cl4l",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_20_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:43.598Z"
+    },
+    {
+      "_id": "log_1794839982725_b1ok",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_19_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:42.725Z"
+    },
+    {
+      "_id": "log_1794839964002_x863",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_11_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:24.002Z"
+    },
+    {
+      "_id": "log_1794839961491_8sew",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_09_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:21.491Z"
+    },
+    {
+      "_id": "log_1794839960781_6b2x",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_07_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:20.781Z"
+    },
+    {
+      "_id": "log_1794839959401_g741",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_04_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:19.401Z"
+    },
+    {
+      "_id": "log_1794839958646_67rs",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_02_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:18.646Z"
+    },
+    {
+      "_id": "log_1794839957663_tf2x",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_12_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:17.663Z"
+    },
+    {
+      "_id": "log_1794839956861_l8h6",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_10_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:16.861Z"
+    },
+    {
+      "_id": "log_1794839955631_s3yj",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_07_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:15.631Z"
+    },
+    {
+      "_id": "log_1794839954518_p6s5",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_04_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:14.518Z"
+    },
+    {
+      "_id": "log_1794839953736_t7vo",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_02_mwjdd69s\" registered.",
+      "timestamp": "2026-11-16T14:39:13.736Z"
+    },
+    {
+      "_id": "log_1794839644871_di7x",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad 19 Phoenix\" (team_1794839598441_rw7cb)",
+      "timestamp": "2026-11-16T14:34:04.871Z"
+    },
+    {
+      "_id": "log_1794839639844_3y4w",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad 17 Phoenix\" (team_1794839597537_d4ye9)",
+      "timestamp": "2026-11-16T14:33:59.844Z"
+    },
+    {
+      "_id": "log_1794839635502_z5nu",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad 13 Phoenix\" (team_1794839595686_67xa9)",
+      "timestamp": "2026-11-16T14:33:55.502Z"
+    },
+    {
+      "_id": "log_1794839625442_j5jj",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad 09 Phoenix\" (team_1794839589919_nveuv)",
+      "timestamp": "2026-11-16T14:33:45.442Z"
+    },
+    {
+      "_id": "log_1794839614904_hdxg",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Squad 01 Phoenix\" (team_1794839576263_zvhhj)",
+      "timestamp": "2026-11-16T14:33:34.904Z"
+    },
+    {
+      "_id": "log_1794839608299_67qz",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal Zone 9 - North Telecom Pylon\" (user_1794839574594_pyfo3)",
+      "timestamp": "2026-11-16T14:33:28.299Z"
+    },
+    {
+      "_id": "log_1794839606874_ayie",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal Zone 6 - Amphitheater Canopy\" (user_1794839573245_zslp0)",
+      "timestamp": "2026-11-16T14:33:26.874Z"
+    },
+    {
+      "_id": "log_1794839606032_41qd",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal Zone 4 - Glasshouse Botanical\" (user_1794839572270_630uv)",
+      "timestamp": "2026-11-16T14:33:26.032Z"
+    },
+    {
+      "_id": "log_1794839605047_0t9d",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal Zone 2 - Solar Obelisk\" (user_1794839571350_ll50x)",
+      "timestamp": "2026-11-16T14:33:25.047Z"
+    },
+    {
+      "_id": "log_1794839598443_ipaz",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_19_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:33:18.443Z"
+    },
+    {
+      "_id": "log_1794839597538_8vls",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_17_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:33:17.538Z"
+    },
+    {
+      "_id": "log_1794839596714_jwrw",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_15_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:33:16.714Z"
+    },
+    {
+      "_id": "log_1794839595687_jpkg",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_13_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:33:15.687Z"
+    },
+    {
+      "_id": "log_1794839593921_0cfq",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_11_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:33:13.921Z"
+    },
+    {
+      "_id": "log_1794839589919_ofee",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_09_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:33:09.919Z"
+    },
+    {
+      "_id": "log_1794839586849_vgeh",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_07_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:33:06.849Z"
+    },
+    {
+      "_id": "log_1794839584492_50zp",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_05_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:33:04.492Z"
+    },
+    {
+      "_id": "log_1794839577062_0t5u",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_03_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:32:57.062Z"
+    },
+    {
+      "_id": "log_1794839576264_n08c",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_01_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:32:56.264Z"
+    },
+    {
+      "_id": "log_1794839575501_eo2u",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_11_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:32:55.501Z"
+    },
+    {
+      "_id": "log_1794839574595_jldj",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_09_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:32:54.595Z"
+    },
+    {
+      "_id": "log_1794839573245_n94r",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_06_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:32:53.245Z"
+    },
+    {
+      "_id": "log_1794839572271_d4mt",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_04_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:32:52.271Z"
+    },
+    {
+      "_id": "log_1794839571351_235c",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_02_mwjd4xs9\" registered.",
+      "timestamp": "2026-11-16T14:32:51.351Z"
+    },
+    {
+      "_id": "log_1794839570050_ykcn",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (0) and non-admin operatives.",
+      "timestamp": "2026-11-16T14:32:50.050Z"
+    },
+    {
+      "_id": "log_1794839329713_dl6d",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_12_mwjcyfjl\" registered.",
+      "timestamp": "2026-11-16T14:28:49.713Z"
+    },
+    {
+      "_id": "log_1794839307654_i5mt",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_07_mwjcyfjl\" registered.",
+      "timestamp": "2026-11-16T14:28:27.654Z"
+    },
+    {
+      "_id": "log_1794839303062_c499",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_06_mwjcyfjl\" registered.",
+      "timestamp": "2026-11-16T14:28:23.062Z"
+    },
+    {
+      "_id": "log_1794839285869_2rfz",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_zone_01_mwjcyfjl\" registered.",
+      "timestamp": "2026-11-16T14:28:05.869Z"
+    },
+    {
+      "_id": "log_1794838678078_63cs",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T14:17:58.078Z"
+    },
+    {
+      "_id": "log_1794838673210_sp23",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_659377\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T14:17:53.210Z"
+    },
+    {
+      "_id": "log_1794838669723_kbmw",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_659377\" (user_1794838662664_9n2o8)",
+      "timestamp": "2026-11-16T14:17:49.723Z"
+    },
+    {
+      "_id": "log_1794838667158_00oe",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_659377\" (team_1794838661634_nx2py)",
+      "timestamp": "2026-11-16T14:17:47.158Z"
+    },
+    {
+      "_id": "log_1794838663986_aiqx",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_659377\" registered.",
+      "timestamp": "2026-11-16T14:17:43.986Z"
+    },
+    {
+      "_id": "log_1794838646573_uooh",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T14:17:26.573Z"
+    },
+    {
+      "_id": "log_1794838645347_dxh8",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794838642422_wu8z3)",
+      "timestamp": "2026-11-16T14:17:25.347Z"
+    },
+    {
+      "_id": "log_1794838628916_12kt",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"M2\" (user_1794838626614_jy6ys)",
+      "timestamp": "2026-11-16T14:17:08.916Z"
+    },
+    {
+      "_id": "log_1794838553083_5mw5",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T14:15:53.083Z"
+    },
+    {
+      "_id": "log_1794838547860_ythk",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_535150\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T14:15:47.860Z"
+    },
+    {
+      "_id": "log_1794838544285_9rqs",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_535150\" (user_1794838537781_y4il1)",
+      "timestamp": "2026-11-16T14:15:44.285Z"
+    },
+    {
+      "_id": "log_1794838542028_nd95",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_535150\" (team_1794838536910_o7z3h)",
+      "timestamp": "2026-11-16T14:15:42.028Z"
+    },
+    {
+      "_id": "log_1794838539164_sj16",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_535150\" registered.",
+      "timestamp": "2026-11-16T14:15:39.164Z"
+    },
+    {
+      "_id": "log_1794838533329_bn9n",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at ZONE_01 (Total: 28 PTS)",
+      "timestamp": "2026-11-16T14:15:33.329Z"
+    },
+    {
+      "_id": "log_1794838532233_m598",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794838529852_iwrbo)",
+      "timestamp": "2026-11-16T14:15:32.233Z"
+    },
+    {
+      "_id": "log_1794838531140_xkxa",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal One\" (user_1794838528203_6od1g)",
+      "timestamp": "2026-11-16T14:15:31.140Z"
+    },
+    {
+      "_id": "log_1794838528620_kdu4",
+      "action": "REGISTER",
+      "details": "MEMBER \"m1_mwjcil88\" registered.",
+      "timestamp": "2026-11-16T14:15:28.620Z"
+    },
+    {
+      "_id": "log_1794838278534_v7a5",
+      "action": "CHECKIN",
+      "details": "Team \"Squad Bravo bravo_03303\" awarded +20 PTS at ZONE_01 (Total: 20 PTS)",
+      "timestamp": "2026-11-16T14:11:18.534Z"
+    },
+    {
+      "_id": "log_1794838234226_27hg",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_z1_03303\" registered.",
+      "timestamp": "2026-11-16T14:10:34.226Z"
+    },
+    {
+      "_id": "log_1794838228236_yzpz",
+      "action": "REGISTER",
+      "details": "MEMBER \"mr_lhc_03303\" registered.",
+      "timestamp": "2026-11-16T14:10:28.236Z"
+    },
+    {
+      "_id": "log_1794838223686_hwu4",
+      "action": "REGISTER",
+      "details": "PLAYER \"bravo_03303\" registered.",
+      "timestamp": "2026-11-16T14:10:23.686Z"
+    },
+    {
+      "_id": "log_1794828001281_pefa",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_983122\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T11:20:01.281Z"
+    },
+    {
+      "_id": "log_1794827997596_lnnj",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_983122\" (user_1794827988953_csen6)",
+      "timestamp": "2026-11-16T11:19:57.596Z"
+    },
+    {
+      "_id": "log_1794827995343_ax9b",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_983122\" (team_1794827987359_xzo4q)",
+      "timestamp": "2026-11-16T11:19:55.343Z"
+    },
+    {
+      "_id": "log_1794827993907_pg9w",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_983122\" (team_1794827985528_y58qj)",
+      "timestamp": "2026-11-16T11:19:53.907Z"
+    },
+    {
+      "_id": "log_1794827991253_sdww",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_983122\" registered.",
+      "timestamp": "2026-11-16T11:19:51.253Z"
+    },
+    {
+      "_id": "log_1794827987968_40sy",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_983122\" registered.",
+      "timestamp": "2026-11-16T11:19:47.968Z"
+    },
+    {
+      "_id": "log_1794827986128_3aab",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_983122\" registered.",
+      "timestamp": "2026-11-16T11:19:46.128Z"
+    },
+    {
+      "_id": "log_1794827979675_z08b",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T11:19:39.675Z"
+    },
+    {
+      "_id": "log_1794827978341_487d",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794827974262_zuo3n)",
+      "timestamp": "2026-11-16T11:19:38.341Z"
+    },
+    {
+      "_id": "log_1794827972611_wwaa",
+      "action": "REGISTER",
+      "details": "MEMBER \"m1_mwj68b67\" registered.",
+      "timestamp": "2026-11-16T11:19:32.611Z"
+    },
+    {
+      "_id": "log_1794827088983_owfj",
+      "action": "REGISTER",
+      "details": "MEMBER \"Mishra@12\" registered.",
+      "timestamp": "2026-11-16T11:04:48.983Z"
+    },
+    {
+      "_id": "log_1794826958066_2qn0",
+      "action": "REGISTER",
+      "details": "PLAYER \"Jam@123\" registered.",
+      "timestamp": "2026-11-16T11:02:38.066Z"
+    },
+    {
+      "_id": "log_1794826484250_fpj2",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +24 PTS at ZONE_01 (Total: 52 PTS)",
+      "timestamp": "2026-11-16T10:54:44.250Z"
+    },
+    {
+      "_id": "log_1794826483029_u1gk",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T10:54:43.029Z"
+    },
+    {
+      "_id": "log_1794826480801_eetw",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794826477975_w3hfk)",
+      "timestamp": "2026-11-16T10:54:40.801Z"
+    },
+    {
+      "_id": "log_1794826474952_2myb",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (1) and non-admin operatives.",
+      "timestamp": "2026-11-16T10:54:34.952Z"
+    },
+    {
+      "_id": "log_1794826445574_s0fu",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo\" (team_1794826442001_8vget)",
+      "timestamp": "2026-11-16T10:54:05.574Z"
+    },
+    {
+      "_id": "log_1794826443496_hn7y",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"M1\" (user_1794826439879_tg0oe)",
+      "timestamp": "2026-11-16T10:54:03.496Z"
+    },
+    {
+      "_id": "log_1794826440286_nr2p",
+      "action": "REGISTER",
+      "details": "MEMBER \"m1_mwj5bick\" registered.",
+      "timestamp": "2026-11-16T10:54:00.286Z"
+    },
+    {
+      "_id": "log_1794826403729_aj2n",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at ZONE_02 (Total: 28 PTS)",
+      "timestamp": "2026-11-16T10:53:23.729Z"
+    },
+    {
+      "_id": "log_1794826402381_1h34",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794826400232_bdxj1)",
+      "timestamp": "2026-11-16T10:53:22.381Z"
+    },
+    {
+      "_id": "log_1794826400808_k4to",
+      "action": "REGISTER",
+      "details": "PLAYER \"bravo_mwj5amf4\" registered.",
+      "timestamp": "2026-11-16T10:53:20.808Z"
+    },
+    {
+      "_id": "log_1794826399009_npxf",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (0) and non-admin operatives.",
+      "timestamp": "2026-11-16T10:53:19.009Z"
+    },
+    {
+      "_id": "log_1794826393107_9f8m",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_378813\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T10:53:13.107Z"
+    },
+    {
+      "_id": "log_1794826389651_dh8b",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_378813\" (user_1794826382042_be69q)",
+      "timestamp": "2026-11-16T10:53:09.651Z"
+    },
+    {
+      "_id": "log_1794826386508_171l",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_378813\" (team_1794826381166_ur61h)",
+      "timestamp": "2026-11-16T10:53:06.508Z"
+    },
+    {
+      "_id": "log_1794826385133_fesg",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_378813\" (team_1794826379878_iqf7t)",
+      "timestamp": "2026-11-16T10:53:05.133Z"
+    },
+    {
+      "_id": "log_1794826383186_e8oo",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_378813\" registered.",
+      "timestamp": "2026-11-16T10:53:03.186Z"
+    },
+    {
+      "_id": "log_1794826377318_m597",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at ZONE_01 (Total: 28 PTS)",
+      "timestamp": "2026-11-16T10:52:57.318Z"
+    },
+    {
+      "_id": "log_1794826375998_z0k1",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794826373265_wnh3t)",
+      "timestamp": "2026-11-16T10:52:55.998Z"
+    },
+    {
+      "_id": "log_1794826374353_ekbv",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal One\" (user_1794826371730_sn7fg)",
+      "timestamp": "2026-11-16T10:52:54.353Z"
+    },
+    {
+      "_id": "log_1794826335201_qx28",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T10:52:15.201Z"
+    },
+    {
+      "_id": "log_1794826333287_4dt5",
       "action": "RESET_ALL_POINTS",
-      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 19 squads.",
-      "timestamp": "2026-11-16T15:16:21.325Z"
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 2 squads.",
+      "timestamp": "2026-11-16T10:52:13.287Z"
     },
     {
-      "_id": "log_1794842181321_giy6",
-      "action": "REMOVE_TEAM",
-      "details": "Game Master permanently removed squad: \"Squad 13 Phoenix\" (team_1794842179699_a3l9x)",
-      "timestamp": "2026-11-16T15:16:21.321Z"
-    },
-    {
-      "_id": "log_1794842181311_23i8",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +13 PTS at ZONE_06 (Total: 233 PTS)",
-      "timestamp": "2026-11-16T15:16:21.311Z"
-    },
-    {
-      "_id": "log_1794842181307_4p2u",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +21 PTS at ZONE_05 (Total: 236 PTS)",
-      "timestamp": "2026-11-16T15:16:21.307Z"
-    },
-    {
-      "_id": "log_1794842181303_k28c",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +23 PTS at ZONE_04 (Total: 226 PTS)",
-      "timestamp": "2026-11-16T15:16:21.303Z"
-    },
-    {
-      "_id": "log_1794842181298_0bc1",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +17 PTS at ZONE_03 (Total: 229 PTS)",
-      "timestamp": "2026-11-16T15:16:21.298Z"
-    },
-    {
-      "_id": "log_1794842181294_zt7v",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +12 PTS at ZONE_02 (Total: 232 PTS)",
-      "timestamp": "2026-11-16T15:16:21.294Z"
-    },
-    {
-      "_id": "log_1794842181288_ji0y",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +27 PTS at ZONE_01 (Total: 235 PTS)",
-      "timestamp": "2026-11-16T15:16:21.288Z"
-    },
-    {
-      "_id": "log_1794842181281_rone",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +21 PTS at ZONE_12 (Total: 238 PTS)",
-      "timestamp": "2026-11-16T15:16:21.281Z"
-    },
-    {
-      "_id": "log_1794842181274_ptkz",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +16 PTS at ZONE_11 (Total: 228 PTS)",
-      "timestamp": "2026-11-16T15:16:21.274Z"
-    },
-    {
-      "_id": "log_1794842181268_ta3x",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +18 PTS at ZONE_10 (Total: 231 PTS)",
-      "timestamp": "2026-11-16T15:16:21.268Z"
-    },
-    {
-      "_id": "log_1794842181262_dqya",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +25 PTS at ZONE_09 (Total: 234 PTS)",
-      "timestamp": "2026-11-16T15:16:21.262Z"
-    },
-    {
-      "_id": "log_1794842181256_mfny",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +20 PTS at ZONE_08 (Total: 237 PTS)",
-      "timestamp": "2026-11-16T15:16:21.256Z"
-    },
-    {
-      "_id": "log_1794842181251_07jw",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +22 PTS at ZONE_07 (Total: 227 PTS)",
-      "timestamp": "2026-11-16T15:16:21.251Z"
-    },
-    {
-      "_id": "log_1794842181246_u8vf",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +16 PTS at ZONE_06 (Total: 230 PTS)",
-      "timestamp": "2026-11-16T15:16:21.246Z"
-    },
-    {
-      "_id": "log_1794842181241_3rfs",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +11 PTS at ZONE_05 (Total: 233 PTS)",
-      "timestamp": "2026-11-16T15:16:21.241Z"
-    },
-    {
-      "_id": "log_1794842181236_3vjp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +26 PTS at ZONE_04 (Total: 236 PTS)",
-      "timestamp": "2026-11-16T15:16:21.236Z"
-    },
-    {
-      "_id": "log_1794842181231_czn9",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +20 PTS at ZONE_03 (Total: 226 PTS)",
-      "timestamp": "2026-11-16T15:16:21.231Z"
-    },
-    {
-      "_id": "log_1794842181226_hq7b",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +15 PTS at ZONE_02 (Total: 229 PTS)",
-      "timestamp": "2026-11-16T15:16:21.226Z"
-    },
-    {
-      "_id": "log_1794842181222_mrds",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +17 PTS at ZONE_01 (Total: 232 PTS)",
-      "timestamp": "2026-11-16T15:16:21.222Z"
-    },
-    {
-      "_id": "log_1794842181217_c26a",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +24 PTS at ZONE_12 (Total: 235 PTS)",
-      "timestamp": "2026-11-16T15:16:21.217Z"
-    },
-    {
-      "_id": "log_1794842181213_dy0u",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +19 PTS at ZONE_11 (Total: 238 PTS)",
-      "timestamp": "2026-11-16T15:16:21.213Z"
-    },
-    {
-      "_id": "log_1794842181209_atek",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +19 PTS at ZONE_05 (Total: 220 PTS)",
-      "timestamp": "2026-11-16T15:16:21.209Z"
-    },
-    {
-      "_id": "log_1794842181205_r3mu",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +21 PTS at ZONE_04 (Total: 215 PTS)",
-      "timestamp": "2026-11-16T15:16:21.205Z"
-    },
-    {
-      "_id": "log_1794842181200_gqe4",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +15 PTS at ZONE_03 (Total: 203 PTS)",
-      "timestamp": "2026-11-16T15:16:21.200Z"
-    },
-    {
-      "_id": "log_1794842181196_thgl",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +23 PTS at ZONE_02 (Total: 212 PTS)",
-      "timestamp": "2026-11-16T15:16:21.196Z"
-    },
-    {
-      "_id": "log_1794842181191_0pqs",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +25 PTS at ZONE_01 (Total: 220 PTS)",
-      "timestamp": "2026-11-16T15:16:21.191Z"
-    },
-    {
-      "_id": "log_1794842181187_pgvn",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +19 PTS at ZONE_12 (Total: 208 PTS)",
-      "timestamp": "2026-11-16T15:16:21.187Z"
-    },
-    {
-      "_id": "log_1794842181182_b5dc",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +14 PTS at ZONE_11 (Total: 217 PTS)",
-      "timestamp": "2026-11-16T15:16:21.182Z"
-    },
-    {
-      "_id": "log_1794842181176_k5y6",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +16 PTS at ZONE_10 (Total: 212 PTS)",
-      "timestamp": "2026-11-16T15:16:21.176Z"
-    },
-    {
-      "_id": "log_1794842181171_xn16",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +23 PTS at ZONE_09 (Total: 213 PTS)",
-      "timestamp": "2026-11-16T15:16:21.171Z"
-    },
-    {
-      "_id": "log_1794842181162_w6z4",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +18 PTS at ZONE_08 (Total: 209 PTS)",
-      "timestamp": "2026-11-16T15:16:21.162Z"
-    },
-    {
-      "_id": "log_1794842181156_nxhi",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +20 PTS at ZONE_07 (Total: 217 PTS)",
-      "timestamp": "2026-11-16T15:16:21.156Z"
-    },
-    {
-      "_id": "log_1794842181149_glfr",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +14 PTS at ZONE_06 (Total: 205 PTS)",
-      "timestamp": "2026-11-16T15:16:21.149Z"
-    },
-    {
-      "_id": "log_1794842181142_9yhk",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +22 PTS at ZONE_05 (Total: 214 PTS)",
-      "timestamp": "2026-11-16T15:16:21.142Z"
-    },
-    {
-      "_id": "log_1794842181137_ul1j",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +24 PTS at ZONE_04 (Total: 222 PTS)",
-      "timestamp": "2026-11-16T15:16:21.137Z"
-    },
-    {
-      "_id": "log_1794842181132_xm25",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +18 PTS at ZONE_03 (Total: 210 PTS)",
-      "timestamp": "2026-11-16T15:16:21.132Z"
-    },
-    {
-      "_id": "log_1794842181127_x7za",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +13 PTS at ZONE_02 (Total: 206 PTS)",
-      "timestamp": "2026-11-16T15:16:21.127Z"
-    },
-    {
-      "_id": "log_1794842181123_q0sa",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +28 PTS at ZONE_01 (Total: 214 PTS)",
-      "timestamp": "2026-11-16T15:16:21.123Z"
-    },
-    {
-      "_id": "log_1794842181118_hk0q",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +22 PTS at ZONE_12 (Total: 215 PTS)",
-      "timestamp": "2026-11-16T15:16:21.118Z"
-    },
-    {
-      "_id": "log_1794842181113_odtj",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +17 PTS at ZONE_11 (Total: 211 PTS)",
-      "timestamp": "2026-11-16T15:16:21.113Z"
-    },
-    {
-      "_id": "log_1794842181107_47dp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +19 PTS at ZONE_10 (Total: 219 PTS)",
-      "timestamp": "2026-11-16T15:16:21.107Z"
-    },
-    {
-      "_id": "log_1794842181100_drqe",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +19 PTS at ZONE_04 (Total: 201 PTS)",
-      "timestamp": "2026-11-16T15:16:21.100Z"
-    },
-    {
-      "_id": "log_1794842181095_xlm7",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +13 PTS at ZONE_03 (Total: 194 PTS)",
-      "timestamp": "2026-11-16T15:16:21.095Z"
-    },
-    {
-      "_id": "log_1794842181089_0vpy",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +21 PTS at ZONE_02 (Total: 188 PTS)",
-      "timestamp": "2026-11-16T15:16:21.089Z"
-    },
-    {
-      "_id": "log_1794842181083_60he",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +23 PTS at ZONE_01 (Total: 189 PTS)",
-      "timestamp": "2026-11-16T15:16:21.083Z"
-    },
-    {
-      "_id": "log_1794842181079_fias",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +17 PTS at ZONE_12 (Total: 195 PTS)",
-      "timestamp": "2026-11-16T15:16:21.079Z"
-    },
-    {
-      "_id": "log_1794842181073_576k",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +12 PTS at ZONE_11 (Total: 189 PTS)",
-      "timestamp": "2026-11-16T15:16:21.073Z"
-    },
-    {
-      "_id": "log_1794842181069_00xh",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +27 PTS at ZONE_10 (Total: 203 PTS)",
-      "timestamp": "2026-11-16T15:16:21.069Z"
-    },
-    {
-      "_id": "log_1794842181064_dun0",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +21 PTS at ZONE_09 (Total: 196 PTS)",
-      "timestamp": "2026-11-16T15:16:21.064Z"
-    },
-    {
-      "_id": "log_1794842181058_3c5x",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +16 PTS at ZONE_08 (Total: 190 PTS)",
-      "timestamp": "2026-11-16T15:16:21.058Z"
-    },
-    {
-      "_id": "log_1794842181052_4gc9",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +18 PTS at ZONE_07 (Total: 191 PTS)",
-      "timestamp": "2026-11-16T15:16:21.052Z"
-    },
-    {
-      "_id": "log_1794842181043_k346",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +25 PTS at ZONE_06 (Total: 197 PTS)",
-      "timestamp": "2026-11-16T15:16:21.043Z"
-    },
-    {
-      "_id": "log_1794842181037_o3eo",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +20 PTS at ZONE_05 (Total: 191 PTS)",
-      "timestamp": "2026-11-16T15:16:21.037Z"
-    },
-    {
-      "_id": "log_1794842181031_2vuh",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +22 PTS at ZONE_04 (Total: 192 PTS)",
-      "timestamp": "2026-11-16T15:16:21.031Z"
-    },
-    {
-      "_id": "log_1794842181026_7dcl",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +16 PTS at ZONE_03 (Total: 198 PTS)",
-      "timestamp": "2026-11-16T15:16:21.026Z"
-    },
-    {
-      "_id": "log_1794842181018_6hxp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +11 PTS at ZONE_02 (Total: 192 PTS)",
-      "timestamp": "2026-11-16T15:16:21.018Z"
-    },
-    {
-      "_id": "log_1794842181012_3b7o",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +26 PTS at ZONE_01 (Total: 193 PTS)",
-      "timestamp": "2026-11-16T15:16:21.012Z"
-    },
-    {
-      "_id": "log_1794842181004_5oiw",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +20 PTS at ZONE_12 (Total: 186 PTS)",
-      "timestamp": "2026-11-16T15:16:21.004Z"
-    },
-    {
-      "_id": "log_1794842180996_a47l",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +15 PTS at ZONE_11 (Total: 193 PTS)",
-      "timestamp": "2026-11-16T15:16:20.996Z"
-    },
-    {
-      "_id": "log_1794842180990_ggsb",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +17 PTS at ZONE_10 (Total: 194 PTS)",
-      "timestamp": "2026-11-16T15:16:20.990Z"
-    },
-    {
-      "_id": "log_1794842180984_o284",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +24 PTS at ZONE_09 (Total: 200 PTS)",
-      "timestamp": "2026-11-16T15:16:20.984Z"
-    },
-    {
-      "_id": "log_1794842180975_5xsp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +24 PTS at ZONE_03 (Total: 182 PTS)",
-      "timestamp": "2026-11-16T15:16:20.975Z"
-    },
-    {
-      "_id": "log_1794842180970_wsoe",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +19 PTS at ZONE_02 (Total: 181 PTS)",
-      "timestamp": "2026-11-16T15:16:20.970Z"
-    },
-    {
-      "_id": "log_1794842180963_mhse",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +21 PTS at ZONE_01 (Total: 167 PTS)",
-      "timestamp": "2026-11-16T15:16:20.963Z"
-    },
-    {
-      "_id": "log_1794842180957_i433",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +15 PTS at ZONE_12 (Total: 166 PTS)",
-      "timestamp": "2026-11-16T15:16:20.957Z"
-    },
-    {
-      "_id": "log_1794842180950_3hom",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +23 PTS at ZONE_11 (Total: 178 PTS)",
-      "timestamp": "2026-11-16T15:16:20.950Z"
-    },
-    {
-      "_id": "log_1794842180943_p78t",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +25 PTS at ZONE_10 (Total: 177 PTS)",
-      "timestamp": "2026-11-16T15:16:20.943Z"
-    },
-    {
-      "_id": "log_1794842180937_5hrn",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +19 PTS at ZONE_09 (Total: 176 PTS)",
-      "timestamp": "2026-11-16T15:16:20.937Z"
-    },
-    {
-      "_id": "log_1794842180926_631i",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +14 PTS at ZONE_08 (Total: 175 PTS)",
-      "timestamp": "2026-11-16T15:16:20.926Z"
-    },
-    {
-      "_id": "log_1794842180915_mexc",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +16 PTS at ZONE_07 (Total: 174 PTS)",
-      "timestamp": "2026-11-16T15:16:20.915Z"
-    },
-    {
-      "_id": "log_1794842180910_l7cj",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +23 PTS at ZONE_06 (Total: 173 PTS)",
-      "timestamp": "2026-11-16T15:16:20.910Z"
-    },
-    {
-      "_id": "log_1794842180905_5jlf",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +18 PTS at ZONE_05 (Total: 172 PTS)",
-      "timestamp": "2026-11-16T15:16:20.905Z"
-    },
-    {
-      "_id": "log_1794842180899_w19f",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +20 PTS at ZONE_04 (Total: 171 PTS)",
-      "timestamp": "2026-11-16T15:16:20.899Z"
-    },
-    {
-      "_id": "log_1794842180890_930f",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +14 PTS at ZONE_03 (Total: 170 PTS)",
-      "timestamp": "2026-11-16T15:16:20.890Z"
-    },
-    {
-      "_id": "log_1794842180883_mdut",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +22 PTS at ZONE_02 (Total: 182 PTS)",
-      "timestamp": "2026-11-16T15:16:20.883Z"
-    },
-    {
-      "_id": "log_1794842180877_u9cm",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +24 PTS at ZONE_01 (Total: 181 PTS)",
-      "timestamp": "2026-11-16T15:16:20.877Z"
-    },
-    {
-      "_id": "log_1794842180869_kqzp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +18 PTS at ZONE_12 (Total: 167 PTS)",
-      "timestamp": "2026-11-16T15:16:20.869Z"
-    },
-    {
-      "_id": "log_1794842180861_yhe6",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +13 PTS at ZONE_11 (Total: 166 PTS)",
-      "timestamp": "2026-11-16T15:16:20.861Z"
-    },
-    {
-      "_id": "log_1794842180853_sz87",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +28 PTS at ZONE_10 (Total: 178 PTS)",
-      "timestamp": "2026-11-16T15:16:20.853Z"
-    },
-    {
-      "_id": "log_1794842180846_vz10",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +22 PTS at ZONE_09 (Total: 177 PTS)",
-      "timestamp": "2026-11-16T15:16:20.846Z"
-    },
-    {
-      "_id": "log_1794842180838_xob1",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +17 PTS at ZONE_08 (Total: 176 PTS)",
-      "timestamp": "2026-11-16T15:16:20.838Z"
-    },
-    {
-      "_id": "log_1794842180832_fkh5",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +17 PTS at ZONE_02 (Total: 158 PTS)",
-      "timestamp": "2026-11-16T15:16:20.832Z"
-    },
-    {
-      "_id": "log_1794842180826_pbod",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +19 PTS at ZONE_01 (Total: 162 PTS)",
-      "timestamp": "2026-11-16T15:16:20.826Z"
-    },
-    {
-      "_id": "log_1794842180821_g01r",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +13 PTS at ZONE_12 (Total: 146 PTS)",
-      "timestamp": "2026-11-16T15:16:20.821Z"
-    },
-    {
-      "_id": "log_1794842180815_pzc0",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +21 PTS at ZONE_11 (Total: 151 PTS)",
-      "timestamp": "2026-11-16T15:16:20.815Z"
-    },
-    {
-      "_id": "log_1794842180808_x4hb",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +23 PTS at ZONE_10 (Total: 155 PTS)",
-      "timestamp": "2026-11-16T15:16:20.808Z"
-    },
-    {
-      "_id": "log_1794842180802_ym1t",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +17 PTS at ZONE_09 (Total: 152 PTS)",
-      "timestamp": "2026-11-16T15:16:20.802Z"
-    },
-    {
-      "_id": "log_1794842180794_gae7",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +12 PTS at ZONE_08 (Total: 157 PTS)",
-      "timestamp": "2026-11-16T15:16:20.794Z"
-    },
-    {
-      "_id": "log_1794842180783_v4vn",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +27 PTS at ZONE_07 (Total: 161 PTS)",
-      "timestamp": "2026-11-16T15:16:20.783Z"
-    },
-    {
-      "_id": "log_1794842180770_06ds",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +21 PTS at ZONE_06 (Total: 158 PTS)",
-      "timestamp": "2026-11-16T15:16:20.770Z"
-    },
-    {
-      "_id": "log_1794842180763_a2z8",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +16 PTS at ZONE_05 (Total: 150 PTS)",
-      "timestamp": "2026-11-16T15:16:20.763Z"
-    },
-    {
-      "_id": "log_1794842180756_crp5",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +18 PTS at ZONE_04 (Total: 154 PTS)",
-      "timestamp": "2026-11-16T15:16:20.756Z"
-    },
-    {
-      "_id": "log_1794842180748_m7jy",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +25 PTS at ZONE_03 (Total: 151 PTS)",
-      "timestamp": "2026-11-16T15:16:20.748Z"
-    },
-    {
-      "_id": "log_1794842180742_fe5r",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +20 PTS at ZONE_02 (Total: 156 PTS)",
-      "timestamp": "2026-11-16T15:16:20.742Z"
-    },
-    {
-      "_id": "log_1794842180735_tjqp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +22 PTS at ZONE_01 (Total: 160 PTS)",
-      "timestamp": "2026-11-16T15:16:20.735Z"
-    },
-    {
-      "_id": "log_1794842180725_uitp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +16 PTS at ZONE_12 (Total: 157 PTS)",
-      "timestamp": "2026-11-16T15:16:20.725Z"
-    },
-    {
-      "_id": "log_1794842180719_yfzd",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +11 PTS at ZONE_11 (Total: 149 PTS)",
-      "timestamp": "2026-11-16T15:16:20.719Z"
-    },
-    {
-      "_id": "log_1794842180712_4nli",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +26 PTS at ZONE_10 (Total: 153 PTS)",
-      "timestamp": "2026-11-16T15:16:20.712Z"
-    },
-    {
-      "_id": "log_1794842180703_i0g2",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +20 PTS at ZONE_09 (Total: 150 PTS)",
-      "timestamp": "2026-11-16T15:16:20.703Z"
-    },
-    {
-      "_id": "log_1794842180694_pv70",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +15 PTS at ZONE_08 (Total: 155 PTS)",
-      "timestamp": "2026-11-16T15:16:20.694Z"
-    },
-    {
-      "_id": "log_1794842180687_qfc9",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +17 PTS at ZONE_07 (Total: 159 PTS)",
-      "timestamp": "2026-11-16T15:16:20.687Z"
-    },
-    {
-      "_id": "log_1794842180678_b4vf",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +17 PTS at ZONE_01 (Total: 141 PTS)",
-      "timestamp": "2026-11-16T15:16:20.678Z"
-    },
-    {
-      "_id": "log_1794842180673_k0iz",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +24 PTS at ZONE_12 (Total: 143 PTS)",
-      "timestamp": "2026-11-16T15:16:20.673Z"
-    },
-    {
-      "_id": "log_1794842180666_g0qq",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +19 PTS at ZONE_11 (Total: 133 PTS)",
-      "timestamp": "2026-11-16T15:16:20.666Z"
-    },
-    {
-      "_id": "log_1794842180661_8e4d",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +21 PTS at ZONE_10 (Total: 130 PTS)",
-      "timestamp": "2026-11-16T15:16:20.661Z"
-    },
-    {
-      "_id": "log_1794842180655_xfk1",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +15 PTS at ZONE_09 (Total: 132 PTS)",
-      "timestamp": "2026-11-16T15:16:20.655Z"
-    },
-    {
-      "_id": "log_1794842180648_7aox",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +23 PTS at ZONE_08 (Total: 135 PTS)",
-      "timestamp": "2026-11-16T15:16:20.648Z"
-    },
-    {
-      "_id": "log_1794842180643_gnpa",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +25 PTS at ZONE_07 (Total: 145 PTS)",
-      "timestamp": "2026-11-16T15:16:20.643Z"
-    },
-    {
-      "_id": "log_1794842180637_7ie2",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +19 PTS at ZONE_06 (Total: 134 PTS)",
-      "timestamp": "2026-11-16T15:16:20.637Z"
-    },
-    {
-      "_id": "log_1794842180632_biza",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +14 PTS at ZONE_05 (Total: 137 PTS)",
-      "timestamp": "2026-11-16T15:16:20.632Z"
-    },
-    {
-      "_id": "log_1794842180626_v2tb",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +16 PTS at ZONE_04 (Total: 134 PTS)",
-      "timestamp": "2026-11-16T15:16:20.626Z"
-    },
-    {
-      "_id": "log_1794842180620_s3hu",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +23 PTS at ZONE_03 (Total: 136 PTS)",
-      "timestamp": "2026-11-16T15:16:20.620Z"
-    },
-    {
-      "_id": "log_1794842180613_5816",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +18 PTS at ZONE_02 (Total: 126 PTS)",
-      "timestamp": "2026-11-16T15:16:20.613Z"
-    },
-    {
-      "_id": "log_1794842180608_v52d",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +20 PTS at ZONE_01 (Total: 136 PTS)",
-      "timestamp": "2026-11-16T15:16:20.608Z"
-    },
-    {
-      "_id": "log_1794842180602_vx1g",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +14 PTS at ZONE_12 (Total: 138 PTS)",
-      "timestamp": "2026-11-16T15:16:20.602Z"
-    },
-    {
-      "_id": "log_1794842180597_yq4b",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +22 PTS at ZONE_11 (Total: 141 PTS)",
-      "timestamp": "2026-11-16T15:16:20.597Z"
-    },
-    {
-      "_id": "log_1794842180589_5cgf",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +24 PTS at ZONE_10 (Total: 138 PTS)",
-      "timestamp": "2026-11-16T15:16:20.589Z"
-    },
-    {
-      "_id": "log_1794842180583_kgz0",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +18 PTS at ZONE_09 (Total: 127 PTS)",
-      "timestamp": "2026-11-16T15:16:20.583Z"
-    },
-    {
-      "_id": "log_1794842180578_ffsp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +13 PTS at ZONE_08 (Total: 130 PTS)",
-      "timestamp": "2026-11-16T15:16:20.578Z"
-    },
-    {
-      "_id": "log_1794842180572_b5dp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +28 PTS at ZONE_07 (Total: 140 PTS)",
-      "timestamp": "2026-11-16T15:16:20.572Z"
-    },
-    {
-      "_id": "log_1794842180566_8aoq",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +22 PTS at ZONE_06 (Total: 142 PTS)",
-      "timestamp": "2026-11-16T15:16:20.566Z"
-    },
-    {
-      "_id": "log_1794842180559_hwnh",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +22 PTS at ZONE_12 (Total: 124 PTS)",
-      "timestamp": "2026-11-16T15:16:20.559Z"
-    },
-    {
-      "_id": "log_1794842180550_icaj",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +17 PTS at ZONE_11 (Total: 119 PTS)",
-      "timestamp": "2026-11-16T15:16:20.550Z"
-    },
-    {
-      "_id": "log_1794842180544_xmwr",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +19 PTS at ZONE_10 (Total: 114 PTS)",
-      "timestamp": "2026-11-16T15:16:20.544Z"
-    },
-    {
-      "_id": "log_1794842180536_3l8g",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +13 PTS at ZONE_09 (Total: 109 PTS)",
-      "timestamp": "2026-11-16T15:16:20.536Z"
-    },
-    {
-      "_id": "log_1794842180521_kntg",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +21 PTS at ZONE_08 (Total: 117 PTS)",
-      "timestamp": "2026-11-16T15:16:20.521Z"
-    },
-    {
-      "_id": "log_1794842180512_ap15",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +23 PTS at ZONE_07 (Total: 112 PTS)",
-      "timestamp": "2026-11-16T15:16:20.512Z"
-    },
-    {
-      "_id": "log_1794842180502_0vg0",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +17 PTS at ZONE_06 (Total: 120 PTS)",
-      "timestamp": "2026-11-16T15:16:20.502Z"
-    },
-    {
-      "_id": "log_1794842180492_mt6q",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +12 PTS at ZONE_05 (Total: 115 PTS)",
-      "timestamp": "2026-11-16T15:16:20.492Z"
-    },
-    {
-      "_id": "log_1794842180483_kx7m",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +27 PTS at ZONE_04 (Total: 123 PTS)",
-      "timestamp": "2026-11-16T15:16:20.483Z"
-    },
-    {
-      "_id": "log_1794842180473_s8px",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +21 PTS at ZONE_03 (Total: 118 PTS)",
-      "timestamp": "2026-11-16T15:16:20.473Z"
-    },
-    {
-      "_id": "log_1794842180465_jsni",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +16 PTS at ZONE_02 (Total: 113 PTS)",
-      "timestamp": "2026-11-16T15:16:20.465Z"
-    },
-    {
-      "_id": "log_1794842180458_1u65",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +18 PTS at ZONE_01 (Total: 108 PTS)",
-      "timestamp": "2026-11-16T15:16:20.458Z"
-    },
-    {
-      "_id": "log_1794842180451_sy6x",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +25 PTS at ZONE_12 (Total: 116 PTS)",
-      "timestamp": "2026-11-16T15:16:20.451Z"
-    },
-    {
-      "_id": "log_1794842180445_x1hr",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +20 PTS at ZONE_11 (Total: 124 PTS)",
-      "timestamp": "2026-11-16T15:16:20.445Z"
-    },
-    {
-      "_id": "log_1794842180431_wz5x",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +22 PTS at ZONE_10 (Total: 119 PTS)",
-      "timestamp": "2026-11-16T15:16:20.431Z"
-    },
-    {
-      "_id": "log_1794842180424_cvyf",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +16 PTS at ZONE_09 (Total: 114 PTS)",
-      "timestamp": "2026-11-16T15:16:20.424Z"
-    },
-    {
-      "_id": "log_1794842180413_9vcb",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +11 PTS at ZONE_08 (Total: 109 PTS)",
-      "timestamp": "2026-11-16T15:16:20.413Z"
-    },
-    {
-      "_id": "log_1794842180406_7mam",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +26 PTS at ZONE_07 (Total: 117 PTS)",
-      "timestamp": "2026-11-16T15:16:20.406Z"
-    },
-    {
-      "_id": "log_1794842180385_a9ud",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +20 PTS at ZONE_06 (Total: 112 PTS)",
-      "timestamp": "2026-11-16T15:16:20.385Z"
-    },
-    {
-      "_id": "log_1794842180378_ixvp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +15 PTS at ZONE_05 (Total: 120 PTS)",
-      "timestamp": "2026-11-16T15:16:20.378Z"
-    },
-    {
-      "_id": "log_1794842180368_d2jx",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +15 PTS at ZONE_11 (Total: 102 PTS)",
-      "timestamp": "2026-11-16T15:16:20.368Z"
-    },
-    {
-      "_id": "log_1794842180363_4987",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +17 PTS at ZONE_10 (Total: 102 PTS)",
-      "timestamp": "2026-11-16T15:16:20.363Z"
-    },
-    {
-      "_id": "log_1794842180348_8hnv",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +24 PTS at ZONE_09 (Total: 95 PTS)",
-      "timestamp": "2026-11-16T15:16:20.348Z"
-    },
-    {
-      "_id": "log_1794842180342_8y2f",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +19 PTS at ZONE_08 (Total: 96 PTS)",
-      "timestamp": "2026-11-16T15:16:20.342Z"
-    },
-    {
-      "_id": "log_1794842180334_umsh",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +21 PTS at ZONE_07 (Total: 96 PTS)",
-      "timestamp": "2026-11-16T15:16:20.334Z"
-    },
-    {
-      "_id": "log_1794842180326_sx6h",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +15 PTS at ZONE_06 (Total: 89 PTS)",
-      "timestamp": "2026-11-16T15:16:20.326Z"
-    },
-    {
-      "_id": "log_1794842180320_vmtz",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +23 PTS at ZONE_05 (Total: 103 PTS)",
-      "timestamp": "2026-11-16T15:16:20.320Z"
-    },
-    {
-      "_id": "log_1794842180315_aydx",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +25 PTS at ZONE_04 (Total: 103 PTS)",
-      "timestamp": "2026-11-16T15:16:20.315Z"
-    },
-    {
-      "_id": "log_1794842180303_dtsl",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +19 PTS at ZONE_03 (Total: 96 PTS)",
-      "timestamp": "2026-11-16T15:16:20.303Z"
-    },
-    {
-      "_id": "log_1794842180298_b4m6",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +14 PTS at ZONE_02 (Total: 97 PTS)",
-      "timestamp": "2026-11-16T15:16:20.298Z"
-    },
-    {
-      "_id": "log_1794842180293_lz2p",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +16 PTS at ZONE_01 (Total: 97 PTS)",
-      "timestamp": "2026-11-16T15:16:20.293Z"
-    },
-    {
-      "_id": "log_1794842180286_5w5x",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +23 PTS at ZONE_12 (Total: 90 PTS)",
-      "timestamp": "2026-11-16T15:16:20.286Z"
-    },
-    {
-      "_id": "log_1794842180281_7h8y",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +18 PTS at ZONE_11 (Total: 91 PTS)",
-      "timestamp": "2026-11-16T15:16:20.281Z"
-    },
-    {
-      "_id": "log_1794842180274_mumy",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +20 PTS at ZONE_10 (Total: 104 PTS)",
-      "timestamp": "2026-11-16T15:16:20.274Z"
-    },
-    {
-      "_id": "log_1794842180269_ildo",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +14 PTS at ZONE_09 (Total: 97 PTS)",
-      "timestamp": "2026-11-16T15:16:20.269Z"
-    },
-    {
-      "_id": "log_1794842180262_34ni",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +22 PTS at ZONE_08 (Total: 98 PTS)",
-      "timestamp": "2026-11-16T15:16:20.262Z"
-    },
-    {
-      "_id": "log_1794842180256_b9hn",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +24 PTS at ZONE_07 (Total: 98 PTS)",
-      "timestamp": "2026-11-16T15:16:20.256Z"
-    },
-    {
-      "_id": "log_1794842180245_70qt",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +18 PTS at ZONE_06 (Total: 91 PTS)",
-      "timestamp": "2026-11-16T15:16:20.245Z"
-    },
-    {
-      "_id": "log_1794842180232_lit5",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +13 PTS at ZONE_05 (Total: 92 PTS)",
-      "timestamp": "2026-11-16T15:16:20.232Z"
-    },
-    {
-      "_id": "log_1794842180224_da4l",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +28 PTS at ZONE_04 (Total: 105 PTS)",
-      "timestamp": "2026-11-16T15:16:20.224Z"
-    },
-    {
-      "_id": "log_1794842180217_ltmv",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +28 PTS at ZONE_10 (Total: 87 PTS)",
-      "timestamp": "2026-11-16T15:16:20.217Z"
-    },
-    {
-      "_id": "log_1794842180209_135k",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +22 PTS at ZONE_09 (Total: 85 PTS)",
-      "timestamp": "2026-11-16T15:16:20.209Z"
-    },
-    {
-      "_id": "log_1794842180202_5fi5",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +17 PTS at ZONE_08 (Total: 71 PTS)",
-      "timestamp": "2026-11-16T15:16:20.202Z"
-    },
-    {
-      "_id": "log_1794842180193_qjts",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +19 PTS at ZONE_07 (Total: 77 PTS)",
-      "timestamp": "2026-11-16T15:16:20.193Z"
-    },
-    {
-      "_id": "log_1794842180187_mup1",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +13 PTS at ZONE_06 (Total: 75 PTS)",
-      "timestamp": "2026-11-16T15:16:20.187Z"
-    },
-    {
-      "_id": "log_1794842180179_bj5m",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +21 PTS at ZONE_05 (Total: 74 PTS)",
-      "timestamp": "2026-11-16T15:16:20.179Z"
-    },
-    {
-      "_id": "log_1794842180172_k91w",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +23 PTS at ZONE_04 (Total: 80 PTS)",
-      "timestamp": "2026-11-16T15:16:20.172Z"
-    },
-    {
-      "_id": "log_1794842180165_6sfr",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +17 PTS at ZONE_03 (Total: 78 PTS)",
-      "timestamp": "2026-11-16T15:16:20.165Z"
-    },
-    {
-      "_id": "log_1794842180137_b3l3",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +12 PTS at ZONE_02 (Total: 77 PTS)",
-      "timestamp": "2026-11-16T15:16:20.137Z"
-    },
-    {
-      "_id": "log_1794842180133_ynle",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +27 PTS at ZONE_01 (Total: 83 PTS)",
-      "timestamp": "2026-11-16T15:16:20.133Z"
-    },
-    {
-      "_id": "log_1794842180129_d3xe",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +21 PTS at ZONE_12 (Total: 81 PTS)",
-      "timestamp": "2026-11-16T15:16:20.129Z"
-    },
-    {
-      "_id": "log_1794842180125_mszm",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +16 PTS at ZONE_11 (Total: 67 PTS)",
-      "timestamp": "2026-11-16T15:16:20.125Z"
-    },
-    {
-      "_id": "log_1794842180121_wyrj",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +18 PTS at ZONE_10 (Total: 73 PTS)",
-      "timestamp": "2026-11-16T15:16:20.121Z"
-    },
-    {
-      "_id": "log_1794842180118_167a",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +25 PTS at ZONE_09 (Total: 84 PTS)",
-      "timestamp": "2026-11-16T15:16:20.118Z"
-    },
-    {
-      "_id": "log_1794842180113_ynit",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +20 PTS at ZONE_08 (Total: 83 PTS)",
-      "timestamp": "2026-11-16T15:16:20.113Z"
-    },
-    {
-      "_id": "log_1794842180109_4k9z",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +22 PTS at ZONE_07 (Total: 76 PTS)",
-      "timestamp": "2026-11-16T15:16:20.109Z"
-    },
-    {
-      "_id": "log_1794842180105_laq2",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +16 PTS at ZONE_06 (Total: 74 PTS)",
-      "timestamp": "2026-11-16T15:16:20.105Z"
-    },
-    {
-      "_id": "log_1794842180100_2if5",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +11 PTS at ZONE_05 (Total: 73 PTS)",
-      "timestamp": "2026-11-16T15:16:20.100Z"
-    },
-    {
-      "_id": "log_1794842180094_nqn9",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +26 PTS at ZONE_04 (Total: 79 PTS)",
-      "timestamp": "2026-11-16T15:16:20.094Z"
-    },
-    {
-      "_id": "log_1794842180090_egp0",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +20 PTS at ZONE_03 (Total: 77 PTS)",
-      "timestamp": "2026-11-16T15:16:20.090Z"
-    },
-    {
-      "_id": "log_1794842180084_rdz4",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +20 PTS at ZONE_09 (Total: 59 PTS)",
-      "timestamp": "2026-11-16T15:16:20.084Z"
-    },
-    {
-      "_id": "log_1794842180080_lvvk",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +15 PTS at ZONE_08 (Total: 63 PTS)",
-      "timestamp": "2026-11-16T15:16:20.080Z"
-    },
-    {
-      "_id": "log_1794842180075_9dex",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +17 PTS at ZONE_07 (Total: 54 PTS)",
-      "timestamp": "2026-11-16T15:16:20.075Z"
-    },
-    {
-      "_id": "log_1794842180071_dkcc",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +24 PTS at ZONE_06 (Total: 58 PTS)",
-      "timestamp": "2026-11-16T15:16:20.071Z"
-    },
-    {
-      "_id": "log_1794842180066_o95e",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +19 PTS at ZONE_05 (Total: 62 PTS)",
-      "timestamp": "2026-11-16T15:16:20.066Z"
-    },
-    {
-      "_id": "log_1794842180062_6z5o",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +21 PTS at ZONE_04 (Total: 53 PTS)",
-      "timestamp": "2026-11-16T15:16:20.062Z"
-    },
-    {
-      "_id": "log_1794842180059_zgv2",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +15 PTS at ZONE_03 (Total: 57 PTS)",
-      "timestamp": "2026-11-16T15:16:20.059Z"
-    },
-    {
-      "_id": "log_1794842180055_dhf9",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +23 PTS at ZONE_02 (Total: 61 PTS)",
-      "timestamp": "2026-11-16T15:16:20.055Z"
-    },
-    {
-      "_id": "log_1794842180051_zo2x",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +25 PTS at ZONE_01 (Total: 65 PTS)",
-      "timestamp": "2026-11-16T15:16:20.051Z"
-    },
-    {
-      "_id": "log_1794842180046_bg3p",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +19 PTS at ZONE_12 (Total: 56 PTS)",
-      "timestamp": "2026-11-16T15:16:20.046Z"
-    },
-    {
-      "_id": "log_1794842180042_iikr",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +14 PTS at ZONE_11 (Total: 60 PTS)",
-      "timestamp": "2026-11-16T15:16:20.042Z"
-    },
-    {
-      "_id": "log_1794842180038_d6h2",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +16 PTS at ZONE_10 (Total: 51 PTS)",
-      "timestamp": "2026-11-16T15:16:20.038Z"
-    },
-    {
-      "_id": "log_1794842180033_qjtc",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +23 PTS at ZONE_09 (Total: 55 PTS)",
-      "timestamp": "2026-11-16T15:16:20.033Z"
-    },
-    {
-      "_id": "log_1794842180030_8l4f",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +18 PTS at ZONE_08 (Total: 59 PTS)",
-      "timestamp": "2026-11-16T15:16:20.030Z"
-    },
-    {
-      "_id": "log_1794842180026_bydl",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +20 PTS at ZONE_07 (Total: 63 PTS)",
-      "timestamp": "2026-11-16T15:16:20.026Z"
-    },
-    {
-      "_id": "log_1794842180022_pbqw",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +14 PTS at ZONE_06 (Total: 54 PTS)",
-      "timestamp": "2026-11-16T15:16:20.022Z"
-    },
-    {
-      "_id": "log_1794842180018_7f99",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +22 PTS at ZONE_05 (Total: 58 PTS)",
-      "timestamp": "2026-11-16T15:16:20.018Z"
-    },
-    {
-      "_id": "log_1794842180014_pyji",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +24 PTS at ZONE_04 (Total: 62 PTS)",
-      "timestamp": "2026-11-16T15:16:20.014Z"
-    },
-    {
-      "_id": "log_1794842180009_sovc",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +18 PTS at ZONE_03 (Total: 53 PTS)",
-      "timestamp": "2026-11-16T15:16:20.009Z"
-    },
-    {
-      "_id": "log_1794842180003_65om",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +13 PTS at ZONE_02 (Total: 57 PTS)",
-      "timestamp": "2026-11-16T15:16:20.003Z"
-    },
-    {
-      "_id": "log_1794842179997_jkoz",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +13 PTS at ZONE_08 (Total: 39 PTS)",
-      "timestamp": "2026-11-16T15:16:19.997Z"
-    },
-    {
-      "_id": "log_1794842179992_7zd2",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +28 PTS at ZONE_07 (Total: 48 PTS)",
-      "timestamp": "2026-11-16T15:16:19.992Z"
-    },
-    {
-      "_id": "log_1794842179988_1uet",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +22 PTS at ZONE_06 (Total: 37 PTS)",
-      "timestamp": "2026-11-16T15:16:19.988Z"
-    },
-    {
-      "_id": "log_1794842179983_jlmt",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +17 PTS at ZONE_05 (Total: 34 PTS)",
-      "timestamp": "2026-11-16T15:16:19.983Z"
-    },
-    {
-      "_id": "log_1794842179978_a2yp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +19 PTS at ZONE_04 (Total: 43 PTS)",
-      "timestamp": "2026-11-16T15:16:19.978Z"
-    },
-    {
-      "_id": "log_1794842179972_yabm",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +13 PTS at ZONE_03 (Total: 32 PTS)",
-      "timestamp": "2026-11-16T15:16:19.972Z"
-    },
-    {
-      "_id": "log_1794842179968_qxe9",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +21 PTS at ZONE_02 (Total: 42 PTS)",
-      "timestamp": "2026-11-16T15:16:19.968Z"
-    },
-    {
-      "_id": "log_1794842179964_opos",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +23 PTS at ZONE_01 (Total: 38 PTS)",
-      "timestamp": "2026-11-16T15:16:19.964Z"
-    },
-    {
-      "_id": "log_1794842179960_535n",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +17 PTS at ZONE_12 (Total: 40 PTS)",
-      "timestamp": "2026-11-16T15:16:19.960Z"
-    },
-    {
-      "_id": "log_1794842179956_f94a",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +12 PTS at ZONE_11 (Total: 37 PTS)",
-      "timestamp": "2026-11-16T15:16:19.956Z"
-    },
-    {
-      "_id": "log_1794842179952_lhhg",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +27 PTS at ZONE_10 (Total: 46 PTS)",
-      "timestamp": "2026-11-16T15:16:19.952Z"
-    },
-    {
-      "_id": "log_1794842179948_q0fq",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +21 PTS at ZONE_09 (Total: 35 PTS)",
-      "timestamp": "2026-11-16T15:16:19.948Z"
-    },
-    {
-      "_id": "log_1794842179942_qbaj",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +16 PTS at ZONE_08 (Total: 32 PTS)",
-      "timestamp": "2026-11-16T15:16:19.942Z"
-    },
-    {
-      "_id": "log_1794842179938_2iq8",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +18 PTS at ZONE_07 (Total: 41 PTS)",
-      "timestamp": "2026-11-16T15:16:19.938Z"
-    },
-    {
-      "_id": "log_1794842179933_rc8d",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +25 PTS at ZONE_06 (Total: 43 PTS)",
-      "timestamp": "2026-11-16T15:16:19.933Z"
-    },
-    {
-      "_id": "log_1794842179926_tbun",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +20 PTS at ZONE_05 (Total: 40 PTS)",
-      "timestamp": "2026-11-16T15:16:19.926Z"
-    },
-    {
-      "_id": "log_1794842179921_k0d6",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +22 PTS at ZONE_04 (Total: 36 PTS)",
-      "timestamp": "2026-11-16T15:16:19.921Z"
-    },
-    {
-      "_id": "log_1794842179917_hnno",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +16 PTS at ZONE_03 (Total: 38 PTS)",
-      "timestamp": "2026-11-16T15:16:19.917Z"
-    },
-    {
-      "_id": "log_1794842179913_4sem",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +11 PTS at ZONE_02 (Total: 35 PTS)",
-      "timestamp": "2026-11-16T15:16:19.913Z"
-    },
-    {
-      "_id": "log_1794842179908_76fp",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +26 PTS at ZONE_01 (Total: 44 PTS)",
-      "timestamp": "2026-11-16T15:16:19.908Z"
-    },
-    {
-      "_id": "log_1794842179904_113z",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 20 Phoenix\" awarded +26 PTS at ZONE_07 (Total: 26 PTS)",
-      "timestamp": "2026-11-16T15:16:19.904Z"
-    },
-    {
-      "_id": "log_1794842179899_2rw7",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 19 Phoenix\" awarded +20 PTS at ZONE_06 (Total: 20 PTS)",
-      "timestamp": "2026-11-16T15:16:19.899Z"
-    },
-    {
-      "_id": "log_1794842179894_sixy",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 18 Phoenix\" awarded +15 PTS at ZONE_05 (Total: 15 PTS)",
-      "timestamp": "2026-11-16T15:16:19.894Z"
-    },
-    {
-      "_id": "log_1794842179889_z8wb",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 17 Phoenix\" awarded +17 PTS at ZONE_04 (Total: 17 PTS)",
-      "timestamp": "2026-11-16T15:16:19.889Z"
-    },
-    {
-      "_id": "log_1794842179884_sxtt",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 16 Phoenix\" awarded +24 PTS at ZONE_03 (Total: 24 PTS)",
-      "timestamp": "2026-11-16T15:16:19.884Z"
-    },
-    {
-      "_id": "log_1794842179880_7yle",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 15 Phoenix\" awarded +19 PTS at ZONE_02 (Total: 19 PTS)",
-      "timestamp": "2026-11-16T15:16:19.880Z"
-    },
-    {
-      "_id": "log_1794842179876_wkrc",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 14 Phoenix\" awarded +21 PTS at ZONE_01 (Total: 21 PTS)",
-      "timestamp": "2026-11-16T15:16:19.876Z"
-    },
-    {
-      "_id": "log_1794842179872_ea5o",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 13 Phoenix\" awarded +15 PTS at ZONE_12 (Total: 15 PTS)",
-      "timestamp": "2026-11-16T15:16:19.872Z"
-    },
-    {
-      "_id": "log_1794842179867_efar",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 12 Phoenix\" awarded +23 PTS at ZONE_11 (Total: 23 PTS)",
-      "timestamp": "2026-11-16T15:16:19.867Z"
-    },
-    {
-      "_id": "log_1794842179863_swfd",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 11 Phoenix\" awarded +25 PTS at ZONE_10 (Total: 25 PTS)",
-      "timestamp": "2026-11-16T15:16:19.863Z"
-    },
-    {
-      "_id": "log_1794842179858_r22i",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 10 Phoenix\" awarded +19 PTS at ZONE_09 (Total: 19 PTS)",
-      "timestamp": "2026-11-16T15:16:19.858Z"
-    },
-    {
-      "_id": "log_1794842179854_pgou",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 09 Phoenix\" awarded +14 PTS at ZONE_08 (Total: 14 PTS)",
-      "timestamp": "2026-11-16T15:16:19.854Z"
-    },
-    {
-      "_id": "log_1794842179849_jj96",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 08 Phoenix\" awarded +16 PTS at ZONE_07 (Total: 16 PTS)",
-      "timestamp": "2026-11-16T15:16:19.849Z"
-    },
-    {
-      "_id": "log_1794842179844_b616",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 07 Phoenix\" awarded +23 PTS at ZONE_06 (Total: 23 PTS)",
-      "timestamp": "2026-11-16T15:16:19.844Z"
-    },
-    {
-      "_id": "log_1794842179839_6qzg",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 06 Phoenix\" awarded +18 PTS at ZONE_05 (Total: 18 PTS)",
-      "timestamp": "2026-11-16T15:16:19.839Z"
-    },
-    {
-      "_id": "log_1794842179834_7l7t",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 05 Phoenix\" awarded +20 PTS at ZONE_04 (Total: 20 PTS)",
-      "timestamp": "2026-11-16T15:16:19.834Z"
-    },
-    {
-      "_id": "log_1794842179830_hk5v",
+      "_id": "log_1794826330362_206p",
       "action": "CHECKIN",
-      "details": "Team \"Squad 04 Phoenix\" awarded +14 PTS at ZONE_03 (Total: 14 PTS)",
-      "timestamp": "2026-11-16T15:16:19.830Z"
-    },
-    {
-      "_id": "log_1794842179825_s06c",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 03 Phoenix\" awarded +22 PTS at ZONE_02 (Total: 22 PTS)",
-      "timestamp": "2026-11-16T15:16:19.825Z"
-    },
-    {
-      "_id": "log_1794842179820_gnr2",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 02 Phoenix\" awarded +24 PTS at ZONE_01 (Total: 24 PTS)",
-      "timestamp": "2026-11-16T15:16:19.820Z"
-    },
-    {
-      "_id": "log_1794842179815_qzk2",
-      "action": "CHECKIN",
-      "details": "Team \"Squad 01 Phoenix\" awarded +18 PTS at ZONE_12 (Total: 18 PTS)",
-      "timestamp": "2026-11-16T15:16:19.815Z"
-    },
-    {
-      "_id": "log_1794842179781_n4f4",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 20 Phoenix\" (team_1794842179714_j0ar9)",
-      "timestamp": "2026-11-16T15:16:19.781Z"
-    },
-    {
-      "_id": "log_1794842179779_jsv0",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 19 Phoenix\" (team_1794842179712_vk3v5)",
-      "timestamp": "2026-11-16T15:16:19.779Z"
-    },
-    {
-      "_id": "log_1794842179777_xvhl",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 18 Phoenix\" (team_1794842179710_n3rnn)",
-      "timestamp": "2026-11-16T15:16:19.777Z"
-    },
-    {
-      "_id": "log_1794842179775_hrwk",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 17 Phoenix\" (team_1794842179708_sf7bd)",
-      "timestamp": "2026-11-16T15:16:19.775Z"
-    },
-    {
-      "_id": "log_1794842179773_r0wg",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 16 Phoenix\" (team_1794842179706_0h3m6)",
-      "timestamp": "2026-11-16T15:16:19.773Z"
-    },
-    {
-      "_id": "log_1794842179771_m9rf",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 15 Phoenix\" (team_1794842179703_nl2qc)",
-      "timestamp": "2026-11-16T15:16:19.771Z"
-    },
-    {
-      "_id": "log_1794842179769_w7di",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 14 Phoenix\" (team_1794842179701_2p3aw)",
-      "timestamp": "2026-11-16T15:16:19.769Z"
-    },
-    {
-      "_id": "log_1794842179767_exmh",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 13 Phoenix\" (team_1794842179699_a3l9x)",
-      "timestamp": "2026-11-16T15:16:19.767Z"
-    },
-    {
-      "_id": "log_1794842179766_3dmb",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 12 Phoenix\" (team_1794842179697_ksv8c)",
-      "timestamp": "2026-11-16T15:16:19.766Z"
-    },
-    {
-      "_id": "log_1794842179764_xvkm",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 11 Phoenix\" (team_1794842179695_3ue19)",
-      "timestamp": "2026-11-16T15:16:19.764Z"
-    },
-    {
-      "_id": "log_1794842179762_biq7",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 10 Phoenix\" (team_1794842179693_gbg0f)",
-      "timestamp": "2026-11-16T15:16:19.762Z"
-    },
-    {
-      "_id": "log_1794842179760_y9js",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 09 Phoenix\" (team_1794842179691_dztu7)",
-      "timestamp": "2026-11-16T15:16:19.760Z"
-    },
-    {
-      "_id": "log_1794842179759_8czk",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 08 Phoenix\" (team_1794842179689_k76rv)",
-      "timestamp": "2026-11-16T15:16:19.759Z"
-    },
-    {
-      "_id": "log_1794842179757_qbgz",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 07 Phoenix\" (team_1794842179687_dje75)",
-      "timestamp": "2026-11-16T15:16:19.757Z"
-    },
-    {
-      "_id": "log_1794842179755_yuf5",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 06 Phoenix\" (team_1794842179685_x7soq)",
-      "timestamp": "2026-11-16T15:16:19.755Z"
-    },
-    {
-      "_id": "log_1794842179753_23xi",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 05 Phoenix\" (team_1794842179683_o6b8f)",
-      "timestamp": "2026-11-16T15:16:19.753Z"
-    },
-    {
-      "_id": "log_1794842179751_jt5i",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 04 Phoenix\" (team_1794842179681_fbney)",
-      "timestamp": "2026-11-16T15:16:19.751Z"
-    },
-    {
-      "_id": "log_1794842179749_l12z",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 03 Phoenix\" (team_1794842179679_hyyf9)",
-      "timestamp": "2026-11-16T15:16:19.749Z"
-    },
-    {
-      "_id": "log_1794842179747_obx9",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 02 Phoenix\" (team_1794842179677_8r1my)",
-      "timestamp": "2026-11-16T15:16:19.747Z"
-    },
-    {
-      "_id": "log_1794842179744_b78k",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Squad 01 Phoenix\" (team_1794842179675_szar4)",
-      "timestamp": "2026-11-16T15:16:19.744Z"
+      "details": "Team \"Audit Squad audit_sq_314390\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T10:52:10.362Z"
     },
     {
-      "_id": "log_1794842179742_j2fg",
+      "_id": "log_1794826326378_arl7",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 12 - Innovation Arena\" (user_1794842179672_inhek)",
-      "timestamp": "2026-11-16T15:16:19.742Z"
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_314390\" (user_1794826319943_k2t0j)",
+      "timestamp": "2026-11-16T10:52:06.379Z"
     },
     {
-      "_id": "log_1794842179740_h5r5",
+      "_id": "log_1794826324201_07zy",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_314390\" (team_1794826318701_mbltm)",
+      "timestamp": "2026-11-16T10:52:04.201Z"
+    },
+    {
+      "_id": "log_1794826321480_hn6c",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_314390\" registered.",
+      "timestamp": "2026-11-16T10:52:01.480Z"
+    },
+    {
+      "_id": "log_1794826320316_9ms0",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_314390\" registered.",
+      "timestamp": "2026-11-16T10:52:00.316Z"
+    },
+    {
+      "_id": "log_1794826165907_sdu4",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T10:49:25.907Z"
+    },
+    {
+      "_id": "log_1794826161801_3zbg",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 2 squads.",
+      "timestamp": "2026-11-16T10:49:21.801Z"
+    },
+    {
+      "_id": "log_1794826156197_gfyg",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_132793\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T10:49:16.197Z"
+    },
+    {
+      "_id": "log_1794826148085_z42r",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 11 - Energy Innovation Hub\" (user_1794842179670_x6fmo)",
-      "timestamp": "2026-11-16T15:16:19.740Z"
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_132793\" (user_1794826140080_46if4)",
+      "timestamp": "2026-11-16T10:49:08.085Z"
     },
     {
-      "_id": "log_1794842179738_pivp",
+      "_id": "log_1794826145696_7pzg",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_132793\" (team_1794826138336_fczlf)",
+      "timestamp": "2026-11-16T10:49:05.696Z"
+    },
+    {
+      "_id": "log_1794826140782_4q4s",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_132793\" registered.",
+      "timestamp": "2026-11-16T10:49:00.782Z"
+    },
+    {
+      "_id": "log_1794826139060_yia2",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_132793\" registered.",
+      "timestamp": "2026-11-16T10:48:59.060Z"
+    },
+    {
+      "_id": "log_1794826137184_niza",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_132793\" registered.",
+      "timestamp": "2026-11-16T10:48:57.184Z"
+    },
+    {
+      "_id": "log_1794826129747_rzxv",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T10:48:49.747Z"
+    },
+    {
+      "_id": "log_1794826125918_d97j",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 10 - Turf Perimeter\" (user_1794842179668_dv14z)",
-      "timestamp": "2026-11-16T15:16:19.738Z"
+      "details": "Field Marshal authorized: \"Field Marshal One\" (user_1794826121935_m6hxc)",
+      "timestamp": "2026-11-16T10:48:45.918Z"
     },
     {
-      "_id": "log_1794842179736_s1dz",
+      "_id": "log_1794826123744_1og9",
+      "action": "REGISTER",
+      "details": "MEMBER \"m2_mwj54nj6\" registered.",
+      "timestamp": "2026-11-16T10:48:43.744Z"
+    },
+    {
+      "_id": "log_1794826122448_pva9",
+      "action": "REGISTER",
+      "details": "MEMBER \"m1_mwj54nj6\" registered.",
+      "timestamp": "2026-11-16T10:48:42.448Z"
+    },
+    {
+      "_id": "log_1794824444328_ins5",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"team4\" (team_1794824394934_fg4y1)",
+      "timestamp": "2026-11-16T10:20:44.328Z"
+    },
+    {
+      "_id": "log_1794824395228_6rqp",
+      "action": "REGISTER",
+      "details": "PLAYER \"team4\" registered.",
+      "timestamp": "2026-11-16T10:19:55.228Z"
+    },
+    {
+      "_id": "log_1794823793048_npro",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 9 - North Telecom Pylon\" (user_1794842179665_v59l6)",
-      "timestamp": "2026-11-16T15:16:19.736Z"
+      "details": "Field Marshal authorized: \"Marshal1\" (user_1794823777726_5yggb)",
+      "timestamp": "2026-11-16T10:09:53.048Z"
     },
     {
-      "_id": "log_1794842179734_sf9m",
+      "_id": "log_1794823778012_6plh",
+      "action": "REGISTER",
+      "details": "MEMBER \"Marshal1\" registered.",
+      "timestamp": "2026-11-16T10:09:38.012Z"
+    },
+    {
+      "_id": "log_1794823711362_jf8q",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Team2\" (team_1794823391446_kdj4k)",
+      "timestamp": "2026-11-16T10:08:31.362Z"
+    },
+    {
+      "_id": "log_1794823392237_ui7c",
+      "action": "REGISTER",
+      "details": "PLAYER \"Team2\" registered.",
+      "timestamp": "2026-11-16T10:03:12.237Z"
+    },
+    {
+      "_id": "log_1794823181186_hirg",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T09:59:41.186Z"
+    },
+    {
+      "_id": "log_1794823176574_f8ke",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 2 squads.",
+      "timestamp": "2026-11-16T09:59:36.574Z"
+    },
+    {
+      "_id": "log_1794823173069_haj0",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_152891\" awarded +22 PTS at ZONE_02 (Total: 22 PTS)",
+      "timestamp": "2026-11-16T09:59:33.069Z"
+    },
+    {
+      "_id": "log_1794823167004_sn2e",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 8 - Student Pavilion\" (user_1794842179661_16ln5)",
-      "timestamp": "2026-11-16T15:16:19.734Z"
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_152891\" (user_1794823158595_pn4ix)",
+      "timestamp": "2026-11-16T09:59:27.004Z"
     },
     {
-      "_id": "log_1794842179732_gmb1",
+      "_id": "log_1794823164769_u6gq",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_152891\" (team_1794823156779_zz4is)",
+      "timestamp": "2026-11-16T09:59:24.769Z"
+    },
+    {
+      "_id": "log_1794823159313_qdts",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_152891\" registered.",
+      "timestamp": "2026-11-16T09:59:19.313Z"
+    },
+    {
+      "_id": "log_1794823157486_7gl2",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_152891\" registered.",
+      "timestamp": "2026-11-16T09:59:17.486Z"
+    },
+    {
+      "_id": "log_1794823155641_z556",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_152891\" registered.",
+      "timestamp": "2026-11-16T09:59:15.641Z"
+    },
+    {
+      "_id": "log_1794823117499_oe4i",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T09:58:37.499Z"
+    },
+    {
+      "_id": "log_1794823114468_pksk",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 2 squads.",
+      "timestamp": "2026-11-16T09:58:34.468Z"
+    },
+    {
+      "_id": "log_1794823111465_vfiw",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_093009\" awarded +22 PTS at ZONE_02 (Total: 22 PTS)",
+      "timestamp": "2026-11-16T09:58:31.465Z"
+    },
+    {
+      "_id": "log_1794823106166_art7",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 7 - Science Basin\" (user_1794842179658_73khd)",
-      "timestamp": "2026-11-16T15:16:19.732Z"
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_093009\" (user_1794823098018_edkrc)",
+      "timestamp": "2026-11-16T09:58:26.166Z"
     },
     {
-      "_id": "log_1794842179729_m16m",
+      "_id": "log_1794823103934_yvy7",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_093009\" (team_1794823096782_7lrsp)",
+      "timestamp": "2026-11-16T09:58:23.934Z"
+    },
+    {
+      "_id": "log_1794823102806_avat",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_093009\" (team_1794823095073_uerx8)",
+      "timestamp": "2026-11-16T09:58:22.806Z"
+    },
+    {
+      "_id": "log_1794823098280_nkqm",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_093009\" registered.",
+      "timestamp": "2026-11-16T09:58:18.280Z"
+    },
+    {
+      "_id": "log_1794823097474_zvsd",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_093009\" registered.",
+      "timestamp": "2026-11-16T09:58:17.474Z"
+    },
+    {
+      "_id": "log_1794823095769_bq9c",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_093009\" registered.",
+      "timestamp": "2026-11-16T09:58:15.769Z"
+    },
+    {
+      "_id": "log_1794823037883_vf89",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T09:57:17.883Z"
+    },
+    {
+      "_id": "log_1794823036730_chsb",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794823032492_zp9qg)",
+      "timestamp": "2026-11-16T09:57:16.730Z"
+    },
+    {
+      "_id": "log_1794822942711_vtrx",
+      "action": "CHECKIN",
+      "details": "Team \"Alpha Squad\" awarded +24 PTS at ZONE_01 (Total: 52 PTS)",
+      "timestamp": "2026-11-16T09:55:42.711Z"
+    },
+    {
+      "_id": "log_1794822941570_8m5c",
+      "action": "CHECKIN",
+      "details": "Team \"Alpha Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T09:55:41.570Z"
+    },
+    {
+      "_id": "log_1794822940364_7119",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Alpha Squad\" (team_1794822936582_xvetn)",
+      "timestamp": "2026-11-16T09:55:40.364Z"
+    },
+    {
+      "_id": "log_1794822933879_9fpk",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal1\" registered.",
+      "timestamp": "2026-11-16T09:55:33.879Z"
+    },
+    {
+      "_id": "log_1794822929080_eb2x",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T09:55:29.080Z"
+    },
+    {
+      "_id": "log_1794822925113_eio5",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 2 squads.",
+      "timestamp": "2026-11-16T09:55:25.113Z"
+    },
+    {
+      "_id": "log_1794822921493_j7lh",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_884962\" awarded +22 PTS at ZONE_02 (Total: 22 PTS)",
+      "timestamp": "2026-11-16T09:55:21.493Z"
+    },
+    {
+      "_id": "log_1794822915394_6v3x",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 6 - Amphitheater Canopy\" (user_1794842179656_22rnx)",
-      "timestamp": "2026-11-16T15:16:19.729Z"
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_884962\" (user_1794822904206_mkm9t)",
+      "timestamp": "2026-11-16T09:55:15.394Z"
     },
     {
-      "_id": "log_1794842179727_b1kh",
+      "_id": "log_1794822911188_e5of",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_884962\" (team_1794822902768_nb1ev)",
+      "timestamp": "2026-11-16T09:55:11.188Z"
+    },
+    {
+      "_id": "log_1794822909932_g9hy",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_884962\" (team_1794822901116_ij84c)",
+      "timestamp": "2026-11-16T09:55:09.932Z"
+    },
+    {
+      "_id": "log_1794822904529_5vbo",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_884962\" registered.",
+      "timestamp": "2026-11-16T09:55:04.529Z"
+    },
+    {
+      "_id": "log_1794822903596_pv98",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_884962\" registered.",
+      "timestamp": "2026-11-16T09:55:03.596Z"
+    },
+    {
+      "_id": "log_1794822901607_dc5n",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_884962\" registered.",
+      "timestamp": "2026-11-16T09:55:01.607Z"
+    },
+    {
+      "_id": "log_1794822272712_5ak9",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (4) and non-admin operatives.",
+      "timestamp": "2026-11-16T09:44:32.712Z"
+    },
+    {
+      "_id": "log_1794822268792_ano3",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 4 squads.",
+      "timestamp": "2026-11-16T09:44:28.792Z"
+    },
+    {
+      "_id": "log_1794822264841_zeel",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_211178\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T09:44:24.841Z"
+    },
+    {
+      "_id": "log_1794822260052_ywii",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 5 - Skybridge Concourse\" (user_1794842179653_rph2d)",
-      "timestamp": "2026-11-16T15:16:19.727Z"
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_211178\" (user_1794822250904_aig7q)",
+      "timestamp": "2026-11-16T09:44:20.052Z"
     },
     {
-      "_id": "log_1794842179725_po8t",
+      "_id": "log_1794822256978_xzcb",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_211178\" (team_1794822249509_udxi9)",
+      "timestamp": "2026-11-16T09:44:16.978Z"
+    },
+    {
+      "_id": "log_1794822255667_ys48",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_211178\" (team_1794822247295_2u1av)",
+      "timestamp": "2026-11-16T09:44:15.667Z"
+    },
+    {
+      "_id": "log_1794822251612_rtjt",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_211178\" registered.",
+      "timestamp": "2026-11-16T09:44:11.612Z"
+    },
+    {
+      "_id": "log_1794822248062_cup7",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_211178\" registered.",
+      "timestamp": "2026-11-16T09:44:08.062Z"
+    },
+    {
+      "_id": "log_1794820964642_dznl",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 4 - Glasshouse Botanical\" (user_1794842179651_kfs32)",
-      "timestamp": "2026-11-16T15:16:19.725Z"
+      "details": "Field Marshal authorized: \"marshal3\" (user_1794820929899_4c9ax)",
+      "timestamp": "2026-11-16T09:22:44.642Z"
     },
     {
-      "_id": "log_1794842179723_zmph",
+      "_id": "log_1794820937485_9cem",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 3 - Clocktower Terrace\" (user_1794842179648_8kwsz)",
-      "timestamp": "2026-11-16T15:16:19.723Z"
+      "details": "Field Marshal authorized: \"marshal3\" (user_1794820929899_4c9ax)",
+      "timestamp": "2026-11-16T09:22:17.485Z"
     },
     {
-      "_id": "log_1794842179720_5y25",
+      "_id": "log_1794820936067_4k4n",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 2 - Solar Obelisk\" (user_1794842179645_15i2i)",
-      "timestamp": "2026-11-16T15:16:19.720Z"
+      "details": "Field Marshal authorized: \"marshal4\" (user_1794820928736_ctaf7)",
+      "timestamp": "2026-11-16T09:22:16.067Z"
     },
     {
-      "_id": "log_1794842179718_mpyo",
+      "_id": "log_1794820930569_g5dm",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal3\" registered.",
+      "timestamp": "2026-11-16T09:22:10.569Z"
+    },
+    {
+      "_id": "log_1794820928997_ugn9",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal4\" registered.",
+      "timestamp": "2026-11-16T09:22:08.997Z"
+    },
+    {
+      "_id": "log_1794820759564_bnuv",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"team2\" (team_1794820712478_hm3uu)",
+      "timestamp": "2026-11-16T09:19:19.564Z"
+    },
+    {
+      "_id": "log_1794820755067_uwow",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"team2\" (team_1794820712478_hm3uu)",
+      "timestamp": "2026-11-16T09:19:15.068Z"
+    },
+    {
+      "_id": "log_1794820727190_ka35",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"marshal2\" (team_1794820707294_itvf7)",
+      "timestamp": "2026-11-16T09:18:47.190Z"
+    },
+    {
+      "_id": "log_1794820726342_nj2r",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"team2\" (team_1794820712478_hm3uu)",
+      "timestamp": "2026-11-16T09:18:46.342Z"
+    },
+    {
+      "_id": "log_1794820721836_94qg",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"marshal2\" (team_1794820707294_itvf7)",
+      "timestamp": "2026-11-16T09:18:41.836Z"
+    },
+    {
+      "_id": "log_1794820720652_sisb",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"team2\" (team_1794820712478_hm3uu)",
+      "timestamp": "2026-11-16T09:18:40.652Z"
+    },
+    {
+      "_id": "log_1794820719465_yoof",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"team1\" (team_1794820711863_klv5k)",
+      "timestamp": "2026-11-16T09:18:39.465Z"
+    },
+    {
+      "_id": "log_1794820718431_aa28",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"marshal1\" (team_1794820671558_n57zn)",
+      "timestamp": "2026-11-16T09:18:38.431Z"
+    },
+    {
+      "_id": "log_1794820712750_51y6",
+      "action": "REGISTER",
+      "details": "PLAYER \"team2\" registered.",
+      "timestamp": "2026-11-16T09:18:32.750Z"
+    },
+    {
+      "_id": "log_1794820712119_53rw",
+      "action": "REGISTER",
+      "details": "PLAYER \"team1\" registered.",
+      "timestamp": "2026-11-16T09:18:32.119Z"
+    },
+    {
+      "_id": "log_1794820707989_xvd6",
+      "action": "REGISTER",
+      "details": "PLAYER \"marshal2\" registered.",
+      "timestamp": "2026-11-16T09:18:27.989Z"
+    },
+    {
+      "_id": "log_1794820671847_4fi8",
+      "action": "REGISTER",
+      "details": "PLAYER \"marshal1\" registered.",
+      "timestamp": "2026-11-16T09:17:51.847Z"
+    },
+    {
+      "_id": "log_1794820049725_rhen",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T09:07:29.725Z"
+    },
+    {
+      "_id": "log_1794820046016_cbqr",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 2 squads.",
+      "timestamp": "2026-11-16T09:07:26.016Z"
+    },
+    {
+      "_id": "log_1794820042561_pvqo",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_013140\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T09:07:22.561Z"
+    },
+    {
+      "_id": "log_1794820036948_gpf0",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Marshal Zone 1 - Library Arch\" (user_1794842179642_hm43o)",
-      "timestamp": "2026-11-16T15:16:19.718Z"
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_013140\" (user_1794820016808_svrks)",
+      "timestamp": "2026-11-16T09:07:16.948Z"
     },
     {
-      "_id": "log_1794842179715_grzf",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_20_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.715Z"
+      "_id": "log_1794820034692_wr3b",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_013140\" (team_1794820015990_rj7my)",
+      "timestamp": "2026-11-16T09:07:14.692Z"
     },
     {
-      "_id": "log_1794842179713_sltk",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_19_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.713Z"
+      "_id": "log_1794820033909_wtqn",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_013140\" (team_1794820015146_9fvdi)",
+      "timestamp": "2026-11-16T09:07:13.909Z"
     },
     {
-      "_id": "log_1794842179711_a1bv",
+      "_id": "log_1794820017939_gcvv",
       "action": "REGISTER",
-      "details": "PLAYER \"squad_18_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.711Z"
+      "details": "MEMBER \"audit_mr_013140\" registered.",
+      "timestamp": "2026-11-16T09:06:57.939Z"
     },
     {
-      "_id": "log_1794842179709_de3l",
+      "_id": "log_1794820015398_7my4",
       "action": "REGISTER",
-      "details": "PLAYER \"squad_17_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.709Z"
+      "details": "PLAYER \"audit_sq_013140\" registered.",
+      "timestamp": "2026-11-16T09:06:55.398Z"
     },
     {
-      "_id": "log_1794842179706_iuup",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_16_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.706Z"
+      "_id": "log_1794819998900_8kw4",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (1) and non-admin operatives.",
+      "timestamp": "2026-11-16T09:06:38.900Z"
     },
     {
-      "_id": "log_1794842179704_qeug",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_15_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.704Z"
+      "_id": "log_1794819996188_35r1",
+      "action": "CHECKIN",
+      "details": "Team \"Live Verifier Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T09:06:36.188Z"
     },
     {
-      "_id": "log_1794842179702_v2on",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_14_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.702Z"
+      "_id": "log_1794819993871_otma",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Live Verifier Squad\" (user_1794819990998_a4zh6)",
+      "timestamp": "2026-11-16T09:06:33.871Z"
     },
     {
-      "_id": "log_1794842179700_d2dw",
+      "_id": "log_1794819991877_hpdk",
       "action": "REGISTER",
-      "details": "PLAYER \"squad_13_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.700Z"
+      "details": "PLAYER \"live_test_1794819989881\" registered.",
+      "timestamp": "2026-11-16T09:06:31.877Z"
     },
     {
-      "_id": "log_1794842179698_ds6b",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_12_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.698Z"
+      "_id": "log_1794819894775_c4t7",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-16T09:04:54.775Z"
     },
     {
-      "_id": "log_1794842179696_5bth",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_11_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.696Z"
+      "_id": "log_1794819893906_7afx",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (1) and non-admin operatives.",
+      "timestamp": "2026-11-16T09:04:53.906Z"
     },
     {
-      "_id": "log_1794842179694_4n46",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_10_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.694Z"
+      "_id": "log_1794819893126_lsy2",
+      "action": "GAME_STATUS",
+      "details": "Game Master reset game state to LOBBY standby.",
+      "timestamp": "2026-11-16T09:04:53.126Z"
     },
     {
-      "_id": "log_1794842179692_14je",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_09_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.692Z"
+      "_id": "log_1794819890782_0ee2",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 1 squads.",
+      "timestamp": "2026-11-16T09:04:50.782Z"
     },
     {
-      "_id": "log_1794842179690_kg0r",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_08_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.690Z"
+      "_id": "log_1794819875550_794e",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_855297\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T09:04:35.550Z"
     },
     {
-      "_id": "log_1794842179688_u1ps",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_07_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.688Z"
+      "_id": "log_1794819871274_5ijb",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_855297\" (user_1794819861717_cz55p)",
+      "timestamp": "2026-11-16T09:04:31.274Z"
     },
     {
-      "_id": "log_1794842179686_772o",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_06_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.686Z"
+      "_id": "log_1794819867164_kx3u",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_855297\" (team_1794819858476_z4ah3)",
+      "timestamp": "2026-11-16T09:04:27.164Z"
     },
     {
-      "_id": "log_1794842179684_ma8v",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_05_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.684Z"
+      "_id": "log_1794819864384_iuk6",
+      "action": "LOGIN",
+      "details": "PLAYER \"audit_sq_855297\" signed in (Approved: false)",
+      "timestamp": "2026-11-16T09:04:24.384Z"
     },
     {
-      "_id": "log_1794842179682_15gb",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_04_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.682Z"
+      "_id": "log_1794819863176_bhd1",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-16T09:04:23.176Z"
     },
     {
-      "_id": "log_1794842179680_rd5l",
+      "_id": "log_1794819862404_jysg",
       "action": "REGISTER",
-      "details": "PLAYER \"squad_03_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.680Z"
+      "details": "MEMBER registered: \"audit_mr_855297\" (Pending Approval)",
+      "timestamp": "2026-11-16T09:04:22.404Z"
     },
     {
-      "_id": "log_1794842179678_c6sx",
+      "_id": "log_1794819859275_bjer",
       "action": "REGISTER",
-      "details": "PLAYER \"squad_02_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.678Z"
+      "details": "PLAYER registered: \"audit_sq_855297\" (Pending Approval)",
+      "timestamp": "2026-11-16T09:04:19.275Z"
     },
     {
-      "_id": "log_1794842179675_uwvb",
-      "action": "REGISTER",
-      "details": "PLAYER \"squad_01_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.675Z"
+      "_id": "log_1794813319529_naqk",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-16T07:15:19.529Z"
     },
     {
-      "_id": "log_1794842179673_pb9b",
-      "action": "REGISTER",
-      "details": "MEMBER \"mr_zone_12_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.673Z"
+      "_id": "log_1794813318562_6vu2",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T07:15:18.562Z"
     },
     {
-      "_id": "log_1794842179671_ux3n",
-      "action": "REGISTER",
-      "details": "MEMBER \"mr_zone_11_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.671Z"
+      "_id": "log_1794813314822_dde6",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 2 squads.",
+      "timestamp": "2026-11-16T07:15:14.822Z"
     },
     {
-      "_id": "log_1794842179669_rma9",
-      "action": "REGISTER",
-      "details": "MEMBER \"mr_zone_10_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.669Z"
+      "_id": "log_1794813310827_gp3t",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_293367\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T07:15:10.827Z"
     },
     {
-      "_id": "log_1794842179666_vi38",
-      "action": "REGISTER",
-      "details": "MEMBER \"mr_zone_09_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.666Z"
+      "_id": "log_1794813306380_9hnb",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_293367\" (user_1794813298562_tme71)",
+      "timestamp": "2026-11-16T07:15:06.380Z"
     },
     {
-      "_id": "log_1794842179662_pvxd",
+      "_id": "log_1794813304067_m5n3",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_293367\" (team_1794813297213_ar7yx)",
+      "timestamp": "2026-11-16T07:15:04.067Z"
+    },
+    {
+      "_id": "log_1794813302510_f91q",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_293367\" (team_1794813295439_roiz9)",
+      "timestamp": "2026-11-16T07:15:02.510Z"
+    },
+    {
+      "_id": "log_1794813300439_spuh",
+      "action": "LOGIN",
+      "details": "PLAYER \"audit_sq_293367\" signed in (Approved: false)",
+      "timestamp": "2026-11-16T07:15:00.439Z"
+    },
+    {
+      "_id": "log_1794813299875_o464",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-16T07:14:59.875Z"
+    },
+    {
+      "_id": "log_1794813298829_0o3a",
       "action": "REGISTER",
-      "details": "MEMBER \"mr_zone_08_mwjeox7p\" registered.",
-      "timestamp": "2026-11-16T15:16:19.662Z"
+      "details": "MEMBER registered: \"audit_mr_293367\" (Pending Approval)",
+      "timestamp": "2026-11-16T07:14:58.829Z"
+    },
+    {
+      "_id": "log_1794813297968_dfu8",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"audit_sq2_293367\" (Pending Approval)",
+      "timestamp": "2026-11-16T07:14:57.968Z"
+    },
+    {
+      "_id": "log_1794813296194_hzpi",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"audit_sq_293367\" (Pending Approval)",
+      "timestamp": "2026-11-16T07:14:56.194Z"
+    },
+    {
+      "_id": "log_1794813282138_csrv",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (6) and non-admin operatives.",
+      "timestamp": "2026-11-16T07:14:42.138Z"
+    },
+    {
+      "_id": "log_1794813280113_y5sk",
+      "action": "CHECKIN",
+      "details": "Team \"Phase8 Squad\" awarded +28 PTS at ZONE_01 (Total: 28 PTS)",
+      "timestamp": "2026-11-16T07:14:40.113Z"
+    },
+    {
+      "_id": "log_1794813255058_nazt",
+      "action": "CHECKIN",
+      "details": "Team \"Phase8 Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T07:14:15.058Z"
+    },
+    {
+      "_id": "log_1794813179174_7m5a",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Phase8 Squad\" (user_1794813176918_6zt8m)",
+      "timestamp": "2026-11-16T07:12:59.174Z"
+    },
+    {
+      "_id": "log_1794813177545_6r1y",
+      "action": "REGISTER",
+      "details": "PLAYER \"phase8_squad_1794813175646\" registered.",
+      "timestamp": "2026-11-16T07:12:57.545Z"
+    },
+    {
+      "_id": "log_1794813158588_kt6p",
+      "action": "REGISTER",
+      "details": "PLAYER \"phase8_squad_1794813157501\" registered.",
+      "timestamp": "2026-11-16T07:12:38.588Z"
+    },
+    {
+      "_id": "log_1794813063550_sonk",
+      "action": "REGISTER",
+      "details": "PLAYER \"phase8_squad_1794813061073\" registered.",
+      "timestamp": "2026-11-16T07:11:03.550Z"
+    },
+    {
+      "_id": "log_1794812998605_z7fy",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-16T07:09:58.605Z"
     }
   ]
 }

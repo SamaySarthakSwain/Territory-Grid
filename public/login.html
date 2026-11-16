@@ -55,10 +55,11 @@
       user-select: none;
       -webkit-user-select: none;
       cursor: pointer;
-      transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), filter 0.15s ease, opacity 0.15s ease;
+      transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease, box-shadow 0.2s ease, opacity 0.18s ease;
+      will-change: transform;
     }
     button:active:not(:disabled) {
-      transform: scale(0.96);
+      transform: scale(0.95) translateZ(0);
     }
     button > * {
       pointer-events: none;
@@ -77,6 +78,37 @@
       animation: tacticalShimmer 1.4s infinite linear;
       border-radius: 0.5rem;
     }
+    @keyframes cyberFadeIn {
+      from { opacity: 0; transform: translate3d(0, 8px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    .animate-cyber-fade {
+      animation: cyberFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+      will-change: transform, opacity;
+    }
+
+    /* 60FPS Elastic Spring Modal Pop */
+    @keyframes scaleUp {
+      0% {
+        opacity: 0;
+        transform: scale3d(0.85, 0.85, 1) translateY(18px);
+        filter: blur(6px);
+      }
+      65% {
+        transform: scale3d(1.025, 1.025, 1) translateY(-2px);
+        filter: blur(0px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale3d(1, 1, 1) translateY(0);
+        filter: blur(0px);
+      }
+    }
+    .animate-scaleUp {
+      animation: scaleUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+      will-change: transform, opacity, filter;
+    }
+
     body {
       background-color: #070B14;
       color: #DFE2F0;
@@ -95,7 +127,14 @@
       background: rgba(17, 26, 46, 0.85);
       border: 1px solid rgba(0, 240, 255, 0.25);
       box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(0, 240, 255, 0.05);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+      will-change: transform;
+    }
+    .neon-card:hover {
+      transform: translateY(-2px);
+    }
+    .neon-card:active {
+      transform: scale(0.96);
     }
     .neon-card.active-portal {
       border-color: #00F0FF;
