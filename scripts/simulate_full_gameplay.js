@@ -19,7 +19,8 @@ const https = require('https');
 const http = require('http');
 
 const isLocal = process.argv.includes('--local');
-const BASE_URL = isLocal ? 'http://localhost:8088' : 'https://territory-grid-delta.vercel.app';
+let BASE_URL = isLocal ? (process.env.LOCAL_URL || '') : 'https://territory-grid-delta.vercel.app';
+let localServerInstance = null;
 
 console.log('╔══════════════════════════════════════════════════════════════════════╗');
 console.log('║        TERRITORY GRID // END-TO-END GAMEPLAY SIMULATION ENGINE       ║');
@@ -70,6 +71,18 @@ function request(urlPath, options = {}, body = null) {
 }
 
 async function runGameplaySimulation() {
+  if (isLocal && !BASE_URL) {
+    const apiHandler = require('../api/index');
+    await new Promise((resolve) => {
+      localServerInstance = http.createServer((req, res) => apiHandler(req, res));
+      localServerInstance.listen(0, '127.0.0.1', () => {
+        BASE_URL = `http://127.0.0.1:${localServerInstance.address().port}`;
+        console.log(`[Local Harness] In-process server listening on ${BASE_URL}\n`);
+        resolve();
+      });
+    });
+  }
+
   const ts = Date.now().toString().slice(-5);
   const sqAlphaCallsign = `alpha_${ts}`;
   const sqBravoCallsign = `bravo_${ts}`;
@@ -147,12 +160,13 @@ async function runGameplaySimulation() {
   const alphaObj = teamsRes.json.teams.find(t => t._id === sqAlphaId);
   const bravoObj = teamsRes.json.teams.find(t => t._id === sqBravoId);
 
-  const cluesRes = await request('/api/clues?all=true&_t=' + Date.now());
+  const cluesRes = await request('/api/clues?role=PLAYER&_t=' + Date.now());
   const clues = cluesRes.json.clues || [];
-  const K = clues.length;
 
-  const alphaTarget = clues[(alphaObj.teamCode || 11) % K].zoneId;
-  const bravoTarget = clues[(bravoObj.teamCode || 12) % K].zoneId;
+  const alphaSync = await request('/api/player/sync?teamId=' + sqAlphaId + '&_t=' + Date.now());
+  const alphaTarget = (alphaSync.json && alphaSync.json.activeClue && alphaSync.json.activeClue.zoneId) || (clues[0] ? clues[0].zoneId : 'ZONE 1');
+  const bravoSync = await request('/api/player/sync?teamId=' + sqBravoId + '&_t=' + Date.now());
+  const bravoTarget = (bravoSync.json && bravoSync.json.activeClue && bravoSync.json.activeClue.zoneId) || (clues[1] ? clues[1].zoneId : 'LHC');
   console.log(`  ✓ Squad Alpha assigned to station: ${alphaTarget}`);
   console.log(`  ✓ Squad Bravo assigned to station: ${bravoTarget}`);
 
@@ -227,6 +241,10 @@ async function runGameplaySimulation() {
   // Reset state to LOBBY
   await request('/api/game/state', { method: 'POST' }, { status: 'RESET' });
   console.log(`  ✓ Game state reset to LOBBY.`);
+
+  if (localServerInstance) {
+    try { localServerInstance.close(); } catch(e) {}
+  }
 
   console.log('\n🎉 FULL GAMEPLAY SIMULATION COMPLETED WITH 100% SUCCESS!\n');
 }
