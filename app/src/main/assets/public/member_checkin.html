@@ -5,7 +5,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  <script src="/vendor/html5-qrcode.min.js"></script>
+  <script src="vendor/qrcode.bundle.js"></script>
+  <script src="vendor/html5-qrcode.min.js"></script>
   <script>
     // Resilient API Base Resolver (Works in APK file:// and web https://)
     function apiUrl(path) {
@@ -519,9 +520,16 @@
     function resolveTeamTargetClue(team, clues, teamsList) {
       if (!clues || clues.length === 0) return null;
       var route = resolveTeamRoute(team, clues, teamsList);
-      var currentIdx = (team && typeof team.currentClueIndex === 'number') ? team.currentClueIndex : 0;
-      if (currentIdx >= route.length) return null;
-      return route[currentIdx];
+      var visitedSet = new Set((team.visitedZones || []).map(function(z) {
+        return normalizeZone(z);
+      }));
+      for (var i = 0; i < route.length; i++) {
+        var norm = normalizeZone(route[i].zoneId);
+        if (!visitedSet.has(norm)) {
+          return route[i];
+        }
+      }
+      return null;
     }
 
     function playCyberErrorBuzz() {
@@ -713,7 +721,7 @@
     
     async function loadTeams() {
       try {
-        var cluesRes = await fetch(apiUrl('/api/clues?all=true&_t=' + Date.now()));
+        var cluesRes = await fetch(apiUrl('/api/clues?role=PLAYER&_t=' + Date.now()));
         var cluesData = await cluesRes.json();
         if (cluesData.success && Array.isArray(cluesData.clues)) {
           allStationClues = cluesData.clues;
@@ -1111,9 +1119,18 @@
         return;
       }
 
-      var idx = selector.selectedIndex >= 0 ? selector.selectedIndex : 0;
-      var chosenTeamId = selector.options[idx] ? selector.options[idx].value : (currentTeams[0] ? currentTeams[0]._id : 'team_demo');
-      var chosenTeamName = (currentTeams[0] ? (currentTeams[0].name || currentTeams[0].callsign) : 'Squad');
+      var myZoneNorm = normalizeZone(currentUser.zoneId || 'ZONE_01');
+      var targetTeam = currentTeams.find(function(t) {
+        var alreadyAwarded = t.visitedZones && t.visitedZones.some(function(z) { return normalizeZone(z) === myZoneNorm; });
+        var target = resolveTeamTargetClue(t, allStationClues, currentTeams);
+        return !alreadyAwarded && target && normalizeZone(target.zoneId) === myZoneNorm;
+      }) || currentTeams.find(function(t) {
+        return !(t.visitedZones && t.visitedZones.some(function(z) { return normalizeZone(z) === myZoneNorm; }));
+      }) || currentTeams[0];
+
+      var chosenTeamId = targetTeam ? targetTeam._id : (selector.options[0] ? selector.options[0].value : 'team_demo');
+      var chosenTeamName = targetTeam ? (targetTeam.name || targetTeam.callsign) : 'Squad';
+      if (selector && chosenTeamId) selector.value = chosenTeamId;
 
       var ranks = [
         { code: 'A', num: 1 }, { code: '2', num: 2 }, { code: '5', num: 5 },

@@ -17,7 +17,8 @@ const path = require('path');
 const assert = require('assert');
 
 const isLocal = process.argv.includes('--local');
-const BASE_URL = isLocal ? (process.env.LOCAL_URL || 'http://localhost:8088') : 'https://territory-grid-delta.vercel.app';
+let BASE_URL = isLocal ? (process.env.LOCAL_URL || '') : 'https://territory-grid-delta.vercel.app';
+let localServerInstance = null;
 
 console.log('╔══════════════════════════════════════════════════════════════════════╗');
 console.log('║        TERRITORY GRID // DEEP PROCESS & ELEMENT AUDIT ENGINE        ║');
@@ -101,14 +102,28 @@ function wait(ms) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function runAudit() {
+  if (isLocal && !BASE_URL) {
+    const apiHandler = require('../api/index');
+    await new Promise((resolve) => {
+      localServerInstance = http.createServer((req, res) => apiHandler(req, res));
+      localServerInstance.listen(0, '127.0.0.1', () => {
+        BASE_URL = `http://127.0.0.1:${localServerInstance.address().port}`;
+        console.log(`[Local Harness] In-process server listening on ${BASE_URL}\n`);
+        resolve();
+      });
+    });
+  }
+
   const auditTimestamp = Date.now();
   const testSquadCallsign = `audit_sq_${auditTimestamp.toString().slice(-6)}`;
   const testSquad2Callsign = `audit_sq2_${auditTimestamp.toString().slice(-6)}`;
   const testMarshalCallsign = `audit_mr_${auditTimestamp.toString().slice(-6)}`;
+  const testMarshal2Callsign = `audit_mr2_${auditTimestamp.toString().slice(-6)}`;
   let testTeamId = null;
   let testTeam2Id = null;
   let testUserId = null;
   let testMarshalId = null;
+  let testMarshal2Id = null;
   let activeStations = [];
 
   // =========================================================================
@@ -160,7 +175,7 @@ async function runAudit() {
       testTeam2Id = regSquad2.json.user.teamId;
     }
 
-    // 2b. Register Field Marshal
+    // 2b. Register Two Field Marshals at distinct stations
     const regMarshal = await request('/api/auth/register', { method: 'POST' }, {
       role: 'MEMBER',
       callsign: testMarshalCallsign,
@@ -172,6 +187,18 @@ async function runAudit() {
     report('Field Marshal registration returns HTTP 201', regMarshal.status === 201);
     if (regMarshal.json && regMarshal.json.user) {
       testMarshalId = regMarshal.json.user._id;
+    }
+
+    const regMarshal2 = await request('/api/auth/register', { method: 'POST' }, {
+      role: 'MEMBER',
+      callsign: testMarshal2Callsign,
+      name: `Field Marshal 2 ${testMarshal2Callsign}`,
+      password: 'password123',
+      zoneId: 'LHC',
+      zoneLabel: 'Lecture Hall Complex'
+    });
+    if (regMarshal2.json && regMarshal2.json.user) {
+      testMarshal2Id = regMarshal2.json.user._id;
     }
 
     // 2c. Admin Login (samay / samay)
@@ -225,6 +252,15 @@ async function runAudit() {
       report('Admin approves field marshal (HTTP 200)', approveMarshal.status === 200 && approveMarshal.json && approveMarshal.json.success === true);
     }
 
+    if (testMarshal2Id || testMarshal2Callsign) {
+      await wait(500);
+      await request('/api/admin/approve-user', { method: 'POST' }, {
+        userId: testMarshal2Id,
+        id: testMarshal2Id || testMarshal2Callsign,
+        callsign: testMarshal2Callsign
+      });
+    }
+
     // Verify team is now approved on GET /api/teams
     const teamsRes = await request('/api/teams?_t=' + Date.now());
     const matchedTeam = (teamsRes.json && teamsRes.json.teams || []).find(t => t._id === testTeamId);
@@ -275,11 +311,12 @@ async function runAudit() {
   console.log('\n📌 [MODULE 5] Strict Station Enforcement & Instant Point Award');
   try {
     if (testTeamId && activeStations.length >= 2) {
-      const teamObj = (await request('/api/teams?_t=' + Date.now())).json.teams.find(t => t._id === testTeamId);
-      const K = activeStations.length;
-      const targetOffset = (teamObj.teamCode || 11) % K;
-      const correctStation = activeStations[targetOffset].zoneId;
-      const wrongStation = activeStations[(targetOffset + 1) % K].zoneId;
+      // Determine squad's real target station from player telemetry
+      const syncRes = await request('/api/player/sync?teamId=' + testTeamId + '&_t=' + Date.now());
+      const assignedStation = (syncRes.json && syncRes.json.activeClue && syncRes.json.activeClue.zoneId) || 'ZONE_01';
+      const correctStation = assignedStation;
+      const otherClue = activeStations.find(c => c.zoneId && c.zoneId.toUpperCase() !== correctStation.toUpperCase());
+      const wrongStation = otherClue ? otherClue.zoneId : (correctStation === 'ZONE_01' ? 'LHC' : 'ZONE_01');
 
       // 5a. Attempt check-in at WRONG station
       const wrongCheckin = await request('/api/checkin', { method: 'POST' }, {
@@ -509,6 +546,10 @@ async function runAudit() {
   const rate = ((passedTests / Math.max(1, totalTests)) * 100).toFixed(1);
   console.log(`║ Success Rate:        ${(rate + '%').padEnd(46)} ║`);
   console.log('╚══════════════════════════════════════════════════════════════════════╝');
+
+  if (localServerInstance) {
+    try { localServerInstance.close(); } catch(e) {}
+  }
 
   if (failedTests > 0) {
     console.error(`\n⚠️  AUDIT COMPLETE: ${failedTests} issue(s) detected during verification.`);

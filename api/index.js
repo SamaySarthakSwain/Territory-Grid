@@ -1561,6 +1561,8 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
       return sendJson(res, 200, {
         success: true,
         teamId: myTeam._id,
+        teamCode: myTeam.teamCode,
+        squadNumber: (myTeam.teamCode >= 11 ? (myTeam.teamCode - 10) : 1),
         teamName: myTeam.name || myTeam.callsign,
         callsign: myTeam.callsign,
         score: myTeam.score || 0,

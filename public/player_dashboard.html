@@ -160,8 +160,8 @@
       border-radius: 1rem;
     }
   </style>
-  <script src="/vendor/qrcode.bundle.js"></script>
-  <script src="/vendor/html5-qrcode.min.js"></script>
+  <script src="vendor/qrcode.bundle.js"></script>
+  <script src="vendor/html5-qrcode.min.js"></script>
   <script>
     if (typeof Html5Qrcode === 'undefined') {
       var h5s = document.createElement('script');
@@ -1575,6 +1575,7 @@
 
       if (!currentMyTeam) currentMyTeam = {};
       currentMyTeam._id = data.teamId;
+      currentMyTeam.teamCode = (typeof data.teamCode === 'number') ? data.teamCode : currentMyTeam.teamCode;
       currentMyTeam.name = data.teamName;
       currentMyTeam.callsign = data.callsign;
       currentMyTeam.score = currentScore;
@@ -1837,6 +1838,9 @@
       }
 
       try {
+        var activeRank = activeCipherCard ? (activeCipherCard.rank || 13) : 13;
+        var activeSuit = activeCipherCard ? (activeCipherCard.suit || '♠') : '♠';
+
         var res = await fetch(apiUrl('/api/checkin'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1844,8 +1848,8 @@
             teamId: teamId,
             qrPayload: decodedText,
             cone: 'GREEN',
-            cardRank: 13,
-            cardSuit: '♠',
+            cardRank: activeRank,
+            cardSuit: activeSuit,
             memberId: 'self_scan_beacon'
           })
         });
