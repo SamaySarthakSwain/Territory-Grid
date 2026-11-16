@@ -7,6 +7,9 @@
   </style>
   <script src="vendor/qrcode.bundle.js"></script>
   <script src="vendor/html5-qrcode.min.js"></script>
+  <script src="vendor/canvas-confetti.min.js"></script>
+  <script src="vendor/tactical-audio-haptics.js"></script>
+  <script src="vendor/network-monitor.js"></script>
   <script>
     // Resilient API Base Resolver (Works in APK file:// and web https://)
     function apiUrl(path) {
@@ -550,6 +553,9 @@
     }
 
     function showWrongStationModal(errorMsg, targetStation, squadName) {
+      if (window.tacticalFeedback) {
+        window.tacticalFeedback.error();
+      }
       var modal = document.getElementById('wrong-station-modal');
       if (!modal) {
         alert(errorMsg);
@@ -1391,6 +1397,20 @@
 
       overlay.classList.remove('hidden');
 
+      if (window.confetti) {
+        try {
+          window.confetti({
+            particleCount: 75,
+            spread: 60,
+            origin: { y: 0.5 },
+            colors: ['#2cf100', '#00e5ff', '#ffd9e3']
+          });
+        } catch (e) {}
+      }
+      if (window.tacticalFeedback) {
+        window.tacticalFeedback.success();
+      }
+
       // Countdown timer & auto re-arm scanner
       var secondsLeft = 3;
       var timerEl = document.getElementById('celeb-auto-timer');
@@ -1422,6 +1442,9 @@
     }
 
     function showAlreadyVisitedPrompt(errorMsg, payload) {
+      if (window.tacticalFeedback) {
+        window.tacticalFeedback.error();
+      }
       activeOverridePayload = null;
       var modal = document.getElementById('already-visited-modal');
       var msgEl = document.getElementById('already-visited-msg');

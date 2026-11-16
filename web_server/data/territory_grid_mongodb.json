@@ -41,59 +41,12 @@
       "password": "samay",
       "createdAt": "2026-11-13T00:00:00.000Z",
       "isApproved": true
-    },
-    {
-      "_id": "user_1794826475828_p3uui",
-      "name": "Field Marshal One",
-      "role": "MEMBER",
-      "teamId": null,
-      "zoneId": "ZONE_01",
-      "callsign": "m1_mwj5c8mo",
-      "password": "pass",
-      "createdAt": "2026-11-16T10:54:35.828Z",
-      "zoneLabel": "Station 1 - Library Arch",
-      "isApproved": true
-    },
-    {
-      "_id": "user_1794826476634_qaspl",
-      "name": "Field Marshal LHC",
-      "role": "MEMBER",
-      "teamId": null,
-      "zoneId": "LHC",
-      "callsign": "m2_mwj5c8mo",
-      "password": "pass",
-      "createdAt": "2026-11-16T10:54:36.634Z",
-      "zoneLabel": "Lecture Hall Complex",
-      "isApproved": true
     }
   ],
-  "checkins": [
-    {
-      "_id": "team_1794826477975_w3hfk_LHC_1794826481982",
-      "cone": "GREEN",
-      "points": 28,
-      "teamId": "team_1794826477975_w3hfk",
-      "zoneId": "LHC",
-      "cardRank": 13,
-      "cardSuit": "♠",
-      "memberId": "marshal_1",
-      "timestamp": "2026-11-16T10:54:41.982Z"
-    },
-    {
-      "_id": "team_1794826477975_w3hfk_ZONE_01_1794826483853",
-      "cone": "YELLOW",
-      "points": 24,
-      "teamId": "team_1794826477975_w3hfk",
-      "zoneId": "ZONE_01",
-      "cardRank": 12,
-      "cardSuit": "♥",
-      "memberId": "marshal_2",
-      "timestamp": "2026-11-16T10:54:43.853Z"
-    }
-  ],
+  "checkins": [],
   "gameState": {
     "endsAt": "2026-11-16T11:45:26.631Z",
-    "status": "COUNTDOWN",
+    "status": "PLAYER_PHASE",
     "endedAt": null,
     "pausedAt": null,
     "startedAt": "2026-11-16T10:53:26.631Z",
@@ -104,6 +57,84 @@
     "countdownStartAt": "2026-11-16T10:53:16.631Z"
   },
   "system_logs": [
+    {
+      "_id": "log_1794828001281_pefa",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_983122\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T11:20:01.281Z"
+    },
+    {
+      "_id": "log_1794827997596_lnnj",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_983122\" (user_1794827988953_csen6)",
+      "timestamp": "2026-11-16T11:19:57.596Z"
+    },
+    {
+      "_id": "log_1794827995343_ax9b",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_983122\" (team_1794827987359_xzo4q)",
+      "timestamp": "2026-11-16T11:19:55.343Z"
+    },
+    {
+      "_id": "log_1794827993907_pg9w",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_983122\" (team_1794827985528_y58qj)",
+      "timestamp": "2026-11-16T11:19:53.907Z"
+    },
+    {
+      "_id": "log_1794827991253_sdww",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_983122\" registered.",
+      "timestamp": "2026-11-16T11:19:51.253Z"
+    },
+    {
+      "_id": "log_1794827987968_40sy",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_983122\" registered.",
+      "timestamp": "2026-11-16T11:19:47.968Z"
+    },
+    {
+      "_id": "log_1794827986128_3aab",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_983122\" registered.",
+      "timestamp": "2026-11-16T11:19:46.128Z"
+    },
+    {
+      "_id": "log_1794827979675_z08b",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T11:19:39.675Z"
+    },
+    {
+      "_id": "log_1794827978341_487d",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Bravo Squad\" (team_1794827974262_zuo3n)",
+      "timestamp": "2026-11-16T11:19:38.341Z"
+    },
+    {
+      "_id": "log_1794827972611_wwaa",
+      "action": "REGISTER",
+      "details": "MEMBER \"m1_mwj68b67\" registered.",
+      "timestamp": "2026-11-16T11:19:32.611Z"
+    },
+    {
+      "_id": "log_1794827088983_owfj",
+      "action": "REGISTER",
+      "details": "MEMBER \"Mishra@12\" registered.",
+      "timestamp": "2026-11-16T11:04:48.983Z"
+    },
+    {
+      "_id": "log_1794826958066_2qn0",
+      "action": "REGISTER",
+      "details": "PLAYER \"Jam@123\" registered.",
+      "timestamp": "2026-11-16T11:02:38.066Z"
+    },
+    {
+      "_id": "log_1794826484250_fpj2",
+      "action": "CHECKIN",
+      "details": "Team \"Bravo Squad\" awarded +24 PTS at ZONE_01 (Total: 52 PTS)",
+      "timestamp": "2026-11-16T10:54:44.250Z"
+    },
     {
       "_id": "log_1794826483029_u1gk",
       "action": "CHECKIN",

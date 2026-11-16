@@ -162,6 +162,10 @@
   </style>
   <script src="vendor/qrcode.bundle.js"></script>
   <script src="vendor/html5-qrcode.min.js"></script>
+  <script src="vendor/canvas-confetti.min.js"></script>
+  <script src="vendor/tactical-audio-haptics.js"></script>
+  <script src="vendor/network-monitor.js"></script>
+  <script src="vendor/territory-geo.js"></script>
   <script>
     if (typeof Html5Qrcode === 'undefined') {
       var h5s = document.createElement('script');
@@ -1736,6 +1740,20 @@
       var modal = document.getElementById('checkpoint-cleared-modal');
       if (!modal) return;
       playUnlockChirp();
+
+      if (window.confetti) {
+        try {
+          window.confetti({
+            particleCount: 80,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#00e5ff', '#FFD600', '#2ae500', '#ff0055']
+          });
+        } catch (e) {}
+      }
+      if (window.tacticalFeedback) {
+        window.tacticalFeedback.success();
+      }
 
       var ptsEl = document.getElementById('cleared-points-label');
       if (ptsEl) ptsEl.innerText = '+' + (pointsAwarded || 25) + ' PTS AWARDED';
