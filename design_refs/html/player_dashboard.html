@@ -833,9 +833,16 @@
     function resolveTeamTargetClue(team, clues, teamsList) {
       if (!clues || clues.length === 0) return null;
       var route = resolveTeamRoute(team, clues, teamsList);
-      var currentIdx = (team && typeof team.currentClueIndex === 'number') ? team.currentClueIndex : 0;
-      if (currentIdx >= route.length) return null;
-      return route[currentIdx];
+      var visitedSet = new Set((team.visitedZones || []).map(function(z) {
+        return String(z).toUpperCase().replace(/[^A-Z0-9]/g, '');
+      }));
+      for (var i = 0; i < route.length; i++) {
+        var norm = String(route[i].zoneId || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (!visitedSet.has(norm)) {
+          return route[i];
+        }
+      }
+      return null;
     }
 
     // Deterministic Checkpoint Card Engine (Rotates dynamic cipher card every 30 seconds)
@@ -1470,7 +1477,7 @@
 
     async function loadCluesAndSync() {
       try {
-        var res = await fetch(apiUrl('/api/clues?all=true&_t=') + Date.now(), { cache: 'no-store' });
+        var res = await fetch(apiUrl('/api/clues?role=PLAYER&_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (data.success && Array.isArray(data.clues)) {
           allClues = data.clues;
@@ -1494,6 +1501,9 @@
             var syncData = await syncRes.json();
             if (syncData.success && syncData.teamId) {
               applyPlayerSyncData(syncData);
+              if (Array.isArray(syncData.leaderboard) && syncData.leaderboard.length > 0) {
+                renderMiniLeaderboard(syncData.leaderboard, syncData.teamId);
+              }
               return;
             }
           } catch (syncErr) {
@@ -1717,6 +1727,165 @@
         '</div>';
       }).join('');
     }
+
+    // ─────────────────────────────────────────────────────────
+    // CHECKPOINT CLEARED CELEBRATION MODAL ENGINE
+    // ─────────────────────────────────────────────────────────
+    function showCheckpointClearedModal(pointsAwarded, totalScore, nextStationName, nextClueText) {
+      var modal = document.getElementById('checkpoint-cleared-modal');
+      if (!modal) return;
+      playUnlockChirp();
+
+      var ptsEl = document.getElementById('cleared-points-label');
+      if (ptsEl) ptsEl.innerText = '+' + (pointsAwarded || 25) + ' PTS AWARDED';
+
+      var scoreEl = document.getElementById('cleared-total-score');
+      if (scoreEl) scoreEl.innerText = (totalScore !== undefined ? totalScore : '--') + ' PTS';
+
+      var stationEl = document.getElementById('cleared-next-station');
+      if (stationEl) stationEl.innerText = nextStationName || 'Station Area';
+
+      var clueEl = document.getElementById('cleared-next-clue');
+      if (clueEl) clueEl.innerText = nextClueText ? ('“' + nextClueText + '”') : '“Proceed to assigned campus checkpoint...”';
+
+      modal.classList.remove('hidden');
+    }
+
+    function dismissCheckpointClearedModal() {
+      var modal = document.getElementById('checkpoint-cleared-modal');
+      if (modal) modal.classList.add('hidden');
+      rotateCardCipher(true);
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // PLAYER STATION CAMERA SCANNER ENGINE
+    // ─────────────────────────────────────────────────────────
+    var playerHtml5QrCode = null;
+    var isPlayerScanning = false;
+
+    async function openPlayerScannerModal() {
+      var modal = document.getElementById('player-scanner-modal');
+      var alertEl = document.getElementById('player-scanner-alert');
+      if (alertEl) { alertEl.classList.add('hidden'); alertEl.innerText = ''; }
+      if (modal) modal.classList.remove('hidden');
+
+      try {
+        if (!playerHtml5QrCode) {
+          playerHtml5QrCode = new Html5Qrcode('player-qr-reader');
+        }
+        isPlayerScanning = true;
+        await playerHtml5QrCode.start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 },
+          function(decodedText) {
+            handlePlayerBeaconScan(decodedText);
+          },
+          function(error) { /* frame search ignore */ }
+        );
+      } catch (err) {
+        console.warn('Player camera open error:', err);
+        isPlayerScanning = false;
+        if (alertEl) {
+          alertEl.className = 'w-full p-2.5 rounded-xl bg-error/15 border border-error/40 text-error text-xs font-mono text-center';
+          alertEl.innerText = 'Camera access unavailable: ' + (err.message || err);
+          alertEl.classList.remove('hidden');
+        }
+      }
+    }
+
+    function closePlayerScannerModal() {
+      var modal = document.getElementById('player-scanner-modal');
+      if (playerHtml5QrCode && isPlayerScanning) {
+        playerHtml5QrCode.stop().then(function() {
+          isPlayerScanning = false;
+          if (modal) modal.classList.add('hidden');
+        }).catch(function() {
+          isPlayerScanning = false;
+          if (modal) modal.classList.add('hidden');
+        });
+      } else {
+        isPlayerScanning = false;
+        if (modal) modal.classList.add('hidden');
+      }
+    }
+
+    async function handlePlayerBeaconScan(decodedText) {
+      if (!decodedText) return;
+      try {
+        if (playerHtml5QrCode && isPlayerScanning) {
+          await playerHtml5QrCode.stop();
+          isPlayerScanning = false;
+        }
+      } catch(e) {}
+
+      var teamId = (currentMyTeam && currentMyTeam._id) ? currentMyTeam._id : (currentUser ? currentUser.teamId : null);
+      var alertEl = document.getElementById('player-scanner-alert');
+
+      if (!teamId) {
+        if (alertEl) {
+          alertEl.className = 'w-full p-2.5 rounded-xl bg-error/15 border border-error/40 text-error text-xs font-mono text-center';
+          alertEl.innerText = 'Cannot verify: squad profile not synchronized.';
+          alertEl.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (alertEl) {
+        alertEl.className = 'w-full p-2.5 rounded-xl bg-cyan/15 border border-cyan/40 text-cyan text-xs font-mono text-center';
+        alertEl.innerText = '⚡ Transmitting checkpoint beacon clearance...';
+        alertEl.classList.remove('hidden');
+      }
+
+      try {
+        var res = await fetch(apiUrl('/api/checkin'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            teamId: teamId,
+            qrPayload: decodedText,
+            cone: 'GREEN',
+            cardRank: 13,
+            cardSuit: '♠',
+            memberId: 'self_scan_beacon'
+          })
+        });
+
+        var data = await res.json();
+        if (!data.success) {
+          if (alertEl) {
+            alertEl.className = 'w-full p-2.5 rounded-xl bg-error/15 border border-error/40 text-error text-xs font-mono text-center';
+            alertEl.innerText = data.error || 'Check-in failed.';
+            alertEl.classList.remove('hidden');
+          }
+          return;
+        }
+
+        // Checkpoint Cleared! Close scanner and trigger celebration
+        closePlayerScannerModal();
+        playUnlockChirp();
+
+        if (currentMyTeam) {
+          currentMyTeam.score = data.teamScore;
+          currentMyTeam.currentClueIndex = data.nextClueIndex;
+        }
+        lastRecordedScore = data.teamScore;
+        lastRecordedClueIndex = data.nextClueIndex;
+
+        // Instant telemetry reload & cipher card rotation
+        await syncTeamData();
+        rotateCardCipher(true);
+
+        showCheckpointClearedModal(data.pointsAwarded || 25, data.teamScore, data.nextZoneLabel, data.nextClueText);
+
+      } catch (err) {
+        if (alertEl) {
+          alertEl.className = 'w-full p-2.5 rounded-xl bg-error/15 border border-error/40 text-error text-xs font-mono text-center';
+          alertEl.innerText = 'Transmission error: ' + err.message;
+          alertEl.classList.remove('hidden');
+        }
+      }
+    }
+
   </script>
 
   <!-- ==================== AAA GAMING 10-SECOND COUNTDOWN OVERLAY ==================== -->

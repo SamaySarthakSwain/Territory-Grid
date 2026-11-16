@@ -1377,28 +1377,103 @@ function ensureUniqueTeamCodes(teams) {
   return teams;
 }
 
-function resolveTeamRoute(team, allClues, teamIndex = 0) {
+function getActiveMarshalClues(allClues, allUsers) {
   if (!Array.isArray(allClues) || allClues.length === 0) return [];
-  const K = allClues.length;
+
+  // Filter approved field marshals who have an assigned station/zoneId
+  const approvedMarshals = (allUsers || []).filter(u => 
+    u.role === 'MEMBER' && u.isApproved && u.zoneId
+  );
+
+  // If no marshals are approved yet, fallback to allClues (for tests / setup)
+  if (approvedMarshals.length === 0) {
+    return allClues;
+  }
+
+  // Build map of normalized zone -> marshal info
+  const marshalZoneMap = new Map();
+  approvedMarshals.forEach(m => {
+    const norm = normalizeZone(m.zoneId);
+    if (!marshalZoneMap.has(norm)) {
+      marshalZoneMap.set(norm, m);
+    }
+  });
+
+  // Filter campus clues to ONLY those matching approved marshals
+  const activeClues = [];
+  const handledNorms = new Set();
+
+  allClues.forEach(c => {
+    const norm = normalizeZone(c.zoneId);
+    if (marshalZoneMap.has(norm) && !handledNorms.has(norm)) {
+      const marshal = marshalZoneMap.get(norm);
+      activeClues.push({
+        ...c,
+        zoneLabel: c.zoneLabel || marshal.zoneLabel || c.zoneId,
+        marshalCallsign: marshal.callsign || marshal.name,
+        hasMarshal: true
+      });
+      handledNorms.add(norm);
+    }
+  });
+
+  // If any marshal has a custom zoneId not in DEFAULT_CLUES (e.g. 'LHC'), create a clue for it!
+  approvedMarshals.forEach(m => {
+    const norm = normalizeZone(m.zoneId);
+    if (!handledNorms.has(norm)) {
+      activeClues.push({
+        _id: 'clue_' + norm.toLowerCase(),
+        zoneId: m.zoneId,
+        zoneLabel: m.zoneLabel || m.zoneId,
+        text: 'Proceed to ' + (m.zoneLabel || m.zoneId) + ' and report to Field Marshal ' + (m.callsign || m.name) + '.',
+        marshalCallsign: m.callsign || m.name,
+        hasMarshal: true
+      });
+      handledNorms.add(norm);
+    }
+  });
+
+  return activeClues.length > 0 ? activeClues : allClues;
+}
+
+function resolveTeamRoute(team, activeClues, teamIndex = 0) {
+  if (!Array.isArray(activeClues) || activeClues.length === 0) return [];
+  const K = activeClues.length;
   const code = (typeof team.teamCode === 'number' && team.teamCode >= 11)
     ? team.teamCode
     : (11 + (teamIndex % 88));
   const offset = code % K;
   const route = [];
   for (let i = 0; i < K; i++) {
-    route.push(allClues[(offset + i) % K]);
+    route.push(activeClues[(offset + i) % K]);
   }
   return route;
 }
 
-function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
-  if (!Array.isArray(allClues) || allClues.length === 0) return null;
-  const route = resolveTeamRoute(team, allClues, teamIndex);
-  const currentIdx = parseInt(team.currentClueIndex, 10) || 0;
-  if (currentIdx >= route.length) {
-    return null; // All checkpoints completed
+function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
+  if (!Array.isArray(activeClues) || activeClues.length === 0) return null;
+  const route = resolveTeamRoute(team, activeClues, teamIndex);
+  
+  // Set of normalized zones already visited/awarded to this team
+  const visitedSet = new Set(
+    (team.visitedZones || []).map(z => normalizeZone(z))
+  );
+
+  // Return the first station in the assigned sequence that has NOT been visited yet
+  // This GUARANTEES no team is ever given the same location twice!
+  for (let i = 0; i < route.length; i++) {
+    const stationNorm = normalizeZone(route[i].zoneId);
+    if (!visitedSet.has(stationNorm)) {
+      return {
+        ...route[i],
+        routeIndex: i,
+        totalStations: route.length
+      };
+    }
   }
-  return route[currentIdx];
+
+  // All active marshal stations have been visited!
+  return null;
 }
 
     // ─────────────────────────────────────────────────────────
@@ -1416,16 +1491,19 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
       let allTeams = [];
       let allClues = [];
       let allCheckins = [];
+      let allUsers = [];
 
       if (atlasDb) {
         allTeams = await atlasDb.collection('teams').find().toArray();
         allClues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
         allCheckins = await atlasDb.collection('checkins').find().sort({ timestamp: -1 }).toArray();
+        allUsers = await atlasDb.collection('users').find().toArray();
       } else {
         memoryStore.load();
         allTeams = memoryStore.collections.teams || [];
         allClues = memoryStore.collections.clues || [];
         allCheckins = memoryStore.collections.checkins || [];
+        allUsers = memoryStore.collections.users || [];
       }
 
       ensureUniqueTeamCodes(allTeams);
@@ -1463,9 +1541,16 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
       }
 
       const myRank = approvedTeams.findIndex(t => t._id === myTeam._id);
-      const activeClue = resolveTeamTargetClue(myTeam, allClues);
+      const activeClues = getActiveMarshalClues(allClues, allUsers);
+      const activeClue = resolveTeamTargetClue(myTeam, activeClues);
       const teamCheckins = allCheckins.filter(c => c.teamId === myTeam._id);
       const lastCheckin = teamCheckins[0] || null;
+      const topLeaderboard = approvedTeams.slice(0, 5).map(t => ({
+        _id: t._id,
+        name: t.name || t.callsign,
+        callsign: t.callsign,
+        score: t.score || 0
+      }));
       let gs = {};
       if (atlasDb) {
         gs = await atlasDb.collection('gameState').findOne({ _id: 'global_state' }) || {};
@@ -1485,6 +1570,7 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
         cardsCount: (myTeam.cards || []).length,
         rank: myRank >= 0 ? (myRank + 1) : null,
         totalApprovedTeams: approvedTeams.length,
+        leaderboard: topLeaderboard,
         activeClue: activeClue ? {
           zoneId: activeClue.zoneId,
           zoneLabel: activeClue.zoneLabel || activeClue.zoneId,
@@ -1492,7 +1578,7 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
         } : null,
         nextStationName: activeClue ? (activeClue.zoneLabel || activeClue.zoneId) : 'ALL CHECKPOINTS CLEARED',
         nextClueText: activeClue ? activeClue.text : 'All campus beacons verified! Report to Game Master Central.',
-        allCompleted: !activeClue && ((myTeam.currentClueIndex || 0) >= (allClues.length || 1)),
+        allCompleted: !activeClue || ((myTeam.currentClueIndex || 0) >= (activeClues.length || 1)),
         lastCheckin: lastCheckin ? {
           points: lastCheckin.points,
           zoneId: lastCheckin.zoneId,
@@ -1525,20 +1611,33 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
     // 10b. GET /api/clues (Mission Directives & Checkpoint Places)
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/clues' && req.method === 'GET') {
-      const showAll = query.all === 'true' || query.role === 'ADMIN' || query.role === 'MEMBER';
+      const showAll = query.all === 'true' || query.role === 'ADMIN';
+
+      let rawClues = [];
+      let allUsers = [];
 
       if (atlasDb) {
-        const rawClues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
-        const marshals = await atlasDb.collection('users').find({ role: 'MEMBER', zoneId: { $ne: null } }).toArray();
+        rawClues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
+        allUsers = await atlasDb.collection('users').find().toArray();
+      } else {
+        memoryStore.load();
+        rawClues = memoryStore.collections.clues || [];
+        allUsers = memoryStore.collections.users || [];
+      }
+
+      const activeMarshalClues = getActiveMarshalClues(rawClues, allUsers);
+
+      // If viewing from Admin Places tab (showAll=true), return all registered places
+      if (showAll) {
         const activeZoneMap = {};
-        marshals.forEach(m => {
-          const z = (m.zoneId || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+        allUsers.filter(u => u.role === 'MEMBER' && u.isApproved && u.zoneId).forEach(m => {
+          const z = normalizeZone(m.zoneId);
           if (!activeZoneMap[z]) activeZoneMap[z] = [];
           activeZoneMap[z].push(m.callsign || m.name);
         });
 
-        const allClues = rawClues.map(c => {
-          const z = (c.zoneId || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+        const enrichedClues = rawClues.map(c => {
+          const z = normalizeZone(c.zoneId);
           const assignedMarshals = activeZoneMap[z] || [];
           return {
             ...c,
@@ -1548,60 +1647,20 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
           };
         });
 
-        if (showAll || allClues.filter(c => c.hasMarshal).length === 0) {
-          return sendJson(res, 200, {
-            success: true,
-            clues: allClues,
-            totalCount: allClues.length,
-            activeCount: allClues.filter(c => c.hasMarshal).length
-          });
-        }
-
-        const playerClues = allClues.filter(c => c.hasMarshal);
         return sendJson(res, 200, {
           success: true,
-          clues: playerClues.length > 0 ? playerClues : allClues,
-          totalCount: playerClues.length,
-          allPlacesCount: allClues.length,
-          waitingForMarshals: false
+          clues: enrichedClues,
+          totalCount: enrichedClues.length,
+          activeCount: enrichedClues.filter(c => c.hasMarshal).length
         });
       }
 
-      memoryStore.load();
-      const marshals = (memoryStore.collections.users || []).filter(u => u.role === 'MEMBER' && u.zoneId);
-      const activeZoneMap = {};
-      marshals.forEach(m => {
-        const z = (m.zoneId || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-        if (!activeZoneMap[z]) activeZoneMap[z] = [];
-        activeZoneMap[z].push(m.callsign || m.name);
-      });
-
-      const allClues = (memoryStore.collections.clues || []).map(c => {
-        const z = (c.zoneId || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-        const assignedMarshals = activeZoneMap[z] || [];
-        return {
-          ...c,
-          hasMarshal: assignedMarshals.length > 0,
-          marshals: assignedMarshals,
-          marshalCount: assignedMarshals.length
-        };
-      });
-
-      if (showAll || allClues.filter(c => c.hasMarshal).length === 0) {
-        return sendJson(res, 200, {
-          success: true,
-          clues: allClues,
-          totalCount: allClues.length,
-          activeCount: allClues.filter(c => c.hasMarshal).length
-        });
-      }
-
-      const playerClues = allClues.filter(c => c.hasMarshal);
+      // For Players & Field Marshals: Return ONLY active checkpoint places with approved marshals!
       return sendJson(res, 200, {
         success: true,
-        clues: playerClues.length > 0 ? playerClues : allClues,
-        totalCount: playerClues.length,
-        allPlacesCount: allClues.length,
+        clues: activeMarshalClues,
+        totalCount: activeMarshalClues.length,
+        allPlacesCount: rawClues.length,
         waitingForMarshals: false
       });
     }
@@ -1727,11 +1786,13 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
     if (pathname === '/api/admin/rebalance-routes' && req.method === 'POST') {
       if (atlasDb) {
         const rawClues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
+        const rawUsers = await atlasDb.collection('users').find().toArray();
         const rawTeams = await atlasDb.collection('teams').find().toArray();
+        const targetClues = getActiveMarshalClues(rawClues, rawUsers);
         const teams = ensureUniqueTeamCodes(rawTeams);
         for (let i = 0; i < teams.length; i++) {
           const t = teams[i];
-          const route = resolveTeamRoute(t, rawClues, i);
+          const route = resolveTeamRoute(t, targetClues, i);
           const clueOrder = route.map(c => c._id);
           await atlasDb.collection('teams').updateOne(
             { _id: t._id },
@@ -1742,10 +1803,12 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
       }
       memoryStore.load();
       const rawClues = memoryStore.collections.clues || [];
+      const rawUsers = memoryStore.collections.users || [];
+      const targetClues = getActiveMarshalClues(rawClues, rawUsers);
       const teams = ensureUniqueTeamCodes(memoryStore.collections.teams || []);
       for (let i = 0; i < teams.length; i++) {
         const t = teams[i];
-        const route = resolveTeamRoute(t, rawClues, i);
+        const route = resolveTeamRoute(t, targetClues, i);
         t.clueOrder = route.map(c => c._id);
       }
       await memoryStore.syncToCloud();
@@ -1863,29 +1926,57 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
       if (!team.isApproved) return sendJson(res, 403, { success: false, error: 'Squad is not yet approved by Game Master.' });
 
       // ─────────────────────────────────────────────────────────
-      // STRICT STATION ENFORCEMENT & EQUAL LOAD ROUTE CHECK
+      // STRICT ONE-AWARD-PER-MARSHAL & STATION ROUTE ENFORCEMENT
       // ─────────────────────────────────────────────────────────
       let allClues = [];
+      let allUsers = [];
       if (atlasDb) {
         allClues = await atlasDb.collection('clues').find().sort({ zoneId: 1 }).toArray();
+        allUsers = await atlasDb.collection('users').find().toArray();
       } else {
         allClues = memoryStore.collections.clues || [];
+        allUsers = memoryStore.collections.users || [];
       }
 
+      const activeClues = getActiveMarshalClues(allClues, allUsers);
+      const marshalZoneNorm = normalizeZone(zoneId);
+
+      // 1. Check if team has ALREADY visited this marshal's station!
+      const alreadyInVisited = Array.isArray(team.visitedZones) && team.visitedZones.some(z => normalizeZone(z) === marshalZoneNorm);
+      let alreadyInCheckins = false;
+      if (atlasDb) {
+        const existingCheckin = await checkinsCol.findOne({
+          teamId: team._id,
+          zoneId: zoneId
+        });
+        if (existingCheckin) alreadyInCheckins = true;
+      } else {
+        alreadyInCheckins = (memoryStore.collections.checkins || []).some(
+          c => c.teamId === team._id && normalizeZone(c.zoneId) === marshalZoneNorm
+        );
+      }
+
+      if (alreadyInVisited || alreadyInCheckins) {
+        return sendJson(res, 400, {
+          success: false,
+          alreadyVisited: true,
+          error: '⛔ STATION ALREADY CLEARED: Squad "' + (team.name || team.callsign) + '" has ALREADY received points for ' + (zoneId || 'this station') + '! Each marshal can only award a squad once.'
+        });
+      }
+
+      // 2. Check if this is the assigned target station
       let activeTargetClue = null;
-      if (allClues.length > 0) {
-        activeTargetClue = resolveTeamTargetClue(team, allClues);
+      if (activeClues.length > 0) {
+        activeTargetClue = resolveTeamTargetClue(team, activeClues);
         if (!activeTargetClue) {
           return sendJson(res, 400, {
             success: false,
             allCompleted: true,
-            error: 'Squad "' + (team.name || team.callsign) + '" has already cleared all ' + allClues.length + ' campus checkpoints! Direct them to Game Master Central.'
+            error: 'Squad "' + (team.name || team.callsign) + '" has already cleared all ' + activeClues.length + ' campus checkpoints! Direct them to Game Master Central.'
           });
         }
 
         const targetZoneNorm = normalizeZone(activeTargetClue.zoneId);
-        const marshalZoneNorm = normalizeZone(zoneId);
-
         if (targetZoneNorm !== marshalZoneNorm) {
           const targetStationName = activeTargetClue.zoneLabel || activeTargetClue.zoneId;
           const currentStationName = zoneId || 'this station';
@@ -1903,34 +1994,6 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
 
       const recordedZone = activeTargetClue ? activeTargetClue.zoneId : (zoneId || 'ZONE_01');
       const recordedZoneNorm = normalizeZone(recordedZone);
-
-      // ─────────────────────────────────────────────────────────
-      // ABSOLUTE STRICT ONE-AWARD-PER-MARSHAL-PER-TEAM ENFORCEMENT
-      // A squad CANNOT be awarded more than once at any station.
-      // Zero bypasses, zero duplicate allowances.
-      // ─────────────────────────────────────────────────────────
-      const alreadyInVisited = Array.isArray(team.visitedZones) && team.visitedZones.some(z => normalizeZone(z) === recordedZoneNorm);
-      
-      let alreadyInCheckins = false;
-      if (atlasDb) {
-        const existingCheckin = await checkinsCol.findOne({
-          teamId: team._id,
-          zoneId: recordedZone
-        });
-        if (existingCheckin) alreadyInCheckins = true;
-      } else {
-        alreadyInCheckins = (memoryStore.collections.checkins || []).some(
-          c => c.teamId === team._id && normalizeZone(c.zoneId) === recordedZoneNorm
-        );
-      }
-
-      if (alreadyInVisited || alreadyInCheckins) {
-        return sendJson(res, 400, {
-          success: false,
-          alreadyVisited: true,
-          error: '⛔ STATION ALREADY CLEARED: Squad "' + (team.name || team.callsign) + '" has ALREADY received points for ' + recordedZone + '! Each marshal can only award a squad once.'
-        });
-      }
 
       const coneValues = { RED: 10, YELLOW: 12, GREEN: 15 };
       const conePts = coneValues[cone] || 12;
@@ -1965,7 +2028,7 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
         );
 
         const updatedTeam = await teamsCol.findOne({ _id: team._id });
-        const nextClue = (allClues.length > 0) ? resolveTeamTargetClue(updatedTeam, allClues) : null;
+        const nextClue = (activeClues.length > 0) ? resolveTeamTargetClue(updatedTeam, activeClues) : null;
         return sendJson(res, 200, {
           success: true,
           pointsAwarded: totalPoints,
@@ -1996,7 +2059,7 @@ function resolveTeamTargetClue(team, allClues, teamIndex = 0) {
       await memoryStore.syncToCloud();
       memoryStore.logEvent('CHECKIN', 'Team "' + team.name + '" awarded +' + totalPoints + ' PTS at ' + recordedZone + ' (Total: ' + team.score + ' PTS)');
 
-      const nextClue = (allClues.length > 0) ? resolveTeamTargetClue(team, allClues) : null;
+      const nextClue = (activeClues.length > 0) ? resolveTeamTargetClue(team, activeClues) : null;
       return sendJson(res, 200, {
         success: true,
         pointsAwarded: totalPoints,

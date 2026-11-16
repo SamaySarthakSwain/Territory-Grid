@@ -1420,7 +1420,7 @@
         } finally {
           scheduleAdminTabPoll();
         }
-      }, 2200);
+      }, 1400);
     }
 
     function startClock() {
@@ -1877,7 +1877,7 @@
         // Approved Squads
         approvedTeams.forEach(function(team) {
           var teamId = team._id || team.id;
-          html += '<div class="neon-card rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 border-cyan/30 bg-[#071322] hover:border-cyan/60 transition">' +
+          html += '<div id="card-approved-TEAM-' + teamId + '" class="neon-card rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 border-cyan/30 bg-[#071322] hover:border-cyan/60 transition">' +
             '<div class="flex items-center gap-3">' +
               '<div class="w-9 h-9 rounded-lg bg-cyan/20 border border-cyan/40 flex items-center justify-center text-cyan shadow-[0_0_8px_rgba(0,229,255,0.3)]">' +
                 '<span class="material-symbols-outlined text-lg">groups</span>' +
@@ -1906,7 +1906,7 @@
         // Approved Marshals
         approvedMarshals.forEach(function(user) {
           var userId = user._id || user.id;
-          html += '<div class="neon-card rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 border-green/30 bg-[#061814] hover:border-green/60 transition">' +
+          html += '<div id="card-approved-USER-' + userId + '" class="neon-card rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 border-green/30 bg-[#061814] hover:border-green/60 transition">' +
             '<div class="flex items-center gap-3">' +
               '<div class="w-9 h-9 rounded-lg bg-green/20 border border-green/40 flex items-center justify-center text-green shadow-[0_0_8px_rgba(0,255,136,0.3)]">' +
                 '<span class="material-symbols-outlined text-lg">verified_user</span>' +
@@ -2007,34 +2007,65 @@
     }
 
     async function rejectEntity(type, id) {
-      if (!confirm('Are you sure you want to reject/revoke clearance for this entry?')) return;
+      // Instant Optimistic Removal: 0ms UI latency, buttery smooth animation
+      var cardApproved = document.getElementById('card-approved-' + type + '-' + id);
       var cardPending = document.getElementById('card-pending-' + type + '-' + id);
-      if (cardPending) {
-        cardPending.style.opacity = '0.3';
-        cardPending.style.transform = 'scale(0.95)';
+      var targetCard = cardApproved || cardPending;
+
+      if (targetCard) {
+        targetCard.style.transition = 'all 0.28s cubic-bezier(0.4, 0, 0.2, 1)';
+        targetCard.style.opacity = '0';
+        targetCard.style.transform = 'scale(0.92) translateY(-10px)';
+        targetCard.style.pointerEvents = 'none';
         setTimeout(function() {
-          if (cardPending && cardPending.parentNode) cardPending.remove();
+          if (targetCard && targetCard.parentNode) targetCard.remove();
         }, 300);
       }
 
-      try {
-        var res = await fetch(apiUrl('/api/admin/reject'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: type, id: id })
-        });
-        var data = await res.json();
-        if (data.success) {
-          loadPendingApprovals();
-          loadApprovedRoster();
-          loadLeaderboard();
-          loadDatabaseData();
+      // Optimistically decrement active count badge immediately
+      if (cardApproved) {
+        var badge = document.getElementById('badge-approved-total');
+        if (badge) {
+          var cur = parseInt(badge.innerText, 10) || 0;
+          if (cur > 0) badge.innerText = (cur - 1) + ' ACTIVE';
         }
-      } catch (e) {
-        alert('Reject error: ' + e.message);
-        loadPendingApprovals();
-        loadApprovedRoster();
+        if (type === 'TEAM') {
+          var st = document.getElementById('stat-teams-count');
+          if (st) { var c = parseInt(st.innerText, 10) || 0; if (c > 0) st.innerText = c - 1; }
+        } else if (type === 'USER') {
+          var sm = document.getElementById('stat-marshals-count');
+          if (sm) { var c = parseInt(sm.innerText, 10) || 0; if (c > 0) sm.innerText = c - 1; }
+        }
+      } else if (cardPending) {
+        var bp = document.getElementById('badge-pending');
+        if (bp) {
+          var curP = parseInt(bp.innerText, 10) || 0;
+          if (curP > 0) bp.innerText = curP - 1;
+        }
       }
+
+      // Invalidate hash so subsequent polls will sync fresh state
+      lastRenderedApprovedHash = null;
+
+      // Dispatch non-blocking asynchronous revocation
+      fetch(apiUrl('/api/admin/reject'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: type, id: id })
+      }).then(function(res) {
+        return res.json();
+      }).then(function(data) {
+        if (data.success) {
+          loadApprovedRoster();
+          loadPendingApprovals();
+          loadLeaderboard();
+        } else {
+          loadApprovedRoster();
+        }
+      }).catch(function(err) {
+        console.warn('Revocation background sync err:', err);
+        loadApprovedRoster();
+      });
     }
 
     // Load MongoDB Database Data
