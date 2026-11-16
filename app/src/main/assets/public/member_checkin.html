@@ -104,18 +104,38 @@
           <div class="flex items-center justify-between">
             <span class="font-mono text-[10px] text-tertiary font-bold uppercase tracking-wider flex items-center gap-1">
               <span class="material-symbols-outlined text-[14px]">pin_drop</span>
-              <span>Squads Authorized At Your Station:</span>
+              <span>Squads Routed To Your Station (Tap to Select):</span>
             </span>
             <span class="text-[10px] font-mono text-gray-400" id="assigned-squads-summary">0 Assigned</span>
           </div>
-          <div id="assigned-squads-chips" class="flex flex-wrap gap-1.5 pt-0.5 max-h-20 overflow-y-auto">
+          <div id="assigned-squads-chips" class="flex flex-wrap gap-1.5 pt-0.5 max-h-24 overflow-y-auto">
             <span class="text-[11px] font-mono text-gray-400">Loading squad route telemetry...</span>
           </div>
         </div>
       </div>
 
-      <!-- HIDDEN SQUAD SELECTOR (Preserves background telemetry sync) -->
-      <select class="hidden" id="team-selector"></select>
+      <!-- SQUAD DIRECT SELECTOR & SEARCH (20 Squads Fast-Lookup) -->
+      <div class="relative w-full rounded-2xl bg-surface-container p-3.5 border border-outline-variant/40 flex flex-col gap-2.5 shadow-md">
+        <div class="flex items-center justify-between">
+          <span class="font-mono text-xs text-primary font-bold uppercase flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">groups</span>
+            Squad Direct Selector (20 Squads)
+          </span>
+          <span class="text-[10px] font-mono text-gray-400" id="squad-selector-status">Select to view / award</span>
+        </div>
+        <div class="flex gap-2">
+          <div class="relative flex-1">
+            <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
+            <input type="text" id="squad-search-input" placeholder="Search squad name or code..." oninput="filterSquadSelector(this.value)" class="w-full h-10 pl-9 pr-3 rounded-lg bg-surface-container-lowest border border-white/10 text-xs font-mono text-white focus:outline-none focus:border-primary transition">
+          </div>
+          <button onclick="awardDirectlySelectedSquad()" type="button" class="h-10 px-3 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary border border-primary/40 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1 active:scale-95 transition cursor-pointer shrink-0">
+            <span class="material-symbols-outlined text-[16px]">verified</span>
+            <span>Award</span>
+          </button>
+        </div>
+        <select id="team-selector" class="w-full h-10 px-3 rounded-lg bg-surface-container-lowest border border-white/10 text-xs font-mono text-white focus:outline-none focus:border-primary transition cursor-pointer" onchange="onSquadSelectionChanged(this.value)">
+        </select>
+      </div>
 
       <!-- ACTION 1: Select Beacon Cone Colour -->
       <div class="relative w-full rounded-2xl bg-surface-container p-4 shadow-xl flex flex-col gap-3 border-2 border-primary/40">
@@ -204,9 +224,15 @@
             <span class="flex items-center gap-1.5 text-primary">
               <span class="material-symbols-outlined text-[16px] animate-spin">cyclone</span> Center Player's QR in Frame
             </span>
-            <button onclick="stopCameraScanner()" type="button" class="px-3 py-1 rounded bg-error/20 hover:bg-error/30 text-error font-bold transition">
-              Close Camera
-            </button>
+            <div class="flex items-center gap-2">
+              <button id="btn-torch-toggle" onclick="toggleScannerTorch()" type="button" class="px-2.5 py-1 rounded bg-yellow/20 hover:bg-yellow/30 text-yellow text-xs font-bold transition flex items-center gap-1 cursor-pointer">
+                <span class="material-symbols-outlined text-[15px]">flash_on</span>
+                <span>Flash</span>
+              </button>
+              <button onclick="stopCameraScanner()" type="button" class="px-3 py-1 rounded bg-error/20 hover:bg-error/30 text-error font-bold transition cursor-pointer">
+                Close Camera
+              </button>
+            </div>
           </div>
         </div>
 
@@ -769,10 +795,10 @@
             } else {
               chipsContainer.innerHTML = assignedSquads.map(function(s) {
                 var cNum = (s.currentClueIndex || 0) + 1;
-                return '<span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/40 font-mono text-[10px] font-bold flex items-center gap-1 shadow-sm">' +
+                return '<button type="button" onclick="selectSquadByChip(\'' + s._id + '\')" class="px-2 py-1 rounded-full bg-primary/20 hover:bg-primary/30 active:scale-95 text-primary border border-primary/40 font-mono text-[10px] font-bold flex items-center gap-1 shadow-sm transition cursor-pointer">' +
                   '<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>' +
                   (s.name || s.callsign) + ' (#' + cNum + ')' +
-                  '</span>';
+                  '</button>';
               }).join('');
             }
           }
@@ -1005,6 +1031,48 @@
       }
     }
 
+    var isTorchOn = false;
+    async function toggleScannerTorch() {
+      var btn = document.getElementById('btn-torch-toggle');
+      if (!isScanning) {
+        showNotification('Open camera scanner first to use torch.', true);
+        return;
+      }
+      try {
+        var video = document.querySelector('#qr-reader video');
+        if (!video || !video.srcObject) {
+          showNotification('Torch unavailable: camera stream not ready.', true);
+          return;
+        }
+        var track = video.srcObject.getVideoTracks()[0];
+        if (!track) {
+          showNotification('Torch unavailable: no video track detected.', true);
+          return;
+        }
+        var capabilities = track.getCapabilities ? track.getCapabilities() : {};
+        if (!capabilities.torch) {
+          showNotification('Torch/Flash is not supported on this device/camera.', true);
+          return;
+        }
+        isTorchOn = !isTorchOn;
+        await track.applyConstraints({
+          advanced: [{ torch: isTorchOn }]
+        });
+        if (btn) {
+          if (isTorchOn) {
+            btn.className = 'px-2.5 py-1 rounded bg-yellow text-black font-bold transition flex items-center gap-1 cursor-pointer shadow-[0_0_12px_rgba(255,214,0,0.8)]';
+            btn.innerHTML = '<span class="material-symbols-outlined text-[15px]">flash_on</span><span>Flash ON</span>';
+          } else {
+            btn.className = 'px-2.5 py-1 rounded bg-yellow/20 hover:bg-yellow/30 text-yellow text-xs font-bold transition flex items-center gap-1 cursor-pointer';
+            btn.innerHTML = '<span class="material-symbols-outlined text-[15px]">flash_on</span><span>Flash</span>';
+          }
+        }
+      } catch (err) {
+        console.warn('Torch toggle error:', err);
+        showNotification('Torch error: ' + (err.message || 'unable to toggle flash'), true);
+      }
+    }
+
     function cleanupScannerUI() {
       var box = document.getElementById('camera-viewfinder-box');
       var btnIcon = document.getElementById('camera-btn-icon');
@@ -1017,7 +1085,98 @@
       if (btnText) btnText.innerText = 'Open Camera Scanner';
       if (statusText) statusText.innerText = 'STANDBY';
       if (statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-gray-500';
+
+      var torchBtn = document.getElementById('btn-torch-toggle');
+      if (torchBtn) {
+        torchBtn.className = 'px-2.5 py-1 rounded bg-yellow/20 hover:bg-yellow/30 text-yellow text-xs font-bold transition flex items-center gap-1 cursor-pointer';
+        torchBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">flash_on</span><span>Flash</span>';
+      }
+      isTorchOn = false;
       isScanning = false;
+    }
+
+    function filterSquadSelector(query) {
+      var selector = document.getElementById('team-selector');
+      if (!selector || !Array.isArray(currentTeams)) return;
+      var q = (query || '').trim().toLowerCase();
+      var myZoneNorm = normalizeZone((currentUser && currentUser.zoneId) || 'ZONE_01');
+      var assignedSquads = currentTeams.filter(function(t) {
+        var target = resolveTeamTargetClue(t, allStationClues, currentTeams);
+        return target && normalizeZone(target.zoneId) === myZoneNorm;
+      });
+
+      var filtered = currentTeams.filter(function(t) {
+        if (!q) return true;
+        var name = (t.name || t.callsign || '').toLowerCase();
+        var code = String(t.teamCode || deriveTeamCode(t, currentTeams));
+        return name.includes(q) || code.includes(q);
+      });
+
+      if (filtered.length === 0) {
+        selector.innerHTML = '<option value="">-- No matching squad found --</option>';
+        return;
+      }
+
+      selector.innerHTML = filtered.map(function(t) {
+        var alreadyAwarded = t.visitedZones && t.visitedZones.some(function(z) { return normalizeZone(z) === myZoneNorm; });
+        var isTargetMe = assignedSquads.some(function(as) { return as._id === t._id; });
+        var tCode = deriveTeamCode(t, currentTeams);
+        if (alreadyAwarded) {
+          return '<option value="' + t._id + '" disabled class="text-gray-500 font-mono">✓ [ALREADY AWARDED] #' + tCode + ' ' + (t.name || t.callsign) + ' (' + (t.score || 0) + ' pts)</option>';
+        } else if (isTargetMe) {
+          return '<option value="' + t._id + '" class="font-bold text-amber-300">🎯 [ASSIGNED HERE] #' + tCode + ' ' + (t.name || t.callsign) + ' (' + (t.score || 0) + ' pts)</option>';
+        } else {
+          return '<option value="' + t._id + '">⚪ #' + tCode + ' ' + (t.name || t.callsign) + ' (' + (t.score || 0) + ' pts)</option>';
+        }
+      }).join('');
+
+      var firstActive = filtered.find(function(t) {
+        return !(t.visitedZones && t.visitedZones.some(function(z) { return normalizeZone(z) === myZoneNorm; }));
+      });
+      if (firstActive) {
+        selector.value = firstActive._id;
+        onSquadSelectionChanged(firstActive._id);
+      }
+    }
+
+    function onSquadSelectionChanged(teamId) {
+      if (!teamId) return;
+      var team = currentTeams.find(function(t) { return t._id === teamId; });
+      if (!team) return;
+      var tCode = deriveTeamCode(team, currentTeams);
+      var minp = document.getElementById('manual-cipher-input');
+      if (minp) {
+        var rankCodeNum = (checkinState.cardRankValue || 9);
+        var paddedCode = String(tCode).padStart(2, '0') + String(rankCodeNum).padStart(2, '0') + '10';
+        minp.value = paddedCode.slice(0, 2) + ' ' + paddedCode.slice(2, 4) + ' ' + paddedCode.slice(4);
+      }
+      var statusEl = document.getElementById('squad-selector-status');
+      if (statusEl) {
+        statusEl.innerText = (team.name || team.callsign) + ' selected';
+      }
+      updateSummary();
+    }
+
+    function selectSquadByChip(teamId) {
+      var selector = document.getElementById('team-selector');
+      if (selector && teamId) {
+        selector.value = teamId;
+        onSquadSelectionChanged(teamId);
+        showNotification('Selected ' + (selector.options[selector.selectedIndex] ? selector.options[selector.selectedIndex].text : 'Squad'));
+      }
+    }
+
+    async function awardDirectlySelectedSquad() {
+      var selector = document.getElementById('team-selector');
+      var teamId = selector ? selector.value : '';
+      if (!teamId) {
+        showNotification('Please select an approved squad first.', true);
+        return;
+      }
+      var team = currentTeams.find(function(t) { return t._id === teamId; });
+      var tCode = team ? deriveTeamCode(team, currentTeams) : 11;
+      var rawCipher = String(tCode).padStart(2, '0') + String(checkinState.cardRankValue || 9).padStart(2, '0') + '10';
+      await autoAwardCheckin(teamId, checkinState.cardRankValue, checkinState.cardSuit, 'Squad Direct Selection', false, rawCipher);
     }
 
     function handleManualCodeInput(el) {
@@ -1366,6 +1525,28 @@
 
         // Triumphant victory audio fanfare
         playVictoryChirp();
+
+        // Instant Broadcast to Player, Leaderboard & Admin
+        try {
+          var bc = new BroadcastChannel('territory_grid_live');
+          bc.postMessage({
+            type: 'CHECKIN_AWARD',
+            teamId: teamId,
+            teamName: data.teamName || squadName,
+            zoneId: zoneId,
+            pointsAwarded: data.pointsAwarded || totalPts,
+            teamScore: data.teamScore,
+            timestamp: Date.now()
+          });
+          bc.close();
+        } catch(e) {}
+        try {
+          localStorage.setItem('tg_last_checkin_event', JSON.stringify({
+            teamId: teamId,
+            zoneId: zoneId,
+            timestamp: Date.now()
+          }));
+        } catch(e) {}
 
         // High-impact celebration modal overlay
         showCheckinCelebration(data.teamName || squadName, data.pointsAwarded || totalPts, data.teamScore, zoneId, data.nextClueIndex, method, data.nextZoneLabel, data.nextClueText);

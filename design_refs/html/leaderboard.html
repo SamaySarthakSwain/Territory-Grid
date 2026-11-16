@@ -841,9 +841,27 @@
       syncGameStateClock();
       refreshLeaderboard();
 
-      // Poll sync every 1.8-2.2 seconds for ultra-responsive live score tracking
-      setInterval(refreshLeaderboard, 1200 + Math.floor(Math.random()*300));
-      setInterval(syncGameStateClock, 3000 + Math.floor(Math.random()*500));
+      // Poll sync every 1.2 seconds for ultra-responsive live score tracking
+      setInterval(refreshLeaderboard, 1200 + Math.floor(Math.random()*200));
+      setInterval(syncGameStateClock, 2500 + Math.floor(Math.random()*400));
+
+      // Instant 0ms Cross-Portal Sync via BroadcastChannel & LocalStorage
+      try {
+        var liveChannel = new BroadcastChannel('territory_grid_live');
+        liveChannel.onmessage = function (ev) {
+          if (ev.data && (ev.data.type === 'CHECKIN_AWARD' || ev.data.type === 'GAME_STATE_UPDATE')) {
+            refreshLeaderboard();
+            syncGameStateClock();
+          }
+        };
+      } catch (e) {}
+
+      window.addEventListener('storage', function (e) {
+        if (e.key === 'tg_last_checkin_event' || e.key === 'tg_game_state_event') {
+          refreshLeaderboard();
+          syncGameStateClock();
+        }
+      });
     });
   </script>
 </body>

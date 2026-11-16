@@ -165,6 +165,54 @@
         osc.start(now);
         osc.stop(now + 0.1);
       } catch (e) {}
+    },
+
+    award: function () {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const chords = [
+          [523.25, 659.25, 783.99],       // C5 Major
+          [587.33, 739.99, 880.00],       // D5 Major
+          [659.25, 830.61, 987.77],       // E5 Major
+          [1046.50, 1318.51, 1567.98]     // C6 High Triumph
+        ];
+        chords.forEach((chord, step) => {
+          const t = now + step * 0.11;
+          chord.forEach(freq => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.12, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.3);
+          });
+        });
+      } catch (e) {}
+    },
+
+    radar: function () {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1760, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.3);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.32);
+      } catch (e) {}
     }
   };
 
@@ -236,6 +284,16 @@
 
     countdown: function () {
       tacticalAudio.countdown();
+      tacticalHaptics.light();
+    },
+
+    award: function () {
+      tacticalAudio.award();
+      tacticalHaptics.success();
+    },
+
+    radar: function () {
+      tacticalAudio.radar();
       tacticalHaptics.light();
     }
   };

@@ -749,6 +749,28 @@
         }, 2200 + jitter);
       }
       scheduleNextClearancePoll();
+
+      // Instant 0ms Clearance Push via BroadcastChannel & Storage Event
+      try {
+        var liveChannel = new BroadcastChannel('territory_grid_live');
+        liveChannel.onmessage = function (ev) {
+          if (ev.data && (ev.data.type === 'APPROVAL_UPDATE' || ev.data.type === 'APPROVE_ALL')) {
+            var session = getStoredSession() || {};
+            var uid = currentUserId || session._id;
+            var role = currentRole || session.role;
+            checkApprovalStatus(uid, role, true);
+          }
+        };
+      } catch (e) {}
+
+      window.addEventListener('storage', function (e) {
+        if (e.key === 'tg_approval_event') {
+          var session = getStoredSession() || {};
+          var uid = currentUserId || session._id;
+          var role = currentRole || session.role;
+          checkApprovalStatus(uid, role, true);
+        }
+      });
     }
 
     async function manualCheckApprovalNow() {

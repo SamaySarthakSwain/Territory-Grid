@@ -1424,10 +1424,10 @@
       }, 1000);
 
       loadCluesAndSync();
-      // High-frequency real-time squad synchronization engine (~1.6s interval)
+      // High-frequency real-time squad synchronization engine (sub-second response)
       function scheduleNextTeamSync() {
-        var jitter = Math.floor(Math.random() * 200);
-        var baseDelay = (currentGameState === 'PLAYER_PHASE') ? 800 : 2000;
+        var jitter = Math.floor(Math.random() * 100);
+        var baseDelay = (currentGameState === 'PLAYER_PHASE') ? 850 : 1800;
         setTimeout(function() {
           syncTeamData().finally(scheduleNextTeamSync);
         }, baseDelay + jitter);
@@ -1435,15 +1435,37 @@
       scheduleNextTeamSync();
 
       function scheduleNextGameStateSync() {
-        var jitter = Math.floor(Math.random() * 200);
-        // Ultra-responsive polling in LOBBY or COUNTDOWN (800ms) so match start is picked up with zero lag!
-        var baseDelay = (currentGameState === 'LOBBY' || currentGameState === 'COUNTDOWN') ? 800 : 3500;
+        var jitter = Math.floor(Math.random() * 100);
+        var baseDelay = (currentGameState === 'LOBBY' || currentGameState === 'COUNTDOWN') ? 800 : 1500;
         setTimeout(function() {
           syncGameState().finally(scheduleNextGameStateSync);
         }, baseDelay + jitter);
       }
       syncGameState();
       scheduleNextGameStateSync();
+
+      // Instant 0ms Cross-Portal Sync via BroadcastChannel & LocalStorage
+      try {
+        var liveChannel = new BroadcastChannel('territory_grid_live');
+        liveChannel.onmessage = function (ev) {
+          if (ev.data && ev.data.type === 'CHECKIN_AWARD') {
+            var myTeamId = currentUser ? (currentUser.teamId || (currentMyTeam ? currentMyTeam._id : null)) : null;
+            if (!myTeamId || ev.data.teamId === myTeamId) {
+              syncTeamData();
+            }
+          } else if (ev.data && ev.data.type === 'GAME_STATE_UPDATE') {
+            syncGameState();
+          }
+        };
+      } catch (e) {}
+
+      window.addEventListener('storage', function (e) {
+        if (e.key === 'tg_last_checkin_event') {
+          syncTeamData();
+        } else if (e.key === 'tg_game_state_event') {
+          syncGameState();
+        }
+      });
       setInterval(function() {
         if (currentGameState === 'PLAYER_PHASE' && serverRemainingHuntSeconds > 0) {
           serverRemainingHuntSeconds--;
@@ -1566,6 +1588,49 @@
       }
     }
 
+    var lastKnownCheckinTime = null;
+
+    function triggerAwardToast(points, totalScore, stationName) {
+      var toast = document.getElementById('award-toast-pill');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'award-toast-pill';
+        toast.className = 'fixed top-4 inset-x-4 max-w-sm mx-auto z-[999] px-4 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-700 to-cyan-700 border border-emerald-300/50 shadow-[0_0_35px_rgba(16,185,129,0.7)] flex items-center justify-between gap-3 text-white transition-all duration-300 transform -translate-y-24 opacity-0 pointer-events-auto';
+        toast.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-black/40 flex items-center justify-center text-emerald-300 border border-emerald-300/40 shrink-0">
+              <span class="material-symbols-outlined text-2xl font-black">military_tech</span>
+            </div>
+            <div>
+              <div class="text-[10px] font-mono uppercase tracking-wider text-emerald-200 font-bold">Checkpoint Award Stamped!</div>
+              <div class="text-sm font-black text-white" id="toast-pts-label">+25 PTS</div>
+              <div class="text-[11px] text-cyan-200 truncate max-w-[180px]" id="toast-next-station">Next: Loading...</div>
+            </div>
+          </div>
+          <button onclick="dismissAwardToast()" class="w-7 h-7 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-gray-300 text-xs shrink-0 cursor-pointer">✕</button>
+        `;
+        document.body.appendChild(toast);
+      }
+      var ptsLabel = document.getElementById('toast-pts-label');
+      if (ptsLabel) ptsLabel.innerText = '+' + points + ' PTS (Total: ' + totalScore + ' PTS)';
+      var nextStLabel = document.getElementById('toast-next-station');
+      if (nextStLabel) nextStLabel.innerText = 'Next: ' + (stationName || 'Assigned Station');
+
+      toast.classList.remove('-translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      if (window._toastTimer) clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(dismissAwardToast, 4500);
+    }
+
+    function dismissAwardToast() {
+      var toast = document.getElementById('award-toast-pill');
+      if (toast) {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-24', 'opacity-0');
+      }
+    }
+
     function applyPlayerSyncData(data) {
       if (!data) return;
 
@@ -1655,15 +1720,38 @@
         }
       }
 
-      // 4. Trigger Celebration Modal on score increase or clue advancement
-      if (prevScore !== null && currentScore > prevScore) {
-        var ptsDelta = currentScore - prevScore;
+      // 4. Trigger Celebration Modal on score increase, clue advancement, or new checkin event
+      var isNewCheckin = false;
+      var checkinPts = 25;
+      if (data.lastCheckin && data.lastCheckin.timestamp) {
+        if (lastKnownCheckinTime !== null && data.lastCheckin.timestamp !== lastKnownCheckinTime) {
+          isNewCheckin = true;
+          checkinPts = data.lastCheckin.points || 25;
+        }
+        lastKnownCheckinTime = data.lastCheckin.timestamp;
+      }
+
+      if (isNewCheckin || (prevScore !== null && currentScore > prevScore)) {
+        var ptsDelta = (prevScore !== null && currentScore > prevScore) ? (currentScore - prevScore) : checkinPts;
         showCheckpointClearedModal(ptsDelta, currentScore, data.nextStationName, data.nextClueText);
+        triggerAwardToast(ptsDelta, currentScore, data.nextStationName);
+        if (window.tacticalFeedback?.award) {
+          window.tacticalFeedback.award();
+        }
         rotateCardCipher(true);
       } else if (prevClueIdx !== null && currentClueIdx > prevClueIdx) {
         showCheckpointClearedModal(25, currentScore, data.nextStationName, data.nextClueText);
+        triggerAwardToast(25, currentScore, data.nextStationName);
+        if (window.tacticalFeedback?.award) {
+          window.tacticalFeedback.award();
+        }
         rotateCardCipher(true);
       }
+
+      if (activeCipherCard) {
+        applyCardVisuals(activeCipherCard);
+      }
+    }
 
       if (activeCipherCard) {
         applyCardVisuals(activeCipherCard);

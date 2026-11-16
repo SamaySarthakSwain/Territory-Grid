@@ -940,6 +940,35 @@ module.exports = async (req, res) => {
     }
 
     // ─────────────────────────────────────────────────────────
+    // 5b. POST /api/admin/approve-all (Batch Authorize All Pending)
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/approve-all' && req.method === 'POST') {
+      let approvedCount = 0;
+      if (atlasDb) {
+        const resTeams = await atlasDb.collection('teams').updateMany({ isApproved: { $ne: true } }, { $set: { isApproved: true } });
+        const resUsers = await atlasDb.collection('users').updateMany({ isApproved: { $ne: true } }, { $set: { isApproved: true } });
+        approvedCount = (resTeams.modifiedCount || 0) + (resUsers.modifiedCount || 0);
+      }
+
+      (memoryStore.collections.teams || []).forEach(t => {
+        if (!t.isApproved) {
+          t.isApproved = true;
+          approvedCount++;
+        }
+      });
+      (memoryStore.collections.users || []).forEach(u => {
+        if (!u.isApproved) {
+          u.isApproved = true;
+          approvedCount++;
+        }
+      });
+
+      memoryStore.save();
+      memoryStore.logEvent('APPROVE_ALL', 'Game Master batch-authorized all pending squads and field marshals (' + approvedCount + ' total).');
+      return sendJson(res, 200, { success: true, count: approvedCount, message: 'Successfully authorized all ' + approvedCount + ' pending clearances.' });
+    }
+
+    // ─────────────────────────────────────────────────────────
     // 6. POST /api/admin/reject
     // ─────────────────────────────────────────────────────────
     if ((pathname === '/api/admin/reject' || pathname === '/api/admin/reject-team' || pathname === '/api/admin/reject-user') && req.method === 'POST') {

@@ -394,10 +394,16 @@
               Teams and Marshals waiting for your approval to enter the Territory Grid app.
             </p>
           </div>
-          <button onclick="loadPendingApprovals()" class="px-4 py-2 rounded-xl bg-cyan/10 border border-cyan/30 text-cyan text-xs font-headline font-bold hover:bg-cyan/20 transition flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-sm">refresh</span>
-            <span>Check Now</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <button onclick="approveAllPending()" id="btn-approve-all-top" class="px-4 py-2 rounded-xl bg-gradient-to-r from-green to-emerald-400 text-black text-xs font-headline font-black uppercase tracking-wider hover:brightness-110 active:scale-95 shadow-[0_0_15px_rgba(0,255,136,0.4)] transition flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-sm font-bold">done_all</span>
+              <span>Approve All</span>
+            </button>
+            <button onclick="loadPendingApprovals()" class="px-4 py-2 rounded-xl bg-cyan/10 border border-cyan/30 text-cyan text-xs font-headline font-bold hover:bg-cyan/20 transition flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-sm">refresh</span>
+              <span>Check Now</span>
+            </button>
+          </div>
         </div>
 
         <!-- Pending Items Container -->
@@ -852,7 +858,36 @@
       // Auto-poll pending approvals and roster safely
       // ── Smart Tab-Aware Polling (replaces raw setIntervals to prevent DOM thrashing) ──
       scheduleAdminTabPoll();
+
+      // Instant cross-portal synchronization
+      try {
+        var liveChannel = new BroadcastChannel('territory_grid_live');
+        liveChannel.onmessage = function (ev) {
+          if (ev.data && ev.data.type === 'CHECKIN_AWARD') {
+            loadLeaderboard();
+            loadApprovedRoster();
+          }
+        };
+      } catch (e) {}
+
+      window.addEventListener('storage', function (e) {
+        if (e.key === 'tg_last_checkin_event') {
+          loadLeaderboard();
+          loadApprovedRoster();
+        }
+      });
     });
+
+    function broadcastGameStateChange(status) {
+      try {
+        var bc = new BroadcastChannel('territory_grid_live');
+        bc.postMessage({ type: 'GAME_STATE_UPDATE', status: status, timestamp: Date.now() });
+        bc.close();
+      } catch(e) {}
+      try {
+        localStorage.setItem('tg_game_state_event', JSON.stringify({ status: status, timestamp: Date.now() }));
+      } catch(e) {}
+    }
 
     function signOut() {
       localStorage.removeItem('territory_grid_user');
@@ -1467,6 +1502,7 @@
         if (targetEndsAt) {
           startAdminLocalCountdown(targetEndsAt);
         }
+        broadcastGameStateChange('COUNTDOWN');
       } catch (e) {
         alert('Failed to initiate countdown: ' + e.message);
         syncAdminGameState();
@@ -1486,6 +1522,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: action })
         });
+        broadcastGameStateChange(action);
         await syncAdminGameState();
       } catch (e) {
         alert('Failed to pause/resume game: ' + e.message);
@@ -1502,6 +1539,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'ENDED' })
         });
+        broadcastGameStateChange('ENDED');
         syncAdminGameState();
       } catch (e) {
         alert('Failed to end match: ' + e.message);
@@ -1516,6 +1554,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'RESET' })
         });
+        broadcastGameStateChange('RESET');
         syncAdminGameState();
       } catch (e) {
         alert('Failed to reset to lobby: ' + e.message);
@@ -1944,6 +1983,49 @@
       }
     }
 
+    // Batch Authorize All Pending Clearances (Instant 1-Click Approval)
+    async function approveAllPending() {
+      try {
+        var btn = document.getElementById('btn-approve-all-top');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">refresh</span> <span>AUTHORIZING ALL...</span>';
+        }
+        var res = await fetch(apiUrl('/api/admin/approve-all'), { method: 'POST' });
+        var data = await res.json();
+        if (data.success) {
+          showAdminToast('Authorized ' + (data.count || 'all') + ' clearances successfully!', 'success');
+          try {
+            var bc = new BroadcastChannel('territory_grid_live');
+            bc.postMessage({ type: 'APPROVAL_UPDATE', timestamp: Date.now() });
+            bc.close();
+          } catch(e) {}
+          try {
+            localStorage.setItem('tg_approval_event', Date.now().toString());
+          } catch(e) {}
+          if (window.confetti) {
+            try { window.confetti({ particleCount: 70, spread: 60, origin: { y: 0.3 } }); } catch(e){}
+          }
+          if (window.tacticalFeedback?.success) {
+            window.tacticalFeedback.success();
+          }
+          loadPendingApprovals();
+          loadApprovedRoster();
+          loadLeaderboard();
+        } else {
+          showAdminToast(data.error || 'Failed to approve all.', 'error');
+        }
+      } catch (e) {
+        showAdminToast('Error approving all: ' + e.message, 'error');
+      } finally {
+        var btnReset = document.getElementById('btn-approve-all-top');
+        if (btnReset) {
+          btnReset.disabled = false;
+          btnReset.innerHTML = '<span class="material-symbols-outlined text-sm font-bold">done_all</span> <span>Approve All</span>';
+        }
+      }
+    }
+
     // Instant Resilient Approval (Prevents flicker, duplicates, and race conditions)
     async function approveEntity(type, id) {
       if (!id || inFlightApprovals[id]) return;
@@ -1992,6 +2074,14 @@
 
         if (data.success) {
           showAdminToast((data.message || 'Clearance authorized successfully'), 'success');
+          try {
+            var bc = new BroadcastChannel('territory_grid_live');
+            bc.postMessage({ type: 'APPROVAL_UPDATE', id: id, timestamp: Date.now() });
+            bc.close();
+          } catch(e) {}
+          try {
+            localStorage.setItem('tg_approval_event', Date.now().toString());
+          } catch(e) {}
           loadApprovedRoster();
           loadLeaderboard();
           loadDatabaseData();
