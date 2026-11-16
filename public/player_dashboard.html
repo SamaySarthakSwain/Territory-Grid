@@ -161,6 +161,14 @@
     }
   </style>
   <script src="/vendor/qrcode.bundle.js"></script>
+  <script src="/vendor/html5-qrcode.min.js"></script>
+  <script>
+    if (typeof Html5Qrcode === 'undefined') {
+      var h5s = document.createElement('script');
+      h5s.src = 'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+      document.head.appendChild(h5s);
+    }
+  </script>
   <script>
     // Resilient API Base Resolver (Works in APK file:// and web https://)
     function apiUrl(path) {
@@ -369,6 +377,14 @@
       </div>
 
       <!-- ACTIVE CLUE: Neon HUD Mission Card -->
+      <!-- QUICK ACTIONS: Player Camera Scanner Button -->
+      <div class="w-full max-w-sm mx-auto mb-1">
+        <button id="btn-player-open-scanner" type="button" onclick="openPlayerScannerModal()" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-primary via-cyan to-primary-container text-black font-headline font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(0,229,255,0.4)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
+          <span class="material-symbols-outlined text-[24px]">photo_camera</span>
+          <span>📷 Scan Station Checkpoint QR</span>
+        </button>
+      </div>
+
       <div id="active-clue-directive-card" class="bg-surface-container-low/90 backdrop-blur-2xl rounded-xl p-4 shadow-[0_0_30px_rgba(255,214,0,0.12)] border border-[#FFD600]/30 relative overflow-hidden space-y-3 transition-all duration-500">
         <!-- Amber / Cyan Laser Header Strip -->
         <div class="flex items-center justify-between">
@@ -628,6 +644,68 @@
 
     </div>
     </div>
+    <!-- PLAYER CAMERA SCANNER MODAL -->
+  <div id="player-scanner-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-sm rounded-3xl bg-[#0e1726] border-2 border-primary shadow-[0_0_50px_rgba(0,229,255,0.4)] p-5 space-y-4 flex flex-col items-center animate-scaleUp">
+      <div class="w-full flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-2xl">qr_code_scanner</span>
+          <h3 class="font-headline font-bold text-base text-white">Station QR Scanner</h3>
+        </div>
+        <button onclick="closePlayerScannerModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-300 font-mono text-center">
+        Point your camera at the Station Beacon QR code displayed by the Field Marshal or at the checkpoint.
+      </p>
+
+      <!-- Camera viewfinder container -->
+      <div class="relative w-full rounded-2xl overflow-hidden bg-black border border-primary/50 flex flex-col items-center justify-center min-h-[260px]">
+        <div id="player-qr-reader" class="w-full max-w-[340px] rounded-xl overflow-hidden"></div>
+        <div class="absolute inset-x-6 top-1/2 -translate-y-1/2 h-0.5 bg-primary shadow-[0_0_12px_#00e5ff] animate-pulse pointer-events-none"></div>
+      </div>
+
+      <!-- Alert Message Box in modal -->
+      <div id="player-scanner-alert" class="w-full p-2.5 rounded-xl bg-error/15 border border-error/40 text-error text-xs font-mono hidden text-center"></div>
+
+      <div class="w-full flex gap-2">
+        <button onclick="closePlayerScannerModal()" class="w-full py-2.5 rounded-xl border border-gray-600 hover:border-gray-400 text-gray-300 font-headline text-xs uppercase tracking-wider transition cursor-pointer">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKPOINT CLEARED CELEBRATION MODAL -->
+  <div id="checkpoint-cleared-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#0e1f18] to-[#07100c] border-2 border-primary shadow-[0_0_60px_rgba(0,229,255,0.45)] p-6 space-y-5 text-center animate-scaleUp">
+      <div class="relative w-20 h-20 mx-auto rounded-2xl bg-gradient-to-tr from-primary/20 to-tertiary/20 border-2 border-tertiary flex items-center justify-center shadow-[0_0_25px_rgba(121,255,91,0.5)]">
+        <span class="material-symbols-outlined text-tertiary text-4xl animate-bounce">military_tech</span>
+        <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary animate-ping"></span>
+      </div>
+      <div class="space-y-1">
+        <span class="text-[11px] font-mono uppercase tracking-widest text-tertiary font-bold">Checkpoint Cleared!</span>
+        <h3 class="font-headline font-black text-2xl text-white tracking-tight" id="cleared-points-label">+25 PTS AWARDED</h3>
+        <p class="text-xs text-gray-300 font-mono">New Squad Score: <span id="cleared-total-score" class="text-primary font-bold">-- PTS</span></p>
+      </div>
+      
+      <div class="rounded-2xl bg-black/50 border border-white/10 p-4 space-y-2 text-left">
+        <div class="flex items-center gap-1.5 text-[11px] font-mono text-yellow font-bold uppercase">
+          <span class="material-symbols-outlined text-sm">explore</span>
+          <span>Next Location Directive</span>
+        </div>
+        <h4 class="font-headline font-bold text-base text-white" id="cleared-next-station">Station Area</h4>
+        <p class="text-xs text-gray-300 font-body leading-relaxed" id="cleared-next-clue">"Proceed to assigned campus checkpoint..."</p>
+      </div>
+
+      <button onclick="dismissCheckpointClearedModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container text-black font-headline font-bold text-xs uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
+        Continue Mission 🚀
+      </button>
+    </div>
+  </div>
+
   </main>
 
   <!-- Player Bottom Navigation Bar -->
@@ -640,6 +718,10 @@
       <button onclick="scrollToCard()" class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition active:scale-95 cursor-pointer">
         <span class="material-symbols-outlined text-[22px] sm:text-[24px]">style</span>
         <span class="font-mono text-[10px] sm:text-xs uppercase tracking-wider">My Card</span>
+      </button>
+      <!-- Center Camera Scan Nav Action -->
+      <button onclick="openPlayerScannerModal()" title="Scan Station Beacon" class="flex flex-col items-center justify-center -mt-5 w-14 h-14 rounded-full bg-gradient-to-tr from-primary to-cyan text-black shadow-[0_0_20px_rgba(0,229,255,0.7)] border-2 border-white font-bold active:scale-90 transition cursor-pointer">
+        <span class="material-symbols-outlined text-[26px]">photo_camera</span>
       </button>
       <button onclick="scrollToDeck()" class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition active:scale-95 cursor-pointer">
         <span class="material-symbols-outlined text-[22px] sm:text-[24px]">inventory_2</span>
@@ -1333,10 +1415,11 @@
       loadCluesAndSync();
       // High-frequency real-time squad synchronization engine (~1.6s interval)
       function scheduleNextTeamSync() {
-        var jitter = Math.floor(Math.random() * 400);
+        var jitter = Math.floor(Math.random() * 200);
+        var baseDelay = (currentGameState === 'PLAYER_PHASE') ? 800 : 2000;
         setTimeout(function() {
           syncTeamData().finally(scheduleNextTeamSync);
-        }, 1600 + jitter);
+        }, baseDelay + jitter);
       }
       scheduleNextTeamSync();
 
@@ -1400,6 +1483,25 @@
 
     async function syncTeamData() {
       try {
+        var myTeamId = currentUser ? (currentUser.teamId || (currentMyTeam ? currentMyTeam._id : null)) : null;
+        var myCallsign = currentUser ? currentUser.callsign : null;
+
+        // 1. High-speed single player sync endpoint (<50ms response)
+        if (myTeamId || myCallsign) {
+          try {
+            var syncUrl = apiUrl('/api/player/sync?teamId=' + encodeURIComponent(myTeamId || '') + '&callsign=' + encodeURIComponent(myCallsign || '') + '&_t=' + Date.now());
+            var syncRes = await fetch(syncUrl, { cache: 'no-store' });
+            var syncData = await syncRes.json();
+            if (syncData.success && syncData.teamId) {
+              applyPlayerSyncData(syncData);
+              return;
+            }
+          } catch (syncErr) {
+            console.warn('Dedicated player sync error, falling back:', syncErr);
+          }
+        }
+
+        // 2. Fallback to /api/teams
         var res = await fetch(apiUrl('/api/teams?_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
         if (!data.success) return;
@@ -1409,134 +1511,151 @@
         var approvedTeams = teams.filter(function(t) { return t.isApproved; });
         approvedTeams.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
 
-        // Find current player team
         var myTeam = approvedTeams.find(function(t) {
+          return (currentUser.teamId && t._id === currentUser.teamId) ||
+                 (t.callsign && currentUser.callsign && t.callsign.toLowerCase() === currentUser.callsign.toLowerCase());
+        }) || teams.find(function(t) {
           return (currentUser.teamId && t._id === currentUser.teamId) ||
                  (t.callsign && currentUser.callsign && t.callsign.toLowerCase() === currentUser.callsign.toLowerCase());
         });
 
-        if (!myTeam) {
-          // If not in approved teams yet, find in all teams
-          myTeam = teams.find(function(t) {
-            return (currentUser.teamId && t._id === currentUser.teamId) ||
-                   (t.callsign && currentUser.callsign && t.callsign.toLowerCase() === currentUser.callsign.toLowerCase());
+        if (myTeam) {
+          currentMyTeam = myTeam;
+          var myRankIndex = approvedTeams.findIndex(function(t) { return t._id === myTeam._id; });
+          var activeClue = (allClues && allClues.length > 0) ? resolveTeamTargetClue(myTeam, allClues, cachedTeamsList) : null;
+          
+          applyPlayerSyncData({
+            teamId: myTeam._id,
+            teamName: myTeam.name || myTeam.callsign,
+            callsign: myTeam.callsign,
+            score: myTeam.score || 0,
+            currentClueIndex: myTeam.currentClueIndex || 0,
+            visitedZones: myTeam.visitedZones || [],
+            cards: myTeam.cards || [],
+            cardsCount: (myTeam.cards || []).length,
+            rank: myRankIndex >= 0 ? (myRankIndex + 1) : null,
+            totalApprovedTeams: approvedTeams.length,
+            activeClue: activeClue ? {
+              zoneId: activeClue.zoneId,
+              zoneLabel: activeClue.zoneLabel || activeClue.zoneId,
+              text: activeClue.text
+            } : null,
+            nextStationName: activeClue ? (activeClue.zoneLabel || activeClue.zoneId) : 'ALL CHECKPOINTS CLEARED',
+            nextClueText: activeClue ? activeClue.text : 'All campus beacons verified! Report to Game Master Central.',
+            allCompleted: !activeClue && ((myTeam.currentClueIndex || 0) >= (allClues.length || 1))
           });
         }
 
-        if (myTeam) {
-          currentMyTeam = myTeam;
-
-          // Check if points were newly awarded or clue advanced!
-          if (lastRecordedScore !== null && myTeam.score > lastRecordedScore) {
-            var ptsDelta = myTeam.score - lastRecordedScore;
-            playUnlockChirp();
-            showPlayerNotification('🎉 +' + ptsDelta + ' PTS AWARDED! Objective Cleared!');
-            
-            var scoreEl = document.getElementById('team-score-num');
-            if (scoreEl) {
-              scoreEl.classList.add('text-green', 'animate-bounce');
-              setTimeout(function() { scoreEl.classList.remove('text-green', 'animate-bounce'); }, 3000);
-            }
-          }
-
-          var currentClueIdx = myTeam.currentClueIndex || 0;
-          if (lastRecordedClueIndex !== null && currentClueIdx > lastRecordedClueIndex) {
-            // Flash mission directive card in glowing amber
-            var clueCard = document.getElementById('active-clue-directive-card');
-            if (clueCard) {
-              clueCard.classList.add('ring-4', 'ring-[#FFD600]', 'shadow-[0_0_50px_rgba(255,214,0,0.5)]');
-              setTimeout(function() {
-                clueCard.classList.remove('ring-4', 'ring-[#FFD600]', 'shadow-[0_0_50px_rgba(255,214,0,0.5)]');
-              }, 4000);
-            }
-            // Rotate card instantly for the new checkpoint objective!
-            rotateCardCipher(true);
-            showPlayerNotification('🎯 NEW LOCATION UNLOCKED! Checkpoint #' + (currentClueIdx + 1) + ' directive active.');
-          }
-
-          lastRecordedScore = myTeam.score || 0;
-          lastRecordedClueIndex = currentClueIdx;
-
-          // Refresh QR cipher payload with verified teamId
-          if (activeCipherCard) {
-            applyCardVisuals(activeCipherCard);
-          }
-
-          // 1. Team Name & Points
-          document.getElementById('team-name-label').innerText = myTeam.name || myTeam.callsign;
-          document.getElementById('team-score-num').innerText = myTeam.score || 0;
-
-          // Rank
-          var myRankIndex = approvedTeams.findIndex(function(t) { return t._id === myTeam._id; });
-          var rankText = myRankIndex >= 0 ? '#' + (myRankIndex + 1) : '#--';
-          document.getElementById('team-rank-label').innerHTML = 'Rank ' + rankText + ' <span class="text-on-surface-variant font-normal">/ ' + approvedTeams.length + '</span>';
-
-          // Score Ring (circumference ~ 163)
-          var maxScore = 300;
-          var pct = Math.min((myTeam.score || 0) / maxScore, 1);
-          var strokeOffset = Math.round(163 * (1 - pct));
-          var ring = document.getElementById('score-ring-circle');
-          if (ring) ring.setAttribute('stroke-dashoffset', strokeOffset);
-          var bar = document.getElementById('score-progress-bar');
-          if (bar) bar.style.width = Math.max(Math.round(pct * 100), 5) + '%';
-
-          // 2. Cards Inventory
-          var cards = myTeam.cards || [];
-          document.getElementById('cards-count-label').innerText = cards.length;
-          document.getElementById('deck-count-indicator').innerText = cards.length + ' Cards Collected';
-
-          // Render collected deck
-          renderDeck(cards);
-
-          // 3. Active Clue Directive & Next Location Display (Balanced Round-Robin)
-          var currentIdx = myTeam.currentClueIndex || 0;
-          if (!allClues || allClues.length === 0) {
-            document.getElementById('active-checkpoint-label').innerText = 'STANDBY FOR DEPLOYMENT';
-            document.getElementById('active-zone-badge').innerText = 'AWAITING STATIONS';
-            document.getElementById('active-clue-text').innerHTML = '⏳ <b>FIELD DIRECTIVES DEPLOYING</b><br>Field Marshals are taking station at designated campus checkpoints. Directives will unlock as soon as stations open!';
-            document.getElementById('team-zone-label').innerText = 'Awaiting Checkpoint Stations';
-            var sn = document.getElementById('active-station-name');
-            if (sn) sn.innerText = 'Assigned Station: Standby';
-          } else {
-            var activeClue = resolveTeamTargetClue(myTeam, allClues, cachedTeamsList);
-            if (!activeClue) {
-              document.getElementById('active-checkpoint-label').innerText = 'FINAL OBJECTIVE CLEARED';
-              document.getElementById('active-zone-badge').innerText = 'COMPLETED';
-              document.getElementById('active-clue-text').innerHTML = '🏆 <b>ALL CAMPUS CHECKPOINTS COMPLETED!</b> Return to Game Master Samay for final scoring & victory ceremony!';
-              document.getElementById('team-zone-label').innerText = 'All ' + allClues.length + ' Checkpoints Cleared';
-              var sn = document.getElementById('active-station-name');
-              if (sn) sn.innerText = 'All Checkpoints Cleared!';
-              var ss = document.getElementById('active-station-status');
-              if (ss) { ss.innerText = 'MISSION COMPLETE'; ss.className = 'text-tertiary text-[11px] font-bold px-2 py-0.5 rounded bg-tertiary/15 border border-tertiary/30'; }
-            } else {
-              var cNum = currentIdx + 1;
-              document.getElementById('active-checkpoint-label').innerText = 'Beacon Checkpoint #' + String(cNum).padStart(2, '0') + ' (of ' + allClues.length + ')';
-              document.getElementById('active-zone-badge').innerText = (activeClue.zoneId || 'SECTOR').toUpperCase();
-              document.getElementById('active-clue-text').innerText = '“' + (activeClue.text || 'Proceed to campus station') + '”';
-              var targetStation = activeClue.zoneLabel || activeClue.zoneId || 'Station Area';
-              document.getElementById('team-zone-label').innerText = 'Next Location: ' + targetStation;
-              var sn = document.getElementById('active-station-name');
-              if (sn) sn.innerText = 'Assigned Station: ' + targetStation;
-              var ss = document.getElementById('active-station-status');
-              if (ss) { ss.innerText = 'ONLY THIS MARSHAL CAN SCAN'; ss.className = 'text-secondary-fixed text-[11px] font-bold px-2 py-0.5 rounded bg-secondary-fixed/15 border border-secondary-fixed/30'; }
-            }
-          }
-
-          if (cards.length > 0) {
-            var lastCard = cards[cards.length - 1];
-            document.getElementById('last-points-badge').innerText = '+' + ((lastCard.rank || 1) + 12) + ' PTS';
-          }
-        }
-
-        // Render Leaderboard Ticker Strip
         renderMiniLeaderboard(approvedTeams, myTeam ? myTeam._id : null);
-
       } catch (err) {
         console.warn('Sync error:', err);
       }
     }
 
-    function renderDeck(cards) {
+    function applyPlayerSyncData(data) {
+      if (!data) return;
+
+      var prevScore = lastRecordedScore;
+      var prevClueIdx = lastRecordedClueIndex;
+      var currentClueIdx = data.currentClueIndex || 0;
+      var currentScore = data.score || 0;
+
+      lastRecordedScore = currentScore;
+      lastRecordedClueIndex = currentClueIdx;
+
+      if (!currentMyTeam) currentMyTeam = {};
+      currentMyTeam._id = data.teamId;
+      currentMyTeam.name = data.teamName;
+      currentMyTeam.callsign = data.callsign;
+      currentMyTeam.score = currentScore;
+      currentMyTeam.currentClueIndex = currentClueIdx;
+      currentMyTeam.visitedZones = data.visitedZones || [];
+      currentMyTeam.cards = data.cards || [];
+
+      // 1. Team Name & Points
+      var nameEl = document.getElementById('team-name-label');
+      if (nameEl) nameEl.innerText = data.teamName || data.callsign;
+      var scoreEl = document.getElementById('team-score-num');
+      if (scoreEl) scoreEl.innerText = currentScore;
+
+      // Rank
+      var rankEl = document.getElementById('team-rank-label');
+      if (rankEl) {
+        var rankText = data.rank ? ('#' + data.rank) : '#--';
+        rankEl.innerHTML = 'Rank ' + rankText + ' <span class="text-on-surface-variant font-normal">/ ' + (data.totalApprovedTeams || 1) + '</span>';
+      }
+
+      // Score Ring & Progress Bar
+      var maxScore = 300;
+      var pct = Math.min(currentScore / maxScore, 1);
+      var strokeOffset = Math.round(163 * (1 - pct));
+      var ring = document.getElementById('score-ring-circle');
+      if (ring) ring.setAttribute('stroke-dashoffset', strokeOffset);
+      var bar = document.getElementById('score-progress-bar');
+      if (bar) bar.style.width = Math.max(Math.round(pct * 100), 5) + '%';
+
+      // 2. Cards Inventory
+      var cards = data.cards || [];
+      var cardsLabel = document.getElementById('cards-count-label');
+      if (cardsLabel) cardsLabel.innerText = cards.length;
+      var deckIndicator = document.getElementById('deck-count-indicator');
+      if (deckIndicator) deckIndicator.innerText = cards.length + ' Cards Collected';
+      renderDeck(cards);
+
+      if (cards.length > 0) {
+        var lastCard = cards[cards.length - 1];
+        var badge = document.getElementById('last-points-badge');
+        if (badge) badge.innerText = '+' + ((lastCard.rank || 1) + 12) + ' PTS';
+      }
+
+      // 3. Active Clue Directive & Next Location Display
+      var cpLabel = document.getElementById('active-checkpoint-label');
+      var zoneBadge = document.getElementById('active-zone-badge');
+      var clueText = document.getElementById('active-clue-text');
+      var teamZone = document.getElementById('team-zone-label');
+      var stationName = document.getElementById('active-station-name');
+      var stationStatus = document.getElementById('active-station-status');
+
+      if (data.allCompleted) {
+        if (cpLabel) cpLabel.innerText = 'FINAL OBJECTIVE CLEARED';
+        if (zoneBadge) zoneBadge.innerText = 'COMPLETED';
+        if (clueText) clueText.innerHTML = '🏆 <b>ALL CAMPUS CHECKPOINTS COMPLETED!</b> Return to Game Master Samay for final scoring & victory ceremony!';
+        if (teamZone) teamZone.innerText = 'All Checkpoints Cleared';
+        if (stationName) stationName.innerText = 'All Checkpoints Cleared!';
+        if (stationStatus) {
+          stationStatus.innerText = 'MISSION COMPLETE';
+          stationStatus.className = 'text-tertiary text-[11px] font-bold px-2 py-0.5 rounded bg-tertiary/15 border border-tertiary/30';
+        }
+      } else {
+        var cNum = currentClueIdx + 1;
+        if (cpLabel) cpLabel.innerText = 'Beacon Checkpoint #' + String(cNum).padStart(2, '0');
+        if (zoneBadge) zoneBadge.innerText = (data.activeClue ? data.activeClue.zoneId : 'STATION').toUpperCase();
+        if (clueText) clueText.innerText = '“' + (data.nextClueText || 'Proceed to campus station') + '”';
+        var targetStation = data.nextStationName || 'Station Area';
+        if (teamZone) teamZone.innerText = 'Next Location: ' + targetStation;
+        if (stationName) stationName.innerText = 'Assigned Station: ' + targetStation;
+        if (stationStatus) {
+          stationStatus.innerText = 'SCAN THIS STATION';
+          stationStatus.className = 'text-secondary-fixed text-[11px] font-bold px-2 py-0.5 rounded bg-secondary-fixed/15 border border-secondary-fixed/30';
+        }
+      }
+
+      // 4. Trigger Celebration Modal on score increase or clue advancement
+      if (prevScore !== null && currentScore > prevScore) {
+        var ptsDelta = currentScore - prevScore;
+        showCheckpointClearedModal(ptsDelta, currentScore, data.nextStationName, data.nextClueText);
+        rotateCardCipher(true);
+      } else if (prevClueIdx !== null && currentClueIdx > prevClueIdx) {
+        showCheckpointClearedModal(25, currentScore, data.nextStationName, data.nextClueText);
+        rotateCardCipher(true);
+      }
+
+      if (activeCipherCard) {
+        applyCardVisuals(activeCipherCard);
+      }
+    }
+
+        function renderDeck(cards) {
       var container = document.getElementById('collected-deck-container');
       if (!container) return;
 

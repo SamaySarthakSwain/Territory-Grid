@@ -1,16 +1,4 @@
 {
-  "users": [
-    {
-      "_id": "user_admin_samay",
-      "callsign": "samay",
-      "name": "Game Master Samay",
-      "role": "ADMIN",
-      "password": "samay",
-      "isApproved": true,
-      "createdAt": "2026-11-13T00:00:00.000Z"
-    }
-  ],
-  "teams": [],
   "clues": [
     {
       "_id": "clue_01",
@@ -23,22 +11,322 @@
       "text": "Search the courtyard perimeter behind the ancient bronze solar obelisk.",
       "zoneId": "ZONE_02",
       "zoneLabel": "Zone 2 - Solar Obelisk"
+    },
+    {
+      "_id": "clue_mwiv6sut",
+      "text": "Lhc",
+      "zoneId": "LHC",
+      "zoneLabel": "Lhc"
+    }
+  ],
+  "teams": [],
+  "users": [
+    {
+      "_id": "user_admin_samay",
+      "name": "Game Master Samay",
+      "role": "ADMIN",
+      "callsign": "samay",
+      "password": "samay",
+      "createdAt": "2026-11-13T00:00:00.000Z",
+      "isApproved": true
     }
   ],
   "checkins": [],
   "gameState": {
+    "endsAt": null,
     "status": "LOBBY",
+    "endedAt": null,
+    "pausedAt": null,
+    "startedAt": null,
+    "totalPausedMs": 0,
+    "countdownEndsAt": null,
     "durationMinutes": 52,
     "durationSeconds": 3120,
-    "startedAt": null,
-    "endsAt": null,
-    "countdownStartAt": null,
-    "countdownEndsAt": null,
-    "pausedAt": null,
-    "totalPausedMs": 0,
-    "endedAt": null
+    "countdownStartAt": null
   },
   "system_logs": [
+    {
+      "_id": "log_1794813282138_csrv",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (6) and non-admin operatives.",
+      "timestamp": "2026-11-16T07:14:42.138Z"
+    },
+    {
+      "_id": "log_1794813280113_y5sk",
+      "action": "CHECKIN",
+      "details": "Team \"Phase8 Squad\" awarded +28 PTS at ZONE_01 (Total: 28 PTS)",
+      "timestamp": "2026-11-16T07:14:40.113Z"
+    },
+    {
+      "_id": "log_1794813255058_nazt",
+      "action": "CHECKIN",
+      "details": "Team \"Phase8 Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
+      "timestamp": "2026-11-16T07:14:15.058Z"
+    },
+    {
+      "_id": "log_1794813179174_7m5a",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Phase8 Squad\" (user_1794813176918_6zt8m)",
+      "timestamp": "2026-11-16T07:12:59.174Z"
+    },
+    {
+      "_id": "log_1794813177545_6r1y",
+      "action": "REGISTER",
+      "details": "PLAYER \"phase8_squad_1794813175646\" registered.",
+      "timestamp": "2026-11-16T07:12:57.545Z"
+    },
+    {
+      "_id": "log_1794813158588_kt6p",
+      "action": "REGISTER",
+      "details": "PLAYER \"phase8_squad_1794813157501\" registered.",
+      "timestamp": "2026-11-16T07:12:38.588Z"
+    },
+    {
+      "_id": "log_1794813063550_sonk",
+      "action": "REGISTER",
+      "details": "PLAYER \"phase8_squad_1794813061073\" registered.",
+      "timestamp": "2026-11-16T07:11:03.550Z"
+    },
+    {
+      "_id": "log_1794812998605_z7fy",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-16T07:09:58.605Z"
+    },
+    {
+      "_id": "log_1794812994937_mbx6",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
+      "timestamp": "2026-11-16T07:09:54.937Z"
+    },
+    {
+      "_id": "log_1794812992080_y21m",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 2 squads.",
+      "timestamp": "2026-11-16T07:09:52.080Z"
+    },
+    {
+      "_id": "log_1794812989113_mgiu",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_954577\" awarded +22 PTS at LHC (Total: 22 PTS)",
+      "timestamp": "2026-11-16T07:09:49.113Z"
+    },
+    {
+      "_id": "log_1794812985223_8ez0",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_954577\" (user_1794812957969_5c0vx)",
+      "timestamp": "2026-11-16T07:09:45.223Z"
+    },
+    {
+      "_id": "log_1794812961990_t84b",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_954577\" (team_1794812957175_moxg4)",
+      "timestamp": "2026-11-16T07:09:21.990Z"
+    },
+    {
+      "_id": "log_1794812961176_xhbm",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_954577\" (team_1794812955955_w27ut)",
+      "timestamp": "2026-11-16T07:09:21.176Z"
+    },
+    {
+      "_id": "log_1794812959775_uho0",
+      "action": "LOGIN",
+      "details": "PLAYER \"audit_sq_954577\" signed in (Approved: false)",
+      "timestamp": "2026-11-16T07:09:19.775Z"
+    },
+    {
+      "_id": "log_1794812958871_oi2w",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-16T07:09:18.871Z"
+    },
+    {
+      "_id": "log_1794812958208_4iuv",
+      "action": "REGISTER",
+      "details": "MEMBER registered: \"audit_mr_954577\" (Pending Approval)",
+      "timestamp": "2026-11-16T07:09:18.208Z"
+    },
+    {
+      "_id": "log_1794812957433_zvvr",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"audit_sq2_954577\" (Pending Approval)",
+      "timestamp": "2026-11-16T07:09:17.433Z"
+    },
+    {
+      "_id": "log_1794812956196_004b",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"audit_sq_954577\" (Pending Approval)",
+      "timestamp": "2026-11-16T07:09:16.196Z"
+    },
+    {
+      "_id": "log_1794812937558_vmrj",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-16T07:08:57.558Z"
+    },
+    {
+      "_id": "log_1794812936572_15cf",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (3) and non-admin operatives.",
+      "timestamp": "2026-11-16T07:08:56.572Z"
+    },
+    {
+      "_id": "log_1794812934297_cjz2",
+      "action": "GAME_STATUS",
+      "details": "52-Minute Hunt duration expired. Match concluded.",
+      "timestamp": "2026-11-16T07:08:54.297Z"
+    },
+    {
+      "_id": "log_1794812933419_pgyo",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 3 squads.",
+      "timestamp": "2026-11-16T07:08:53.419Z"
+    },
+    {
+      "_id": "log_1794812929865_im1i",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_907416\" awarded +22 PTS at ZONE_02 (Total: 22 PTS)",
+      "timestamp": "2026-11-16T07:08:49.865Z"
+    },
+    {
+      "_id": "log_1794812922907_zr1v",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_907416\" (user_1794812913908_wez7t)",
+      "timestamp": "2026-11-16T07:08:42.907Z"
+    },
+    {
+      "_id": "log_1794812919680_ijns",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_907416\" (team_1794812912747_j634l)",
+      "timestamp": "2026-11-16T07:08:39.680Z"
+    },
+    {
+      "_id": "log_1794812916155_5lyj",
+      "action": "LOGIN",
+      "details": "PLAYER \"audit_sq_907416\" signed in (Approved: false)",
+      "timestamp": "2026-11-16T07:08:36.155Z"
+    },
+    {
+      "_id": "log_1794812915180_up4j",
+      "action": "ADMIN_LOGIN",
+      "details": "Game Master Samay authenticated.",
+      "timestamp": "2026-11-16T07:08:35.180Z"
+    },
+    {
+      "_id": "log_1794812914617_y9z5",
+      "action": "REGISTER",
+      "details": "MEMBER registered: \"audit_mr_907416\" (Pending Approval)",
+      "timestamp": "2026-11-16T07:08:34.617Z"
+    },
+    {
+      "_id": "log_1794812913088_gff9",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"audit_sq2_907416\" (Pending Approval)",
+      "timestamp": "2026-11-16T07:08:33.088Z"
+    },
+    {
+      "_id": "log_1794812911658_p0vy",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"audit_sq_907416\" (Pending Approval)",
+      "timestamp": "2026-11-16T07:08:31.658Z"
+    },
+    {
+      "_id": "log_1794811854962_0s9o",
+      "action": "CHECKIN",
+      "details": "Team \"Test Team 44154\" awarded +22 PTS at ZONE_01 (Total: 22 PTS)",
+      "timestamp": "2026-11-16T06:50:54.962Z"
+    },
+    {
+      "_id": "log_1794811851311_i8tl",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Test Team 44154\" (team_1794811847201_5wour)",
+      "timestamp": "2026-11-16T06:50:51.311Z"
+    },
+    {
+      "_id": "log_1794811848033_gcpl",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"test_tm_44154\" (Pending Approval)",
+      "timestamp": "2026-11-16T06:50:48.033Z"
+    },
+    {
+      "_id": "log_1794809608662_rq6x",
+      "action": "LOGIN",
+      "details": "MEMBER \"Marshal\" signed in (Approved: true)",
+      "timestamp": "2026-11-16T06:13:28.662Z"
+    },
+    {
+      "_id": "log_1794809552364_f3wz",
+      "action": "GAME_STATUS",
+      "details": "Game Master initiated 10s countdown for 52-minute hunt.",
+      "timestamp": "2026-11-16T06:12:32.364Z"
+    },
+    {
+      "_id": "log_1794809540371_78ma",
+      "action": "GAME_STATUS",
+      "details": "10s Countdown completed! Game is now LIVE in PLAYER_PHASE (52 Minutes).",
+      "timestamp": "2026-11-16T06:12:20.371Z"
+    },
+    {
+      "_id": "log_1794809530072_ygv5",
+      "action": "GAME_STATUS",
+      "details": "Game Master initiated 10s countdown for 52-minute hunt.",
+      "timestamp": "2026-11-16T06:12:10.072Z"
+    },
+    {
+      "_id": "log_1794809523222_x6zz",
+      "action": "GAME_STATUS",
+      "details": "10s Countdown completed! Game is now LIVE in PLAYER_PHASE (52 Minutes).",
+      "timestamp": "2026-11-16T06:12:03.222Z"
+    },
+    {
+      "_id": "log_1794809512530_tcmt",
+      "action": "GAME_STATUS",
+      "details": "Game Master initiated 10s countdown for 52-minute hunt.",
+      "timestamp": "2026-11-16T06:11:52.530Z"
+    },
+    {
+      "_id": "log_1794809497359_6zan",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal1\" (user_1794809450334_ucsag)",
+      "timestamp": "2026-11-16T06:11:37.359Z"
+    },
+    {
+      "_id": "log_1794809493764_7twy",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal2\" (user_1794809483980_q5cks)",
+      "timestamp": "2026-11-16T06:11:33.764Z"
+    },
+    {
+      "_id": "log_1794809492789_vhbt",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Marshal1\" (user_1794809450334_ucsag)",
+      "timestamp": "2026-11-16T06:11:32.789Z"
+    },
+    {
+      "_id": "log_1794809484239_fq4s",
+      "action": "REGISTER",
+      "details": "MEMBER registered: \"Marshal2\" (Pending Approval)",
+      "timestamp": "2026-11-16T06:11:24.239Z"
+    },
+    {
+      "_id": "log_1794809451006_kg9m",
+      "action": "REGISTER",
+      "details": "MEMBER registered: \"Marshal\" (Pending Approval)",
+      "timestamp": "2026-11-16T06:10:51.006Z"
+    },
+    {
+      "_id": "log_1794809445770_cyua",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Team1\" (team_1794809434418_56m91)",
+      "timestamp": "2026-11-16T06:10:45.770Z"
+    },
+    {
+      "_id": "log_1794809435137_jjy8",
+      "action": "REGISTER",
+      "details": "PLAYER registered: \"Team1\" (Pending Approval)",
+      "timestamp": "2026-11-16T06:10:35.137Z"
+    },
     {
       "_id": "log_init",
       "action": "SYSTEM_INIT",

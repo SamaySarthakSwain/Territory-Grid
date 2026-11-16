@@ -183,7 +183,12 @@
           
           <button id="btn-simulate-scan" type="button" onclick="simulateQRScan()" class="h-12 rounded-xl bg-surface-container-lowest hover:bg-surface-container-highest text-secondary-fixed border border-secondary-fixed/40 font-bold font-label-md flex items-center justify-center gap-2 active:scale-[0.98] transition cursor-pointer">
             <span class="material-symbols-outlined text-[20px]">bolt</span>
-            <span>Simulate Squad Scan (Test)</span>
+            <span>Simulate Squad Scan</span>
+          </button>
+          
+          <button id="btn-show-beacon-qr" type="button" onclick="showStationBeaconModal()" class="col-span-1 sm:col-span-2 h-12 rounded-xl bg-gradient-to-r from-amber-400 to-yellow text-black font-bold font-label-md flex items-center justify-center gap-2 shadow-[0_0_16px_rgba(255,214,0,0.35)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
+            <span class="material-symbols-outlined text-[22px]">qr_code_2</span>
+            <span>📡 Show Station Beacon QR (For Players to Scan)</span>
           </button>
         </div>
 
@@ -290,30 +295,54 @@
     </div>
   </div>
 
-  <!-- ALREADY CLEARED WARNING MODAL (With Force Award Override) -->
-  <div id="already-visited-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="w-full max-w-sm rounded-2xl bg-[#0e1726] border-2 border-yellow shadow-[0_0_35px_rgba(255,214,0,0.4)] p-5 space-y-4">
+  <!-- ALREADY CLEARED WARNING MODAL (Strict Single-Award Enforcement) -->
+  <div id="already-visited-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-sm rounded-2xl bg-[#0e1726] border-2 border-amber-500 shadow-[0_0_40px_rgba(245,158,11,0.5)] p-5 space-y-4 animate-scaleUp">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-yellow/20 border border-yellow flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-yellow text-xl">warning</span>
+        <div class="w-12 h-12 rounded-xl bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+          <span class="material-symbols-outlined text-amber-500 text-2xl">block</span>
         </div>
         <div>
-          <h4 class="font-headline font-bold text-base text-white">Zone Already Cleared!</h4>
-          <span class="text-[11px] font-mono text-yellow uppercase">Duplicate Station Detected</span>
+          <h4 class="font-headline font-black text-lg text-white">Already Cleared!</h4>
+          <span class="text-[11px] font-mono text-amber-400 font-bold uppercase tracking-wider">Single Award Policy Enforced</span>
         </div>
       </div>
       <p class="text-xs text-gray-300 font-body leading-relaxed" id="already-visited-msg">
-        Squad has already completed the checkpoint for this zone.
+        This squad has already been awarded at this station. Each marshal can only award a team once.
       </p>
       <div class="flex flex-col gap-2 pt-1">
-        <button id="btn-force-award" onclick="dismissAlreadyVisited()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-yellow to-amber-500 hover:from-yellow/90 hover:to-amber-600 text-black font-headline font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg transition cursor-pointer">
-          <span class="material-symbols-outlined text-sm">priority_high</span>
-          <span>Force Award Points Anyway</span>
-        </button>
-        <button onclick="dismissAlreadyVisited()" class="w-full py-2 rounded-xl border border-gray-600 hover:border-gray-400 text-gray-400 text-xs font-headline uppercase transition cursor-pointer">
-          Cancel Check-In
+        <button onclick="dismissAlreadyVisited()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow hover:from-amber-600 hover:to-yellow/90 text-black font-headline font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg transition cursor-pointer">
+          <span class="material-symbols-outlined text-sm">check_circle</span>
+          <span>Understood (OK)</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- STATION BEACON QR MODAL (Players can scan this screen!) -->
+  <div id="station-beacon-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-sm rounded-2xl bg-[#0e1726] border-2 border-primary shadow-[0_0_40px_rgba(0,229,255,0.4)] p-5 space-y-4 text-center animate-scaleUp">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-2xl">sensors</span>
+          <h3 class="font-headline font-bold text-base text-white">Station Beacon QR</h3>
+        </div>
+        <button onclick="closeStationBeaconModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+      <p class="text-xs text-gray-300 font-mono">
+        Station Beacon: <span id="beacon-zone-name" class="text-primary font-bold">ZONE_01</span>
+      </p>
+      <div class="bg-white p-4 rounded-xl inline-block shadow-[0_0_25px_rgba(255,255,255,0.25)] mx-auto">
+        <div id="station-beacon-qrcode" class="w-[200px] h-[200px] flex items-center justify-center"></div>
+      </div>
+      <div class="text-[11px] font-mono text-gray-400 leading-tight">
+        📱 Players can point their phone camera at this QR code from their Player Dashboard to verify this checkpoint!
+      </div>
+      <button onclick="closeStationBeaconModal()" class="w-full py-2.5 rounded-xl bg-surface-container-highest hover:bg-white/10 text-white font-headline text-xs font-bold uppercase transition">
+        Close Beacon View
+      </button>
     </div>
   </div>
 
@@ -748,9 +777,16 @@
             if (newTeamHash !== _lastMarshalTeamsHash) {
               _lastMarshalTeamsHash = newTeamHash;
               var optionsHtml = currentTeams.map(function(t, idx) {
+                var alreadyAwarded = t.visitedZones && t.visitedZones.some(function(z) { return normalizeZone(z) === myZoneNorm; });
                 var isTargetMe = assignedSquads.some(function(as) { return as._id === t._id; });
-                var prefix = isTargetMe ? '🎯 [ASSIGNED HERE] ' : '';
-                return '<option value="' + t._id + '">' + prefix + (t.name || t.callsign) + ' (Score: ' + (t.score || 0) + ' pts)</option>';
+                
+                if (alreadyAwarded) {
+                  return '<option value="' + t._id + '" disabled class="text-gray-500 font-mono">✓ [ALREADY AWARDED] ' + (t.name || t.callsign) + ' (' + (t.score || 0) + ' pts)</option>';
+                } else if (isTargetMe) {
+                  return '<option value="' + t._id + '" class="font-bold text-amber-300">🎯 [ASSIGNED HERE] ' + (t.name || t.callsign) + ' (' + (t.score || 0) + ' pts)</option>';
+                } else {
+                  return '<option value="' + t._id + '">⚪ ' + (t.name || t.callsign) + ' (' + (t.score || 0) + ' pts)</option>';
+                }
               }).join('');
               var prevVal = selector.value;
               selector.innerHTML = optionsHtml;
@@ -1369,17 +1405,10 @@
     }
 
     function showAlreadyVisitedPrompt(errorMsg, payload) {
-      activeOverridePayload = payload;
+      activeOverridePayload = null;
       var modal = document.getElementById('already-visited-modal');
       var msgEl = document.getElementById('already-visited-msg');
-      var forceBtn = document.getElementById('btn-force-award');
-      if (msgEl) msgEl.innerText = errorMsg;
-      if (forceBtn) {
-        forceBtn.onclick = function() {
-          dismissAlreadyVisited();
-          autoAwardCheckin(payload.teamId, payload.cardRank, payload.cardSuit, 'Force Override', true);
-        };
-      }
+      if (msgEl) msgEl.innerText = errorMsg || 'This squad has already been awarded at this checkpoint station. Each marshal can only award a team once.';
       if (modal) modal.classList.remove('hidden');
     }
 
@@ -1387,6 +1416,50 @@
       var modal = document.getElementById('already-visited-modal');
       if (modal) modal.classList.add('hidden');
       activeOverridePayload = null;
+      startCameraScanner();
+    }
+
+    function showStationBeaconModal() {
+      var modal = document.getElementById('station-beacon-modal');
+      var container = document.getElementById('station-beacon-qrcode');
+      var zoneNameEl = document.getElementById('beacon-zone-name');
+      var zoneId = currentUser.zoneId || 'ZONE_01';
+      var matchedClue = (allStationClues || []).find(function(c) {
+        return normalizeZone(c.zoneId) === normalizeZone(zoneId);
+      });
+      var zoneLabel = matchedClue ? (matchedClue.zoneLabel || zoneId) : zoneId;
+      if (zoneNameEl) zoneNameEl.innerText = zoneLabel;
+
+      var payload = 'TG_STATION|' + zoneId + '|' + zoneLabel + '|' + (currentUser.callsign || 'marshal');
+      if (container) {
+        container.innerHTML = '';
+        if (typeof QRCode !== 'undefined') {
+          try {
+            new QRCode(container, {
+              text: payload,
+              width: 200,
+              height: 200,
+              colorDark: '#000000',
+              colorLight: '#ffffff',
+              correctLevel: QRCode.CorrectLevel.M
+            });
+          } catch (e) {
+            fallbackStationQR(container, payload);
+          }
+        } else {
+          fallbackStationQR(container, payload);
+        }
+      }
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function fallbackStationQR(container, payload) {
+      container.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(payload) + '" alt="Station Beacon QR" class="w-[200px] h-[200px]" />';
+    }
+
+    function closeStationBeaconModal() {
+      var modal = document.getElementById('station-beacon-modal');
+      if (modal) modal.classList.add('hidden');
     }
 
     // Manual Submission fallback
