@@ -99,22 +99,28 @@ class MemoryStore {
       ]
     };
     this.lastSynced = 0;
+    this.lastModified = 0;
+    this.isLoaded = false;
+    this.cloudSyncTimer = null;
     this.load();
   }
 
   load() {
+    if (this.isLoaded) return;
     try {
-      if (this.lastSynced === 0 && fs.existsSync(this.filePath)) {
+      if (fs.existsSync(this.filePath)) {
         const raw = fs.readFileSync(this.filePath, 'utf8');
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object' && Array.isArray(parsed.users) && parsed.users.length > 0) {
           this.collections = parsed;
+          this.isLoaded = true;
         }
       }
     } catch (e) {}
   }
 
   save() {
+    this.lastModified = Date.now();
     try {
       const dir = path.dirname(this.filePath);
       if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -122,19 +128,34 @@ class MemoryStore {
     } catch (e) {
       // ignore in read-only environments
     }
-    // Asynchronously push to Supabase cloud store
-    this.syncToCloud().catch(err => console.warn('[CloudStore background save warning]:', err.message));
+    // Asynchronously push to Supabase cloud store with write-behind debouncing
+    this.scheduleCloudSync();
+  }
+
+  scheduleCloudSync() {
+    if (process.env.DISABLE_CLOUD_STORE === 'true') return;
+    if (this.cloudSyncTimer) clearTimeout(this.cloudSyncTimer);
+    this.cloudSyncTimer = setTimeout(() => {
+      this.cloudSyncTimer = null;
+      this.syncToCloud().catch(err => console.warn('[CloudStore background save warning]:', err.message));
+    }, 250);
   }
 
   async syncFromCloud(force = false) {
+    if (process.env.DISABLE_CLOUD_STORE === 'true') return this.collections;
     const now = Date.now();
-    // Use fast in-memory cache for GET polls within 600ms
-    if (!force && (now - this.lastSynced < 600) && Array.isArray(this.collections.users) && this.collections.users.length > 0) {
+    // If local memory has pending un-synced changes or was modified recently,
+    // NEVER overwrite local RAM with potentially stale cloud store data!
+    if (this.cloudSyncTimer || (this.lastModified && (now - this.lastModified < 10000))) {
+      return this.collections;
+    }
+    // Use fast in-memory cache for GET polls within 1500ms
+    if (!force && this.lastSynced > 0 && (now - this.lastSynced < 1500) && Array.isArray(this.collections.users) && this.collections.users.length > 0) {
       return this.collections;
     }
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 7000);
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
       const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store?key=eq.main_store&select=*`, {
         headers: {
           'apikey': SUPABASE_ANON,
@@ -147,21 +168,23 @@ class MemoryStore {
       if (res.ok) {
         const rows = await res.json();
         if (rows && rows.length > 0 && rows[0].data) {
-          this.collections = rows[0].data;
-          this.lastSynced = Date.now();
-          // Write to local cache
-          try {
-            const dir = path.dirname(this.filePath);
-            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-            fs.writeFileSync(this.filePath, JSON.stringify(this.collections, null, 2), 'utf8');
-          } catch(e){}
+          const cloudUpdated = rows[0].updated_at ? new Date(rows[0].updated_at).getTime() : 0;
+          if (!this.lastModified || cloudUpdated > this.lastModified) {
+            this.collections = rows[0].data;
+            this.lastSynced = Date.now();
+            // Write to local cache
+            try {
+              const dir = path.dirname(this.filePath);
+              if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+              fs.writeFileSync(this.filePath, JSON.stringify(this.collections, null, 2), 'utf8');
+            } catch(e){}
+          }
           return this.collections;
         }
       }
     } catch (e) {
-      console.warn('[CloudStore syncFromCloud]:', e.message);
+      // Network failure gracefully falls back to in-memory state
     }
-    this.load();
     return this.collections;
   }
 
@@ -174,7 +197,7 @@ class MemoryStore {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 7000);
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
       const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store`, {
         method: 'POST',
         headers: {
@@ -325,9 +348,10 @@ module.exports = async (req, res) => {
     pathname = '/api' + (pathname.startsWith('/') ? '' : '/') + pathname;
   }
 
-  // Sync fresh state from Supabase Cloud Store
-  const isWrite = req.method !== 'GET' && req.method !== 'HEAD';
-  await memoryStore.syncFromCloud(isWrite);
+  // Sync fresh state from Supabase Cloud Store on cold start or non-mutating reads
+  if (req.method === 'GET' || req.method === 'HEAD' || memoryStore.lastSynced === 0) {
+    await memoryStore.syncFromCloud(false);
+  }
 
   const atlasDb = await getMongoDb();
 
@@ -493,7 +517,7 @@ module.exports = async (req, res) => {
       };
 
       memoryStore.collections.users.push(newUser);
-      await memoryStore.syncToCloud();
+      memoryStore.save();
       memoryStore.logEvent('REGISTER', `${newUser.role} "${newUser.callsign}" registered.`);
 
       return sendJson(res, 201, {
@@ -776,19 +800,26 @@ module.exports = async (req, res) => {
     if ((pathname === '/api/admin/approve' || pathname === '/api/admin/approve-team' || pathname === '/api/admin/approve-user') && req.method === 'POST') {
       const body = await parseBody(req);
       const cleanId = String(body.id || body.teamId || body.userId || '').trim();
+      const cleanCallsign = String(body.callsign || '').trim().toLowerCase();
       const cleanType = String(body.type || (pathname.includes('user') ? 'MEMBER' : 'PLAYER')).trim().toUpperCase();
 
-      if (!cleanId) {
-        return sendJson(res, 400, { success: false, error: 'ID is required for clearance authorization.' });
+      if (!cleanId && !cleanCallsign) {
+        return sendJson(res, 400, { success: false, error: 'ID or callsign is required for clearance authorization.' });
       }
 
       if (atlasDb) {
         let approvedAny = false;
-        let approvedName = cleanId;
+        let approvedName = cleanId || cleanCallsign;
 
         // Try team lookup
         const team = await atlasDb.collection('teams').findOne({
-          $or: [{ _id: cleanId }, { id: cleanId }, { callsign: cleanId }, { name: cleanId }]
+          $or: [
+            { _id: cleanId },
+            { id: cleanId },
+            ...(cleanCallsign ? [{ callsign: cleanCallsign }] : []),
+            { callsign: cleanId },
+            { name: cleanId }
+          ]
         });
 
         if (team) {
@@ -803,7 +834,12 @@ module.exports = async (req, res) => {
 
         // Try user lookup
         const user = await atlasDb.collection('users').findOne({
-          $or: [{ _id: cleanId }, { id: cleanId }, { callsign: cleanId }]
+          $or: [
+            { _id: cleanId },
+            { id: cleanId },
+            ...(cleanCallsign ? [{ callsign: cleanCallsign }] : []),
+            { callsign: cleanId }
+          ]
         });
 
         if (user) {
@@ -823,20 +859,20 @@ module.exports = async (req, res) => {
           return sendJson(res, 200, { success: true, message: approvedName + ' approved successfully.', entityId: cleanId });
         }
 
-        return sendJson(res, 404, { success: false, error: 'Entity "' + cleanId + '" not found in database.' });
+        return sendJson(res, 404, { success: false, error: 'Entity "' + (cleanId || cleanCallsign) + '" not found in database.' });
       }
 
-      memoryStore.load();
       let approvedAny = false;
-      let approvedName = cleanId;
+      let approvedName = cleanId || cleanCallsign;
       let approvedRole = cleanType === 'MEMBER' ? 'MEMBER' : 'PLAYER';
 
       // 1. Search Teams
       const matchedTeams = memoryStore.collections.teams.filter(t => 
-        (t._id && t._id === cleanId) ||
-        (t.id && t.id === cleanId) ||
-        (t.callsign && t.callsign.toLowerCase() === cleanId.toLowerCase()) ||
-        (t.name && t.name.toLowerCase() === cleanId.toLowerCase())
+        (cleanId && t._id && t._id === cleanId) ||
+        (cleanId && t.id && t.id === cleanId) ||
+        (cleanCallsign && t.callsign && t.callsign.toLowerCase() === cleanCallsign) ||
+        (cleanId && t.callsign && t.callsign.toLowerCase() === cleanId.toLowerCase()) ||
+        (cleanId && t.name && t.name.toLowerCase() === cleanId.toLowerCase())
       );
 
       if (matchedTeams.length > 0) {
@@ -851,7 +887,8 @@ module.exports = async (req, res) => {
               u.teamId === team._id || 
               (team.id && u.teamId === team.id) || 
               (team.callsign && u.callsign && u.callsign.toLowerCase() === team.callsign.toLowerCase()) ||
-              u._id === cleanId
+              (cleanId && u._id === cleanId) ||
+              (cleanCallsign && u.callsign && u.callsign.toLowerCase() === cleanCallsign)
             ) {
               u.isApproved = true;
             }
@@ -861,10 +898,11 @@ module.exports = async (req, res) => {
 
       // 2. Search Users
       const matchedUsers = memoryStore.collections.users.filter(u =>
-        (u._id && u._id === cleanId) ||
-        (u.id && u.id === cleanId) ||
-        (u.callsign && u.callsign.toLowerCase() === cleanId.toLowerCase()) ||
-        (u.teamId && u.teamId === cleanId)
+        (cleanId && u._id && u._id === cleanId) ||
+        (cleanId && u.id && u.id === cleanId) ||
+        (cleanCallsign && u.callsign && u.callsign.toLowerCase() === cleanCallsign) ||
+        (cleanId && u.callsign && u.callsign.toLowerCase() === cleanId.toLowerCase()) ||
+        (cleanId && u.teamId && u.teamId === cleanId)
       );
 
       if (matchedUsers.length > 0) {
@@ -889,7 +927,7 @@ module.exports = async (req, res) => {
       }
 
       if (approvedAny) {
-        await memoryStore.syncToCloud();
+        memoryStore.save();
         const logAction = approvedRole === 'MEMBER' ? 'APPROVE_USER' : 'APPROVE_TEAM';
         const logMsg = approvedRole === 'MEMBER'
           ? 'Field Marshal authorized: "' + approvedName + '" (' + cleanId + ')'
@@ -998,7 +1036,7 @@ module.exports = async (req, res) => {
         t.updatedAt = new Date().toISOString();
       });
       memoryStore.collections.checkins = [];
-      await memoryStore.syncToCloud();
+      memoryStore.save();
       memoryStore.logEvent('RESET_ALL_POINTS', `Game Master reset all points, cards, and checkpoint progress to 0 for ${teamCount} squads.`);
       return sendJson(res, 200, { success: true, message: `All squad scores and progress reset to 0 (${teamCount} squads affected).` }, 'no-store, no-cache, max-age=0');
     }
@@ -1017,7 +1055,7 @@ module.exports = async (req, res) => {
       memoryStore.collections.teams = [];
       memoryStore.collections.users = (memoryStore.collections.users || []).filter(u => u.role === 'ADMIN');
       memoryStore.collections.checkins = [];
-      await memoryStore.syncToCloud();
+      memoryStore.save();
       memoryStore.logEvent('PURGE_ALL_TEAMS', `Game Master permanently purged all squads (${purgedTeamsCount}) and non-admin operatives.`);
       return sendJson(res, 200, { success: true, message: `All ${purgedTeamsCount} squads and operative accounts purged successfully.` }, 'no-store, no-cache, max-age=0');
     }
@@ -1244,8 +1282,8 @@ module.exports = async (req, res) => {
           gs.totalPausedMs = 0;
           gs.endedAt = null;
 
-          await memoryStore.syncToCloud();
-        } else if (reqStatus === 'START' || reqStatus === 'PLAYER_PHASE') {
+          memoryStore.save();
+        } else if (reqStatus === 'START' || reqStatus === 'PLAYER_PHASE' || reqStatus === 'ACTIVE') {
           const durMins = parseInt(body.durationMinutes, 10) || 52;
           const durSecs = durMins * 60;
 
@@ -1262,16 +1300,16 @@ module.exports = async (req, res) => {
 
           memoryStore.save();
         } else if (reqStatus === 'PAUSE' || reqStatus === 'PAUSED') {
-          if (gs.status === 'PLAYER_PHASE') {
-            gs.status = 'PAUSED';
-            gs.pausedAt = new Date(now).toISOString();
-            memoryStore.save();
-          }
-        } else if (reqStatus === 'RESUME') {
-          if (gs.status === 'PAUSED' && gs.pausedAt && gs.endsAt) {
-            const pauseDuration = now - new Date(gs.pausedAt).getTime();
-            gs.totalPausedMs = (gs.totalPausedMs || 0) + pauseDuration;
-            gs.endsAt = new Date(new Date(gs.endsAt).getTime() + pauseDuration).toISOString();
+          gs.status = 'PAUSED';
+          gs.pausedAt = new Date(now).toISOString();
+          memoryStore.save();
+        } else if (reqStatus === 'RESUME' || reqStatus === 'UNPAUSE') {
+          if (gs.status === 'PAUSED') {
+            if (gs.pausedAt && gs.endsAt) {
+              const pauseDuration = now - new Date(gs.pausedAt).getTime();
+              gs.totalPausedMs = (gs.totalPausedMs || 0) + pauseDuration;
+              gs.endsAt = new Date(new Date(gs.endsAt).getTime() + pauseDuration).toISOString();
+            }
             gs.status = 'PLAYER_PHASE';
             gs.pausedAt = null;
             memoryStore.save();
@@ -1813,7 +1851,7 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
         const route = resolveTeamRoute(t, targetClues, i);
         t.clueOrder = route.map(c => c._id);
       }
-      await memoryStore.syncToCloud();
+      memoryStore.save();
       return sendJson(res, 200, { success: true, message: `Re-balanced routes for ${teams.length} squads across ${rawClues.length} stations.` });
     }
 
@@ -2058,7 +2096,7 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
       team.currentClueIndex = (team.currentClueIndex || 0) + 1;
       team.updatedAt = new Date().toISOString();
 
-      await memoryStore.syncToCloud();
+      memoryStore.save();
       memoryStore.logEvent('CHECKIN', 'Team "' + team.name + '" awarded +' + totalPoints + ' PTS at ' + recordedZone + ' (Total: ' + team.score + ' PTS)');
 
       const nextClue = (activeClues.length > 0) ? resolveTeamTargetClue(team, activeClues) : null;
