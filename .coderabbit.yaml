@@ -1,0 +1,52 @@
+# CodeRabbit AI Configuration for Territory Grid
+# Documentation: https://docs.coderabbit.ai/getting-started/configure-coderabbit
+
+version: "2"
+language: "en-US"
+early_access: true
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+      - "master"
+      - "develop"
+
+  # Path-specific guidelines and domain rules
+  path_instructions:
+    - path: "public/**/*.html"
+      instructions: |
+        - Verify all DOM IDs referenced in JavaScript (e.g., document.getElementById) strictly exist in the HTML markup.
+        - Ensure zero JavaScript parse or syntax errors in inline <script> tags.
+        - Verify strict adherence to the cyber/tactical neon dark UI theme (cyan, amber, green accents on dark background).
+        - Verify that mobile touch targets and viewport scalings are appropriate for field operations.
+
+    - path: "api/**/*.js"
+      instructions: |
+        - Serverless Safety: All state-mutating requests (POST /api/game/state, POST /api/checkin, POST /api/admin/*) MUST synchronously await persistence (memoryStore.saveAsync()) to prevent data loss when serverless lambdas terminate.
+        - Scoring Integrity: Point formula must remain strictly: cardRank (1..13) + coneValue (RED: 10, YELLOW: 12, GREEN: 15).
+        - Route Enforcement: Verify that squads cannot be awarded points at unassigned stations or more than once at the same station.
+        - Deterministic Team Codes: Team codes must remain consistent integers between 11 and 99.
+
+    - path: "app/**/*.kt"
+      instructions: |
+        - Android Jetpack Compose & Hilt rules from AGENTS.md apply.
+        - Screen orientation must be locked to portrait.
+        - No network or database calls inside composables; ViewModels must expose immutable UiState via StateFlow.
+        - Ensure hardware acceleration and camera permissions for the WebView scanner.
+
+  # Automated autofix rules
+  auto_fix:
+    enabled: true
+    trigger: "always"
+
+chat:
+  auto_reply: true
