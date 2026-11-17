@@ -1,0 +1,45 @@
+name: Territory Grid Auto-Heal & Asset Sync
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'public/**'
+      - 'api/**'
+      - 'web_server/**'
+    branches:
+      - 'main'
+
+permissions:
+  contents: write
+
+jobs:
+  auto-heal-and-sync:
+    name: 🔧 Self-Healing Engine
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Execute Self-Healing Engine
+        run: node scripts/auto_heal.js
+
+      - name: Verify Portal Health
+        run: node scripts/verify_all_portals.js
+
+      - name: Commit Auto-Healed Files if Drift Detected
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(ci): auto-healed asset drift and synchronized web targets [skip ci]"
+          branch: ${{ github.ref_name }}
