@@ -16,12 +16,14 @@
     function getGridServerUrl() {
       try {
         var saved = localStorage.getItem('tg_grid_server_url') || sessionStorage.getItem('tg_grid_server_url');
-        if (saved && saved.startsWith('http')) return saved.replace(/\/+$/, '');
+        if (saved && saved.startsWith('http') && !saved.includes('127.0.0.1') && !saved.includes('localhost')) {
+          return saved.replace(/\/+$/, '');
+        }
       } catch(e) {}
       if (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin.startsWith('http')) {
         return window.location.origin;
       }
-      return 'http://127.0.0.1:8088';
+      return 'https://territory-grid-delta.vercel.app';
     }
 
     function apiUrl(path) {
@@ -460,8 +462,16 @@
       </p>
       <div>
         <label class="block text-[11px] font-mono text-gray-400 uppercase tracking-wider mb-1">Server Host URL</label>
-        <input type="text" id="input-server-endpoint" placeholder="http://192.168.1.15:8088"
+        <input type="text" id="input-server-endpoint" placeholder="https://territory-grid-delta.vercel.app"
                class="w-full px-3 py-2 rounded-xl bg-surface-low border border-cyan/30 text-white font-mono text-xs focus:border-cyan focus:outline-none">
+      </div>
+      <div class="flex gap-2">
+        <button type="button" onclick="setPresetServer('https://territory-grid-delta.vercel.app')" class="flex-1 py-1.5 px-2 rounded-lg bg-cyan/15 hover:bg-cyan/25 border border-cyan/40 text-cyan text-[11px] font-mono text-center font-bold transition cursor-pointer">
+          ☁️ Live Cloud
+        </button>
+        <button type="button" onclick="setPresetServer('http://10.234.240.209:8088')" class="flex-1 py-1.5 px-2 rounded-lg bg-surface-high hover:bg-surface-high/80 border border-white/20 text-gray-200 text-[11px] font-mono text-center font-bold transition cursor-pointer">
+          🏠 Laptop Wi-Fi
+        </button>
       </div>
       <div id="server-test-status" class="hidden text-xs font-mono p-2 rounded-lg"></div>
       <button type="button" onclick="startServerQrScanner()" class="w-full py-2.5 rounded-xl bg-cyan/15 hover:bg-cyan/25 text-cyan text-xs font-headline font-bold border border-cyan/40 flex items-center justify-center gap-2 transition cursor-pointer">
@@ -562,6 +572,12 @@
         status.className = 'text-xs font-mono p-2 rounded-lg bg-error/15 text-error border border-error/30';
         status.innerText = '❌ Failed to reach ' + testUrl + '. Verify Wi-Fi network and host IP.';
       }
+    }
+
+    function setPresetServer(url) {
+      var input = document.getElementById('input-server-endpoint');
+      if (input) input.value = url;
+      testServerConnection();
     }
 
     function saveServerConfig() {
