@@ -35,3 +35,5 @@ graphify-out/.graphify_root
 
 .gemini/
 graphify-out/
+
+cloudflared.exe
