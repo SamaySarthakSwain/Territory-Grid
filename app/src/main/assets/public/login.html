@@ -12,13 +12,22 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Resilient API Base Resolver (Works in APK file:// and web https://)
-    function apiUrl(path) {
-      var base = '';
-      if (window.location.protocol === 'file:' || window.location.origin === 'null' || !window.location.origin.startsWith('http')) {
-        base = 'https://territory-grid-delta.vercel.app';
+    // Resilient API Base Resolver (100% Offline / Local LAN Autonomous)
+    function getGridServerUrl() {
+      try {
+        var saved = localStorage.getItem('tg_grid_server_url') || sessionStorage.getItem('tg_grid_server_url');
+        if (saved && saved.startsWith('http')) return saved.replace(/\/+$/, '');
+      } catch(e) {}
+      if (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin.startsWith('http')) {
+        return window.location.origin;
       }
-      return base + path;
+      return 'http://127.0.0.1:8088';
+    }
+
+    function apiUrl(path) {
+      var base = getGridServerUrl();
+      var cleanPath = (path.startsWith('/') ? '' : '/') + path;
+      return base + cleanPath;
     }
 
     tailwind.config = {
@@ -422,6 +431,50 @@
 
   </main>
 
+  <!-- Game Server LAN Connection Badge -->
+  <div class="w-full max-w-md mx-auto mb-3 px-4">
+    <div class="flex items-center justify-between p-2.5 rounded-xl bg-surface-card border border-cyan/20 text-xs font-mono shadow-md">
+      <div class="flex items-center gap-2 truncate">
+        <span class="w-2 h-2 rounded-full bg-green animate-pulse shrink-0"></span>
+        <span class="text-gray-400">Server:</span>
+        <span id="label-active-server" class="text-cyan font-bold truncate">http://127.0.0.1:8088</span>
+      </div>
+      <button type="button" onclick="openServerConfigModal()" class="px-2.5 py-1 rounded-lg bg-cyan/15 hover:bg-cyan/25 text-cyan border border-cyan/30 text-[11px] font-bold cursor-pointer transition shrink-0 ml-2">
+        Change
+      </button>
+    </div>
+  </div>
+
+  <!-- Server Configuration Modal -->
+  <div id="server-config-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-2xl bg-surface-card border-2 border-cyan/40 p-5 shadow-2xl flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-headline font-bold text-white text-base flex items-center gap-2">
+          <span class="material-symbols-outlined text-cyan text-xl">lan</span>
+          Game Server Endpoint
+        </h3>
+        <button type="button" onclick="closeServerConfigModal()" class="text-gray-400 hover:text-white">✕</button>
+      </div>
+      <p class="text-xs text-gray-300">
+        Enter the Game Master Host IP (e.g. <span class="text-cyan font-mono">http://192.168.1.15:8088</span>) running on campus Wi-Fi / hotspot.
+      </p>
+      <div>
+        <label class="block text-[11px] font-mono text-gray-400 uppercase tracking-wider mb-1">Server Host URL</label>
+        <input type="text" id="input-server-endpoint" placeholder="http://192.168.1.15:8088"
+               class="w-full px-3 py-2 rounded-xl bg-surface-low border border-cyan/30 text-white font-mono text-xs focus:border-cyan focus:outline-none">
+      </div>
+      <div id="server-test-status" class="hidden text-xs font-mono p-2 rounded-lg"></div>
+      <div class="flex gap-2">
+        <button type="button" onclick="testServerConnection()" class="flex-1 py-2 rounded-xl bg-surface-high hover:bg-surface-high/80 text-cyan text-xs font-headline font-bold border border-cyan/30 transition">
+          Test Ping
+        </button>
+        <button type="button" onclick="saveServerConfig()" class="flex-1 py-2 rounded-xl bg-cyan text-black text-xs font-headline font-bold shadow-[0_0_12px_rgba(0,240,255,0.4)] transition">
+          Save & Connect
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer Notice -->
   <footer class="w-full max-w-4xl mx-auto py-3 text-center text-[11px] font-mono text-gray-400 border-t border-cyan/10">
     TERRITORY GRID v2.6 // CLUB FEST ADVENTURE // OPERATIONAL COMMAND
@@ -438,8 +491,71 @@
     var pollInterval = null;
     var currentUserId = null;
 
+    // Server Config Manager
+    function updateServerBadge() {
+      var el = document.getElementById('label-active-server');
+      if (el) el.innerText = getGridServerUrl();
+    }
+
+    function openServerConfigModal() {
+      var modal = document.getElementById('server-config-modal');
+      var input = document.getElementById('input-server-endpoint');
+      var status = document.getElementById('server-test-status');
+      if (input) input.value = getGridServerUrl();
+      if (status) status.classList.add('hidden');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeServerConfigModal() {
+      var modal = document.getElementById('server-config-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function testServerConnection() {
+      var input = document.getElementById('input-server-endpoint');
+      var status = document.getElementById('server-test-status');
+      if (!input || !status) return;
+      var testUrl = (input.value || '').trim().replace(/\/+$/, '');
+      if (!testUrl.startsWith('http')) testUrl = 'http://' + testUrl;
+      input.value = testUrl;
+
+      status.className = 'text-xs font-mono p-2 rounded-lg bg-yellow/15 text-yellow border border-yellow/30';
+      status.innerText = 'Testing connection to ' + testUrl + '/api/health...';
+      status.classList.remove('hidden');
+
+      try {
+        var t0 = Date.now();
+        var res = await fetch(testUrl + '/api/health', { cache: 'no-store' });
+        var d = await res.json();
+        var ms = Date.now() - t0;
+        if (d.success || res.ok) {
+          status.className = 'text-xs font-mono p-2 rounded-lg bg-green/15 text-green border border-green/30';
+          status.innerText = '✅ Connection Verified! Latency: ' + ms + 'ms (Status: ' + (d.status || 'OK') + ')';
+        } else {
+          status.className = 'text-xs font-mono p-2 rounded-lg bg-error/15 text-error border border-error/30';
+          status.innerText = '⚠️ Server responded with error: ' + (d.error || res.statusText);
+        }
+      } catch (err) {
+        status.className = 'text-xs font-mono p-2 rounded-lg bg-error/15 text-error border border-error/30';
+        status.innerText = '❌ Failed to reach ' + testUrl + '. Verify Wi-Fi network and host IP.';
+      }
+    }
+
+    function saveServerConfig() {
+      var input = document.getElementById('input-server-endpoint');
+      if (!input) return;
+      var val = (input.value || '').trim().replace(/\/+$/, '');
+      if (!val.startsWith('http')) val = 'http://' + val;
+      localStorage.setItem('tg_grid_server_url', val);
+      sessionStorage.setItem('tg_grid_server_url', val);
+      updateServerBadge();
+      closeServerConfigModal();
+      loadDynamicStations();
+    }
+
     // Initialize page
     window.addEventListener('DOMContentLoaded', function() {
+      updateServerBadge();
       // Clear session if explicit logout requested via query parameter
       try {
         var urlParams = new URLSearchParams(window.location.search);

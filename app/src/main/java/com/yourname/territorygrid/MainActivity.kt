@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
 
-    private val liveUrl = "https://territory-grid-delta.vercel.app/login.html"
-    private val localFallbackUrl = "file:///android_asset/public/login.html"
+    // Standalone Local Asset Application (Zero Vercel / Zero Internet Dependency)
+    private val localAppUrl = "file:///android_asset/public/login.html"
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -112,7 +112,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     super.onReceivedError(view, request, error)
                     if (request?.isForMainFrame == true) {
-                        view?.loadUrl(localFallbackUrl)
+                        view?.loadUrl(localAppUrl)
                     }
                 }
 
@@ -124,9 +124,7 @@ class MainActivity : ComponentActivity() {
                     failingUrl: String?
                 ) {
                     super.onReceivedError(view, errorCode, description, failingUrl)
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M && failingUrl == liveUrl) {
-                        view?.loadUrl(localFallbackUrl)
-                    }
+                    view?.loadUrl(localAppUrl)
                 }
             }
 
@@ -158,8 +156,8 @@ class MainActivity : ComponentActivity() {
 
         setContentView(rootLayout)
 
-        // Initial Load: Live Vercel website
-        webView.loadUrl(liveUrl)
+        // Initial Load: Standalone Offline Local Asset Application
+        webView.loadUrl(localAppUrl)
 
         // Handle Back Navigation
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {

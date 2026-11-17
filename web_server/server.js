@@ -6,6 +6,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
+const os = require('os');
 const apiHandler = require('../api/index.js');
 
 // ─────────────────────────────────────────────────────────────
@@ -27,8 +28,6 @@ const PORT = process.env.PORT || 8088;
 const DATA_DIR = path.join(__dirname, 'data');
 const DB_FILE = path.join(DATA_DIR, 'territory_grid_mongodb.json');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.supabase.co';
-const SUPABASE_ANON = process.env.SUPABASE_ANON || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmdXVmemx4c2t1cmF0dnFndW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTc5NzcsImV4cCI6MjA4NjczMzk3N30.jVCPESQvxOO9ExUTzyNZGyn8kBob4rj3aOZcxC2NLs8';
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const STATIC_DIR = fs.existsSync(PUBLIC_DIR) ? PUBLIC_DIR : path.join(__dirname, '..', 'design_refs', 'html');
 
@@ -81,74 +80,24 @@ class MongoDatabase {
 
   save() {
     try {
-      fs.writeFileSync(DB_FILE, JSON.stringify(this.collections, null, 2), 'utf8');
+      const tmpPath = DB_FILE + '.tmp.' + process.pid;
+      fs.writeFileSync(tmpPath, JSON.stringify(this.collections, null, 2), 'utf8');
+      fs.renameSync(tmpPath, DB_FILE);
     } catch (e) {
-      console.error('[MongoDB Engine] Failed to save DB file:', e);
+      try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(this.collections, null, 2), 'utf8');
+      } catch (err) {
+        console.error('[MongoDB Engine] Failed to save DB file:', err);
+      }
     }
-    this.syncToCloud().catch(() => {});
   }
 
-  async syncFromCloud(force = false) {
-    const now = Date.now();
-    if (!this.lastSynced) this.lastSynced = 0;
-    if (!force && (now - this.lastSynced < 800) && Array.isArray(this.collections.users) && this.collections.users.length > 0) {
-      return this.collections;
-    }
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 7000);
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store?key=eq.main_store&select=*`, {
-        headers: {
-          'apikey': SUPABASE_ANON,
-          'Authorization': `Bearer ${SUPABASE_ANON}`,
-          'Cache-Control': 'no-cache'
-        },
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        const rows = await res.json();
-        if (rows && rows.length > 0 && rows[0].data) {
-          this.collections = rows[0].data;
-          this.lastSynced = Date.now();
-          this.ensureDefaults();
-          try {
-            fs.writeFileSync(DB_FILE, JSON.stringify(this.collections, null, 2), 'utf8');
-          } catch(e){}
-          return this.collections;
-        }
-      }
-    } catch(e) {}
-    this.load();
+  async syncFromCloud() {
     return this.collections;
   }
 
   async syncToCloud() {
-    try {
-      fs.writeFileSync(DB_FILE, JSON.stringify(this.collections, null, 2), 'utf8');
-    } catch (e) {}
-
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 7000);
-      await fetch(`${SUPABASE_URL}/rest/v1/territory_store`, {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_ANON,
-          'Authorization': `Bearer ${SUPABASE_ANON}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'resolution=merge-duplicates'
-        },
-        body: JSON.stringify({
-          key: 'main_store',
-          data: this.collections,
-          updated_at: new Date().toISOString()
-        }),
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      this.lastSynced = Date.now();
-    } catch(e){}
+    return true;
   }
 
   ensureUniqueTeamCodes() {
@@ -417,9 +366,22 @@ server.headersTimeout = 66000;
 server.maxRequestsPerSocket = 0;
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log('====================================================');
-  console.log(` TERRITORY GRID // MONGODB REAL-TIME ENGINE ACTIVE `);
-  console.log(` Port: ${PORT} (http://localhost:${PORT})`);
-  console.log(` Local Network Access: Ready for Club Fest Competitors`);
-  console.log('====================================================');
+  const nets = os.networkInterfaces();
+  let lanIp = '127.0.0.1';
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (net.family === 'IPv4' && !net.internal) {
+        lanIp = net.address;
+        break;
+      }
+    }
+  }
+  console.log('╔══════════════════════════════════════════════════════════════════════╗');
+  console.log('║     TERRITORY GRID // HIGH-PERFORMANCE LOCAL GAME SERVER ACTIVE      ║');
+  console.log('╠══════════════════════════════════════════════════════════════════════╣');
+  console.log(`║  Local Host:     http://localhost:${PORT}                             ║`);
+  console.log(`║  Campus LAN IP:  http://${lanIp}:${PORT}                               ║`);
+  console.log('║  (Use Campus LAN IP in Player and Field Marshal APKs)                ║');
+  console.log('║  Storage Engine: Pure Local In-Memory & Atomic MongoDB JSON Engine   ║');
+  console.log('╚══════════════════════════════════════════════════════════════════════╝');
 });

@@ -285,13 +285,22 @@
     }
   </script>
   <script>
-    // Resilient API Base Resolver (Works in APK file:// and web https://)
-    function apiUrl(path) {
-      var base = '';
-      if (window.location.protocol === 'file:' || window.location.origin === 'null' || !window.location.origin.startsWith('http')) {
-        base = 'https://territory-grid-delta.vercel.app';
+    // Resilient API Base Resolver (100% Offline / Local LAN Autonomous)
+    function getGridServerUrl() {
+      try {
+        var saved = localStorage.getItem('tg_grid_server_url') || sessionStorage.getItem('tg_grid_server_url');
+        if (saved && saved.startsWith('http')) return saved.replace(/\/+$/, '');
+      } catch(e) {}
+      if (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin.startsWith('http')) {
+        return window.location.origin;
       }
-      return base + path;
+      return 'http://127.0.0.1:8088';
+    }
+
+    function apiUrl(path) {
+      var base = getGridServerUrl();
+      var cleanPath = (path.startsWith('/') ? '' : '/') + path;
+      return base + cleanPath;
     }
 
     if (typeof QRCode === 'undefined') {
@@ -854,6 +863,7 @@
     var currentUser = null;
     var allClues = [];
     var currentMyTeam = null;
+    var currentAssignedZoneId = '';
 
     // ─────────────────────────────────────────────────────────
     // DYNAMIC HOLOGRAPHIC CARD CIPHER SYSTEM
@@ -1148,8 +1158,11 @@
         manualCodeEl.setAttribute('data-raw-code', sixDigitRaw);
       }
 
-      // QR Code Payload: TG|teamId|squadCallsign|rankNumber|rankCode|suit|sixDigitRaw
-      var qrPayload = 'TG|' + teamId + '|' + squadCallsign + '|' + card.rank + '|' + card.code + '|' + card.suit + '|' + sixDigitRaw;
+      // Target Station Zone ID for checkpoint enforcement
+      var targetZone = (currentMyTeam && currentMyTeam.activeClue && currentMyTeam.activeClue.zoneId) ? currentMyTeam.activeClue.zoneId : (currentAssignedZoneId || '');
+
+      // QR Code Payload: TG|teamId|squadCallsign|rankNumber|rankCode|suit|sixDigitRaw|targetZone
+      var qrPayload = 'TG|' + teamId + '|' + squadCallsign + '|' + card.rank + '|' + card.code + '|' + card.suit + '|' + sixDigitRaw + '|' + targetZone;
 
       renderCipherQRCode(qrContainer, qrPayload, card);
     }
@@ -1405,7 +1418,7 @@
       var activeHunt = document.getElementById('player-active-hunt-container') || document.getElementById('screen-active-hunt');
 
       if (countdownOverlay) countdownOverlay.classList.remove('hidden');
-      if (waitingHall) waitingHall.classList.remove('hidden');
+      if (waitingHall) waitingHall.classList.add('hidden');
       if (activeHunt) activeHunt.classList.add('hidden');
 
       function tick() {
@@ -1537,8 +1550,8 @@
       loadCluesAndSync();
       // High-frequency real-time squad synchronization engine (sub-second response)
       function scheduleNextTeamSync() {
-        var jitter = Math.floor(Math.random() * 100);
-        var baseDelay = (currentGameState === 'PLAYER_PHASE') ? 850 : 1800;
+        var jitter = Math.floor(Math.random() * 50);
+        var baseDelay = (currentGameState === 'PLAYER_PHASE') ? 400 : 1000;
         setTimeout(function() {
           syncTeamData().finally(scheduleNextTeamSync);
         }, baseDelay + jitter);
@@ -1546,8 +1559,8 @@
       scheduleNextTeamSync();
 
       function scheduleNextGameStateSync() {
-        var jitter = Math.floor(Math.random() * 100);
-        var baseDelay = (currentGameState === 'LOBBY' || currentGameState === 'COUNTDOWN') ? 800 : 1500;
+        var jitter = Math.floor(Math.random() * 50);
+        var baseDelay = (currentGameState === 'LOBBY' || currentGameState === 'COUNTDOWN') ? 400 : 1000;
         setTimeout(function() {
           syncGameState().finally(scheduleNextGameStateSync);
         }, baseDelay + jitter);
@@ -1762,6 +1775,15 @@
       currentMyTeam.currentClueIndex = currentClueIdx;
       currentMyTeam.visitedZones = data.visitedZones || [];
       currentMyTeam.cards = data.cards || [];
+      currentMyTeam.activeClue = data.activeClue || null;
+      if (data.activeClue && data.activeClue.zoneId) {
+        currentAssignedZoneId = data.activeClue.zoneId;
+      }
+
+      // Proactively trigger game state sync if server state has transitioned
+      if (data.gameState && data.gameState.status && data.gameState.status !== currentGameState) {
+        syncGameState();
+      }
 
       // 1. Team Name & Points
       var nameEl = document.getElementById('team-name-label');
@@ -2070,13 +2092,21 @@
         var activeRank = activeCipherCard ? (activeCipherCard.rank || 13) : 13;
         var activeSuit = activeCipherCard ? (activeCipherCard.suit || '♠') : '♠';
 
+        var parsedCone = 'GREEN';
+        var parts = decodedText.split('|');
+        if (parts.length >= 4 && ['GREEN', 'RED', 'BLUE', 'YELLOW', 'ORANGE', 'PURPLE'].includes((parts[3] || '').toUpperCase())) {
+          parsedCone = parts[3].toUpperCase();
+        } else if (parts.length >= 5 && ['GREEN', 'RED', 'BLUE', 'YELLOW', 'ORANGE', 'PURPLE'].includes((parts[4] || '').toUpperCase())) {
+          parsedCone = parts[4].toUpperCase();
+        }
+
         var res = await fetch(apiUrl('/api/checkin'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             teamId: teamId,
             qrPayload: decodedText,
-            cone: 'GREEN',
+            cone: parsedCone,
             cardRank: activeRank,
             cardSuit: activeSuit,
             memberId: 'self_scan_beacon'

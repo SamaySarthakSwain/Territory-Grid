@@ -60,11 +60,6 @@ const DEFAULT_ADMIN = {
 };
 
 // ─────────────────────────────────────────────────────────────
-// Supabase Real-Time Cloud Store Configuration
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.supabase.co';
-const SUPABASE_ANON = process.env.SUPABASE_ANON || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmdXVmemx4c2t1cmF0dnFndW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTc5NzcsImV4cCI6MjA4NjczMzk3N30.jVCPESQvxOO9ExUTzyNZGyn8kBob4rj3aOZcxC2NLs8';
-
-// ─────────────────────────────────────────────────────────────
 // Normalization Utilities
 // ─────────────────────────────────────────────────────────────
 function normalizeZone(z) {
@@ -159,7 +154,7 @@ function getBalancedMarshalAllocation(allMarshals, allClues, requestedZone = nul
 // ─────────────────────────────────────────────────────────────
 class MemoryStore {
   constructor() {
-    this.filePath = process.env.VERCEL ? '/tmp/territory_grid_mongodb.json' : path.join(__dirname, '..', 'web_server', 'data', 'territory_grid_mongodb.json');
+    this.filePath = process.env.DATA_FILE || (process.env.VERCEL ? '/tmp/territory_grid_mongodb.json' : path.join(__dirname, '..', 'web_server', 'data', 'territory_grid_mongodb.json'));
     this.collections = {
       users: [DEFAULT_ADMIN],
       teams: [],
@@ -223,126 +218,30 @@ class MemoryStore {
     try {
       const dir = path.dirname(this.filePath);
       if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(this.filePath, JSON.stringify(this.collections, null, 2), 'utf8');
+      const tmpPath = this.filePath + '.tmp.' + process.pid;
+      fs.writeFileSync(tmpPath, JSON.stringify(this.collections, null, 2), 'utf8');
+      fs.renameSync(tmpPath, this.filePath);
     } catch (e) {
-      // ignore in read-only environments
+      try {
+        fs.writeFileSync(this.filePath, JSON.stringify(this.collections, null, 2), 'utf8');
+      } catch (err) {
+        console.error('[MemoryStore] File save error:', err);
+      }
     }
-    // Asynchronously push to Supabase cloud store with write-behind debouncing
-    this.scheduleCloudSync();
   }
 
   async saveAsync() {
-    this.lastModified = Date.now();
-    try {
-      const dir = path.dirname(this.filePath);
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(this.filePath, JSON.stringify(this.collections, null, 2), 'utf8');
-    } catch (e) {}
-    if (this.cloudSyncTimer) {
-      clearTimeout(this.cloudSyncTimer);
-      this.cloudSyncTimer = null;
-    }
-    await this.syncToCloud();
+    this.save();
+    return true;
   }
 
-  scheduleCloudSync() {
-    if (process.env.DISABLE_CLOUD_STORE === 'true') return;
-    if (this.cloudSyncTimer) clearTimeout(this.cloudSyncTimer);
-    this.cloudSyncTimer = setTimeout(() => {
-      this.cloudSyncTimer = null;
-      this.syncToCloud().catch(err => console.warn('[CloudStore background save warning]:', err.message));
-    }, 250);
-  }
-
-  async syncFromCloud(force = false) {
-    if (process.env.DISABLE_CLOUD_STORE === 'true') return this.collections;
-    const now = Date.now();
-    // If local memory has pending un-synced changes or was modified recently,
-    // NEVER overwrite local RAM with potentially stale cloud store data!
-    if (this.cloudSyncTimer || (this.lastModified && (now - this.lastModified < 10000))) {
-      return this.collections;
-    }
-    // Use fast in-memory cache for GET polls within 1500ms
-    if (!force && this.lastSynced > 0 && (now - this.lastSynced < 1500) && Array.isArray(this.collections.users) && this.collections.users.length > 0) {
-      return this.collections;
-    }
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store?key=eq.main_store&select=*`, {
-        headers: {
-          'apikey': SUPABASE_ANON,
-          'Authorization': `Bearer ${SUPABASE_ANON}`,
-          'Cache-Control': 'no-cache'
-        },
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        const rows = await res.json();
-        if (rows && rows.length > 0 && rows[0].data) {
-          const cloudUpdated = rows[0].updated_at ? new Date(rows[0].updated_at).getTime() : 0;
-          if (!this.lastModified || cloudUpdated > this.lastModified) {
-            this.collections = rows[0].data;
-            if (Array.isArray(this.collections.clues)) {
-              this.collections.clues = this.collections.clues.filter(c => !c.zoneId || !c.zoneId.startsWith('ZONE_'));
-              INITIAL_CAMPUS_PLACES.forEach(ip => {
-                if (!this.collections.clues.some(c => normalizeZone(c.zoneId) === normalizeZone(ip.zoneId))) {
-                  this.collections.clues.push({ ...ip });
-                }
-              });
-            } else {
-              this.collections.clues = JSON.parse(JSON.stringify(INITIAL_CAMPUS_PLACES));
-            }
-            this.lastSynced = Date.now();
-            // Write to local cache
-            try {
-              const dir = path.dirname(this.filePath);
-              if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-              fs.writeFileSync(this.filePath, JSON.stringify(this.collections, null, 2), 'utf8');
-            } catch(e){}
-          }
-          return this.collections;
-        }
-      }
-    } catch (e) {
-      // Network failure gracefully falls back to in-memory state
-    }
+  async syncFromCloud() {
+    // 100% Local In-Memory & Atomic File Document Store
     return this.collections;
   }
 
   async syncToCloud() {
-    try {
-      const dir = path.dirname(this.filePath);
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(this.filePath, JSON.stringify(this.collections, null, 2), 'utf8');
-    } catch (e) {}
-
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store`, {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_ANON,
-          'Authorization': `Bearer ${SUPABASE_ANON}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'resolution=merge-duplicates'
-        },
-        body: JSON.stringify({
-          key: 'main_store',
-          data: this.collections,
-          updated_at: new Date().toISOString()
-        }),
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      this.lastSynced = Date.now();
-      return res.ok;
-    } catch (e) {
-      console.warn('[CloudStore syncToCloud]:', e.message);
-      return false;
-    }
+    return true;
   }
 
   logEvent(action, details) {
@@ -494,8 +393,9 @@ module.exports = async (req, res) => {
         uptime: process.uptime(),
         timestamp: new Date().toISOString(),
         cloudSync: {
-          lastSynced: memoryStore.lastSynced ? new Date(memoryStore.lastSynced).toISOString() : null,
-          hasSupabaseUrl: !!(process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.supabase.co')
+          active: false,
+          mode: 'OFFLINE_LOCAL_DOCUMENT_ENGINE',
+          lastSynced: new Date().toISOString()
         },
         monitoring: {
           sentry: {
@@ -506,7 +406,7 @@ module.exports = async (req, res) => {
           }
         },
         database: {
-          provider: atlasDb ? 'MongoDB Atlas' : 'Supabase PostgreSQL + MemoryStore',
+          provider: atlasDb ? 'MongoDB Local/Atlas' : 'Pure Local Document Engine (Zero Cloud / Offline)',
           counts: {
             teamsTotal: teams.length,
             teamsApproved: teams.filter(t => t.isApproved).length,
@@ -1549,6 +1449,9 @@ module.exports = async (req, res) => {
           serverTime: new Date(now).toISOString(),
           remainingSeconds: remainingSeconds,
           countdownSeconds: countdownSeconds,
+          countdownEndsAt: gs.countdownEndsAt,
+          startedAt: gs.startedAt,
+          endsAt: gs.endsAt,
           durationSeconds: gs.durationSeconds,
           durationMinutes: gs.durationMinutes
         });
@@ -2409,6 +2312,17 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
         allUsers = memoryStore.collections.users || [];
       }
 
+      // If memberId is a registered marshal, enforce the marshal's official assigned station from the database!
+      if (memberId && memberId !== 'self_scan_beacon') {
+        const marshalUser = allUsers.find(u => 
+          (u.callsign && u.callsign.toLowerCase() === memberId.toLowerCase()) ||
+          u._id === memberId
+        );
+        if (marshalUser && marshalUser.zoneId) {
+          zoneId = marshalUser.zoneId;
+        }
+      }
+
       const activeClues = getActiveMarshalClues(allClues, allUsers);
       const marshalZoneNorm = normalizeZone(zoneId);
 
@@ -2454,6 +2368,7 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
           return sendJson(res, 400, {
             success: false,
             wrongStation: true,
+            teamName: team.name || team.callsign,
             error: '⛔ WRONG STATION: Squad "' + (team.name || team.callsign) + '" is currently assigned to ' + targetStationName + ' for Checkpoint #' + ((team.currentClueIndex || 0) + 1) + '. Points CANNOT be awarded at ' + currentStationName + '!',
             targetZoneId: activeTargetClue.zoneId,
             targetZoneLabel: targetStationName,

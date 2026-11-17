@@ -124,13 +124,22 @@
   <script src="vendor/tactical-audio-haptics.js"></script>
   <script src="vendor/network-monitor.js"></script>
   <script>
-    // Resilient API Base Resolver (Works in APK file:// and web https://)
-    function apiUrl(path) {
-      var base = '';
-      if (window.location.protocol === 'file:' || window.location.origin === 'null' || !window.location.origin.startsWith('http')) {
-        base = 'https://territory-grid-delta.vercel.app';
+    // Resilient API Base Resolver (100% Offline / Local LAN Autonomous)
+    function getGridServerUrl() {
+      try {
+        var saved = localStorage.getItem('tg_grid_server_url') || sessionStorage.getItem('tg_grid_server_url');
+        if (saved && saved.startsWith('http')) return saved.replace(/\/+$/, '');
+      } catch(e) {}
+      if (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin.startsWith('http')) {
+        return window.location.origin;
       }
-      return base + path;
+      return 'http://127.0.0.1:8088';
+    }
+
+    function apiUrl(path) {
+      var base = getGridServerUrl();
+      var cleanPath = (path.startsWith('/') ? '' : '/') + path;
+      return base + cleanPath;
     }
 
     if (typeof Html5Qrcode === 'undefined') {
@@ -829,6 +838,39 @@
         selectCone(currentUser.coneColor, initPts, null);
       }
 
+      // Proactively refresh authenticated marshal details (in case of dynamic reassignment)
+      async function syncMarshalAuthStatus() {
+        try {
+          var res = await fetch(apiUrl('/api/auth/status'), { credentials: 'include' });
+          if (res.ok) {
+            var data = await res.json();
+            if (data.authenticated && data.user && data.user.role === 'MEMBER') {
+              if (data.user.zoneId) currentUser.zoneId = data.user.zoneId;
+              if (data.user.zoneLabel) currentUser.zoneLabel = data.user.zoneLabel;
+              if (data.user.coneColor) currentUser.coneColor = data.user.coneColor;
+              if (data.user.conePoints) currentUser.conePoints = data.user.conePoints;
+              localStorage.setItem('territory_grid_user', JSON.stringify(currentUser));
+              
+              var zId = currentUser.zoneId || 'ATRIUM';
+              var zLbl = currentUser.zoneLabel || 'Atrium';
+              var zidEl = document.getElementById('station-zone-id');
+              var zlbEl = document.getElementById('station-zone-label');
+              if (zidEl) zidEl.innerText = zId;
+              if (zlbEl) zlbEl.innerText = zLbl;
+
+              if (currentUser.coneColor) {
+                var cPts = currentUser.conePoints || (currentUser.coneColor === 'GREEN' ? 15 : (currentUser.coneColor === 'RED' ? 10 : 12));
+                selectCone(currentUser.coneColor, cPts, null);
+              }
+              if (typeof renderMarshalStationBeacon === 'function') {
+                renderMarshalStationBeacon();
+              }
+            }
+          }
+        } catch(e) {}
+      }
+      syncMarshalAuthStatus();
+
       loadTeams();
       loadRecentCheckins();
       syncMarshalGameState();
@@ -1470,6 +1512,8 @@
           rankNum = parseInt(parts[3], 10) || 9;
           rankCode = parts[4] || '9';
           suitSymbol = parts[5] || '♠';
+          var qrTargetZone = (parts[7] || '').trim();
+
           if (parts[6]) {
             var subDigits = parts[6].replace(/\D/g, '');
             if (subDigits.length === 6 && !teamId && Array.isArray(currentTeams)) {
@@ -1478,6 +1522,22 @@
                 return (t.teamCode || (10 + (idx + 1))) === tt;
               });
               if (matched) teamId = matched._id;
+            }
+          }
+
+          // Pre-validation: Check if QR specifies target station mismatch
+          if (qrTargetZone) {
+            var myZoneNorm = normalizeZone((currentUser && currentUser.zoneId) || '');
+            var qrZoneNorm = normalizeZone(qrTargetZone);
+            if (myZoneNorm && qrZoneNorm && myZoneNorm !== qrZoneNorm) {
+              stopCameraScanner();
+              playCyberErrorBuzz();
+              showWrongStationModal(
+                '⛔ WRONG STATION: Squad "' + (teamName || 'Squad') + '" is assigned to ' + qrTargetZone + '! Points CANNOT be awarded at ' + ((currentUser && currentUser.zoneLabel) || currentUser.zoneId || 'this station') + '.',
+                qrTargetZone,
+                teamName || 'Squad'
+              );
+              return;
             }
           }
         } else {
@@ -1499,6 +1559,29 @@
         var selector = document.getElementById('team-selector');
         if (selector && teamId) {
           selector.value = teamId;
+        }
+
+        // Verify squad assigned target station client-side before awarding
+        if (teamId && Array.isArray(currentTeams)) {
+          var scannedTeam = currentTeams.find(function(t) { return t._id === teamId; });
+          if (scannedTeam && Array.isArray(allStationClues) && allStationClues.length > 0) {
+            var targetClue = resolveTeamTargetClue(scannedTeam, allStationClues, currentTeams);
+            if (targetClue && targetClue.zoneId) {
+              var myZoneNorm = normalizeZone((currentUser && currentUser.zoneId) || '');
+              var targetZoneNorm = normalizeZone(targetClue.zoneId);
+              if (myZoneNorm && targetZoneNorm && myZoneNorm !== targetZoneNorm) {
+                stopCameraScanner();
+                playCyberErrorBuzz();
+                var assignedStationName = targetClue.zoneLabel || targetClue.zoneId;
+                showWrongStationModal(
+                  '⛔ WRONG STATION: Squad "' + (scannedTeam.name || scannedTeam.callsign || teamName || 'Squad') + '" is assigned to ' + assignedStationName + ' for Checkpoint #' + ((scannedTeam.currentClueIndex || 0) + 1) + '! Points CANNOT be awarded at ' + ((currentUser && currentUser.zoneLabel) || currentUser.zoneId || 'this station') + '.',
+                  assignedStationName,
+                  scannedTeam.name || scannedTeam.callsign || teamName || 'Squad'
+                );
+                return;
+              }
+            }
+          }
         }
 
         checkinState.cardRank = rankCode;
