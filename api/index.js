@@ -132,6 +132,20 @@ class MemoryStore {
     this.scheduleCloudSync();
   }
 
+  async saveAsync() {
+    this.lastModified = Date.now();
+    try {
+      const dir = path.dirname(this.filePath);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(this.filePath, JSON.stringify(this.collections, null, 2), 'utf8');
+    } catch (e) {}
+    if (this.cloudSyncTimer) {
+      clearTimeout(this.cloudSyncTimer);
+      this.cloudSyncTimer = null;
+    }
+    await this.syncToCloud();
+  }
+
   scheduleCloudSync() {
     if (process.env.DISABLE_CLOUD_STORE === 'true') return;
     if (this.cloudSyncTimer) clearTimeout(this.cloudSyncTimer);
@@ -1248,7 +1262,7 @@ module.exports = async (req, res) => {
           gs.status = 'PLAYER_PHASE';
           if (!gs.startedAt) gs.startedAt = new Date(cdEnd).toISOString();
           if (!gs.endsAt) gs.endsAt = new Date(cdEnd + gs.durationSeconds * 1000).toISOString();
-          memoryStore.save();
+          await memoryStore.saveAsync();
         }
       }
 
@@ -1258,7 +1272,7 @@ module.exports = async (req, res) => {
         if (now >= gameEnd) {
           gs.status = 'ENDED';
           if (!gs.endedAt) gs.endedAt = new Date().toISOString();
-          memoryStore.save();
+          await memoryStore.saveAsync();
         }
       }
 
@@ -1311,7 +1325,7 @@ module.exports = async (req, res) => {
           gs.totalPausedMs = 0;
           gs.endedAt = null;
 
-          memoryStore.save();
+          await memoryStore.saveAsync();
         } else if (reqStatus === 'START' || reqStatus === 'PLAYER_PHASE' || reqStatus === 'ACTIVE') {
           const durMins = parseInt(body.durationMinutes, 10) || 52;
           const durSecs = durMins * 60;
@@ -1327,11 +1341,11 @@ module.exports = async (req, res) => {
           gs.totalPausedMs = 0;
           gs.endedAt = null;
 
-          memoryStore.save();
+          await memoryStore.saveAsync();
         } else if (reqStatus === 'PAUSE' || reqStatus === 'PAUSED') {
           gs.status = 'PAUSED';
           gs.pausedAt = new Date(now).toISOString();
-          memoryStore.save();
+          await memoryStore.saveAsync();
         } else if (reqStatus === 'RESUME' || reqStatus === 'UNPAUSE') {
           if (gs.status === 'PAUSED') {
             if (gs.pausedAt && gs.endsAt) {
@@ -1341,7 +1355,7 @@ module.exports = async (req, res) => {
             }
             gs.status = 'PLAYER_PHASE';
             gs.pausedAt = null;
-            memoryStore.save();
+            await memoryStore.saveAsync();
           }
         } else if (reqStatus === 'RESET' || reqStatus === 'LOBBY') {
           gs.status = 'LOBBY';
@@ -1355,11 +1369,11 @@ module.exports = async (req, res) => {
           gs.totalPausedMs = 0;
           gs.endedAt = null;
 
-          memoryStore.save();
+          await memoryStore.saveAsync();
         } else if (reqStatus === 'ENDED') {
           gs.status = 'ENDED';
           gs.endedAt = new Date(now).toISOString();
-          memoryStore.save();
+          await memoryStore.saveAsync();
         }
 
         let remainingSeconds = gs.durationSeconds || 3120;
@@ -2125,7 +2139,7 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
       team.currentClueIndex = (team.currentClueIndex || 0) + 1;
       team.updatedAt = new Date().toISOString();
 
-      memoryStore.save();
+      await memoryStore.saveAsync();
       memoryStore.logEvent('CHECKIN', 'Team "' + team.name + '" awarded +' + totalPoints + ' PTS at ' + recordedZone + ' (Total: ' + team.score + ' PTS)');
 
       const nextClue = (activeClues.length > 0) ? resolveTeamTargetClue(team, activeClues) : null;

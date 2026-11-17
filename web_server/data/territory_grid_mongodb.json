@@ -41,122 +41,465 @@
       "password": "samay",
       "createdAt": "2026-11-13T00:00:00.000Z",
       "isApproved": true
-    },
-    {
-      "_id": "user_1794843412374_2vzxd",
-      "callsign": "m1_mwjffb19",
-      "name": "Field Marshal One",
-      "role": "MEMBER",
-      "password": "pass",
-      "teamId": null,
-      "zoneId": "ZONE_01",
-      "zoneLabel": "Station 1 - Library Arch",
-      "isApproved": true,
-      "createdAt": "2026-11-16T15:36:52.374Z"
-    },
-    {
-      "_id": "user_1794843412378_g9eo1",
-      "callsign": "m2_mwjffb19",
-      "name": "Field Marshal LHC",
-      "role": "MEMBER",
-      "password": "pass",
-      "teamId": null,
-      "zoneId": "LHC",
-      "zoneLabel": "Lecture Hall Complex",
-      "isApproved": true,
-      "createdAt": "2026-11-16T15:36:52.378Z"
     }
   ],
-  "checkins": [
-    {
-      "_id": "team_1794843412384_stu5k_LHC_1794843412404",
-      "teamId": "team_1794843412384_stu5k",
-      "zoneId": "LHC",
-      "memberId": "marshal_1",
-      "cone": "GREEN",
-      "cardRank": 13,
-      "cardSuit": "♠",
-      "points": 28,
-      "timestamp": "2026-11-16T15:36:52.404Z"
-    },
-    {
-      "_id": "team_1794843412384_stu5k_ZONE_01_1794843412408",
-      "teamId": "team_1794843412384_stu5k",
-      "zoneId": "ZONE_01",
-      "memberId": "marshal_2",
-      "cone": "YELLOW",
-      "cardRank": 12,
-      "cardSuit": "♥",
-      "points": 24,
-      "timestamp": "2026-11-16T15:36:52.408Z"
-    }
-  ],
+  "checkins": [],
   "gameState": {
-    "endsAt": "2026-11-16T15:10:06.376Z",
-    "status": "PLAYER_PHASE",
+    "endsAt": null,
+    "status": "LOBBY",
     "endedAt": null,
     "pausedAt": null,
-    "startedAt": "2026-11-16T14:18:06.376Z",
+    "startedAt": null,
     "totalPausedMs": 0,
-    "countdownEndsAt": "2026-11-16T14:18:06.376Z",
+    "countdownEndsAt": null,
     "durationMinutes": 52,
     "durationSeconds": 3120,
-    "countdownStartAt": "2026-11-16T14:17:56.376Z"
+    "countdownStartAt": null
   },
   "system_logs": [
     {
-      "_id": "log_1794843412409_76fp",
-      "action": "CHECKIN",
-      "details": "Team \"Bravo Squad\" awarded +24 PTS at ZONE_01 (Total: 52 PTS)",
-      "timestamp": "2026-11-16T15:36:52.409Z"
+      "_id": "log_1794895441184_vzim",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (22) and non-admin operatives.",
+      "timestamp": "2026-11-17T06:04:01.184Z"
     },
     {
-      "_id": "log_1794843412405_em1r",
-      "action": "CHECKIN",
-      "details": "Team \"Bravo Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
-      "timestamp": "2026-11-16T15:36:52.405Z"
+      "_id": "log_1794895438702_wpa0",
+      "action": "RESET_ALL_POINTS",
+      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 22 squads.",
+      "timestamp": "2026-11-17T06:03:58.702Z"
     },
     {
-      "_id": "log_1794843412398_2gh2",
+      "_id": "log_1794895437494_w1bn",
+      "action": "CHECKIN",
+      "details": "Team \"Audit Squad audit_sq_433007\" awarded +22 PTS at ZONE_05 (Total: 22 PTS)",
+      "timestamp": "2026-11-17T06:03:57.494Z"
+    },
+    {
+      "_id": "log_1794895436322_p7tp",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal 2 audit_mr2_433007\" (user_1794895434394_pmf1g)",
+      "timestamp": "2026-11-17T06:03:56.322Z"
+    },
+    {
+      "_id": "log_1794895435810_vtbj",
+      "action": "APPROVE_USER",
+      "details": "Field Marshal authorized: \"Field Marshal audit_mr_433007\" (user_1794895434390_qi19p)",
+      "timestamp": "2026-11-17T06:03:55.810Z"
+    },
+    {
+      "_id": "log_1794895434407_zuhe",
       "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Bravo Squad\" (team_1794843412384_stu5k)",
-      "timestamp": "2026-11-16T15:36:52.398Z"
+      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_433007\" (team_1794895434387_nfx9g)",
+      "timestamp": "2026-11-17T06:03:54.407Z"
     },
     {
-      "_id": "log_1794843412395_4jae",
+      "_id": "log_1794895434403_0jbh",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"Audit Squad audit_sq_433007\" (team_1794895434382_g6q04)",
+      "timestamp": "2026-11-17T06:03:54.403Z"
+    },
+    {
+      "_id": "log_1794895434395_h5fr",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr2_433007\" registered.",
+      "timestamp": "2026-11-17T06:03:54.395Z"
+    },
+    {
+      "_id": "log_1794895434391_8d2p",
+      "action": "REGISTER",
+      "details": "MEMBER \"audit_mr_433007\" registered.",
+      "timestamp": "2026-11-17T06:03:54.391Z"
+    },
+    {
+      "_id": "log_1794895434387_g6bv",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq2_433007\" registered.",
+      "timestamp": "2026-11-17T06:03:54.387Z"
+    },
+    {
+      "_id": "log_1794895434383_mvuz",
+      "action": "REGISTER",
+      "details": "PLAYER \"audit_sq_433007\" registered.",
+      "timestamp": "2026-11-17T06:03:54.383Z"
+    },
+    {
+      "_id": "log_1794895420268_xx69",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 20 (Strike 20)\" awarded +20 PTS at ZONE_07 (Total: 20 PTS)",
+      "timestamp": "2026-11-17T06:03:40.268Z"
+    },
+    {
+      "_id": "log_1794895419011_hv9g",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 19 (Strike 19)\" awarded +17 PTS at ZONE_06 (Total: 17 PTS)",
+      "timestamp": "2026-11-17T06:03:39.011Z"
+    },
+    {
+      "_id": "log_1794895418460_h86g",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 18 (Strike 18)\" awarded +21 PTS at ZONE_05 (Total: 21 PTS)",
+      "timestamp": "2026-11-17T06:03:38.460Z"
+    },
+    {
+      "_id": "log_1794895417922_qrqt",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 17 (Strike 17)\" awarded +15 PTS at ZONE_04 (Total: 15 PTS)",
+      "timestamp": "2026-11-17T06:03:37.922Z"
+    },
+    {
+      "_id": "log_1794895417332_6ysz",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 16 (Strike 16)\" awarded +16 PTS at ZONE_03 (Total: 16 PTS)",
+      "timestamp": "2026-11-17T06:03:37.332Z"
+    },
+    {
+      "_id": "log_1794895416792_mcep",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 15 (Strike 15)\" awarded +18 PTS at ZONE_02 (Total: 18 PTS)",
+      "timestamp": "2026-11-17T06:03:36.792Z"
+    },
+    {
+      "_id": "log_1794895416111_89az",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 14 (Strike 14)\" awarded +14 PTS at ZONE_01 (Total: 14 PTS)",
+      "timestamp": "2026-11-17T06:03:36.111Z"
+    },
+    {
+      "_id": "log_1794895415104_hzst",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 13 (Strike 13)\" awarded +11 PTS at ZONE_12 (Total: 11 PTS)",
+      "timestamp": "2026-11-17T06:03:35.104Z"
+    },
+    {
+      "_id": "log_1794895414563_obi1",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 12 (Strike 12)\" awarded +28 PTS at ZONE_11 (Total: 28 PTS)",
+      "timestamp": "2026-11-17T06:03:34.563Z"
+    },
+    {
+      "_id": "log_1794895414029_2is5",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 11 (Strike 11)\" awarded +22 PTS at ZONE_10 (Total: 22 PTS)",
+      "timestamp": "2026-11-17T06:03:34.029Z"
+    },
+    {
+      "_id": "log_1794895413181_3cx7",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 10 (Strike 10)\" awarded +23 PTS at ZONE_09 (Total: 23 PTS)",
+      "timestamp": "2026-11-17T06:03:33.181Z"
+    },
+    {
+      "_id": "log_1794895411990_g37a",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 9 (Strike 9)\" awarded +25 PTS at ZONE_08 (Total: 25 PTS)",
+      "timestamp": "2026-11-17T06:03:31.990Z"
+    },
+    {
+      "_id": "log_1794895411469_5g5o",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 8 (Strike 8)\" awarded +21 PTS at ZONE_07 (Total: 21 PTS)",
+      "timestamp": "2026-11-17T06:03:31.469Z"
+    },
+    {
+      "_id": "log_1794895410848_mgv7",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 7 (Strike 7)\" awarded +18 PTS at ZONE_06 (Total: 18 PTS)",
+      "timestamp": "2026-11-17T06:03:30.848Z"
+    },
+    {
+      "_id": "log_1794895410286_yx6y",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 6 (Strike 6)\" awarded +22 PTS at ZONE_05 (Total: 22 PTS)",
+      "timestamp": "2026-11-17T06:03:30.286Z"
+    },
+    {
+      "_id": "log_1794895409710_4ypr",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 5 (Strike 5)\" awarded +16 PTS at ZONE_04 (Total: 16 PTS)",
+      "timestamp": "2026-11-17T06:03:29.710Z"
+    },
+    {
+      "_id": "log_1794895408428_fbvk",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 4 (Strike 4)\" awarded +17 PTS at ZONE_03 (Total: 17 PTS)",
+      "timestamp": "2026-11-17T06:03:28.428Z"
+    },
+    {
+      "_id": "log_1794895407180_3hqk",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 3 (Strike 3)\" awarded +19 PTS at ZONE_02 (Total: 19 PTS)",
+      "timestamp": "2026-11-17T06:03:27.180Z"
+    },
+    {
+      "_id": "log_1794895406598_r52s",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 2 (Strike 2)\" awarded +15 PTS at ZONE_01 (Total: 15 PTS)",
+      "timestamp": "2026-11-17T06:03:26.598Z"
+    },
+    {
+      "_id": "log_1794895405397_ohww",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 1 (Strike 1)\" awarded +24 PTS at ZONE_01 (Total: 52 PTS)",
+      "timestamp": "2026-11-17T06:03:25.397Z"
+    },
+    {
+      "_id": "log_1794895404371_4b3k",
+      "action": "CHECKIN",
+      "details": "Team \"Squad 1 (Strike 1)\" awarded +28 PTS at ZONE_12 (Total: 28 PTS)",
+      "timestamp": "2026-11-17T06:03:24.371Z"
+    },
+    {
+      "_id": "log_1794895401396_nb7a",
+      "action": "APPROVE_ALL",
+      "details": "Game Master batch-authorized all pending squads and field marshals (52 total).",
+      "timestamp": "2026-11-17T06:03:21.396Z"
+    },
+    {
+      "_id": "log_1794895401393_lk78",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_20\" registered.",
+      "timestamp": "2026-11-17T06:03:21.393Z"
+    },
+    {
+      "_id": "log_1794895401391_pcvi",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_19\" registered.",
+      "timestamp": "2026-11-17T06:03:21.391Z"
+    },
+    {
+      "_id": "log_1794895401389_i75v",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_18\" registered.",
+      "timestamp": "2026-11-17T06:03:21.389Z"
+    },
+    {
+      "_id": "log_1794895401387_km0b",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_17\" registered.",
+      "timestamp": "2026-11-17T06:03:21.387Z"
+    },
+    {
+      "_id": "log_1794895401384_nohl",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_16\" registered.",
+      "timestamp": "2026-11-17T06:03:21.384Z"
+    },
+    {
+      "_id": "log_1794895401382_qhbb",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_15\" registered.",
+      "timestamp": "2026-11-17T06:03:21.382Z"
+    },
+    {
+      "_id": "log_1794895401380_8chf",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_14\" registered.",
+      "timestamp": "2026-11-17T06:03:21.380Z"
+    },
+    {
+      "_id": "log_1794895401378_rf8f",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_13\" registered.",
+      "timestamp": "2026-11-17T06:03:21.378Z"
+    },
+    {
+      "_id": "log_1794895401376_umru",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_12\" registered.",
+      "timestamp": "2026-11-17T06:03:21.376Z"
+    },
+    {
+      "_id": "log_1794895401374_bl5x",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_11\" registered.",
+      "timestamp": "2026-11-17T06:03:21.374Z"
+    },
+    {
+      "_id": "log_1794895401371_gi5j",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_10\" registered.",
+      "timestamp": "2026-11-17T06:03:21.371Z"
+    },
+    {
+      "_id": "log_1794895401370_pwjq",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_09\" registered.",
+      "timestamp": "2026-11-17T06:03:21.370Z"
+    },
+    {
+      "_id": "log_1794895401368_et9q",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_08\" registered.",
+      "timestamp": "2026-11-17T06:03:21.368Z"
+    },
+    {
+      "_id": "log_1794895401366_xm0s",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_07\" registered.",
+      "timestamp": "2026-11-17T06:03:21.366Z"
+    },
+    {
+      "_id": "log_1794895401363_sfhb",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_06\" registered.",
+      "timestamp": "2026-11-17T06:03:21.363Z"
+    },
+    {
+      "_id": "log_1794895401361_bmkg",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_05\" registered.",
+      "timestamp": "2026-11-17T06:03:21.361Z"
+    },
+    {
+      "_id": "log_1794895401359_o7pv",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_04\" registered.",
+      "timestamp": "2026-11-17T06:03:21.359Z"
+    },
+    {
+      "_id": "log_1794895401356_nofe",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_03\" registered.",
+      "timestamp": "2026-11-17T06:03:21.356Z"
+    },
+    {
+      "_id": "log_1794895401355_u1wh",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_02\" registered.",
+      "timestamp": "2026-11-17T06:03:21.355Z"
+    },
+    {
+      "_id": "log_1794895401353_k1pu",
+      "action": "REGISTER",
+      "details": "PLAYER \"squad_01\" registered.",
+      "timestamp": "2026-11-17T06:03:21.353Z"
+    },
+    {
+      "_id": "log_1794895401350_51ie",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_12\" registered.",
+      "timestamp": "2026-11-17T06:03:21.350Z"
+    },
+    {
+      "_id": "log_1794895401348_kps0",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_11\" registered.",
+      "timestamp": "2026-11-17T06:03:21.348Z"
+    },
+    {
+      "_id": "log_1794895401347_7c0i",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_10\" registered.",
+      "timestamp": "2026-11-17T06:03:21.347Z"
+    },
+    {
+      "_id": "log_1794895401345_7gmq",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_09\" registered.",
+      "timestamp": "2026-11-17T06:03:21.345Z"
+    },
+    {
+      "_id": "log_1794895401342_2pe5",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_08\" registered.",
+      "timestamp": "2026-11-17T06:03:21.342Z"
+    },
+    {
+      "_id": "log_1794895401340_wvwa",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_07\" registered.",
+      "timestamp": "2026-11-17T06:03:21.340Z"
+    },
+    {
+      "_id": "log_1794895401338_3dj3",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_06\" registered.",
+      "timestamp": "2026-11-17T06:03:21.338Z"
+    },
+    {
+      "_id": "log_1794895401336_vze7",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_05\" registered.",
+      "timestamp": "2026-11-17T06:03:21.336Z"
+    },
+    {
+      "_id": "log_1794895401334_45ls",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_04\" registered.",
+      "timestamp": "2026-11-17T06:03:21.334Z"
+    },
+    {
+      "_id": "log_1794895401332_v13g",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_03\" registered.",
+      "timestamp": "2026-11-17T06:03:21.332Z"
+    },
+    {
+      "_id": "log_1794895401329_rm7w",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_02\" registered.",
+      "timestamp": "2026-11-17T06:03:21.329Z"
+    },
+    {
+      "_id": "log_1794895401327_ioav",
+      "action": "REGISTER",
+      "details": "MEMBER \"marshal_01\" registered.",
+      "timestamp": "2026-11-17T06:03:21.327Z"
+    },
+    {
+      "_id": "log_1794895399294_m1ek",
+      "action": "PURGE_ALL_TEAMS",
+      "details": "Game Master permanently purged all squads (1) and non-admin operatives.",
+      "timestamp": "2026-11-17T06:03:19.294Z"
+    },
+    {
+      "_id": "log_1794893390793_h5f0",
+      "action": "APPROVE_ALL",
+      "details": "Game Master batch-authorized all pending squads and field marshals (0 total).",
+      "timestamp": "2026-11-17T05:29:50.793Z"
+    },
+    {
+      "_id": "log_1794893317328_iyf9",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Field Marshal LHC\" (user_1794843412378_g9eo1)",
-      "timestamp": "2026-11-16T15:36:52.395Z"
+      "details": "Field Marshal authorized: \"Marshal 2\" (user_1794893313241_i6t8g)",
+      "timestamp": "2026-11-17T05:28:37.328Z"
     },
     {
-      "_id": "log_1794843412389_bfzt",
+      "_id": "log_1794893313242_314c",
+      "action": "REGISTER",
+      "details": "MEMBER \"Marshal 2\" registered.",
+      "timestamp": "2026-11-17T05:28:33.242Z"
+    },
+    {
+      "_id": "log_1794893300581_rh7w",
+      "action": "APPROVE_TEAM",
+      "details": "Squad authorized: \"team1\" (team_1794893285768_ab3au)",
+      "timestamp": "2026-11-17T05:28:20.581Z"
+    },
+    {
+      "_id": "log_1794893297023_g5ku",
       "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Field Marshal One\" (user_1794843412374_2vzxd)",
-      "timestamp": "2026-11-16T15:36:52.389Z"
+      "details": "Field Marshal authorized: \"Marshal1\" (user_1794893252661_9u4kh)",
+      "timestamp": "2026-11-17T05:28:17.023Z"
     },
     {
-      "_id": "log_1794843412385_pbfr",
+      "_id": "log_1794893285769_weik",
       "action": "REGISTER",
-      "details": "PLAYER \"bravo_mwjffb19\" registered.",
-      "timestamp": "2026-11-16T15:36:52.385Z"
+      "details": "PLAYER \"team1\" registered.",
+      "timestamp": "2026-11-17T05:28:05.769Z"
     },
     {
-      "_id": "log_1794843412379_5fzo",
+      "_id": "log_1794893252662_alcv",
       "action": "REGISTER",
-      "details": "MEMBER \"m2_mwjffb19\" registered.",
-      "timestamp": "2026-11-16T15:36:52.379Z"
+      "details": "MEMBER \"Marshal1\" registered.",
+      "timestamp": "2026-11-17T05:27:32.662Z"
     },
     {
-      "_id": "log_1794843412375_7lav",
-      "action": "REGISTER",
-      "details": "MEMBER \"m1_mwjffb19\" registered.",
-      "timestamp": "2026-11-16T15:36:52.375Z"
-    },
-    {
-      "_id": "log_1794843412371_2myk",
+      "_id": "log_1794847924739_uyhz",
       "action": "PURGE_ALL_TEAMS",
       "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
-      "timestamp": "2026-11-16T15:36:52.371Z"
+      "timestamp": "2026-11-16T16:52:04.739Z"
     },
     {
       "_id": "log_1794842172114_6a2t",
@@ -1513,396 +1856,6 @@
       "action": "CHECKIN",
       "details": "Team \"Audit Squad audit_sq_211178\" awarded +22 PTS at LHC (Total: 22 PTS)",
       "timestamp": "2026-11-16T09:44:24.841Z"
-    },
-    {
-      "_id": "log_1794822260052_ywii",
-      "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Field Marshal audit_mr_211178\" (user_1794822250904_aig7q)",
-      "timestamp": "2026-11-16T09:44:20.052Z"
-    },
-    {
-      "_id": "log_1794822256978_xzcb",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_211178\" (team_1794822249509_udxi9)",
-      "timestamp": "2026-11-16T09:44:16.978Z"
-    },
-    {
-      "_id": "log_1794822255667_ys48",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Audit Squad audit_sq_211178\" (team_1794822247295_2u1av)",
-      "timestamp": "2026-11-16T09:44:15.667Z"
-    },
-    {
-      "_id": "log_1794822251612_rtjt",
-      "action": "REGISTER",
-      "details": "MEMBER \"audit_mr_211178\" registered.",
-      "timestamp": "2026-11-16T09:44:11.612Z"
-    },
-    {
-      "_id": "log_1794822248062_cup7",
-      "action": "REGISTER",
-      "details": "PLAYER \"audit_sq_211178\" registered.",
-      "timestamp": "2026-11-16T09:44:08.062Z"
-    },
-    {
-      "_id": "log_1794820964642_dznl",
-      "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"marshal3\" (user_1794820929899_4c9ax)",
-      "timestamp": "2026-11-16T09:22:44.642Z"
-    },
-    {
-      "_id": "log_1794820937485_9cem",
-      "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"marshal3\" (user_1794820929899_4c9ax)",
-      "timestamp": "2026-11-16T09:22:17.485Z"
-    },
-    {
-      "_id": "log_1794820936067_4k4n",
-      "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"marshal4\" (user_1794820928736_ctaf7)",
-      "timestamp": "2026-11-16T09:22:16.067Z"
-    },
-    {
-      "_id": "log_1794820930569_g5dm",
-      "action": "REGISTER",
-      "details": "MEMBER \"marshal3\" registered.",
-      "timestamp": "2026-11-16T09:22:10.569Z"
-    },
-    {
-      "_id": "log_1794820928997_ugn9",
-      "action": "REGISTER",
-      "details": "MEMBER \"marshal4\" registered.",
-      "timestamp": "2026-11-16T09:22:08.997Z"
-    },
-    {
-      "_id": "log_1794820759564_bnuv",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"team2\" (team_1794820712478_hm3uu)",
-      "timestamp": "2026-11-16T09:19:19.564Z"
-    },
-    {
-      "_id": "log_1794820755067_uwow",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"team2\" (team_1794820712478_hm3uu)",
-      "timestamp": "2026-11-16T09:19:15.068Z"
-    },
-    {
-      "_id": "log_1794820727190_ka35",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"marshal2\" (team_1794820707294_itvf7)",
-      "timestamp": "2026-11-16T09:18:47.190Z"
-    },
-    {
-      "_id": "log_1794820726342_nj2r",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"team2\" (team_1794820712478_hm3uu)",
-      "timestamp": "2026-11-16T09:18:46.342Z"
-    },
-    {
-      "_id": "log_1794820721836_94qg",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"marshal2\" (team_1794820707294_itvf7)",
-      "timestamp": "2026-11-16T09:18:41.836Z"
-    },
-    {
-      "_id": "log_1794820720652_sisb",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"team2\" (team_1794820712478_hm3uu)",
-      "timestamp": "2026-11-16T09:18:40.652Z"
-    },
-    {
-      "_id": "log_1794820719465_yoof",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"team1\" (team_1794820711863_klv5k)",
-      "timestamp": "2026-11-16T09:18:39.465Z"
-    },
-    {
-      "_id": "log_1794820718431_aa28",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"marshal1\" (team_1794820671558_n57zn)",
-      "timestamp": "2026-11-16T09:18:38.431Z"
-    },
-    {
-      "_id": "log_1794820712750_51y6",
-      "action": "REGISTER",
-      "details": "PLAYER \"team2\" registered.",
-      "timestamp": "2026-11-16T09:18:32.750Z"
-    },
-    {
-      "_id": "log_1794820712119_53rw",
-      "action": "REGISTER",
-      "details": "PLAYER \"team1\" registered.",
-      "timestamp": "2026-11-16T09:18:32.119Z"
-    },
-    {
-      "_id": "log_1794820707989_xvd6",
-      "action": "REGISTER",
-      "details": "PLAYER \"marshal2\" registered.",
-      "timestamp": "2026-11-16T09:18:27.989Z"
-    },
-    {
-      "_id": "log_1794820671847_4fi8",
-      "action": "REGISTER",
-      "details": "PLAYER \"marshal1\" registered.",
-      "timestamp": "2026-11-16T09:17:51.847Z"
-    },
-    {
-      "_id": "log_1794820049725_rhen",
-      "action": "PURGE_ALL_TEAMS",
-      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
-      "timestamp": "2026-11-16T09:07:29.725Z"
-    },
-    {
-      "_id": "log_1794820046016_cbqr",
-      "action": "RESET_ALL_POINTS",
-      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 2 squads.",
-      "timestamp": "2026-11-16T09:07:26.016Z"
-    },
-    {
-      "_id": "log_1794820042561_pvqo",
-      "action": "CHECKIN",
-      "details": "Team \"Audit Squad audit_sq_013140\" awarded +22 PTS at LHC (Total: 22 PTS)",
-      "timestamp": "2026-11-16T09:07:22.561Z"
-    },
-    {
-      "_id": "log_1794820036948_gpf0",
-      "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Field Marshal audit_mr_013140\" (user_1794820016808_svrks)",
-      "timestamp": "2026-11-16T09:07:16.948Z"
-    },
-    {
-      "_id": "log_1794820034692_wr3b",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_013140\" (team_1794820015990_rj7my)",
-      "timestamp": "2026-11-16T09:07:14.692Z"
-    },
-    {
-      "_id": "log_1794820033909_wtqn",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Audit Squad audit_sq_013140\" (team_1794820015146_9fvdi)",
-      "timestamp": "2026-11-16T09:07:13.909Z"
-    },
-    {
-      "_id": "log_1794820017939_gcvv",
-      "action": "REGISTER",
-      "details": "MEMBER \"audit_mr_013140\" registered.",
-      "timestamp": "2026-11-16T09:06:57.939Z"
-    },
-    {
-      "_id": "log_1794820015398_7my4",
-      "action": "REGISTER",
-      "details": "PLAYER \"audit_sq_013140\" registered.",
-      "timestamp": "2026-11-16T09:06:55.398Z"
-    },
-    {
-      "_id": "log_1794819998900_8kw4",
-      "action": "PURGE_ALL_TEAMS",
-      "details": "Game Master permanently purged all squads (1) and non-admin operatives.",
-      "timestamp": "2026-11-16T09:06:38.900Z"
-    },
-    {
-      "_id": "log_1794819996188_35r1",
-      "action": "CHECKIN",
-      "details": "Team \"Live Verifier Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
-      "timestamp": "2026-11-16T09:06:36.188Z"
-    },
-    {
-      "_id": "log_1794819993871_otma",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Live Verifier Squad\" (user_1794819990998_a4zh6)",
-      "timestamp": "2026-11-16T09:06:33.871Z"
-    },
-    {
-      "_id": "log_1794819991877_hpdk",
-      "action": "REGISTER",
-      "details": "PLAYER \"live_test_1794819989881\" registered.",
-      "timestamp": "2026-11-16T09:06:31.877Z"
-    },
-    {
-      "_id": "log_1794819894775_c4t7",
-      "action": "ADMIN_LOGIN",
-      "details": "Game Master Samay authenticated.",
-      "timestamp": "2026-11-16T09:04:54.775Z"
-    },
-    {
-      "_id": "log_1794819893906_7afx",
-      "action": "PURGE_ALL_TEAMS",
-      "details": "Game Master permanently purged all squads (1) and non-admin operatives.",
-      "timestamp": "2026-11-16T09:04:53.906Z"
-    },
-    {
-      "_id": "log_1794819893126_lsy2",
-      "action": "GAME_STATUS",
-      "details": "Game Master reset game state to LOBBY standby.",
-      "timestamp": "2026-11-16T09:04:53.126Z"
-    },
-    {
-      "_id": "log_1794819890782_0ee2",
-      "action": "RESET_ALL_POINTS",
-      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 1 squads.",
-      "timestamp": "2026-11-16T09:04:50.782Z"
-    },
-    {
-      "_id": "log_1794819875550_794e",
-      "action": "CHECKIN",
-      "details": "Team \"Audit Squad audit_sq_855297\" awarded +22 PTS at LHC (Total: 22 PTS)",
-      "timestamp": "2026-11-16T09:04:35.550Z"
-    },
-    {
-      "_id": "log_1794819871274_5ijb",
-      "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Field Marshal audit_mr_855297\" (user_1794819861717_cz55p)",
-      "timestamp": "2026-11-16T09:04:31.274Z"
-    },
-    {
-      "_id": "log_1794819867164_kx3u",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Audit Squad audit_sq_855297\" (team_1794819858476_z4ah3)",
-      "timestamp": "2026-11-16T09:04:27.164Z"
-    },
-    {
-      "_id": "log_1794819864384_iuk6",
-      "action": "LOGIN",
-      "details": "PLAYER \"audit_sq_855297\" signed in (Approved: false)",
-      "timestamp": "2026-11-16T09:04:24.384Z"
-    },
-    {
-      "_id": "log_1794819863176_bhd1",
-      "action": "ADMIN_LOGIN",
-      "details": "Game Master Samay authenticated.",
-      "timestamp": "2026-11-16T09:04:23.176Z"
-    },
-    {
-      "_id": "log_1794819862404_jysg",
-      "action": "REGISTER",
-      "details": "MEMBER registered: \"audit_mr_855297\" (Pending Approval)",
-      "timestamp": "2026-11-16T09:04:22.404Z"
-    },
-    {
-      "_id": "log_1794819859275_bjer",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"audit_sq_855297\" (Pending Approval)",
-      "timestamp": "2026-11-16T09:04:19.275Z"
-    },
-    {
-      "_id": "log_1794813319529_naqk",
-      "action": "ADMIN_LOGIN",
-      "details": "Game Master Samay authenticated.",
-      "timestamp": "2026-11-16T07:15:19.529Z"
-    },
-    {
-      "_id": "log_1794813318562_6vu2",
-      "action": "PURGE_ALL_TEAMS",
-      "details": "Game Master permanently purged all squads (2) and non-admin operatives.",
-      "timestamp": "2026-11-16T07:15:18.562Z"
-    },
-    {
-      "_id": "log_1794813314822_dde6",
-      "action": "RESET_ALL_POINTS",
-      "details": "Game Master reset all points, cards, and checkpoint progress to 0 for 2 squads.",
-      "timestamp": "2026-11-16T07:15:14.822Z"
-    },
-    {
-      "_id": "log_1794813310827_gp3t",
-      "action": "CHECKIN",
-      "details": "Team \"Audit Squad audit_sq_293367\" awarded +22 PTS at LHC (Total: 22 PTS)",
-      "timestamp": "2026-11-16T07:15:10.827Z"
-    },
-    {
-      "_id": "log_1794813306380_9hnb",
-      "action": "APPROVE_USER",
-      "details": "Field Marshal authorized: \"Field Marshal audit_mr_293367\" (user_1794813298562_tme71)",
-      "timestamp": "2026-11-16T07:15:06.380Z"
-    },
-    {
-      "_id": "log_1794813304067_m5n3",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Audit Squad 2 audit_sq2_293367\" (team_1794813297213_ar7yx)",
-      "timestamp": "2026-11-16T07:15:04.067Z"
-    },
-    {
-      "_id": "log_1794813302510_f91q",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Audit Squad audit_sq_293367\" (team_1794813295439_roiz9)",
-      "timestamp": "2026-11-16T07:15:02.510Z"
-    },
-    {
-      "_id": "log_1794813300439_spuh",
-      "action": "LOGIN",
-      "details": "PLAYER \"audit_sq_293367\" signed in (Approved: false)",
-      "timestamp": "2026-11-16T07:15:00.439Z"
-    },
-    {
-      "_id": "log_1794813299875_o464",
-      "action": "ADMIN_LOGIN",
-      "details": "Game Master Samay authenticated.",
-      "timestamp": "2026-11-16T07:14:59.875Z"
-    },
-    {
-      "_id": "log_1794813298829_0o3a",
-      "action": "REGISTER",
-      "details": "MEMBER registered: \"audit_mr_293367\" (Pending Approval)",
-      "timestamp": "2026-11-16T07:14:58.829Z"
-    },
-    {
-      "_id": "log_1794813297968_dfu8",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"audit_sq2_293367\" (Pending Approval)",
-      "timestamp": "2026-11-16T07:14:57.968Z"
-    },
-    {
-      "_id": "log_1794813296194_hzpi",
-      "action": "REGISTER",
-      "details": "PLAYER registered: \"audit_sq_293367\" (Pending Approval)",
-      "timestamp": "2026-11-16T07:14:56.194Z"
-    },
-    {
-      "_id": "log_1794813282138_csrv",
-      "action": "PURGE_ALL_TEAMS",
-      "details": "Game Master permanently purged all squads (6) and non-admin operatives.",
-      "timestamp": "2026-11-16T07:14:42.138Z"
-    },
-    {
-      "_id": "log_1794813280113_y5sk",
-      "action": "CHECKIN",
-      "details": "Team \"Phase8 Squad\" awarded +28 PTS at ZONE_01 (Total: 28 PTS)",
-      "timestamp": "2026-11-16T07:14:40.113Z"
-    },
-    {
-      "_id": "log_1794813255058_nazt",
-      "action": "CHECKIN",
-      "details": "Team \"Phase8 Squad\" awarded +28 PTS at LHC (Total: 28 PTS)",
-      "timestamp": "2026-11-16T07:14:15.058Z"
-    },
-    {
-      "_id": "log_1794813179174_7m5a",
-      "action": "APPROVE_TEAM",
-      "details": "Squad authorized: \"Phase8 Squad\" (user_1794813176918_6zt8m)",
-      "timestamp": "2026-11-16T07:12:59.174Z"
-    },
-    {
-      "_id": "log_1794813177545_6r1y",
-      "action": "REGISTER",
-      "details": "PLAYER \"phase8_squad_1794813175646\" registered.",
-      "timestamp": "2026-11-16T07:12:57.545Z"
-    },
-    {
-      "_id": "log_1794813158588_kt6p",
-      "action": "REGISTER",
-      "details": "PLAYER \"phase8_squad_1794813157501\" registered.",
-      "timestamp": "2026-11-16T07:12:38.588Z"
-    },
-    {
-      "_id": "log_1794813063550_sonk",
-      "action": "REGISTER",
-      "details": "PLAYER \"phase8_squad_1794813061073\" registered.",
-      "timestamp": "2026-11-16T07:11:03.550Z"
-    },
-    {
-      "_id": "log_1794812998605_z7fy",
-      "action": "ADMIN_LOGIN",
-      "details": "Game Master Samay authenticated.",
-      "timestamp": "2026-11-16T07:09:58.605Z"
     }
   ]
 }

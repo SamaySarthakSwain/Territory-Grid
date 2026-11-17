@@ -923,7 +923,7 @@
       try {
         var bc = new BroadcastChannel('territory_grid_live');
         bc.postMessage({ type: 'GAME_STATE_UPDATE', status: status, timestamp: Date.now() });
-        bc.close();
+        setTimeout(function() { try { bc.close(); } catch(e){} }, 500);
       } catch(e) {}
       try {
         localStorage.setItem('tg_game_state_event', JSON.stringify({ status: status, timestamp: Date.now() }));

@@ -1401,8 +1401,8 @@
       playerCountdownEndsAtMs = endsAtIso ? new Date(endsAtIso).getTime() : (Date.now() + 10000);
 
       var countdownOverlay = document.getElementById('gaming-countdown-overlay');
-      var waitingHall = document.getElementById('screen-waiting-hall');
-      var activeHunt = document.getElementById('screen-active-hunt');
+      var waitingHall = document.getElementById('player-waiting-hall') || document.getElementById('screen-waiting-hall');
+      var activeHunt = document.getElementById('player-active-hunt-container') || document.getElementById('screen-active-hunt');
 
       if (countdownOverlay) countdownOverlay.classList.remove('hidden');
       if (waitingHall) waitingHall.classList.remove('hidden');
@@ -1871,12 +1871,7 @@
       }
     }
 
-      if (activeCipherCard) {
-        applyCardVisuals(activeCipherCard);
-      }
-    }
-
-        function renderDeck(cards) {
+    function renderDeck(cards) {
       var container = document.getElementById('collected-deck-container');
       if (!container) return;
 
