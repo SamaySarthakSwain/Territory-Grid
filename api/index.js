@@ -35,20 +35,18 @@ try {
 // ─────────────────────────────────────────────────────────────
 // Default Data Set
 // ─────────────────────────────────────────────────────────────
-const DEFAULT_CLUES = [
-  { _id: 'clue_01', text: 'Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!', zoneId: 'ZONE_01', zoneLabel: 'Zone 1 - Library Arch' },
-  { _id: 'clue_02', text: 'Search the courtyard perimeter behind the ancient bronze solar obelisk.', zoneId: 'ZONE_02', zoneLabel: 'Zone 2 - Solar Obelisk' },
-  { _id: 'clue_03', text: 'Ascend the terrace staircase overlooking the historic clocktower.', zoneId: 'ZONE_03', zoneLabel: 'Zone 3 - Clocktower Terrace' },
-  { _id: 'clue_04', text: 'Investigate the botanical garden glasshouse south perimeter.', zoneId: 'ZONE_04', zoneLabel: 'Zone 4 - Glasshouse Botanical' },
-  { _id: 'clue_05', text: 'Cross the pedestrian skybridge connecting science hall 1 & 2.', zoneId: 'ZONE_05', zoneLabel: 'Zone 5 - Skybridge Concourse' },
-  { _id: 'clue_06', text: 'Look beneath the concrete amphitheater canopy seating.', zoneId: 'ZONE_06', zoneLabel: 'Zone 6 - Amphitheater Canopy' },
-  { _id: 'clue_07', text: 'Find the water fountain basin near the science auditorium.', zoneId: 'ZONE_07', zoneLabel: 'Zone 7 - Science Basin' },
-  { _id: 'clue_08', text: 'Check the shaded colonnade behind student center pavilion.', zoneId: 'ZONE_08', zoneLabel: 'Zone 8 - Student Pavilion' },
-  { _id: 'clue_09', text: 'Locate the red telecom antenna pylon on north concourse.', zoneId: 'ZONE_09', zoneLabel: 'Zone 9 - North Telecom Pylon' },
-  { _id: 'clue_10', text: 'Scan the perimeter fence surrounding the athletic turf field.', zoneId: 'ZONE_10', zoneLabel: 'Zone 10 - Turf Perimeter' },
-  { _id: 'clue_11', text: 'Find the solar energy charging station outside the REC technology workshop.', zoneId: 'ZONE_11', zoneLabel: 'Zone 11 - Energy Innovation Hub' },
-  { _id: 'clue_12', text: 'Spot the green beacon marker stationed near the robotics exhibition arena.', zoneId: 'ZONE_12', zoneLabel: 'Zone 12 - Innovation Arena' },
-  { _id: 'clue_13', text: 'Reach the central ceremonial flagpole lawn overlooking the grand quadrangle.', zoneId: 'ZONE_13', zoneLabel: 'Zone 13 - Central Concourse' }
+const INITIAL_CAMPUS_PLACES = [
+  { _id: 'clue_atrium', zoneId: 'ATRIUM', zoneLabel: 'Atrium', text: 'Proceed to Atrium and locate the Beacon Cone!' },
+  { _id: 'clue_lhc', zoneId: 'LHC', zoneLabel: 'LHC', text: 'Search the Lecture Hall Complex (LHC) perimeter for the Beacon Cone!' },
+  { _id: 'clue_galaria', zoneId: 'GALARIA', zoneLabel: 'Galaria', text: 'Investigate Galaria concourse to find the Beacon Cone!' }
+];
+
+const DEFAULT_CLUES = INITIAL_CAMPUS_PLACES;
+
+const CONE_OPTIONS = [
+  { color: 'YELLOW', points: 12 },
+  { color: 'RED', points: 10 },
+  { color: 'GREEN', points: 15 }
 ];
 
 const DEFAULT_ADMIN = {
@@ -67,6 +65,96 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.s
 const SUPABASE_ANON = process.env.SUPABASE_ANON || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmdXVmemx4c2t1cmF0dnFndW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTc5NzcsImV4cCI6MjA4NjczMzk3N30.jVCPESQvxOO9ExUTzyNZGyn8kBob4rj3aOZcxC2NLs8';
 
 // ─────────────────────────────────────────────────────────────
+// Normalization Utilities
+// ─────────────────────────────────────────────────────────────
+function normalizeZone(z) {
+  if (!z) return '';
+  let s = String(z).toUpperCase().trim();
+  s = s.replace(/[^A-Z0-9]/g, '');
+  s = s.replace(/^ZONE0+(\d+)/, 'ZONE$1');
+  return s;
+}
+
+function getBalancedMarshalAllocation(allMarshals, allClues, requestedZone = null, requestedColor = null) {
+  const places = (Array.isArray(allClues) && allClues.length > 0) ? allClues : INITIAL_CAMPUS_PLACES;
+
+  // 1. Target Zone Determination (Uniform distribution across available places)
+  let targetZoneId = null;
+  let targetZoneLabel = null;
+
+  if (requestedZone && requestedZone !== 'AUTO') {
+    const matched = places.find(p => normalizeZone(p.zoneId) === normalizeZone(requestedZone));
+    if (matched) {
+      targetZoneId = matched.zoneId;
+      targetZoneLabel = matched.zoneLabel || matched.zoneId;
+    }
+  }
+
+  if (!targetZoneId) {
+    // Count current marshals at each campus place
+    const zoneCounts = new Map();
+    places.forEach(p => zoneCounts.set(normalizeZone(p.zoneId), 0));
+    (allMarshals || []).forEach(m => {
+      if (m.zoneId) {
+        const norm = normalizeZone(m.zoneId);
+        if (zoneCounts.has(norm)) {
+          zoneCounts.set(norm, zoneCounts.get(norm) + 1);
+        }
+      }
+    });
+
+    // Find minimum count so every place gets a marshal before any duplicates
+    let minCount = Infinity;
+    zoneCounts.forEach(count => {
+      if (count < minCount) minCount = count;
+    });
+
+    const candidatePlaces = places.filter(p => zoneCounts.get(normalizeZone(p.zoneId)) === minCount);
+    // Shuffle and pick randomly among candidates
+    const chosen = candidatePlaces[Math.floor(Math.random() * candidatePlaces.length)] || places[0];
+    targetZoneId = chosen.zoneId;
+    targetZoneLabel = chosen.zoneLabel || chosen.zoneId;
+  }
+
+  // 2. Cone Color Determination (Equally distributed among RED: 10, YELLOW: 12, GREEN: 15)
+  let targetColor = null;
+  let targetPoints = 12;
+
+  if (requestedColor && requestedColor !== 'AUTO') {
+    const matchedCone = CONE_OPTIONS.find(c => c.color === String(requestedColor).toUpperCase());
+    if (matchedCone) {
+      targetColor = matchedCone.color;
+      targetPoints = matchedCone.points;
+    }
+  }
+
+  if (!targetColor) {
+    const colorCounts = { RED: 0, YELLOW: 0, GREEN: 0 };
+    (allMarshals || []).forEach(m => {
+      const c = (m.coneColor || '').toUpperCase();
+      if (colorCounts[c] !== undefined) colorCounts[c]++;
+    });
+
+    let minColorCount = Infinity;
+    Object.values(colorCounts).forEach(cnt => {
+      if (cnt < minColorCount) minColorCount = cnt;
+    });
+
+    const candidateCones = CONE_OPTIONS.filter(c => colorCounts[c.color] === minColorCount);
+    const chosenCone = candidateCones[Math.floor(Math.random() * candidateCones.length)] || CONE_OPTIONS[0];
+    targetColor = chosenCone.color;
+    targetPoints = chosenCone.points;
+  }
+
+  return {
+    zoneId: targetZoneId,
+    zoneLabel: targetZoneLabel,
+    coneColor: targetColor,
+    conePoints: targetPoints
+  };
+}
+
+// ─────────────────────────────────────────────────────────────
 // Cloud-Backed Persistent Document Engine (Zero Data Loss)
 // ─────────────────────────────────────────────────────────────
 class MemoryStore {
@@ -75,7 +163,7 @@ class MemoryStore {
     this.collections = {
       users: [DEFAULT_ADMIN],
       teams: [],
-      clues: DEFAULT_CLUES,
+      clues: JSON.parse(JSON.stringify(INITIAL_CAMPUS_PLACES)),
       checkins: [],
       gameState: {
         status: 'LOBBY',
@@ -112,6 +200,17 @@ class MemoryStore {
         const raw = fs.readFileSync(this.filePath, 'utf8');
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object' && Array.isArray(parsed.users) && parsed.users.length > 0) {
+          // Clean legacy fake ZONE_ places and guarantee initial 3 places
+          if (Array.isArray(parsed.clues)) {
+            parsed.clues = parsed.clues.filter(c => !c.zoneId || !c.zoneId.startsWith('ZONE_'));
+            INITIAL_CAMPUS_PLACES.forEach(ip => {
+              if (!parsed.clues.some(c => normalizeZone(c.zoneId) === normalizeZone(ip.zoneId))) {
+                parsed.clues.push(ip);
+              }
+            });
+          } else {
+            parsed.clues = JSON.parse(JSON.stringify(INITIAL_CAMPUS_PLACES));
+          }
           this.collections = parsed;
           this.isLoaded = true;
         }
@@ -185,6 +284,16 @@ class MemoryStore {
           const cloudUpdated = rows[0].updated_at ? new Date(rows[0].updated_at).getTime() : 0;
           if (!this.lastModified || cloudUpdated > this.lastModified) {
             this.collections = rows[0].data;
+            if (Array.isArray(this.collections.clues)) {
+              this.collections.clues = this.collections.clues.filter(c => !c.zoneId || !c.zoneId.startsWith('ZONE_'));
+              INITIAL_CAMPUS_PLACES.forEach(ip => {
+                if (!this.collections.clues.some(c => normalizeZone(c.zoneId) === normalizeZone(ip.zoneId))) {
+                  this.collections.clues.push({ ...ip });
+                }
+              });
+            } else {
+              this.collections.clues = JSON.parse(JSON.stringify(INITIAL_CAMPUS_PLACES));
+            }
             this.lastSynced = Date.now();
             // Write to local cache
             try {
@@ -461,6 +570,21 @@ module.exports = async (req, res) => {
           });
         }
 
+        let assignedZoneId = null;
+        let assignedZoneLabel = null;
+        let assignedConeColor = 'YELLOW';
+        let assignedConePoints = 12;
+
+        if (role === 'MEMBER') {
+          const rawMarshals = await usersCol.find({ role: 'MEMBER' }).toArray();
+          const rawClues = await atlasDb.collection('clues').find().toArray();
+          const alloc = getBalancedMarshalAllocation(rawMarshals, rawClues, zoneId, body.coneColor);
+          assignedZoneId = alloc.zoneId;
+          assignedZoneLabel = alloc.zoneLabel;
+          assignedConeColor = alloc.coneColor;
+          assignedConePoints = alloc.conePoints;
+        }
+
         const newUser = {
           _id: userId,
           callsign: callsign.trim(),
@@ -468,8 +592,10 @@ module.exports = async (req, res) => {
           role: role === 'MEMBER' ? 'MEMBER' : 'PLAYER',
           password: password,
           teamId: teamId,
-          zoneId: role === 'MEMBER' ? (zoneId || 'ZONE_01') : null,
-          zoneLabel: role === 'MEMBER' ? (zoneLabel || 'Sector A') : null,
+          zoneId: role === 'MEMBER' ? assignedZoneId : null,
+          zoneLabel: role === 'MEMBER' ? assignedZoneLabel : null,
+          coneColor: role === 'MEMBER' ? assignedConeColor : null,
+          conePoints: role === 'MEMBER' ? assignedConePoints : null,
           isApproved: false,
           createdAt: new Date().toISOString()
         };
@@ -485,7 +611,10 @@ module.exports = async (req, res) => {
             role: newUser.role,
             isApproved: false,
             teamId: newUser.teamId,
-            zoneId: newUser.zoneId
+            zoneId: newUser.zoneId,
+            zoneLabel: newUser.zoneLabel,
+            coneColor: newUser.coneColor,
+            conePoints: newUser.conePoints
           }
         });
       }
@@ -517,6 +646,21 @@ module.exports = async (req, res) => {
         });
       }
 
+      let assignedZoneId = null;
+      let assignedZoneLabel = null;
+      let assignedConeColor = 'YELLOW';
+      let assignedConePoints = 12;
+
+      if (role === 'MEMBER') {
+        const rawMarshals = memoryStore.collections.users.filter(u => u.role === 'MEMBER');
+        const rawClues = memoryStore.collections.clues || INITIAL_CAMPUS_PLACES;
+        const alloc = getBalancedMarshalAllocation(rawMarshals, rawClues, zoneId, body.coneColor);
+        assignedZoneId = alloc.zoneId;
+        assignedZoneLabel = alloc.zoneLabel;
+        assignedConeColor = alloc.coneColor;
+        assignedConePoints = alloc.conePoints;
+      }
+
       const newUser = {
         _id: userId,
         callsign: callsign.trim(),
@@ -524,8 +668,10 @@ module.exports = async (req, res) => {
         role: role === 'MEMBER' ? 'MEMBER' : 'PLAYER',
         password: password,
         teamId: teamId,
-        zoneId: role === 'MEMBER' ? (zoneId || 'ZONE_01') : null,
-        zoneLabel: role === 'MEMBER' ? (zoneLabel || 'Sector A') : null,
+        zoneId: role === 'MEMBER' ? assignedZoneId : null,
+        zoneLabel: role === 'MEMBER' ? assignedZoneLabel : null,
+        coneColor: role === 'MEMBER' ? assignedConeColor : null,
+        conePoints: role === 'MEMBER' ? assignedConePoints : null,
         isApproved: false,
         createdAt: new Date().toISOString()
       };
@@ -544,7 +690,10 @@ module.exports = async (req, res) => {
           role: newUser.role,
           isApproved: false,
           teamId: newUser.teamId,
-          zoneId: newUser.zoneId
+          zoneId: newUser.zoneId,
+          zoneLabel: newUser.zoneLabel,
+          coneColor: newUser.coneColor,
+          conePoints: newUser.conePoints
         }
       });
     }
@@ -677,6 +826,10 @@ module.exports = async (req, res) => {
           role: user.role,
           isApproved: isApproved,
           teamId: user.teamId,
+          zoneId: user.zoneId,
+          zoneLabel: user.zoneLabel,
+          coneColor: user.coneColor,
+          conePoints: user.conePoints,
           status: isApproved ? 'AUTHORIZED' : 'WAITING_APPROVAL'
         });
       }
@@ -735,6 +888,10 @@ module.exports = async (req, res) => {
         role: user.role,
         isApproved: !!user.isApproved,
         teamId: user.teamId,
+        zoneId: user.zoneId,
+        zoneLabel: user.zoneLabel,
+        coneColor: user.coneColor,
+        conePoints: user.conePoints,
         status: user.isApproved ? 'AUTHORIZED' : 'WAITING_APPROVAL'
       });
     }
@@ -1398,14 +1555,6 @@ module.exports = async (req, res) => {
       }
     }
 
-function normalizeZone(z) {
-  if (!z) return '';
-  let s = String(z).toUpperCase().trim();
-  s = s.replace(/[^A-Z0-9]/g, '');
-  s = s.replace(/^ZONE0+(\d+)/, 'ZONE$1');
-  return s;
-}
-
 function ensureUniqueTeamCodes(teams) {
   if (!Array.isArray(teams)) return [];
   // Sort deterministically to prevent position shifting
@@ -1458,6 +1607,85 @@ function ensureUniqueTeamCodes(teams) {
   return teams;
 }
 
+function getBalancedMarshalAllocation(allMarshals, allClues, requestedZone = null, requestedColor = null) {
+  const places = (Array.isArray(allClues) && allClues.length > 0) ? allClues : INITIAL_CAMPUS_PLACES;
+
+  // 1. Target Zone Determination (Uniform distribution across available places)
+  let targetZoneId = null;
+  let targetZoneLabel = null;
+
+  if (requestedZone && requestedZone !== 'AUTO') {
+    const matched = places.find(p => normalizeZone(p.zoneId) === normalizeZone(requestedZone));
+    if (matched) {
+      targetZoneId = matched.zoneId;
+      targetZoneLabel = matched.zoneLabel || matched.zoneId;
+    }
+  }
+
+  if (!targetZoneId) {
+    // Count current marshals at each campus place
+    const zoneCounts = new Map();
+    places.forEach(p => zoneCounts.set(normalizeZone(p.zoneId), 0));
+    (allMarshals || []).forEach(m => {
+      if (m.zoneId) {
+        const norm = normalizeZone(m.zoneId);
+        if (zoneCounts.has(norm)) {
+          zoneCounts.set(norm, zoneCounts.get(norm) + 1);
+        }
+      }
+    });
+
+    // Find minimum count so every place gets a marshal before any duplicates
+    let minCount = Infinity;
+    zoneCounts.forEach(count => {
+      if (count < minCount) minCount = count;
+    });
+
+    const candidatePlaces = places.filter(p => zoneCounts.get(normalizeZone(p.zoneId)) === minCount);
+    // Shuffle and pick randomly among candidates
+    const chosen = candidatePlaces[Math.floor(Math.random() * candidatePlaces.length)] || places[0];
+    targetZoneId = chosen.zoneId;
+    targetZoneLabel = chosen.zoneLabel || chosen.zoneId;
+  }
+
+  // 2. Cone Color Determination (Equally distributed among RED: 10, YELLOW: 12, GREEN: 15)
+  let targetColor = null;
+  let targetPoints = 12;
+
+  if (requestedColor && requestedColor !== 'AUTO') {
+    const matchedCone = CONE_OPTIONS.find(c => c.color === String(requestedColor).toUpperCase());
+    if (matchedCone) {
+      targetColor = matchedCone.color;
+      targetPoints = matchedCone.points;
+    }
+  }
+
+  if (!targetColor) {
+    const colorCounts = { RED: 0, YELLOW: 0, GREEN: 0 };
+    (allMarshals || []).forEach(m => {
+      const c = (m.coneColor || '').toUpperCase();
+      if (colorCounts[c] !== undefined) colorCounts[c]++;
+    });
+
+    let minColorCount = Infinity;
+    Object.values(colorCounts).forEach(cnt => {
+      if (cnt < minColorCount) minColorCount = cnt;
+    });
+
+    const candidateCones = CONE_OPTIONS.filter(c => colorCounts[c.color] === minColorCount);
+    const chosenCone = candidateCones[Math.floor(Math.random() * candidateCones.length)] || CONE_OPTIONS[0];
+    targetColor = chosenCone.color;
+    targetPoints = chosenCone.points;
+  }
+
+  return {
+    zoneId: targetZoneId,
+    zoneLabel: targetZoneLabel,
+    coneColor: targetColor,
+    conePoints: targetPoints
+  };
+}
+
 function getActiveMarshalClues(allClues, allUsers) {
   if (!Array.isArray(allClues) || allClues.length === 0) return [];
 
@@ -1481,6 +1709,7 @@ function getActiveMarshalClues(allClues, allUsers) {
   });
 
   // Filter campus clues to ONLY those matching approved marshals
+  // STABLE: Never invent fake places or dummy zones!
   const activeClues = [];
   const handledNorms = new Set();
 
@@ -1492,29 +1721,15 @@ function getActiveMarshalClues(allClues, allUsers) {
         ...c,
         zoneLabel: c.zoneLabel || marshal.zoneLabel || c.zoneId,
         marshalCallsign: marshal.callsign || marshal.name,
+        coneColor: marshal.coneColor || 'YELLOW',
+        conePoints: marshal.conePoints || 12,
         hasMarshal: true
       });
       handledNorms.add(norm);
     }
   });
 
-  // If any marshal has a custom zoneId not in DEFAULT_CLUES (e.g. 'LHC'), create a clue for it!
-  approvedMarshals.forEach(m => {
-    const norm = normalizeZone(m.zoneId);
-    if (!handledNorms.has(norm)) {
-      activeClues.push({
-        _id: 'clue_' + norm.toLowerCase(),
-        zoneId: m.zoneId,
-        zoneLabel: m.zoneLabel || m.zoneId,
-        text: 'Proceed to ' + (m.zoneLabel || m.zoneId) + ' and report to Field Marshal ' + (m.callsign || m.name) + '.',
-        marshalCallsign: m.callsign || m.name,
-        hasMarshal: true
-      });
-      handledNorms.add(norm);
-    }
-  });
-
-  return activeClues.length > 0 ? activeClues : allClues;
+  return activeClues;
 }
 
 function resolveTeamRoute(team, activeClues, teamIndex = 0) {
@@ -1827,39 +2042,212 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
     }
 
     // ─────────────────────────────────────────────────────────
-    // 10e. POST /api/admin/clues/reset (Reset or Set Number of Zones)
+    // 10e. POST /api/admin/clues/reset (Reset to Initial Campus Places: Atrium, LHC, Galaria)
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/admin/clues/reset' && req.method === 'POST') {
-      const body = await parseBody(req);
-      const targetCount = parseInt(body.count, 10) || 13;
-
-      const newClues = [];
-      for (let i = 1; i <= targetCount; i++) {
-        const numStr = String(i).padStart(2, '0');
-        const defaultMatch = DEFAULT_CLUES[i - 1];
-        if (defaultMatch) {
-          newClues.push({ ...defaultMatch, _id: 'clue_' + numStr });
-        } else {
-          newClues.push({
-            _id: 'clue_' + numStr,
-            zoneId: 'ZONE_' + numStr,
-            zoneLabel: 'Zone ' + i + ' - Station ' + numStr,
-            text: 'Locate the Beacon Cone stationed at Zone ' + i + ' checkpoint area.'
-          });
-        }
-      }
+      const newClues = JSON.parse(JSON.stringify(INITIAL_CAMPUS_PLACES));
 
       if (atlasDb) {
         const cluesCol = atlasDb.collection('clues');
         await cluesCol.deleteMany({});
         await cluesCol.insertMany(newClues);
-        return sendJson(res, 200, { success: true, message: `Configured ${targetCount} zones successfully.`, clues: newClues });
+        return sendJson(res, 200, { success: true, message: 'Campus places reset to Atrium, LHC, and Galaria.', clues: newClues });
       }
 
       memoryStore.load();
       memoryStore.collections.clues = newClues;
-      memoryStore.save();
-      return sendJson(res, 200, { success: true, message: `Configured ${targetCount} zones successfully.`, clues: newClues });
+      await memoryStore.saveAsync();
+      memoryStore.logEvent('RESET_PLACES', 'Game Master reset campus places to Atrium, LHC, and Galaria.');
+      return sendJson(res, 200, { success: true, message: 'Campus places reset to Atrium, LHC, and Galaria.', clues: newClues });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 10g. POST /api/member/update-station (Marshal chooses area or cone colour)
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/member/update-station' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const { userId, callsign, zoneId, zoneLabel, coneColor } = body;
+
+      if (atlasDb) {
+        const usersCol = atlasDb.collection('users');
+        const user = await usersCol.findOne({
+          $or: [
+            ...(userId ? [{ _id: userId }, { id: userId }] : []),
+            ...(callsign ? [{ callsign: new RegExp('^' + callsign.trim() + '$', 'i') }] : [])
+          ]
+        });
+
+        if (!user) {
+          return sendJson(res, 404, { success: false, error: 'Field Marshal user not found.' });
+        }
+
+        const cluesCol = atlasDb.collection('clues');
+        const rawClues = await cluesCol.find().toArray();
+        let targetZoneId = user.zoneId;
+        let targetZoneLabel = user.zoneLabel;
+
+        if (zoneId) {
+          const matched = rawClues.find(c => normalizeZone(c.zoneId) === normalizeZone(zoneId));
+          if (matched) {
+            targetZoneId = matched.zoneId;
+            targetZoneLabel = matched.zoneLabel || matched.zoneId;
+          } else {
+            targetZoneId = zoneId.toUpperCase().trim();
+            targetZoneLabel = zoneLabel ? zoneLabel.trim() : targetZoneId;
+          }
+        }
+
+        let targetColor = user.coneColor || 'YELLOW';
+        let targetPoints = user.conePoints || 12;
+        if (coneColor) {
+          const match = CONE_OPTIONS.find(c => c.color === coneColor.toUpperCase().trim());
+          if (match) {
+            targetColor = match.color;
+            targetPoints = match.points;
+          }
+        }
+
+        await usersCol.updateOne(
+          { _id: user._id },
+          { $set: { zoneId: targetZoneId, zoneLabel: targetZoneLabel, coneColor: targetColor, conePoints: targetPoints } }
+        );
+
+        return sendJson(res, 200, {
+          success: true,
+          message: `Station updated to ${targetZoneLabel} (${targetColor} cone).`,
+          user: {
+            ...user,
+            zoneId: targetZoneId,
+            zoneLabel: targetZoneLabel,
+            coneColor: targetColor,
+            conePoints: targetPoints
+          }
+        });
+      }
+
+      memoryStore.load();
+      const user = memoryStore.collections.users.find(u => 
+        (userId && (u._id === userId || u.id === userId)) ||
+        (callsign && u.callsign && u.callsign.toLowerCase() === callsign.toLowerCase().trim())
+      );
+
+      if (!user) {
+        return sendJson(res, 404, { success: false, error: 'Field Marshal user not found.' });
+      }
+
+      const clues = memoryStore.collections.clues || INITIAL_CAMPUS_PLACES;
+      if (zoneId) {
+        const matched = clues.find(c => normalizeZone(c.zoneId) === normalizeZone(zoneId));
+        if (matched) {
+          user.zoneId = matched.zoneId;
+          user.zoneLabel = matched.zoneLabel || matched.zoneId;
+        } else {
+          user.zoneId = zoneId.toUpperCase().trim();
+          user.zoneLabel = zoneLabel ? zoneLabel.trim() : user.zoneId;
+        }
+      }
+
+      if (coneColor) {
+        const match = CONE_OPTIONS.find(c => c.color === coneColor.toUpperCase().trim());
+        if (match) {
+          user.coneColor = match.color;
+          user.conePoints = match.points;
+        }
+      }
+
+      await memoryStore.saveAsync();
+      memoryStore.logEvent('UPDATE_STATION', `Field Marshal "${user.callsign}" updated station to ${user.zoneLabel} (${user.zoneId}) with ${user.coneColor || 'YELLOW'} cone.`);
+
+      return sendJson(res, 200, {
+        success: true,
+        message: `Station updated to ${user.zoneLabel} (${user.coneColor || 'YELLOW'} cone).`,
+        user: {
+          _id: user._id,
+          callsign: user.callsign,
+          name: user.name,
+          role: user.role,
+          zoneId: user.zoneId,
+          zoneLabel: user.zoneLabel,
+          coneColor: user.coneColor,
+          conePoints: user.conePoints
+        }
+      });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 10h. POST /api/admin/marshals/auto-allocate (Equally & Differently Allocate Areas and Cone Colours)
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/admin/marshals/auto-allocate' && req.method === 'POST') {
+      if (atlasDb) {
+        const usersCol = atlasDb.collection('users');
+        const cluesCol = atlasDb.collection('clues');
+        const marshals = await usersCol.find({ role: 'MEMBER' }).toArray();
+        const clues = await cluesCol.find().toArray();
+
+        if (marshals.length === 0) {
+          return sendJson(res, 200, { success: true, message: 'No registered Field Marshals to allocate.', count: 0 });
+        }
+        const activePlaces = clues.length > 0 ? clues : INITIAL_CAMPUS_PLACES;
+        const shuffledPlaces = activePlaces.slice().sort(() => Math.random() - 0.5);
+        const shuffledCones = CONE_OPTIONS.slice().sort(() => Math.random() - 0.5);
+
+        marshals.sort(() => Math.random() - 0.5);
+        for (let i = 0; i < marshals.length; i++) {
+          const m = marshals[i];
+          const place = shuffledPlaces[i % shuffledPlaces.length];
+          const cone = shuffledCones[i % shuffledCones.length];
+          await usersCol.updateOne(
+            { _id: m._id },
+            { $set: { zoneId: place.zoneId, zoneLabel: place.zoneLabel || place.zoneId, coneColor: cone.color, conePoints: cone.points } }
+          );
+        }
+
+        return sendJson(res, 200, {
+          success: true,
+          message: `Successfully allocated ${marshals.length} Field Marshals across ${activePlaces.length} stations and cone colours equally.`,
+          count: marshals.length
+        });
+      }
+
+      memoryStore.load();
+      const marshals = memoryStore.collections.users.filter(u => u.role === 'MEMBER');
+      const clues = memoryStore.collections.clues || INITIAL_CAMPUS_PLACES;
+
+      if (marshals.length === 0) {
+        return sendJson(res, 200, { success: true, message: 'No registered Field Marshals to allocate.', count: 0 });
+      }
+
+      const activePlaces = clues.length > 0 ? clues : INITIAL_CAMPUS_PLACES;
+      const shuffledPlaces = activePlaces.slice().sort(() => Math.random() - 0.5);
+      const shuffledCones = CONE_OPTIONS.slice().sort(() => Math.random() - 0.5);
+
+      marshals.sort(() => Math.random() - 0.5);
+      marshals.forEach((m, idx) => {
+        const place = shuffledPlaces[idx % shuffledPlaces.length];
+        const cone = shuffledCones[idx % shuffledCones.length];
+        m.zoneId = place.zoneId;
+        m.zoneLabel = place.zoneLabel || place.zoneId;
+        m.coneColor = cone.color;
+        m.conePoints = cone.points;
+      });
+
+      await memoryStore.saveAsync();
+      memoryStore.logEvent('ALLOCATE_MARSHALS', `Game Master randomly and equally allocated ${marshals.length} Field Marshals across ${activePlaces.length} campus checkpoints and cone colours.`);
+
+      return sendJson(res, 200, {
+        success: true,
+        message: `Successfully allocated ${marshals.length} Field Marshals across ${activePlaces.length} stations and cone colours equally.`,
+        count: marshals.length,
+        marshals: marshals.map(m => ({
+          _id: m._id,
+          callsign: m.callsign,
+          name: m.name,
+          zoneId: m.zoneId,
+          zoneLabel: m.zoneLabel,
+          coneColor: m.coneColor,
+          conePoints: m.conePoints
+        }))
+      });
     }
 
     // ─────────────────────────────────────────────────────────
@@ -1913,7 +2301,7 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
           const parts = rawCode.split('|');
           if (!zoneId && parts[1]) zoneId = parts[1];
           if (!memberId && parts[3]) memberId = parts[3];
-          if (!cone) cone = 'GREEN';
+          if (!cone) cone = parts[4] || 'YELLOW';
           if (!cardRank) cardRank = 13;
           if (!cardSuit) cardSuit = '♠';
         } else if (rawCode.startsWith('TG|')) {
@@ -2164,3 +2552,8 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
     return sendJson(res, 500, { success: false, error: err.message });
   }
 };
+
+module.exports.getBalancedMarshalAllocation = getBalancedMarshalAllocation;
+module.exports.INITIAL_CAMPUS_PLACES = INITIAL_CAMPUS_PLACES;
+module.exports.CONE_OPTIONS = CONE_OPTIONS;
+module.exports.memoryStore = memoryStore;

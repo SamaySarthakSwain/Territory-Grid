@@ -69,6 +69,9 @@ function compareAndCopy(sourceDir, destDir) {
 
   const entries = fs.readdirSync(sourceDir, { withFileTypes: true });
   for (const entry of entries) {
+    if (entry.name.endsWith('.apk') || entry.name.endsWith('.zip') || entry.name.endsWith('.map')) {
+      continue;
+    }
     const srcPath = path.join(sourceDir, entry.name);
     const dstPath = path.join(destDir, entry.name);
 
@@ -109,13 +112,19 @@ if (!syncNeeded) {
 console.log('⚡ [CHECK 3] Validating local database persistence store...');
 const dbPath = path.join(ROOT_DIR, 'web_server', 'data', 'territory_grid_mongodb.json');
 
+const INITIAL_CAMPUS_PLACES = [
+  { _id: 'clue_atrium', zoneId: 'ATRIUM', zoneLabel: 'Atrium', text: 'Proceed to Atrium and locate the Beacon Cone!' },
+  { _id: 'clue_lhc', zoneId: 'LHC', zoneLabel: 'LHC', text: 'Search the Lecture Hall Complex (LHC) perimeter for the Beacon Cone!' },
+  { _id: 'clue_galaria', zoneId: 'GALARIA', zoneLabel: 'Galaria', text: 'Investigate Galaria concourse to find the Beacon Cone!' }
+];
+
 try {
   if (!fs.existsSync(dbPath)) {
     console.log('  ⚠️ Database store file missing, initializing default state...');
     const defaultData = {
       users: [],
       teams: [],
-      clues: [],
+      clues: INITIAL_CAMPUS_PLACES,
       checkins: [],
       gameState: { status: 'LOBBY', durationMinutes: 52, durationSeconds: 3120 },
       system_logs: []
@@ -126,13 +135,33 @@ try {
   } else {
     const raw = fs.readFileSync(dbPath, 'utf8');
     const parsed = JSON.parse(raw);
+    let changed = false;
+
     if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.users)) {
       console.log('  ⚠️ Database structure corrupted, repairing...');
       parsed.users = parsed.users || [];
       parsed.teams = parsed.teams || [];
-      parsed.clues = parsed.clues || [];
+      parsed.clues = INITIAL_CAMPUS_PLACES;
       parsed.checkins = parsed.checkins || [];
       parsed.gameState = parsed.gameState || { status: 'LOBBY', durationMinutes: 52 };
+      changed = true;
+    }
+
+    // Auto-heal legacy fake places (ZONE_01..ZONE_13) if found
+    if (Array.isArray(parsed.clues)) {
+      const filtered = parsed.clues.filter(c => !c.zoneId || !c.zoneId.startsWith('ZONE_'));
+      if (filtered.length !== parsed.clues.length) {
+        parsed.clues = filtered.length > 0 ? filtered : INITIAL_CAMPUS_PLACES;
+        changed = true;
+        console.log('  🔧 [AUTO-HEALED] Stripped fake legacy ZONE_ places from database.');
+      }
+    }
+    if (!Array.isArray(parsed.clues) || parsed.clues.length === 0) {
+      parsed.clues = INITIAL_CAMPUS_PLACES;
+      changed = true;
+    }
+
+    if (changed) {
       fs.writeFileSync(dbPath, JSON.stringify(parsed, null, 2), 'utf8');
       healCount++;
     } else {

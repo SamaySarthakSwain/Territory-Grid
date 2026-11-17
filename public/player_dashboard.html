@@ -1824,6 +1824,16 @@
           stationStatus.innerText = 'MISSION COMPLETE';
           stationStatus.className = 'text-tertiary text-[11px] font-bold px-2 py-0.5 rounded bg-tertiary/15 border border-tertiary/30';
         }
+      } else if (!data.activeClue || data.waitingForMarshals) {
+        if (cpLabel) cpLabel.innerText = 'Field Marshals Deploying...';
+        if (zoneBadge) zoneBadge.innerText = 'STANDBY';
+        if (clueText) clueText.innerHTML = 'Connecting to campus grid... Active checkpoints with registered Field Marshals will appear here shortly.';
+        if (teamZone) teamZone.innerText = 'Awaiting Marshals';
+        if (stationName) stationName.innerText = 'Awaiting Marshal Deployment';
+        if (stationStatus) {
+          stationStatus.innerText = 'WAITING FOR MARSHAL';
+          stationStatus.className = 'text-yellow text-[11px] font-bold px-2 py-0.5 rounded bg-yellow/15 border border-yellow/30';
+        }
       } else {
         var cNum = currentClueIdx + 1;
         if (cpLabel) cpLabel.innerText = 'Beacon Checkpoint #' + String(cNum).padStart(2, '0');

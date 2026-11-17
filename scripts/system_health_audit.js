@@ -181,8 +181,8 @@ async function runAudit() {
       callsign: testMarshalCallsign,
       name: `Field Marshal ${testMarshalCallsign}`,
       password: 'password123',
-      zoneId: 'ZONE_01',
-      zoneLabel: 'Sector A: Library Arch'
+      zoneId: 'ATRIUM',
+      zoneLabel: 'Atrium'
     });
     report('Field Marshal registration returns HTTP 201', regMarshal.status === 201);
     if (regMarshal.json && regMarshal.json.user) {
@@ -313,10 +313,10 @@ async function runAudit() {
     if (testTeamId && activeStations.length >= 2) {
       // Determine squad's real target station from player telemetry
       const syncRes = await request('/api/player/sync?teamId=' + testTeamId + '&_t=' + Date.now());
-      const assignedStation = (syncRes.json && syncRes.json.activeClue && syncRes.json.activeClue.zoneId) || 'ZONE_01';
+      const assignedStation = (syncRes.json && syncRes.json.activeClue && syncRes.json.activeClue.zoneId) || 'ATRIUM';
       const correctStation = assignedStation;
       const otherClue = activeStations.find(c => c.zoneId && c.zoneId.toUpperCase() !== correctStation.toUpperCase());
-      const wrongStation = otherClue ? otherClue.zoneId : (correctStation === 'ZONE_01' ? 'LHC' : 'ZONE_01');
+      const wrongStation = otherClue ? otherClue.zoneId : (correctStation === 'ATRIUM' ? 'LHC' : 'ATRIUM');
 
       // 5a. Attempt check-in at WRONG station
       const wrongCheckin = await request('/api/checkin', { method: 'POST' }, {

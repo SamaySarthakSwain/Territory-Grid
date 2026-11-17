@@ -293,16 +293,35 @@
           </div>
 
           <!-- Extra Field 2: Assigned Checkpoint Station (Only for Marshal Registration) -->
-          <div id="field-zone-container" class="hidden">
-            <label class="block text-xs font-mono text-gray-300 uppercase mb-1.5">
-              Assigned Checkpoint Sector
-            </label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3 top-3 text-green text-lg">location_on</span>
-              <select id="input-zone" 
-                      class="w-full bg-[#0A101D] border border-green/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-green focus:ring-1 focus:ring-green transition font-body">
-                <option value="" disabled selected>Loading campus places from Game Master...</option>
-              </select>
+          <div id="field-zone-container" class="hidden space-y-3">
+            <div>
+              <label class="block text-xs font-mono text-gray-300 uppercase mb-1.5 flex items-center justify-between">
+                <span>Checkpoint Station Area</span>
+                <span class="text-[10px] text-green font-mono">Balanced Allocation</span>
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-3 text-green text-lg">location_on</span>
+                <select id="input-zone" 
+                        class="w-full bg-[#0A101D] border border-green/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-green focus:ring-1 focus:ring-green transition font-body">
+                  <option value="AUTO" selected>[🎲 Auto-Assign Distinct Area (Balanced)]</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-mono text-gray-300 uppercase mb-1.5 flex items-center justify-between">
+                <span>Beacon Cone Colour</span>
+                <span class="text-[10px] text-yellow font-mono">Differently Allocated</span>
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-3 text-yellow text-lg">flag</span>
+                <select id="input-cone-color" 
+                        class="w-full bg-[#0A101D] border border-yellow/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-yellow focus:ring-1 focus:ring-yellow transition font-body">
+                  <option value="AUTO" selected>[🎲 Auto-Assign Distinct Colour (Balanced)]</option>
+                  <option value="YELLOW">🟡 Yellow Cone (+12 PTS)</option>
+                  <option value="RED">🔴 Red Cone (+10 PTS)</option>
+                  <option value="GREEN">🟢 Green Cone (+15 PTS)</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -476,19 +495,24 @@
         var sel = document.getElementById('input-zone');
         if (!sel) return;
 
+        var options = '<option value="AUTO" selected>[🎲 Auto-Assign Distinct Area (Balanced)]</option>';
         if (data.success && Array.isArray(data.clues) && data.clues.length > 0) {
           var currentVal = sel.value;
-          sel.innerHTML = data.clues.map(function(c, idx) {
-            var zId = (c.zoneId || ('ZONE_' + String(idx + 1).padStart(2, '0'))).toUpperCase();
-            var label = c.zoneLabel || ('Zone ' + (idx + 1));
-            var marshalTag = (c.hasMarshal || (c.marshals && c.marshals.length > 0)) ? ' [Marshal on Station]' : '';
+          options += data.clues.map(function(c) {
+            var zId = (c.zoneId || '').toUpperCase();
+            var label = c.zoneLabel || c.zoneId;
+            var marshalTag = (c.hasMarshal || (c.marshals && c.marshals.length > 0)) ? ' [Staffed]' : ' [Unstaffed]';
             return '<option value="' + zId + '">' + label + ' (' + zId + ')' + marshalTag + '</option>';
           }).join('');
+          sel.innerHTML = options;
           if (currentVal && Array.from(sel.options).some(function(o) { return o.value === currentVal; })) {
             sel.value = currentVal;
           }
         } else {
-          sel.innerHTML = '<option value="ZONE_01" selected>Campus Sector Alpha (ZONE_01 - Default)</option>';
+          sel.innerHTML = options +
+            '<option value="ATRIUM">Atrium (ATRIUM)</option>' +
+            '<option value="LHC">LHC (LHC)</option>' +
+            '<option value="GALARIA">Galaria (GALARIA)</option>';
         }
       } catch (e) {
         console.warn('Failed to load dynamic stations:', e);
@@ -691,8 +715,10 @@
       var password = document.getElementById('input-password').value.trim();
       var name = document.getElementById('input-name').value.trim();
       var zoneElem = document.getElementById('input-zone');
-      var zoneId = (zoneElem && zoneElem.value) ? zoneElem.value : (currentRole === 'MEMBER' ? 'ZONE_01' : null);
-      var zoneLabel = (zoneElem && zoneElem.selectedIndex >= 0 && zoneElem.options[zoneElem.selectedIndex]) ? zoneElem.options[zoneElem.selectedIndex].text : (currentRole === 'MEMBER' ? 'Sector Alpha (ZONE_01)' : null);
+      var coneElem = document.getElementById('input-cone-color');
+      var zoneId = (zoneElem && zoneElem.value) ? zoneElem.value : null;
+      var zoneLabel = (zoneElem && zoneElem.selectedIndex >= 0 && zoneElem.options[zoneElem.selectedIndex]) ? zoneElem.options[zoneElem.selectedIndex].text : null;
+      var coneColor = (coneElem && coneElem.value) ? coneElem.value : 'AUTO';
 
       if (!callsign || !password) {
         showAlert('Please fill in callsign and access key.', true);
@@ -710,8 +736,9 @@
         callsign: callsign,
         password: password,
         name: name || callsign,
-        zoneId: zoneId,
-        zoneLabel: zoneLabel,
+        zoneId: (currentRole === 'MEMBER') ? zoneId : null,
+        zoneLabel: (currentRole === 'MEMBER') ? zoneLabel : null,
+        coneColor: (currentRole === 'MEMBER') ? coneColor : null,
         requestedRole: currentRole
       };
 

@@ -609,10 +609,14 @@
             <div class="text-2xl font-mono font-bold text-yellow" id="places-unstaffed-count">0</div>
             <div class="text-[10px] font-mono uppercase text-gray-400">Unstaffed (Hidden)</div>
           </div>
-          <div class="text-center px-2 flex items-center gap-1.5">
+          <div class="text-center px-2 flex items-center gap-1.5 flex-wrap">
             <button onclick="loadPlaces()" class="px-3 py-1.5 rounded-lg bg-cyan/10 hover:bg-cyan/20 text-cyan border border-cyan/30 text-xs font-headline font-semibold flex items-center gap-1 transition cursor-pointer">
               <span class="material-symbols-outlined text-sm">refresh</span>
               <span>Re-sync</span>
+            </button>
+            <button onclick="autoAllocateMarshalsEqually()" class="px-3 py-1.5 rounded-lg bg-yellow/10 hover:bg-yellow/20 text-yellow border border-yellow/30 text-xs font-headline font-semibold flex items-center gap-1 transition cursor-pointer" title="Randomly and equally allocate all marshals across places and cone colours differently">
+              <span class="material-symbols-outlined text-sm">groups_3</span>
+              <span>Allocate Marshals</span>
             </button>
             <button onclick="rebalanceAllSquadRoutes()" class="px-3 py-1.5 rounded-lg bg-green/10 hover:bg-green/20 text-green border border-green/30 text-xs font-headline font-semibold flex items-center gap-1 transition cursor-pointer" title="Equally distribute all teams across available stations">
               <span class="material-symbols-outlined text-sm">shuffle</span>
@@ -636,23 +640,27 @@
             <div class="space-y-2 text-xs font-body text-gray-300">
               <div class="flex items-start gap-2 bg-[#091122] p-2.5 rounded-lg border border-gray-800/80">
                 <span class="material-symbols-outlined text-cyan text-sm mt-0.5 shrink-0">edit_location</span>
-                <span><b>1. Manual Setup:</b> Places are never generated automatically. Create your campus places and hints below.</span>
+                <span><b>1. Initial Places:</b> Atrium, LHC, and Galaria. Game Master can change or add any new location.</span>
               </div>
               <div class="flex items-start gap-2 bg-[#091122] p-2.5 rounded-lg border border-gray-800/80">
                 <span class="material-symbols-outlined text-green text-sm mt-0.5 shrink-0">sync_alt</span>
-                <span><b>2. Instant Marshal Sync:</b> Added places instantly populate the station dropdown during Marshal registration.</span>
+                <span><b>2. Balanced Marshals:</b> Marshals get random, different, and equal locations and cone colours.</span>
               </div>
               <div class="flex items-start gap-2 bg-[#091122] p-2.5 rounded-lg border border-gray-800/80">
-                <span class="material-symbols-outlined text-yellow text-sm mt-0.5 shrink-0">visibility_lock</span>
-                <span><b>3. Player Filter:</b> Only places where a Field Marshal has registered are shown to players!</span>
+                <span class="material-symbols-outlined text-yellow text-sm mt-0.5 shrink-0">visibility</span>
+                <span><b>3. Player Filter:</b> Only places where a Field Marshal is allocated are shown to teams!</span>
               </div>
             </div>
           </div>
 
-          <div class="pt-3 border-t border-gray-800">
+          <div class="pt-3 border-t border-gray-800 space-y-2">
+            <button onclick="resetToInitialCampusPlaces()" class="w-full py-2 px-3 rounded-xl border border-cyan/40 bg-cyan/10 hover:bg-cyan/20 text-cyan text-xs font-headline font-semibold flex items-center justify-center gap-1.5 transition">
+              <span class="material-symbols-outlined text-sm">restart_alt</span>
+              <span>Reset to Initial 3 Places</span>
+            </button>
             <button onclick="clearAllPlaces()" class="w-full py-2 px-3 rounded-xl border border-red-500/40 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-headline font-semibold flex items-center justify-center gap-1.5 transition">
               <span class="material-symbols-outlined text-sm">delete_sweep</span>
-              <span>Clear All Places (Reset)</span>
+              <span>Clear All Places</span>
             </button>
           </div>
         </div>
@@ -674,19 +682,19 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Zone Code (Optional)</label>
-                <input type="text" id="input-place-zone-id" placeholder="e.g. ZONE_01"
+                <input type="text" id="input-place-zone-id" placeholder="e.g. AUDITORIUM"
                        class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white font-mono uppercase focus:outline-none focus:border-cyan">
               </div>
               <div class="sm:col-span-2">
                 <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Place Name / Location Title *</label>
-                <input type="text" id="input-place-label" placeholder="e.g. Library Plaza Arch" required
+                <input type="text" id="input-place-label" placeholder="e.g. Main Auditorium" required
                        class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan">
               </div>
             </div>
 
             <div>
               <label class="block text-[11px] font-mono text-gray-300 uppercase mb-1">Mission Clue / Directive Hint *</label>
-              <textarea id="input-place-hint" rows="2" placeholder="Describe where players should search (e.g. Locate the Yellow Beacon Cone nestled near the library plaza & colonnade arch!)" required
+              <textarea id="input-place-hint" rows="2" placeholder="Describe where players should search (e.g. Search near the main entrance for the Beacon Cone!)" required
                         class="w-full bg-[#0A101D] border border-cyan/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan font-body"></textarea>
             </div>
 
@@ -1192,6 +1200,48 @@
         loadDatabaseData();
       } catch (e) {
         alert('Error clearing places: ' + e.message);
+      }
+    }
+
+    async function resetToInitialCampusPlaces() {
+      if (!confirm('⚠️ RESET CAMPUS CHECKPOINTS?\n\nThis will reset the campus checkpoints to the canonical initial places:\n1. Atrium\n2. LHC\n3. Galaria\n\nContinue?')) return;
+      try {
+        var res = await fetch(apiUrl('/api/admin/clues/reset'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        var data = await res.json();
+        if (data.success) {
+          showAdminToast('Reset to 3 campus checkpoints (Atrium, LHC, Galaria)', 'success');
+          cancelEditPlace();
+          loadPlaces();
+          loadDatabaseData();
+        } else {
+          alert('Reset failed: ' + (data.message || data.error));
+        }
+      } catch(e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    async function autoAllocateMarshalsEqually() {
+      try {
+        var res = await fetch(apiUrl('/api/admin/marshals/auto-allocate'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        var data = await res.json();
+        if (data.success) {
+          showAdminToast(data.message || 'Marshals allocated across stations and cone colours equally!', 'success');
+          loadPlaces();
+          loadApprovedRoster();
+          loadPendingApprovals();
+          loadDatabaseData();
+        } else {
+          alert('Allocation failed: ' + (data.error || 'Server error'));
+        }
+      } catch(e) {
+        alert('Error allocating marshals: ' + e.message);
       }
     }
 
@@ -1886,7 +1936,7 @@
                     '<h4 class="font-headline font-bold text-white text-sm">' + (user.name || user.callsign) + '</h4>' +
                     '<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-green/20 text-green border border-green/30">FIELD MARSHAL</span>' +
                   '</div>' +
-                  '<p class="text-xs text-gray-400 font-mono">Callsign: <b>' + user.callsign + '</b> • Assigned: <b>' + (user.zoneLabel || user.zoneId || 'Station') + '</b></p>' +
+                  '<p class="text-xs text-gray-400 font-mono">Callsign: <b>' + user.callsign + '</b> • Assigned: <b>' + (user.zoneLabel || user.zoneId || 'Station') + '</b> • Cone: <b class="text-yellow">' + (user.coneColor || 'YELLOW') + '</b></p>' +
                 '</div>' +
               '</div>' +
               '<div class="flex items-center gap-2" id="actions-USER-' + userId + '">' +
@@ -2004,7 +2054,7 @@
                   '</span>' +
                 '</div>' +
                 '<p class="text-xs text-gray-400 font-mono mt-0.5">' +
-                  'Callsign: <b class="text-gray-200">' + user.callsign + '</b> • Assigned: <b class="text-green">' + (user.zoneLabel || user.zoneId || 'Station') + '</b>' +
+                  'Callsign: <b class="text-gray-200">' + user.callsign + '</b> • Station: <b class="text-green">' + (user.zoneLabel || user.zoneId || 'Station') + '</b> • Cone: <b class="text-yellow">' + (user.coneColor || 'YELLOW') + ' (' + (user.conePoints || 12) + ' PTS)</b>' +
                 '</p>' +
               '</div>' +
             '</div>' +
