@@ -464,6 +464,10 @@
                class="w-full px-3 py-2 rounded-xl bg-surface-low border border-cyan/30 text-white font-mono text-xs focus:border-cyan focus:outline-none">
       </div>
       <div id="server-test-status" class="hidden text-xs font-mono p-2 rounded-lg"></div>
+      <button type="button" onclick="startServerQrScanner()" class="w-full py-2.5 rounded-xl bg-cyan/15 hover:bg-cyan/25 text-cyan text-xs font-headline font-bold border border-cyan/40 flex items-center justify-center gap-2 transition cursor-pointer">
+        <span class="material-symbols-outlined text-base">qr_code_scanner</span>
+        Scan Server QR from Admin Screen
+      </button>
       <div class="flex gap-2">
         <button type="button" onclick="testServerConnection()" class="flex-1 py-2 rounded-xl bg-surface-high hover:bg-surface-high/80 text-cyan text-xs font-headline font-bold border border-cyan/30 transition">
           Test Ping
@@ -475,12 +479,31 @@
     </div>
   </div>
 
+  <!-- Server QR Scanner Modal -->
+  <div id="server-qr-scanner-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-2xl bg-surface-card border-2 border-cyan/40 p-5 shadow-2xl flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <h3 class="font-headline font-bold text-white text-sm flex items-center gap-2">
+          <span class="material-symbols-outlined text-cyan text-xl">qr_code_scanner</span>
+          Scan Admin Server QR
+        </h3>
+        <button type="button" onclick="stopServerQrScanner()" class="text-gray-400 hover:text-white">✕</button>
+      </div>
+      <div id="server-camera-reader" class="w-full h-60 rounded-xl overflow-hidden bg-black border border-cyan/30"></div>
+      <p class="text-[11px] font-mono text-gray-300 text-center">Point camera at the Server QR shown on the Admin screen.</p>
+      <button type="button" onclick="stopServerQrScanner()" class="w-full py-2 rounded-xl bg-surface-high text-gray-300 text-xs font-headline font-bold cursor-pointer">
+        Cancel
+      </button>
+    </div>
+  </div>
+
   <!-- Footer Notice -->
   <footer class="w-full max-w-4xl mx-auto py-3 text-center text-[11px] font-mono text-gray-400 border-t border-cyan/10">
     TERRITORY GRID v2.6 // CLUB FEST ADVENTURE // OPERATIONAL COMMAND
   </footer>
 
   <!-- Tactical Feedback & Network Monitor -->
+  <script src="vendor/html5-qrcode.min.js"></script>
   <script src="vendor/tactical-audio-haptics.js"></script>
   <script src="vendor/network-monitor.js"></script>
 
@@ -551,6 +574,61 @@
       updateServerBadge();
       closeServerConfigModal();
       loadDynamicStations();
+    }
+
+    var serverQrScanner = null;
+
+    function startServerQrScanner() {
+      var modal = document.getElementById('server-qr-scanner-modal');
+      if (modal) modal.classList.remove('hidden');
+
+      if (typeof Html5Qrcode === 'undefined') {
+        alert('QR Scanner library is initializing, please try again in a moment.');
+        return;
+      }
+
+      try {
+        serverQrScanner = new Html5Qrcode("server-camera-reader");
+        serverQrScanner.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: { width: 220, height: 220 } },
+          function onScanSuccess(decodedText) {
+            stopServerQrScanner();
+            var cleanUrl = (decodedText || '').trim();
+            if (cleanUrl.startsWith('TG_SERVER|')) {
+              cleanUrl = cleanUrl.split('|')[1] || cleanUrl;
+            }
+            if (cleanUrl.startsWith('http')) {
+              var input = document.getElementById('input-server-endpoint');
+              if (input) input.value = cleanUrl;
+              saveServerConfig();
+              if (window.tacticalFeedback?.award) window.tacticalFeedback.award();
+            } else {
+              alert('Scanned QR code does not contain a valid server URL: ' + cleanUrl);
+            }
+          },
+          function onScanFailure(error) {
+            // sweep frame
+          }
+        ).catch(function(err) {
+          console.error('Camera start error:', err);
+          alert('Could not start camera: ' + err);
+          stopServerQrScanner();
+        });
+      } catch (err) {
+        console.error('QR Scanner init error:', err);
+        stopServerQrScanner();
+      }
+    }
+
+    function stopServerQrScanner() {
+      if (serverQrScanner) {
+        serverQrScanner.stop().catch(function(){}).finally(function() {
+          serverQrScanner = null;
+        });
+      }
+      var modal = document.getElementById('server-qr-scanner-modal');
+      if (modal) modal.classList.add('hidden');
     }
 
     // Initialize page

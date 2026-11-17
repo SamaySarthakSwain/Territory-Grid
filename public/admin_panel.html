@@ -277,6 +277,12 @@
             <span>RESET LOBBY</span>
           </button>
 
+          <button onclick="openServerQrModal()" 
+                  class="flex-1 md:flex-initial px-3.5 py-2.5 rounded-xl border border-cyan/40 bg-cyan/15 hover:bg-cyan/25 text-cyan text-xs font-headline font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-[0_0_15px_rgba(0,240,255,0.25)]" title="Display Server Connection QR for Mobile APKs">
+            <span class="material-symbols-outlined text-base">qr_code_2</span>
+            <span>SERVER QR</span>
+          </button>
+
           <button onclick="openAdminActionModal('reset-points')" 
                   class="flex-1 md:flex-initial px-3.5 py-2.5 rounded-xl border border-yellow/50 bg-yellow/10 hover:bg-yellow/20 text-yellow text-xs font-headline font-bold flex items-center justify-center gap-1.5 transition cursor-pointer" title="Reset all squads score and cards to 0">
             <span class="material-symbols-outlined text-base">restart_alt</span>
@@ -803,6 +809,7 @@
   </main>
 
   <!-- Tactical Audio & Network Resilience HUD -->
+  <script src="vendor/qrcode.bundle.js"></script>
   <script src="vendor/tactical-audio-haptics.js"></script>
   <script src="vendor/network-monitor.js"></script>
 
@@ -1401,6 +1408,42 @@
       var modal = document.getElementById('admin-action-modal');
       if (modal) modal.classList.add('hidden');
       currentAdminModalAction = null;
+    }
+
+    function openServerQrModal() {
+      var modal = document.getElementById('admin-server-qr-modal');
+      var container = document.getElementById('admin-server-qrcode');
+      var textEl = document.getElementById('admin-server-url-text');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+
+      var serverUrl = getGridServerUrl();
+      if (textEl) textEl.innerText = serverUrl;
+
+      var qrPayload = 'TG_SERVER|' + serverUrl;
+      if (container) {
+        if (typeof QRCode !== 'undefined' && typeof QRCode.toString === 'function') {
+          QRCode.toString(qrPayload, {
+            type: 'svg',
+            margin: 1,
+            width: 200,
+            color: { dark: '#030712', light: '#FFFFFF' }
+          }, function(err, svgString) {
+            if (!err && svgString) {
+              container.innerHTML = svgString;
+            } else {
+              container.innerText = serverUrl;
+            }
+          });
+        } else {
+          container.innerHTML = '<div class=\"p-4 font-mono text-xs text-black font-bold break-all\">' + serverUrl + '</div>';
+        }
+      }
+    }
+
+    function closeServerQrModal() {
+      var modal = document.getElementById('admin-server-qr-modal');
+      if (modal) modal.classList.add('hidden');
     }
 
     function checkModalConfirmInput() {
@@ -2705,6 +2748,36 @@
           CONFIRM AUTHORIZATION
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Server LAN Connection QR Modal for Mobile APKs -->
+  <div id="admin-server-qr-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-modal-backdrop">
+    <div class="bg-[#0b1322] border-2 border-cyan/50 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-[0_0_50px_rgba(0,240,255,0.3)] text-center">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-cyan text-xl">lan</span>
+          <h4 class="font-headline font-bold text-sm text-white uppercase tracking-wider">Mobile APK Server Connect</h4>
+        </div>
+        <button onclick="closeServerQrModal()" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-gray-400 hover:text-white flex items-center justify-center transition">
+          ✕
+        </button>
+      </div>
+      <p class="text-xs font-mono text-gray-300">
+        Players and Marshals can scan this QR code in the APK to connect instantly over LAN:
+      </p>
+      <div class="bg-white p-3 rounded-xl inline-block shadow-lg mx-auto">
+        <div id="admin-server-qrcode" class="w-[200px] h-[200px] flex items-center justify-center"></div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-surface-container-highest border border-cyan/30 text-cyan font-mono text-xs break-all select-all font-bold" id="admin-server-url-text">
+        http://...
+      </div>
+      <p class="text-[11px] font-mono text-gray-400">
+        Ensure all phones are connected to the same Wi-Fi or Mobile Hotspot as this laptop.
+      </p>
+      <button onclick="closeServerQrModal()" class="w-full py-2.5 rounded-xl bg-cyan text-black font-headline text-xs font-bold uppercase transition shadow-[0_0_15px_rgba(0,240,255,0.4)] cursor-pointer">
+        Done
+      </button>
     </div>
   </div>
 
