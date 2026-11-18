@@ -94,6 +94,12 @@ async function run() {
 
   // Step 6: Test Wrong Station Rejection & Marshal Override
   console.log('\n6️⃣ Testing Wrong Station & Marshal Override...');
+  // Reset team to Checkpoint 1 so target station is ZONE_08
+  await fetch(`${BASE_URL}/api/admin/teams/reset-all-points`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
+  });
   const wrongStationPayload = {
     teamId: squad._id,
     zoneId: 'ZONE_01', // Deliberately wrong zone

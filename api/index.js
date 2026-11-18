@@ -2461,11 +2461,13 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
       if (activeClues.length > 0) {
         activeTargetClue = resolveTeamTargetClue(team, activeClues);
         if (!activeTargetClue) {
-          return sendJson(res, 400, {
-            success: false,
-            allCompleted: true,
-            error: 'Squad "' + (team.name || team.callsign) + '" has already cleared all ' + activeClues.length + ' campus checkpoints! Direct them to Game Master Central.'
-          });
+          if (!body.allowOverride && !body.forceCheckin) {
+            return sendJson(res, 400, {
+              success: false,
+              allCompleted: true,
+              error: 'Squad "' + (team.name || team.callsign) + '" has already cleared all ' + activeClues.length + ' campus checkpoints! Direct them to Game Master Central.'
+            });
+          }
         }
 
         const targetZoneNorm = normalizeZone(activeTargetClue.zoneId);
