@@ -614,14 +614,16 @@
 
     // Initialize page
     window.addEventListener('DOMContentLoaded', function() {
-      // Auto-validate and purge dead server URLs from localStorage
+      // Auto-validate and purge dead or obsolete server URLs from storage
       try {
-        var saved = localStorage.getItem('tg_grid_server_url') || sessionStorage.getItem('tg_grid_server_url');
-        if (saved && (saved.includes('127.0.0.1') || saved.includes('localhost') || (saved.includes('trycloudflare.com') && !saved.includes('myself-sporting-chamber-processing')))) {
-          console.warn('[AutoHeal] Purging obsolete server URL from storage:', saved);
-          localStorage.removeItem('tg_grid_server_url');
-          sessionStorage.removeItem('tg_grid_server_url');
-        }
+        ['tg_grid_server_url', 'tg_server_url', 'tg_custom_server', 'server_url', 'grid_server_url'].forEach(function(k) {
+          var val = localStorage.getItem(k) || sessionStorage.getItem(k);
+          if (val && !val.includes('territory-grid-delta.vercel.app')) {
+            console.warn('[AutoHeal] Purging obsolete server URL from storage:', k, val);
+            localStorage.removeItem(k);
+            sessionStorage.removeItem(k);
+          }
+        });
       } catch (e) {}
       updateServerBadge();
       // Clear session if explicit logout requested via query parameter

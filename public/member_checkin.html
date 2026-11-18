@@ -867,7 +867,11 @@
       // Proactively refresh authenticated marshal details (in case of dynamic reassignment)
       async function syncMarshalAuthStatus() {
         try {
-          var res = await fetch(apiUrl('/api/auth/status'), { credentials: 'include' });
+          var targetId = currentUser._id || currentUser.id || '';
+          var targetCallsign = currentUser.callsign || '';
+          if (!targetId && !targetCallsign) return;
+          var queryStr = '?id=' + encodeURIComponent(targetId) + '&callsign=' + encodeURIComponent(targetCallsign) + '&_t=' + Date.now();
+          var res = await fetch(apiUrl('/api/auth/status' + queryStr), { credentials: 'include' });
           if (res.ok) {
             var data = await res.json();
             if (data.authenticated && data.user && data.user.role === 'MEMBER') {

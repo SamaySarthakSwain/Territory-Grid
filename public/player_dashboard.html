@@ -1839,7 +1839,14 @@
   
     window.addEventListener('DOMContentLoaded', function() {
       if (!currentUser) return;
-      document.getElementById('header-callsign-badge').innerText = currentUser.callsign || 'SQUAD';
+      var callsignBadge = document.getElementById('header-callsign-badge');
+      if (callsignBadge) callsignBadge.innerText = currentUser.callsign || 'SQUAD';
+      var nameEl = document.getElementById('team-name-label');
+      if (nameEl) nameEl.innerText = currentUser.name || currentUser.callsign || 'Squad';
+      var scoreEl = document.getElementById('team-score-num');
+      if (scoreEl && (!scoreEl.innerText || scoreEl.innerText.trim() === '')) {
+        scoreEl.innerText = (typeof currentUser.score !== 'undefined') ? currentUser.score : '0';
+      }
       
       // Initialize deterministic checkpoint card cipher
       rotateCardCipher(false);

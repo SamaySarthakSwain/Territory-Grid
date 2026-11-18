@@ -433,6 +433,10 @@ module.exports = async (req, res) => {
   }
 
   const parsedUrl = url.parse(req.url, true);
+  if (parsedUrl.pathname === '/favicon.ico') {
+    res.writeHead(204, { 'Content-Type': 'image/x-icon' });
+    return res.end();
+  }
   const query = parsedUrl.query || {};
   let pathname = parsedUrl.pathname || '/';
 
@@ -764,6 +768,14 @@ module.exports = async (req, res) => {
       await memoryStore.syncFromCloud(false);
       const userId = parsedUrl.query.id;
       const callsign = parsedUrl.query.callsign;
+
+      if (!userId && !callsign) {
+        return sendJson(res, 200, {
+          success: true,
+          authenticated: false,
+          message: 'No active session credentials specified'
+        });
+      }
 
       if (atlasDb) {
         const query = userId 
