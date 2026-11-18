@@ -2294,6 +2294,7 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
     // 11. POST /api/checkin (Real-time Point Allocation & Strict Station Check)
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/checkin' && req.method === 'POST') {
+      await memoryStore.syncFromCloud(true);
       const body = await parseBody(req);
       let { teamId, zoneId, cone, cardRank, cardSuit, memberId, code, qrPayload } = body;
 
@@ -2471,20 +2472,22 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
         if (targetZoneNorm !== marshalZoneNorm) {
           const targetStationName = activeTargetClue.zoneLabel || activeTargetClue.zoneId;
           const currentStationName = zoneId || 'this station';
-          return sendJson(res, 400, {
-            success: false,
-            wrongStation: true,
-            teamName: team.name || team.callsign,
-            error: '⛔ WRONG STATION: Squad "' + (team.name || team.callsign) + '" is currently assigned to ' + targetStationName + ' for Checkpoint #' + ((team.currentClueIndex || 0) + 1) + '. Points CANNOT be awarded at ' + currentStationName + '!',
-            targetZoneId: activeTargetClue.zoneId,
-            targetZoneLabel: targetStationName,
-            currentStation: zoneId,
-            currentClueIndex: team.currentClueIndex || 0
-          });
+          if (!body.allowOverride && !body.forceCheckin) {
+            return sendJson(res, 400, {
+              success: false,
+              wrongStation: true,
+              teamName: team.name || team.callsign,
+              error: '⛔ WRONG STATION: Squad "' + (team.name || team.callsign) + '" is currently assigned to ' + targetStationName + ' for Checkpoint #' + ((team.currentClueIndex || 0) + 1) + '. Points CANNOT be awarded at ' + currentStationName + '!',
+              targetZoneId: activeTargetClue.zoneId,
+              targetZoneLabel: targetStationName,
+              currentStation: zoneId,
+              currentClueIndex: team.currentClueIndex || 0
+            });
+          }
         }
       }
 
-      const recordedZone = activeTargetClue ? activeTargetClue.zoneId : (zoneId || 'ZONE_01');
+      const recordedZone = (body.allowOverride || body.forceCheckin) ? (zoneId || 'ZONE_01') : (activeTargetClue ? activeTargetClue.zoneId : (zoneId || 'ZONE_01'));
       const recordedZoneNorm = normalizeZone(recordedZone);
 
       const coneValues = { RED: 10, YELLOW: 12, GREEN: 15 };

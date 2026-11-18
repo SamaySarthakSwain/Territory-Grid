@@ -871,7 +871,7 @@
                       <span class="material-symbols-outlined text-[13px] text-primary">pin</span> 6-DIGIT MARSHAL CIPHER
                     </span>
                     <div class="mt-1 px-4 py-1.5 rounded-xl bg-[#07192c] border border-primary/50 shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2">
-                      <span id="manual-cipher-code" class="font-mono text-base sm:text-lg font-black tracking-[0.25em] text-white select-all">513 347</span>
+                      <span id="manual-cipher-code" class="font-mono text-base sm:text-lg font-black tracking-[0.25em] text-white select-all">--- ---</span>
                     </div>
                     <span class="text-[8px] font-mono text-gray-400 mt-0.5 text-center">Tell or show this 6-digit number to the Marshal</span>
                   </div>
@@ -2392,7 +2392,7 @@
       var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (currentUser && currentUser.currentClueIndex !== undefined ? currentUser.currentClueIndex : 0);
       var card = activeCipherCard || getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
 
-      var sixDigitRaw = (card && card.sixDigitCode) ? card.sixDigitCode : '513347';
+      var sixDigitRaw = (card && card.sixDigitCode) ? card.sixDigitCode : (getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList).sixDigitCode);
       var formattedSixDigit = sixDigitRaw.slice(0, 2) + ' ' + sixDigitRaw.slice(2, 4) + ' ' + sixDigitRaw.slice(4, 6);
       if (cipherEl) cipherEl.innerText = formattedSixDigit;
 

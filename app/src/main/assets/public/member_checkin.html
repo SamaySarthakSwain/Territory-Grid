@@ -504,9 +504,13 @@
         </div>
       </div>
       <div class="flex flex-col gap-2 pt-1">
-        <button onclick="dismissWrongStationModal()" class="w-full py-2.5 rounded-xl bg-error hover:bg-error/80 text-white font-headline font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg transition cursor-pointer">
-          <span class="material-symbols-outlined text-sm">check</span>
+        <button onclick="dismissWrongStationModal()" class="w-full py-2.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-white font-headline font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition cursor-pointer">
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
           <span>Acknowledge &amp; Resume Scanner</span>
+        </button>
+        <button id="wrong-station-override-btn" onclick="executeWrongStationOverride()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-600 hover:to-yellow-500 text-black font-headline font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(245,158,11,0.5)] active:scale-95 transition cursor-pointer">
+          <span class="material-symbols-outlined text-sm font-black">bolt</span>
+          <span>⚡ Marshal Override: Award Points Anyway</span>
         </button>
       </div>
     </div>
@@ -539,39 +543,89 @@
     var currentUser = null;
     var currentTeams = [];
 
-    // Deterministic 2-Digit Team Code Engine (Unique for every squad)
+    // Unified Tactical HUD Notification / Toast Engine (Never crashes)
+    function showNotification(msg, isError) {
+      if (!msg) return;
+      try {
+        var alertBox = document.getElementById('checkin-alert');
+        if (alertBox) {
+          alertBox.innerText = msg;
+          alertBox.className = isError
+            ? 'p-3 rounded-xl border border-error/50 bg-error/15 text-error text-xs font-mono flex items-center gap-2 shadow-lg transition'
+            : 'p-3 rounded-xl border border-primary/50 bg-primary/15 text-primary text-xs font-mono flex items-center gap-2 shadow-lg transition';
+          alertBox.classList.remove('hidden');
+          clearTimeout(alertBox._timer);
+          alertBox._timer = setTimeout(function() {
+            if (alertBox) alertBox.classList.add('hidden');
+          }, 5000);
+        }
+
+        // Floating Tactical HUD Toast (always visible regardless of scroll)
+        var toast = document.getElementById('marshal-floating-toast');
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.id = 'marshal-floating-toast';
+          document.body.appendChild(toast);
+        }
+        toast.className = isError
+          ? 'fixed top-4 inset-x-4 max-w-sm mx-auto z-[999] px-4 py-3 rounded-2xl bg-gradient-to-r from-red-950 via-rose-900 to-red-900 border border-error/60 shadow-[0_0_30px_rgba(255,59,59,0.5)] flex items-center gap-3 text-white transition-all duration-300 transform translate-y-0 opacity-100 pointer-events-auto'
+          : 'fixed top-4 inset-x-4 max-w-sm mx-auto z-[999] px-4 py-3 rounded-2xl bg-gradient-to-r from-cyan-950 via-teal-900 to-emerald-950 border border-primary/60 shadow-[0_0_30px_rgba(0,229,255,0.4)] flex items-center gap-3 text-white transition-all duration-300 transform translate-y-0 opacity-100 pointer-events-auto';
+        toast.innerHTML = '<span class="material-symbols-outlined text-xl ' + (isError ? 'text-error' : 'text-primary') + '">' + (isError ? 'error' : 'bolt') + '</span>' +
+                          '<div class="flex-1 text-xs font-mono font-bold leading-tight">' + msg + '</div>';
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(function() {
+          if (toast) {
+            toast.classList.add('opacity-0', '-translate-y-8');
+            setTimeout(function() { if (toast) toast.classList.add('hidden'); }, 300);
+          }
+        }, 4000);
+        toast.classList.remove('hidden');
+      } catch (err) {
+        console.log('[Notification]', msg);
+      }
+    }
+
+    // Deterministic 2-Digit Team Code Engine (100% Harmonized across Player, Marshal & Server)
     function deriveTeamCode(strOrTeam, teamsList) {
       var str = '';
-      if (typeof strOrTeam === 'string') {
-        str = strOrTeam;
-      } else if (strOrTeam && typeof strOrTeam === 'object') {
+      var teamObj = null;
+      if (strOrTeam && typeof strOrTeam === 'object') {
+        teamObj = strOrTeam;
         str = strOrTeam.callsign || strOrTeam.name || strOrTeam._id || 'SQUAD';
+      } else if (typeof strOrTeam === 'string') {
+        str = strOrTeam;
       } else {
         str = 'SQUAD';
       }
-      str = str.toUpperCase().trim();
+      str = String(str).trim();
 
-      // If team name contains explicit number e.g. "Team 1", "Squad 5"
+      // Priority 1: Official server-assigned teamCode (11..99)
+      if (teamObj && typeof teamObj.teamCode === 'number' && teamObj.teamCode >= 10 && teamObj.teamCode <= 99) {
+        return teamObj.teamCode;
+      }
+
+      // Priority 2: Numeric match in callsign/name (e.g. "team1" -> 11, "squad 5" -> 15)
       var numMatch = str.match(/\d+/);
       if (numMatch && numMatch[0]) {
         var n = parseInt(numMatch[0], 10);
+        if (n >= 1 && n <= 89) return 10 + n;
         if (n >= 10 && n <= 99) return n;
-        if (n < 10) return 10 + n;
       }
 
-      // If teamsList available, derive index offset to guarantee 100% squad uniqueness
+      // Priority 3: Index offset in teams list
       if (Array.isArray(teamsList) && teamsList.length > 0) {
+        var strUpper = str.toUpperCase();
         var idx = teamsList.findIndex(function(t) {
-          return (t.callsign && t.callsign.toUpperCase() === str) ||
-                 (t.name && t.name.toUpperCase() === str) ||
+          return (t.callsign && t.callsign.toUpperCase() === strUpper) ||
+                 (t.name && t.name.toUpperCase() === strUpper) ||
                  (t._id && t._id === str);
         });
         if (idx !== -1) {
-          return 11 + (idx % 88);
+          return 10 + (idx % 89);
         }
       }
 
-      // Deterministic hash fallback (11-98)
+      // Priority 4: Deterministic hash fallback
       var hash = 0;
       for (var i = 0; i < str.length; i++) {
         hash = (hash * 31 + str.charCodeAt(i)) % 88;
@@ -682,10 +736,12 @@
       } catch(e){}
     }
 
-    function showWrongStationModal(errorMsg, targetStation, squadName) {
+    var activeWrongStationPayload = null;
+    function showWrongStationModal(errorMsg, targetStation, squadName, payload) {
       if (window.tacticalFeedback) {
         window.tacticalFeedback.error();
       }
+      activeWrongStationPayload = payload || null;
       var modal = document.getElementById('wrong-station-modal');
       if (!modal) {
         alert(errorMsg);
@@ -697,9 +753,21 @@
       modal.classList.remove('hidden');
     }
 
+    async function executeWrongStationOverride() {
+      if (!activeWrongStationPayload) {
+        dismissWrongStationModal();
+        return;
+      }
+      var p = activeWrongStationPayload;
+      dismissWrongStationModal();
+      showNotification('⚡ Applying Marshal Override for ' + (p.teamName || 'Squad') + '...', false);
+      await autoAwardCheckin(p.teamId, p.cardRank, p.cardSuit, 'Marshal Station Override', false, p.code, true);
+    }
+
     function dismissWrongStationModal() {
       var modal = document.getElementById('wrong-station-modal');
       if (modal) modal.classList.add('hidden');
+      activeWrongStationPayload = null;
       var manualInput = document.getElementById('manual-cipher-input');
       if (manualInput) manualInput.value = '';
       startCameraScanner();
@@ -1552,12 +1620,12 @@
       return;
     }
 
-    function verifyManualCipherCode() {
+    async function verifyManualCipherCode() {
       var input = document.getElementById('manual-cipher-input');
       var rawCode = (input.value || '').trim();
 
       if (!rawCode) {
-        showNotification('Please enter the 6-digit code from the player card.', true);
+        showNotification('Please enter the 6-digit code or squad number.', true);
         return;
       }
 
@@ -1567,10 +1635,15 @@
         return;
       }
 
+      // Ensure squad roster is fully hydrated
+      if (!Array.isArray(currentTeams) || currentTeams.length === 0) {
+        await loadTeams();
+      }
+
       var selector = document.getElementById('team-selector');
       var cleanDigits = rawCode.replace(/\D/g, '');
-      var rankCode = '9';
-      var rankNum = 9;
+      var rankCode = 'K';
+      var rankNum = 13;
       var suitSymbol = '♠';
       var squadFound = null;
       var targetTeamId = null;
@@ -1581,7 +1654,7 @@
         11: 'J', 12: 'Q', 13: 'K'
       };
 
-      // 6-Digit Cipher: [TT = Team 2 digits] [RR = Card Rank 2 digits (21-33)] [HH = Clue & Suit (10-61)]
+      // 1. Direct 6-Digit Cipher: [TT = Team 2 digits] [RR = Card Rank 2 digits (21-33)] [HH = Clue & Suit (10-61)]
       if (cleanDigits.length === 6) {
         var tt = parseInt(cleanDigits.slice(0, 2), 10);
         var rr = parseInt(cleanDigits.slice(2, 4), 10);
@@ -1597,7 +1670,6 @@
           suitSymbol = ['♠', '♥', '♦', '♣'][suitIdx] || '♠';
         }
 
-        // Match squad strictly by team code TT (100% collision-free)
         if (Array.isArray(currentTeams) && currentTeams.length > 0) {
           var matchedTeam = currentTeams.find(function(t) {
             if (t.teamCode === tt) return true;
@@ -1616,30 +1688,39 @@
             if (selector) selector.value = matchedTeam._id;
           }
         }
-      } else {
-        // Fallback for alphanumeric codes
-        var tokens = rawCode.toUpperCase().split(/[-_\s|]+/);
-        var cleanTokens = tokens.filter(function(t) { return t && t !== 'TG'; });
-        var legacyRanks = {
-          'A': 1, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5,
-          '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
-          'J': 11, '11': 11, 'Q': 12, '12': 12, 'K': 13, '13': 13
-        };
-        cleanTokens.forEach(function(token) {
-          if (selector) {
-            for (var i = 0; i < selector.options.length; i++) {
-              if (selector.options[i].text.toUpperCase().includes(token)) {
-                selector.selectedIndex = i;
-                targetTeamId = selector.options[i].value;
-                squadFound = selector.options[i].text;
-              }
-            }
-          }
-          if (legacyRanks[token] !== undefined) {
-            rankCode = token;
-            rankNum = legacyRanks[token];
-          }
+      } else if (cleanDigits.length >= 1 && cleanDigits.length <= 3) {
+        // 2. Direct 2-Digit or Squad Number Entry (e.g. typing "11" or "1")
+        var num = parseInt(cleanDigits, 10);
+        var targetCode = (num >= 1 && num <= 9) ? (10 + num) : num;
+        var matched = (currentTeams || []).find(function(t) {
+          return t.teamCode === targetCode || deriveTeamCode(t, currentTeams) === targetCode;
         });
+        if (matched) {
+          targetTeamId = matched._id;
+          squadFound = matched.name || matched.callsign;
+          if (selector) selector.value = matched._id;
+        }
+      }
+
+      // 3. Match by Callsign or Squad Name
+      if (!targetTeamId && rawCode) {
+        var lower = rawCode.toLowerCase();
+        var byName = (currentTeams || []).find(function(t) {
+          return (t.callsign && t.callsign.toLowerCase() === lower) ||
+                 (t.name && t.name.toLowerCase() === lower);
+        });
+        if (byName) {
+          targetTeamId = byName._id;
+          squadFound = byName.name || byName.callsign;
+          if (selector) selector.value = byName._id;
+        }
+      }
+
+      // 4. Fallback to currently selected dropdown team
+      if (!targetTeamId && selector && selector.value) {
+        targetTeamId = selector.value;
+        var selTeam = (currentTeams || []).find(function(t) { return t._id === targetTeamId; });
+        if (selTeam) squadFound = selTeam.name || selTeam.callsign;
       }
 
       if (!targetTeamId) {
@@ -1673,7 +1754,7 @@
       input.value = '';
 
       // AUTOMATICALLY AWARD POINTS IN ONE GO!
-      autoAwardCheckin(targetTeamId, rankNum, suitSymbol, '6-Digit Code', false, cleanDigits);
+      await autoAwardCheckin(targetTeamId, rankNum, suitSymbol, (cleanDigits.length === 6 ? '6-Digit Cipher' : 'Direct Squad Check-in'), false, cleanDigits);
     }
 
     function updateCardDisplay() {
@@ -1715,14 +1796,14 @@
     var activeOverridePayload = null;
     var celebDismissTimer = null;
 
-    async function autoAwardCheckin(teamId, rankNum, suitSymbol, method, allowDuplicate, rawCipherCode) {
+    async function autoAwardCheckin(teamId, rankNum, suitSymbol, method, allowDuplicate, rawCipherCode, allowOverride) {
       if (!teamId) {
         showNotification('Cannot award: No squad selected or recognized in system.', true);
         return;
       }
 
       var zoneId = currentUser.zoneId || 'ZONE_01';
-      var selectedTeamObj = currentTeams.find(function(t) { return t._id === teamId; });
+      var selectedTeamObj = (currentTeams || []).find(function(t) { return t._id === teamId; });
       var squadName = selectedTeamObj ? (selectedTeamObj.name || selectedTeamObj.callsign) : 'Squad';
 
       var rankVal = (rankNum !== undefined && rankNum !== null) ? rankNum : (checkinState.cardRankValue || 13);
@@ -1735,13 +1816,16 @@
 
       var payload = {
         teamId: teamId,
+        teamName: squadName,
         zoneId: zoneId,
         cone: coneCol,
         cardRank: rankVal,
         cardSuit: suitSym,
         memberId: currentUser.callsign || 'marshal_station',
         code: rawCipherCode || undefined,
-        allowDuplicate: !!allowDuplicate
+        allowDuplicate: !!allowDuplicate,
+        allowOverride: !!allowOverride,
+        forceCheckin: !!allowOverride
       };
 
       try {
@@ -1756,11 +1840,12 @@
         if (!data.success) {
           if (data.wrongStation) {
             playCyberErrorBuzz();
-            showWrongStationModal(data.error || 'Squad is assigned to a different checkpoint station!', data.targetZoneLabel || data.targetZoneId, data.teamName || squadName);
+            showWrongStationModal(data.error || 'Squad is assigned to a different checkpoint station!', data.targetZoneLabel || data.targetZoneId, data.teamName || squadName, payload);
           } else if (data.alreadyVisited) {
             showAlreadyVisitedPrompt(data.error || ('Squad "' + squadName + '" already completed ' + zoneId + '!'), payload);
           } else {
             showCheckinAlert(data.error || 'Check-in failed.', true);
+            showNotification(data.error || 'Check-in failed.', true);
           }
           return;
         }

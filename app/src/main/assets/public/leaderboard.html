@@ -898,9 +898,9 @@
       syncGameStateClock();
       refreshLeaderboard();
 
-      // Resilient background sync (SSE pushes real-time events at 0ms latency)
-      setInterval(refreshLeaderboard, 4000);
-      setInterval(syncGameStateClock, 3000);
+      // Resilient background sync (2.5s high-frequency refresh)
+      setInterval(refreshLeaderboard, 2500);
+      setInterval(syncGameStateClock, 2500);
 
       // Zero-Latency Server-Sent Events (SSE) Live Feed from Game Server
       var lbSse = null;
