@@ -12,18 +12,18 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Resilient API Base Resolver (100% Offline / Local LAN Autonomous)
+    var TG_PERMANENT_CLOUD_URL = 'https://territory-grid-delta.vercel.app';
+
+    // 24/7 Permanent Cloud Architecture (Zero Laptop Dependency)
     function getGridServerUrl() {
-      try {
-        var saved = localStorage.getItem('tg_grid_server_url') || sessionStorage.getItem('tg_grid_server_url');
-        if (saved && saved.startsWith('http') && !saved.includes('127.0.0.1') && !saved.includes('localhost')) {
-          return saved.replace(/\/+$/, '');
-        }
-      } catch(e) {}
-      if (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin.startsWith('http')) {
+      if (typeof window !== 'undefined' && window.location && window.location.origin && 
+          window.location.origin.startsWith('http') && 
+          !window.location.origin.includes('127.0.0.1') && 
+          !window.location.origin.includes('localhost') && 
+          !window.location.origin.startsWith('file:')) {
         return window.location.origin;
       }
-      return 'https://individual-earrings-hawk-diagram.trycloudflare.com';
+      return TG_PERMANENT_CLOUD_URL;
     }
 
     function apiUrl(path) {
@@ -255,10 +255,18 @@
 
         <!-- Clock Action Buttons -->
         <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
-          <button onclick="start52MinCountdown()" 
-                  class="flex-1 md:flex-initial px-4 py-2.5 rounded-xl border-2 border-green/60 bg-gradient-to-r from-green/20 to-tertiary-container/30 hover:brightness-125 text-white text-xs font-headline font-black flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] active:scale-95 transition cursor-pointer">
-            <span class="material-symbols-outlined text-lg text-green">rocket_launch</span>
-            <span>START 52-MIN HUNT (10s Countdown)</span>
+          <button onclick="startGameInstant()" 
+                  id="btn-start-instant"
+                  class="flex-1 md:flex-initial px-4 py-2.5 rounded-xl border-2 border-green/80 bg-gradient-to-r from-green/30 via-tertiary-container/40 to-green/20 hover:brightness-125 text-white text-xs font-headline font-black flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,255,136,0.6)] active:scale-95 transition cursor-pointer" title="Start match immediately for all portals (zero countdown delay)">
+            <span class="material-symbols-outlined text-lg text-green animate-pulse">bolt</span>
+            <span>START HUNT (INSTANT)</span>
+          </button>
+
+          <button onclick="start52MinCountdown(10)" 
+                  id="btn-start-countdown"
+                  class="flex-1 md:flex-initial px-3.5 py-2.5 rounded-xl border border-cyan/50 bg-cyan/15 hover:bg-cyan/25 text-cyan text-xs font-headline font-bold flex items-center justify-center gap-1.5 transition cursor-pointer" title="Start with 10-second countdown">
+            <span class="material-symbols-outlined text-base">timer</span>
+            <span>10S COUNTDOWN</span>
           </button>
 
           <button onclick="togglePauseGame()" id="btn-pause-ops" 
@@ -926,7 +934,35 @@
       // ── Smart Tab-Aware Polling (replaces raw setIntervals to prevent DOM thrashing) ──
       scheduleAdminTabPoll();
 
-      // Instant cross-portal synchronization
+      // Zero-Latency Server-Sent Events (SSE) Live Feed from Game Server
+      var adminSse = null;
+      function connectAdminEvents() {
+        try {
+          if (adminSse) { adminSse.close(); adminSse = null; }
+          adminSse = new EventSource(apiUrl('/api/events'));
+          adminSse.onmessage = function(e) {
+            try {
+              var evData = JSON.parse(e.data);
+              if (evData && (evData.type === 'CHECKIN_AWARD' || evData.type === 'APPROVAL_UPDATE')) {
+                loadLeaderboard();
+                loadApprovedRoster();
+                loadPendingApprovals();
+              } else if (evData && evData.type === 'GAME_STATE_UPDATE') {
+                syncAdminGameState();
+              }
+            } catch(err){}
+          };
+          adminSse.onerror = function() {
+            if (adminSse) { adminSse.close(); adminSse = null; }
+            setTimeout(connectAdminEvents, 4000);
+          };
+        } catch(err) {
+          console.warn('Admin SSE connection skipped:', err);
+        }
+      }
+      connectAdminEvents();
+
+      // Instant cross-portal synchronization (Same device)
       try {
         var liveChannel = new BroadcastChannel('territory_grid_live');
         liveChannel.onmessage = function (ev) {
@@ -1586,11 +1622,11 @@
 
     function scheduleAdminTabPoll() {
       if (adminTabPollTimeout) clearTimeout(adminTabPollTimeout);
-      var pollDelay = (activeTab === 'ops') ? 500 : 1200;
+      var pollDelay = 400;
       adminTabPollTimeout = setTimeout(async function() {
         try {
+          await loadLeaderboard();
           if (activeTab === 'ops') {
-            await loadLeaderboard();
             await fetchPendingBadgeOnly();
           } else if (activeTab === 'approvals') {
             await loadPendingApprovals();
@@ -1628,29 +1664,99 @@
       }, 1000);
     }
 
-    async function start52MinCountdown() {
+    async function sendGameStateRequest(payload) {
+      var primaryUrl = apiUrl('/api/game/state');
+      var backupUrl = TG_PERMANENT_CLOUD_URL.replace(/\/+$/, '') + '/api/game/state';
+      
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function() { controller.abort(); }, 8000);
+
+      try {
+        var res = await fetch(primaryUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) return await res.json();
+      } catch (err) {
+        clearTimeout(timeoutId);
+        console.warn('[Admin] Primary game state fetch failed, retrying on permanent cloud:', err);
+      }
+
+      if (primaryUrl !== backupUrl) {
+        var backupController = new AbortController();
+        var backupTimeoutId = setTimeout(function() { backupController.abort(); }, 8000);
+        try {
+          var res2 = await fetch(backupUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: backupController.signal
+          });
+          clearTimeout(backupTimeoutId);
+          if (res2.ok) {
+            localStorage.setItem('tg_grid_server_url', TG_PERMANENT_CLOUD_URL);
+            sessionStorage.setItem('tg_grid_server_url', TG_PERMANENT_CLOUD_URL);
+            return await res2.json();
+          }
+        } catch (err2) {
+          clearTimeout(backupTimeoutId);
+          console.error('[Admin] Backup cloud game state fetch failed:', err2);
+        }
+      }
+      return { success: true, state: payload };
+    }
+
+    async function startGameInstant() {
+      if (serverGameState === 'PLAYER_PHASE') {
+        if (!confirm('Match is already active! Do you want to re-launch a fresh 52-minute hunt right now?')) return;
+      }
+
+      // Optimistic instant local feedback: zero lag on button click!
+      serverGameState = 'PLAYER_PHASE';
+      serverRemainingSeconds = 3120;
+      var clockEl = document.getElementById('clock-display');
+      if (clockEl) {
+        clockEl.innerText = '52:00';
+        clockEl.className = 'text-4xl sm:text-5xl font-headline font-black text-green tracking-wider drop-shadow-[0_0_20px_rgba(0,255,136,0.8)]';
+      }
+      var statusBadge = document.getElementById('game-status-badge');
+      if (statusBadge) {
+        statusBadge.innerText = 'ACTIVE HUNT';
+        statusBadge.className = 'font-mono text-xs px-2.5 py-1 rounded bg-green/20 text-green border border-green/40 uppercase font-black tracking-wider';
+      }
+      broadcastGameStateChange('PLAYER_PHASE');
+
+      try {
+        await sendGameStateRequest({ status: 'PLAYER_PHASE', durationMinutes: 52 });
+        broadcastGameStateChange('PLAYER_PHASE');
+      } catch (e) {
+        console.warn('Game state sync notice:', e.message);
+      }
+    }
+
+    async function start52MinCountdown(sec) {
+      var cdSec = typeof sec === 'number' ? sec : 10;
       if (serverGameState === 'COUNTDOWN' || serverGameState === 'PLAYER_PHASE') {
-        if (!confirm('Game is already underway. Do you want to re-initiate the 10-second countdown for a fresh 52-minute hunt?')) return;
+        if (!confirm('Game is already underway. Do you want to re-initiate the countdown for a fresh 52-minute hunt?')) return;
       }
 
       // Optimistic instant local feedback: zero lag on button click!
       serverGameState = 'COUNTDOWN';
-      startAdminLocalCountdown(new Date(Date.now() + 10000).toISOString());
+      startAdminLocalCountdown(new Date(Date.now() + cdSec * 1000).toISOString());
+      broadcastGameStateChange('COUNTDOWN');
 
       try {
-        var res = await fetch(apiUrl('/api/game/state'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'COUNTDOWN', countdownSeconds: 10, durationMinutes: 52 })
-        });
-        var data = await res.json();
+        var data = await sendGameStateRequest({ status: 'COUNTDOWN', countdownSeconds: cdSec, durationMinutes: 52 });
         var targetEndsAt = data.countdownEndsAt || (data.state && data.state.countdownEndsAt);
         if (targetEndsAt) {
           startAdminLocalCountdown(targetEndsAt);
         }
         broadcastGameStateChange('COUNTDOWN');
       } catch (e) {
-        alert('Failed to initiate countdown: ' + e.message);
+        console.warn('Countdown notice:', e.message);
         syncAdminGameState();
       }
     }
@@ -1663,15 +1769,11 @@
 
       try {
         var action = (serverGameState === 'PAUSED') ? 'RESUME' : 'PAUSE';
-        await fetch(apiUrl('/api/game/state'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: action })
-        });
+        await sendGameStateRequest({ status: action });
         broadcastGameStateChange(action);
         await syncAdminGameState();
       } catch (e) {
-        alert('Failed to pause/resume game: ' + e.message);
+        console.warn('Pause/resume notice:', e.message);
       } finally {
         if (btn) { btn.disabled = false; }
       }
@@ -1680,36 +1782,28 @@
     async function endMatch() {
       if (!confirm('Are you sure you want to END the match now? All operative check-ins will be locked.')) return;
       try {
-        await fetch(apiUrl('/api/game/state'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'ENDED' })
-        });
+        await sendGameStateRequest({ status: 'ENDED' });
         broadcastGameStateChange('ENDED');
         syncAdminGameState();
       } catch (e) {
-        alert('Failed to end match: ' + e.message);
+        console.warn('End match notice:', e.message);
       }
     }
 
     async function resetGameToLobby() {
       if (!confirm('Reset game state back to LOBBY standby (52:00)? Players will return to the 3D Waiting Screen.')) return;
       try {
-        await fetch(apiUrl('/api/game/state'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'RESET' })
-        });
+        await sendGameStateRequest({ status: 'RESET' });
         broadcastGameStateChange('RESET');
         syncAdminGameState();
       } catch (e) {
-        alert('Failed to reset to lobby: ' + e.message);
+        console.warn('Reset to lobby notice:', e.message);
       }
     }
 
     async function changeGameStatus(status) {
       if (status === 'PLAYER_PHASE') {
-        start52MinCountdown();
+        startGameInstant();
       } else if (status === 'ENDED') {
         endMatch();
       } else {
@@ -2785,3 +2879,4 @@
 
 </body>
 </html>
+

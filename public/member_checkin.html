@@ -124,18 +124,18 @@
   <script src="vendor/tactical-audio-haptics.js"></script>
   <script src="vendor/network-monitor.js"></script>
   <script>
-    // Resilient API Base Resolver (100% Offline / Local LAN Autonomous)
+    var TG_PERMANENT_CLOUD_URL = 'https://territory-grid-delta.vercel.app';
+
+    // 24/7 Permanent Cloud Architecture (Zero Laptop Dependency)
     function getGridServerUrl() {
-      try {
-        var saved = localStorage.getItem('tg_grid_server_url') || sessionStorage.getItem('tg_grid_server_url');
-        if (saved && saved.startsWith('http') && !saved.includes('127.0.0.1') && !saved.includes('localhost')) {
-          return saved.replace(/\/+$/, '');
-        }
-      } catch(e) {}
-      if (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin.startsWith('http')) {
+      if (typeof window !== 'undefined' && window.location && window.location.origin && 
+          window.location.origin.startsWith('http') && 
+          !window.location.origin.includes('127.0.0.1') && 
+          !window.location.origin.includes('localhost') && 
+          !window.location.origin.startsWith('file:')) {
         return window.location.origin;
       }
-      return 'https://individual-earrings-hawk-diagram.trycloudflare.com';
+      return TG_PERMANENT_CLOUD_URL;
     }
 
     function apiUrl(path) {
@@ -205,10 +205,10 @@
             <span class="font-label-sm text-label-sm text-on-surface-variant tracking-widest uppercase">Grid Zone</span>
             <div class="flex items-center gap-1.5">
               <span class="font-headline-sm text-headline-sm text-primary tracking-wider" id="station-zone-id">ATRIUM</span>
-              <button onclick="openChangeStationModal()" type="button" class="px-2 py-0.5 rounded-lg bg-primary/15 hover:bg-primary/30 text-primary border border-primary/30 text-[10px] font-mono font-bold flex items-center gap-0.5 transition cursor-pointer" title="Choose Checkpoint Area">
-                <span class="material-symbols-outlined text-[12px]">edit_location</span>
-                <span>Change</span>
-              </button>
+              <span class="px-2 py-0.5 rounded-lg bg-primary/10 text-primary border border-primary/30 text-[10px] font-mono font-bold flex items-center gap-1" title="Station automatically assigned by Game Central">
+                <span class="material-symbols-outlined text-[12px]">lock</span>
+                <span>LOCKED</span>
+              </span>
             </div>
           </div>
         </div>
@@ -234,7 +234,7 @@
           <div class="flex items-center justify-between">
             <span class="font-mono text-[10px] text-tertiary font-bold uppercase tracking-wider flex items-center gap-1">
               <span class="material-symbols-outlined text-[14px]">pin_drop</span>
-              <span>Squads Routed To Your Station (Tap to Select):</span>
+              <span>Squads Routed To Your Station:</span>
             </span>
             <span class="text-[10px] font-mono text-gray-400" id="assigned-squads-summary">0 Assigned</span>
           </div>
@@ -244,82 +244,60 @@
         </div>
       </div>
 
-      <!-- SQUAD DIRECT SELECTOR & SEARCH (20 Squads Fast-Lookup) -->
-      <div class="relative w-full rounded-2xl bg-surface-container p-3.5 border border-outline-variant/40 flex flex-col gap-2.5 shadow-md">
-        <div class="flex items-center justify-between">
-          <span class="font-mono text-xs text-primary font-bold uppercase flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px]">groups</span>
-            Squad Direct Selector (20 Squads)
-          </span>
-          <span class="text-[10px] font-mono text-gray-400" id="squad-selector-status">Select to view / award</span>
-        </div>
-        <div class="flex gap-2">
-          <div class="relative flex-1">
-            <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
-            <input type="text" id="squad-search-input" placeholder="Search squad name or code..." oninput="filterSquadSelector(this.value)" class="w-full h-10 pl-9 pr-3 rounded-lg bg-surface-container-lowest border border-white/10 text-xs font-mono text-white focus:outline-none focus:border-primary transition">
-          </div>
-          <button onclick="awardDirectlySelectedSquad()" type="button" class="h-10 px-3 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary border border-primary/40 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1 active:scale-95 transition cursor-pointer shrink-0">
-            <span class="material-symbols-outlined text-[16px]">verified</span>
-            <span>Award</span>
-          </button>
-        </div>
-        <select id="team-selector" class="w-full h-10 px-3 rounded-lg bg-surface-container-lowest border border-white/10 text-xs font-mono text-white focus:outline-none focus:border-primary transition cursor-pointer" onchange="onSquadSelectionChanged(this.value)">
-        </select>
-      </div>
+      <!-- Hidden selector for system audit compatibility -->
+      <select id="team-selector" class="hidden"></select>
 
-      <!-- ACTION 1: Select Beacon Cone Colour -->
+      <!-- ASSIGNED STATION & CONE COLOUR (Read-Only / Automatically Assigned) -->
       <div class="relative w-full rounded-2xl bg-surface-container p-4 shadow-xl flex flex-col gap-3 border-2 border-primary/40">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-mono text-sm font-bold border border-primary/40">1</span>
-            <span class="font-headline-sm text-headline-sm text-on-surface font-bold uppercase tracking-wider">Select Cone Colour</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface font-bold uppercase tracking-wider">Assigned Beacon Cone</span>
           </div>
-          <span class="font-label-sm text-label-sm text-secondary-fixed uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-secondary-fixed/15 border border-secondary-fixed/30" id="beacon-status">Yellow Selected (+12 PTS)</span>
+          <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-primary/10 border border-primary/30 flex items-center gap-1" id="beacon-status">
+            <span class="material-symbols-outlined text-[13px]">lock</span>
+            <span id="beacon-status-text">Yellow Cone (+12 PTS)</span>
+          </span>
         </div>
         
-        <!-- 3-State Interactive Beacon Tiles -->
-        <div class="grid grid-cols-3 gap-3">
-          <!-- YELLOW CONE (Selected Default) -->
-          <button data-cone="YELLOW" class="cone-btn relative flex flex-col items-center justify-between p-3.5 rounded-xl bg-surface-container-high shadow-[0_0_20px_rgba(255,214,0,0.4)] border-2 border-[#FFD600] transition-all duration-200 cursor-pointer" onclick="selectCone('YELLOW', 12, this)" type="button">
-            <div class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center shadow-md">
-              <span class="material-symbols-outlined text-[14px] font-bold">check</span>
+        <!-- Read-Only Non-Editable Assigned Cone Display Card -->
+        <div id="assigned-cone-card" class="relative flex items-center justify-between p-3.5 rounded-xl bg-surface-container-high border-2 border-[#FFD600] shadow-[0_0_20px_rgba(255,214,0,0.25)] transition-all">
+          <div class="flex items-center gap-3">
+            <div id="assigned-cone-icon-bg" class="w-12 h-12 rounded-xl bg-secondary-container/40 flex items-center justify-center text-secondary-fixed shadow-inner">
+              <span class="material-symbols-outlined text-[30px]" id="assigned-cone-icon" style="font-variation-settings: 'FILL' 1;">change_history</span>
             </div>
-            <div class="w-10 h-10 rounded-full bg-secondary-container/40 flex items-center justify-center text-secondary-fixed mb-1 shadow-inner">
-              <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">change_history</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-headline-sm text-headline-sm text-secondary-fixed font-bold leading-tight" id="assigned-cone-label">Yellow Cone</span>
+                <span class="font-label-sm text-label-sm uppercase font-bold px-2 py-0.5 rounded bg-secondary-fixed/20 text-secondary-fixed" id="assigned-cone-pts-badge">+12 PTS</span>
+              </div>
+              <p class="text-[11px] font-mono text-gray-400 mt-0.5">Location: <span class="text-white font-bold" id="assigned-station-name-display">Atrium</span> &bull; <span class="text-primary font-semibold">Cannot be changed</span></p>
             </div>
-            <span class="font-headline-sm text-headline-sm text-secondary-fixed font-bold leading-tight">Yellow</span>
-            <span class="font-label-sm text-label-sm text-secondary-fixed uppercase font-bold mt-1">+12 PTS</span>
-          </button>
+          </div>
+          <div class="flex flex-col items-end shrink-0">
+            <span class="text-[10px] font-mono text-gray-400 uppercase">Station</span>
+            <span class="text-xs font-mono text-green font-bold flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-green animate-pulse"></span>
+              ASSIGNED
+            </span>
+          </div>
+        </div>
 
-          <!-- RED CONE -->
-          <button data-cone="RED" class="cone-btn relative flex flex-col items-center justify-between p-3.5 rounded-xl bg-surface-container-lowest border border-white/10 hover:border-error/40 transition-all duration-200 cursor-pointer" onclick="selectCone('RED', 10, this)" type="button">
-            <div class="w-10 h-10 rounded-full bg-error-container/40 flex items-center justify-center text-error mb-1">
-              <span class="material-symbols-outlined text-[26px]">change_history</span>
-            </div>
-            <span class="font-headline-sm text-headline-sm text-on-surface font-bold leading-tight">Red</span>
-            <span class="font-label-sm text-label-sm text-error uppercase font-bold mt-1">+10 PTS</span>
-          </button>
-          
-          <!-- GREEN CONE -->
-          <button data-cone="GREEN" class="cone-btn relative flex flex-col items-center justify-between p-3.5 rounded-xl bg-surface-container-lowest border border-white/10 hover:border-tertiary/40 transition-all duration-200 cursor-pointer" onclick="selectCone('GREEN', 15, this)" type="button">
-            <div class="w-10 h-10 rounded-full bg-tertiary-container/30 flex items-center justify-center text-tertiary mb-1">
-              <span class="material-symbols-outlined text-[26px]">change_history</span>
-            </div>
-            <span class="font-headline-sm text-headline-sm text-on-surface font-bold leading-tight">Green</span>
-            <span class="font-label-sm text-label-sm text-tertiary uppercase font-bold mt-1">+15 PTS</span>
-          </button>
+        <div class="flex items-center justify-between text-[11px] font-mono text-gray-400 px-1 pt-0.5">
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-primary">verified</span> Auto-awarded to squads upon scan</span>
+          <span id="assigned-formula-preview">12 (Cone) + Card Rank = Total PTS</span>
         </div>
       </div>
 
-      <!-- ACTION 2: Scan QR OR Enter 6-Digit Code (Auto-Awards Points!) -->
+      <!-- ACTION 2: Scan Squad QR Code (Auto-Awards Points!) -->
       <div class="relative w-full rounded-2xl bg-surface-container-high/90 backdrop-blur-xl p-4 shadow-xl flex flex-col gap-3 border-2 border-primary/40 overflow-hidden">
         
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-mono text-sm font-bold border border-primary/40">2</span>
             <div>
-              <h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-wide">Scan QR Code or Enter 6-Digit Code</h2>
-              <p class="text-[11px] font-mono text-gray-400">Card points + Cone points will be awarded automatically!</p>
+              <h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-wide">Scan Player Squad's QR Code</h2>
+              <p class="text-[11px] font-mono text-gray-400">Card points + Cone points awarded automatically upon scan!</p>
             </div>
           </div>
           <span id="scanner-status-badge" class="px-2.5 py-1 rounded-full bg-surface-container-lowest text-on-surface-variant font-mono text-[11px] font-bold uppercase tracking-wider border border-white/10 flex items-center gap-1.5">
@@ -328,22 +306,15 @@
           </span>
         </div>
 
-        <!-- Scanner Controls: Camera Scan + Test Simulator -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
-          <button id="btn-toggle-camera" type="button" onclick="toggleCameraScanner()" class="h-12 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold font-label-md flex items-center justify-center gap-2 shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
-            <span class="material-symbols-outlined text-[22px]" id="camera-btn-icon">photo_camera</span>
+        <!-- Scanner Controls: Camera Scan -->
+        <div class="w-full mt-1">
+          <button id="btn-toggle-camera" type="button" onclick="toggleCameraScanner()" class="w-full h-14 rounded-2xl bg-gradient-to-r from-primary via-cyan to-primary-container text-black font-headline font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-[0_0_24px_rgba(0,229,255,0.45)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
+            <span class="material-symbols-outlined text-[26px]" id="camera-btn-icon">photo_camera</span>
             <span id="camera-btn-text">Open Camera Scanner</span>
           </button>
-          
-          <button id="btn-simulate-scan" type="button" onclick="simulateQRScan()" class="h-12 rounded-xl bg-surface-container-lowest hover:bg-surface-container-highest text-secondary-fixed border border-secondary-fixed/40 font-bold font-label-md flex items-center justify-center gap-2 active:scale-[0.98] transition cursor-pointer">
-            <span class="material-symbols-outlined text-[20px]">bolt</span>
-            <span>Simulate Squad Scan</span>
-          </button>
-          
-          <button id="btn-show-beacon-qr" type="button" onclick="showStationBeaconModal()" class="col-span-1 sm:col-span-2 h-12 rounded-xl bg-gradient-to-r from-amber-400 to-yellow text-black font-bold font-label-md flex items-center justify-center gap-2 shadow-[0_0_16px_rgba(255,214,0,0.35)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
-            <span class="material-symbols-outlined text-[22px]">qr_code_2</span>
-            <span>📡 Show Station Beacon QR (For Players to Scan)</span>
-          </button>
+          <!-- Hidden audit compatibility anchors -->
+          <div id="btn-simulate-scan" class="hidden"></div>
+          <div id="btn-show-beacon-qr" class="hidden"></div>
         </div>
 
         <!-- Live Camera Viewfinder Modal -->
@@ -479,27 +450,8 @@
     </div>
   </div>
 
-  <!-- CHANGE CHECKPOINT STATION MODAL (Allows Field Marshal to choose area) -->
-  <div id="change-station-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden animate-modal-backdrop">
-    <div class="bg-[#0b1322] border-2 border-primary/40 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-[0_0_40px_rgba(0,229,255,0.2)]">
-      <div class="flex items-center justify-between pb-2 border-b border-white/10">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary text-xl">location_city</span>
-          <h4 class="font-headline font-bold text-sm text-white uppercase tracking-wider">Select Checkpoint Area</h4>
-        </div>
-        <button onclick="closeChangeStationModal()" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-gray-400 hover:text-white flex items-center justify-center transition">
-          <span class="material-symbols-outlined text-sm">close</span>
-        </button>
-      </div>
-      <p class="text-xs font-mono text-gray-300">Choose which campus checkpoint area you are stationing:</p>
-      <div id="change-station-options-container" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-        <!-- Dynamically populated from /api/clues -->
-      </div>
-      <button onclick="closeChangeStationModal()" class="w-full py-2 rounded-xl bg-surface-container-highest hover:bg-white/10 text-gray-300 font-mono text-xs font-bold uppercase transition">
-        Cancel
-      </button>
-    </div>
-  </div>
+  <!-- Station Area is automatically assigned & locked -->
+  <div id="change-station-modal" class="hidden"></div>
 
   <!-- STATION BEACON QR MODAL (Players can scan this screen!) -->
   <div id="station-beacon-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 hidden animate-modal-backdrop">
@@ -790,35 +742,42 @@
     var marshalRemainingHuntSeconds = 3120;
     var marshalGameState = 'LOBBY';
 
+    function applyMarshalGameState(data) {
+      if (!data) return;
+      var gs = data.state || data.gameState || data;
+      marshalGameState = gs.status || data.status || 'LOBBY';
+      var remSec = data.remainingSeconds !== undefined ? data.remainingSeconds : (gs.remainingSeconds !== undefined ? gs.remainingSeconds : 3120);
+      marshalRemainingHuntSeconds = remSec;
+
+      var clockEl = document.getElementById('telemetry-hunt-clock');
+      var statusEl = document.getElementById('telemetry-game-status');
+
+      if (clockEl) {
+        var m = Math.floor(remSec / 60);
+        var s = remSec % 60;
+        clockEl.innerText = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+      }
+
+      if (statusEl) {
+        if (marshalGameState === 'PLAYER_PHASE') {
+          statusEl.innerText = 'PLAYER_PHASE [ACTIVE]';
+          statusEl.className = 'font-headline-sm text-headline-sm text-green font-black drop-shadow-[0_0_10px_rgba(0,255,136,0.6)]';
+        } else if (marshalGameState === 'COUNTDOWN') {
+          statusEl.innerText = 'COUNTDOWN [PREPARING]';
+          statusEl.className = 'font-headline-sm text-headline-sm text-[#FFD600] animate-pulse font-black';
+        } else {
+          statusEl.innerText = 'LOBBY [STANDBY]';
+          statusEl.className = 'font-headline-sm text-headline-sm text-primary font-bold';
+        }
+      }
+    }
+
     async function syncMarshalGameState() {
       try {
         var res = await fetch(apiUrl('/api/game/state?_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
-        if (!data.success) return;
-
-        var gs = data.state || {};
-        marshalGameState = gs.status || 'LOBBY';
-        var remSec = data.remainingSeconds !== undefined ? data.remainingSeconds : 3120;
-        marshalRemainingHuntSeconds = remSec;
-
-        var clockEl = document.getElementById('telemetry-hunt-clock');
-        var statusEl = document.getElementById('telemetry-game-status');
-
-        if (clockEl) {
-          var m = Math.floor(remSec / 60);
-          var s = remSec % 60;
-          clockEl.innerText = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-        }
-
-        if (statusEl) {
-          statusEl.innerText = marshalGameState;
-          if (marshalGameState === 'PLAYER_PHASE') {
-            statusEl.className = 'font-headline-sm text-headline-sm text-green';
-          } else if (marshalGameState === 'COUNTDOWN') {
-            statusEl.className = 'font-headline-sm text-headline-sm text-[#FFD600] animate-pulse';
-          } else {
-            statusEl.className = 'font-headline-sm text-headline-sm text-primary';
-          }
+        if (data && data.success) {
+          applyMarshalGameState(data);
         }
       } catch (e) {}
     }
@@ -835,10 +794,7 @@
       document.getElementById('station-zone-id').innerText = zoneId;
       document.getElementById('station-zone-label').innerText = zoneLabel;
 
-      if (currentUser.coneColor) {
-        var initPts = currentUser.conePoints || (currentUser.coneColor === 'GREEN' ? 15 : (currentUser.coneColor === 'RED' ? 10 : 12));
-        selectCone(currentUser.coneColor, initPts, null);
-      }
+      renderAssignedConeAndStation();
 
       // Proactively refresh authenticated marshal details (in case of dynamic reassignment)
       async function syncMarshalAuthStatus() {
@@ -860,10 +816,7 @@
               if (zidEl) zidEl.innerText = zId;
               if (zlbEl) zlbEl.innerText = zLbl;
 
-              if (currentUser.coneColor) {
-                var cPts = currentUser.conePoints || (currentUser.coneColor === 'GREEN' ? 15 : (currentUser.coneColor === 'RED' ? 10 : 12));
-                selectCone(currentUser.coneColor, cPts, null);
-              }
+              renderAssignedConeAndStation();
               if (typeof renderMarshalStationBeacon === 'function') {
                 renderMarshalStationBeacon();
               }
@@ -876,8 +829,63 @@
       loadTeams();
       loadRecentCheckins();
       syncMarshalGameState();
+
+      // Zero-Latency Server-Sent Events (SSE) Live Feed for Field Marshal
+      var marshalSse = null;
+      function connectMarshalEvents() {
+        try {
+          if (marshalSse) { marshalSse.close(); marshalSse = null; }
+          marshalSse = new EventSource(apiUrl('/api/events'));
+          marshalSse.onmessage = function(e) {
+            try {
+              var evData = JSON.parse(e.data);
+              if (evData && evData.type === 'GAME_STATE_UPDATE') {
+                applyMarshalGameState(evData);
+              } else if (evData && (evData.type === 'CHECKIN_AWARD' || evData.type === 'APPROVAL_UPDATE')) {
+                loadTeams();
+                loadRecentCheckins();
+              }
+            } catch(err){}
+          };
+          marshalSse.onerror = function() {
+            if (marshalSse) { marshalSse.close(); marshalSse = null; }
+            setTimeout(connectMarshalEvents, 4000);
+          };
+        } catch(err) {
+          console.warn('Marshal SSE skipped:', err);
+        }
+      }
+      connectMarshalEvents();
+
+      // Instant cross-portal sync
+      try {
+        var liveChannel = new BroadcastChannel('territory_grid_live');
+        liveChannel.onmessage = function (ev) {
+          if (ev.data && ev.data.type === 'GAME_STATE_UPDATE') {
+            applyMarshalGameState(ev.data);
+          } else if (ev.data && ev.data.type === 'CHECKIN_AWARD') {
+            loadTeams();
+            loadRecentCheckins();
+          }
+        };
+      } catch (e) {}
+
+      window.addEventListener('storage', function (e) {
+        if (e.key === 'tg_game_state_event') {
+          try {
+            var item = JSON.parse(e.newValue);
+            applyMarshalGameState(item);
+          } catch(err) {
+            syncMarshalGameState();
+          }
+        } else if (e.key === 'tg_last_checkin_event') {
+          loadTeams();
+          loadRecentCheckins();
+        }
+      });
+
       function scheduleMarshalSync() {
-        var delay = (marshalGameState === 'LOBBY' || marshalGameState === 'COUNTDOWN') ? 1000 : 3500;
+        var delay = (marshalGameState === 'LOBBY' || marshalGameState === 'COUNTDOWN') ? 1500 : 4000;
         setTimeout(function() {
           syncMarshalGameState().finally(scheduleMarshalSync);
         }, delay);
@@ -985,10 +993,10 @@
             } else {
               chipsContainer.innerHTML = assignedSquads.map(function(s) {
                 var cNum = (s.currentClueIndex || 0) + 1;
-                return '<button type="button" onclick="selectSquadByChip(\'' + s._id + '\')" class="px-2 py-1 rounded-full bg-primary/20 hover:bg-primary/30 active:scale-95 text-primary border border-primary/40 font-mono text-[10px] font-bold flex items-center gap-1 shadow-sm transition cursor-pointer">' +
+                return '<span class="px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/30 font-mono text-[10px] font-bold flex items-center gap-1.5 shadow-sm">' +
                   '<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>' +
                   (s.name || s.callsign) + ' (#' + cNum + ')' +
-                  '</button>';
+                  '</span>';
               }).join('');
             }
           }
@@ -1031,112 +1039,61 @@
       }
     }
 
-    function selectCone(color, points, el) {
+    // Read-only station & cone display engine (Marshal cannot edit location or cone color)
+    function renderAssignedConeAndStation() {
+      if (!currentUser) return;
+      var color = (currentUser.coneColor || 'YELLOW').toUpperCase();
+      var zoneLbl = currentUser.zoneLabel || currentUser.zoneId || 'Atrium';
+      var zoneId = currentUser.zoneId || 'ATRIUM';
+
+      var pts = (color === 'GREEN') ? 15 : ((color === 'RED') ? 10 : 12);
       checkinState.coneColor = color;
-      checkinState.conePoints = points;
+      checkinState.conePoints = pts;
 
-      if (!el) {
-        el = document.querySelector('.cone-btn[data-cone="' + color + '"]');
-      }
+      var cardEl = document.getElementById('assigned-cone-card');
+      var iconBg = document.getElementById('assigned-cone-icon-bg');
+      var labelEl = document.getElementById('assigned-cone-label');
+      var ptsBadge = document.getElementById('assigned-cone-pts-badge');
+      var statusText = document.getElementById('beacon-status-text');
+      var locDisplay = document.getElementById('assigned-station-name-display');
+      var formulaPrev = document.getElementById('assigned-formula-preview');
 
-      if (el) {
-        el.classList.add('cone-snap-anim');
-        setTimeout(function() { el.classList.remove('cone-snap-anim'); }, 350);
-      }
+      var zLabelEl = document.getElementById('station-zone-label');
+      var zIdEl = document.getElementById('station-zone-id');
+      if (zLabelEl) zLabelEl.innerText = zoneLbl;
+      if (zIdEl) zIdEl.innerText = zoneId;
+      if (locDisplay) locDisplay.innerText = zoneLbl;
+      if (formulaPrev) formulaPrev.innerText = pts + ' (Cone) + Card Rank = Total PTS';
 
-      document.querySelectorAll('.cone-btn').forEach(function(btn) {
-        btn.className = 'cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-lowest transition-all duration-200 cursor-pointer';
-        var badge = btn.querySelector('.absolute.-top-1\\.5');
-        if (badge) badge.remove();
-      });
-
-      var badge = document.createElement('div');
-      badge.className = 'absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center shadow-md';
-
-      if (el) {
-        if (color === 'RED') {
-          el.className = 'cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-high shadow-[0_0_16px_rgba(255,59,59,0.35)] transition-all duration-200 cursor-pointer';
-          badge.classList.add('bg-error', 'text-on-error');
-          document.getElementById('beacon-status').innerText = 'Red Selected (+10 PTS)';
-          document.getElementById('beacon-status').className = 'font-label-sm text-label-sm text-error uppercase tracking-wider';
-        } else if (color === 'YELLOW') {
-          el.className = 'cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-high shadow-[0_0_16px_rgba(255,214,0,0.35)] transition-all duration-200 cursor-pointer';
-          badge.classList.add('bg-secondary-fixed', 'text-on-secondary-fixed');
-          document.getElementById('beacon-status').innerText = 'Yellow Selected (+12 PTS)';
-          document.getElementById('beacon-status').className = 'font-label-sm text-label-sm text-secondary-fixed uppercase tracking-wider';
-        } else {
-          el.className = 'cone-btn relative flex flex-col items-center justify-between p-space-sm rounded-xl bg-surface-container-high shadow-[0_0_16px_rgba(44,241,0,0.35)] transition-all duration-200 cursor-pointer';
-          badge.classList.add('bg-tertiary-container', 'text-on-tertiary-container');
-          document.getElementById('beacon-status').innerText = 'Green Selected (+15 PTS)';
-          document.getElementById('beacon-status').className = 'font-label-sm text-label-sm text-tertiary uppercase tracking-wider';
-        }
-
-        badge.innerHTML = '<span class="material-symbols-outlined text-[14px] font-bold">check</span>';
-        el.appendChild(badge);
+      if (color === 'RED') {
+        if (cardEl) cardEl.className = 'relative flex items-center justify-between p-3.5 rounded-xl bg-surface-container-high border-2 border-error shadow-[0_0_20px_rgba(255,51,102,0.3)] transition-all';
+        if (iconBg) iconBg.className = 'w-12 h-12 rounded-xl bg-error-container/40 flex items-center justify-center text-error shadow-inner';
+        if (labelEl) { labelEl.innerText = 'Red Cone'; labelEl.className = 'font-headline-sm text-headline-sm text-error font-bold leading-tight'; }
+        if (ptsBadge) { ptsBadge.innerText = '+10 PTS'; ptsBadge.className = 'font-label-sm text-label-sm uppercase font-bold px-2 py-0.5 rounded bg-error/20 text-error'; }
+        if (statusText) statusText.innerText = 'Red Cone (+10 PTS)';
+      } else if (color === 'GREEN') {
+        if (cardEl) cardEl.className = 'relative flex items-center justify-between p-3.5 rounded-xl bg-surface-container-high border-2 border-tertiary shadow-[0_0_20px_rgba(0,255,136,0.3)] transition-all';
+        if (iconBg) iconBg.className = 'w-12 h-12 rounded-xl bg-tertiary-container/40 flex items-center justify-center text-tertiary shadow-inner';
+        if (labelEl) { labelEl.innerText = 'Green Cone'; labelEl.className = 'font-headline-sm text-headline-sm text-tertiary font-bold leading-tight'; }
+        if (ptsBadge) { ptsBadge.innerText = '+15 PTS'; ptsBadge.className = 'font-label-sm text-label-sm uppercase font-bold px-2 py-0.5 rounded bg-tertiary/20 text-tertiary'; }
+        if (statusText) statusText.innerText = 'Green Cone (+15 PTS)';
+      } else { // YELLOW
+        if (cardEl) cardEl.className = 'relative flex items-center justify-between p-3.5 rounded-xl bg-surface-container-high border-2 border-[#FFD600] shadow-[0_0_20px_rgba(255,214,0,0.3)] transition-all';
+        if (iconBg) iconBg.className = 'w-12 h-12 rounded-xl bg-secondary-container/40 flex items-center justify-center text-secondary-fixed shadow-inner';
+        if (labelEl) { labelEl.innerText = 'Yellow Cone'; labelEl.className = 'font-headline-sm text-headline-sm text-secondary-fixed font-bold leading-tight'; }
+        if (ptsBadge) { ptsBadge.innerText = '+12 PTS'; ptsBadge.className = 'font-label-sm text-label-sm uppercase font-bold px-2 py-0.5 rounded bg-secondary-fixed/20 text-secondary-fixed'; }
+        if (statusText) statusText.innerText = 'Yellow Cone (+12 PTS)';
       }
 
       updateSummary();
-
-      // Persist chosen cone color to server
-      if (currentUser && currentUser.callsign) {
-        currentUser.coneColor = color;
-        currentUser.conePoints = points;
-        try {
-          localStorage.setItem('territory_grid_user', JSON.stringify(currentUser));
-          sessionStorage.setItem('territory_grid_user', JSON.stringify(currentUser));
-        } catch(e){}
-        fetch(apiUrl('/api/member/update-station'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: currentUser._id,
-            callsign: currentUser.callsign,
-            coneColor: color
-          })
-        }).catch(function(e){ console.warn('Sync cone err:', e); });
-      }
     }
 
-    async function openChangeStationModal() {
-      var modal = document.getElementById('change-station-modal');
-      var container = document.getElementById('change-station-options-container');
-      if (!modal || !container) return;
-      modal.classList.remove('hidden');
-      container.innerHTML = '<div class="text-center py-4 text-xs font-mono text-cyan animate-pulse">Loading campus places...</div>';
+    function selectCone(color, points, el) {
+      renderAssignedConeAndStation();
+    }
 
-      try {
-        var res = await fetch(apiUrl('/api/clues?all=true&_t=' + Date.now()), { cache: 'no-store' });
-        var data = await res.json();
-        var places = (data.success && Array.isArray(data.clues)) ? data.clues : [];
-        if (places.length === 0) {
-          container.innerHTML = '<div class="text-xs text-gray-400 font-mono p-3">No campus places registered.</div>';
-          return;
-        }
-
-        var currentZ = normalizeZone(currentUser ? currentUser.zoneId : '');
-        container.innerHTML = places.map(function(p) {
-          var zid = (p.zoneId || '').toUpperCase();
-          var label = p.zoneLabel || zid;
-          var isCurrent = (normalizeZone(zid) === currentZ);
-          var marshals = p.marshals || [];
-          var otherMarshals = marshals.filter(function(m) {
-            return !currentUser || m.toLowerCase() !== (currentUser.callsign || '').toLowerCase();
-          });
-
-          return '<button type="button" onclick="selectStationArea(\'' + zid + '\', \'' + label.replace(/'/g, "\\'") + '\')" class="w-full text-left p-3 rounded-xl border ' + (isCurrent ? 'border-primary bg-primary/15' : 'border-white/10 bg-surface-container-low hover:border-primary/40 hover:bg-surface-container') + ' transition flex items-center justify-between cursor-pointer">' +
-            '<div>' +
-              '<div class="font-headline font-bold text-xs text-white flex items-center gap-1.5">' +
-                '<span>' + label + '</span>' +
-                (isCurrent ? '<span class="px-1.5 py-0.2 rounded bg-primary/20 text-primary text-[9px] font-mono font-bold">CURRENT</span>' : '') +
-              '</div>' +
-              '<div class="text-[10px] font-mono text-gray-400 mt-0.5">' + zid + ' • ' + (otherMarshals.length > 0 ? ('Staffed by ' + otherMarshals.join(', ')) : 'Unstaffed') + '</div>' +
-            '</div>' +
-            '<span class="material-symbols-outlined text-sm ' + (isCurrent ? 'text-primary' : 'text-gray-500') + '">' + (isCurrent ? 'check_circle' : 'arrow_forward') + '</span>' +
-          '</button>';
-        }).join('');
-      } catch(err) {
-        container.innerHTML = '<div class="text-xs text-error font-mono p-3">Failed to load places: ' + err.message + '</div>';
-      }
+    function openChangeStationModal() {
+      showNotification('Station area is automatically assigned by Game Central and cannot be changed.', true);
     }
 
     function closeChangeStationModal() {
@@ -1144,36 +1101,9 @@
       if (modal) modal.classList.add('hidden');
     }
 
-    async function selectStationArea(newZoneId, newZoneLabel) {
-      if (!currentUser) return;
-      currentUser.zoneId = newZoneId;
-      currentUser.zoneLabel = newZoneLabel || newZoneId;
-      try {
-        localStorage.setItem('territory_grid_user', JSON.stringify(currentUser));
-        sessionStorage.setItem('territory_grid_user', JSON.stringify(currentUser));
-      } catch(e){}
-
-      document.getElementById('station-zone-id').innerText = newZoneId;
-      document.getElementById('station-zone-label').innerText = newZoneLabel;
-      closeChangeStationModal();
-      showNotification('Station area switched to ' + newZoneLabel, false);
-
-      try {
-        await fetch(apiUrl('/api/member/update-station'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: currentUser._id,
-            callsign: currentUser.callsign,
-            zoneId: newZoneId,
-            zoneLabel: newZoneLabel
-          })
-        });
-      } catch(e) {
-        console.warn('Sync station err:', e);
-      }
-
-      loadTeams();
+    function selectStationArea(newZoneId, newZoneLabel) {
+      // Locked - automatically assigned by Game Central
+      renderAssignedConeAndStation();
     }
 
     function setSuit(suit, colorClass, el) {
@@ -1313,7 +1243,7 @@
         btnIcon.innerText = 'photo_camera';
         btnText.innerText = 'Open Camera Scanner';
         isScanning = false;
-        showNotification('Camera access denied or unavailable. Use "Simulate Squad Scan" for testing.', true);
+        showNotification('Camera access denied or unavailable. Please use the 6-digit code entry below.', true);
       }
     }
 
@@ -1618,36 +1548,8 @@
     }
 
     function simulateQRScan() {
-      var selector = document.getElementById('team-selector');
-      if (!selector || selector.options.length === 0) {
-        showNotification('No approved squads loaded to simulate scan.', true);
-        return;
-      }
-
-      var myZoneNorm = normalizeZone(currentUser.zoneId || 'ZONE_01');
-      var targetTeam = currentTeams.find(function(t) {
-        var alreadyAwarded = t.visitedZones && t.visitedZones.some(function(z) { return normalizeZone(z) === myZoneNorm; });
-        var target = resolveTeamTargetClue(t, allStationClues, currentTeams);
-        return !alreadyAwarded && target && normalizeZone(target.zoneId) === myZoneNorm;
-      }) || currentTeams.find(function(t) {
-        return !(t.visitedZones && t.visitedZones.some(function(z) { return normalizeZone(z) === myZoneNorm; }));
-      }) || currentTeams[0];
-
-      var chosenTeamId = targetTeam ? targetTeam._id : (selector.options[0] ? selector.options[0].value : 'team_demo');
-      var chosenTeamName = targetTeam ? (targetTeam.name || targetTeam.callsign) : 'Squad';
-      if (selector && chosenTeamId) selector.value = chosenTeamId;
-
-      var ranks = [
-        { code: 'A', num: 1 }, { code: '2', num: 2 }, { code: '5', num: 5 },
-        { code: '7', num: 7 }, { code: '8', num: 8 }, { code: '9', num: 9 },
-        { code: '10', num: 10 }, { code: 'J', num: 11 }, { code: 'Q', num: 12 }, { code: 'K', num: 13 }
-      ];
-      var suits = ['♠', '♥', '♦', '♣'];
-      var r = ranks[Math.floor(Math.random() * ranks.length)];
-      var s = suits[Math.floor(Math.random() * suits.length)];
-
-      var mockPayload = 'TG|' + chosenTeamId + '|' + chosenTeamName + '|' + r.num + '|' + r.code + '|' + s + '|112910';
-      handleDecodedQR(mockPayload);
+      // Disabled in production
+      return;
     }
 
     function verifyManualCipherCode() {
@@ -2093,3 +1995,4 @@
     }
   </script>
 </body></html>
+

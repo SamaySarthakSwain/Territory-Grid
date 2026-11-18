@@ -218,7 +218,8 @@ const MIME_TYPES = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.apk': 'application/vnd.android.package-archive'
 };
 
 function normalizeZone(z) {
@@ -294,17 +295,6 @@ function sendJson(res, statusCode, data, cacheControl = null, req = null) {
   }
 
   const jsonStr = JSON.stringify(data);
-
-  // ETag conditional validation (HTTP 304 Not Modified)
-  if (req && req.headers && req.method === 'GET') {
-    const etag = 'W/"' + jsonStr.length + '-' + (data.state ? (data.state.status + '-' + (data.state.startedAt || '')) : '') + '"';
-    headers['ETag'] = etag;
-    if (req.headers['if-none-match'] === etag) {
-      res.writeHead(304, headers);
-      return res.end();
-    }
-  }
-
   res.writeHead(statusCode, headers);
   res.end(jsonStr);
 }
@@ -332,7 +322,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ── STATIC FILE SERVING ───────────────────────────────────────
-  let safePath = pathname === '/' ? '/login.html' : pathname;
+  let safePath = pathname === '/' ? '/login.html' : (pathname === '/download' ? '/download.html' : pathname);
   // Prevent directory traversal
   const resolvedPath = path.normalize(path.join(STATIC_DIR, safePath));
 

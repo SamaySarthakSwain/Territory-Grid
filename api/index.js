@@ -20,7 +20,9 @@ try {
   // Sentry fallback if package not available in local isolated run
 }
 
-// Determine storage mode: Real MongoDB Atlas vs Fallback In-Memory/JSON
+// Determine storage mode: Supabase Cloud Store + Real MongoDB Atlas vs Fallback In-Memory/JSON
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://gfuufzlxskuratvqguof.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmdXVmemx4c2t1cmF0dnFndW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTc5NzcsImV4cCI6MjA4NjczMzk3N30.jVCPESQvxOO9ExUTzyNZGyn8kBob4rj3aOZcxC2NLs8';
 const MONGODB_URI = process.env.MONGODB_URI;
 let MongoClient = null;
 let mongoClientInstance = null;
@@ -33,12 +35,21 @@ try {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Default Data Set
+// Default 12 Campus Stations (Guarantees 12 Distinct Checkpoints for 12 Marshals)
 // ─────────────────────────────────────────────────────────────
 const INITIAL_CAMPUS_PLACES = [
-  { _id: 'clue_atrium', zoneId: 'ATRIUM', zoneLabel: 'Atrium', text: 'Proceed to Atrium and locate the Beacon Cone!' },
-  { _id: 'clue_lhc', zoneId: 'LHC', zoneLabel: 'LHC', text: 'Search the Lecture Hall Complex (LHC) perimeter for the Beacon Cone!' },
-  { _id: 'clue_galaria', zoneId: 'GALARIA', zoneLabel: 'Galaria', text: 'Investigate Galaria concourse to find the Beacon Cone!' }
+  { _id: 'clue_zone_01', zoneId: 'ZONE_01', zoneLabel: 'Zone 1 - Library Arch', text: 'Search the Library Arch perimeter for the Beacon Cone!' },
+  { _id: 'clue_zone_02', zoneId: 'ZONE_02', zoneLabel: 'Zone 2 - Solar Obelisk', text: 'Locate the Solar Obelisk plaza to find the Beacon Cone!' },
+  { _id: 'clue_zone_03', zoneId: 'ZONE_03', zoneLabel: 'Zone 3 - Clocktower Terrace', text: 'Proceed to Clocktower Terrace and verify the Beacon Cone!' },
+  { _id: 'clue_zone_04', zoneId: 'ZONE_04', zoneLabel: 'Zone 4 - Glasshouse Botanical', text: 'Investigate the Glasshouse Botanical grounds for the Beacon Cone!' },
+  { _id: 'clue_zone_05', zoneId: 'ZONE_05', zoneLabel: 'Zone 5 - Skybridge Concourse', text: 'Cross to Skybridge Concourse and identify the Beacon Cone!' },
+  { _id: 'clue_zone_06', zoneId: 'ZONE_06', zoneLabel: 'Zone 6 - Amphitheater Canopy', text: 'Search beneath Amphitheater Canopy for the Beacon Cone!' },
+  { _id: 'clue_zone_07', zoneId: 'ZONE_07', zoneLabel: 'Zone 7 - Science Basin', text: 'Explore the Science Basin quad for the active Beacon Cone!' },
+  { _id: 'clue_zone_08', zoneId: 'ZONE_08', zoneLabel: 'Zone 8 - Student Pavilion', text: 'Check the Student Pavilion perimeter for the Beacon Cone!' },
+  { _id: 'clue_zone_09', zoneId: 'ZONE_09', zoneLabel: 'Zone 9 - North Telecom Pylon', text: 'Navigate to North Telecom Pylon to locate the Beacon Cone!' },
+  { _id: 'clue_zone_10', zoneId: 'ZONE_10', zoneLabel: 'Zone 10 - Turf Perimeter', text: 'Inspect the Turf Perimeter boundaries for the Beacon Cone!' },
+  { _id: 'clue_zone_11', zoneId: 'ZONE_11', zoneLabel: 'Zone 11 - Energy Innovation Hub', text: 'Enter Energy Innovation Hub forecourt to find the Beacon Cone!' },
+  { _id: 'clue_zone_12', zoneId: 'ZONE_12', zoneLabel: 'Zone 12 - Innovation Arena', text: 'Advance to Innovation Arena entrance and secure the Beacon Cone!' }
 ];
 
 const DEFAULT_CLUES = INITIAL_CAMPUS_PLACES;
@@ -195,15 +206,7 @@ class MemoryStore {
         const raw = fs.readFileSync(this.filePath, 'utf8');
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object' && Array.isArray(parsed.users) && parsed.users.length > 0) {
-          // Clean legacy fake ZONE_ places and guarantee initial 3 places
-          if (Array.isArray(parsed.clues)) {
-            parsed.clues = parsed.clues.filter(c => !c.zoneId || !c.zoneId.startsWith('ZONE_'));
-            INITIAL_CAMPUS_PLACES.forEach(ip => {
-              if (!parsed.clues.some(c => normalizeZone(c.zoneId) === normalizeZone(ip.zoneId))) {
-                parsed.clues.push(ip);
-              }
-            });
-          } else {
+          if (!Array.isArray(parsed.clues) || parsed.clues.length < 12) {
             parsed.clues = JSON.parse(JSON.stringify(INITIAL_CAMPUS_PLACES));
           }
           this.collections = parsed;
@@ -232,16 +235,69 @@ class MemoryStore {
 
   async saveAsync() {
     this.save();
+    await this.saveToCloud();
     return true;
   }
 
-  async syncFromCloud() {
-    // 100% Local In-Memory & Atomic File Document Store
+  async syncFromCloud(force = false) {
+    // High-performance read-through cache with 1500ms TTL
+    if (!force && this.lastSynced && (Date.now() - this.lastSynced < 1500)) {
+      return this.collections;
+    }
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store?key=eq.main_store&select=*`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Cache-Control': 'no-cache'
+        }
+      });
+      if (res.ok) {
+        const rows = await res.json();
+        if (rows && rows.length > 0 && rows[0].data && typeof rows[0].data === 'object') {
+          const cloudData = rows[0].data;
+          this.collections.users = Array.isArray(cloudData.users) ? cloudData.users : this.collections.users;
+          this.collections.teams = Array.isArray(cloudData.teams) ? cloudData.teams : this.collections.teams;
+          this.collections.clues = (Array.isArray(cloudData.clues) && cloudData.clues.length >= 12) ? cloudData.clues : INITIAL_CAMPUS_PLACES;
+          this.collections.checkins = Array.isArray(cloudData.checkins) ? cloudData.checkins : this.collections.checkins;
+          if (cloudData.gameState && typeof cloudData.gameState === 'object') {
+            this.collections.gameState = Object.assign(this.collections.gameState, cloudData.gameState);
+          }
+          if (Array.isArray(cloudData.system_logs)) {
+            this.collections.system_logs = cloudData.system_logs;
+          }
+          this.lastSynced = Date.now();
+          this.isLoaded = true;
+          this.save(); // Local warm cache
+        }
+      }
+    } catch (e) {
+      // Offline fallback: keep in-memory/file collections intact
+    }
     return this.collections;
   }
 
-  async syncToCloud() {
-    return true;
+  async saveToCloud() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/territory_store`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({
+          key: 'main_store',
+          data: this.collections,
+          updated_at: new Date().toISOString()
+        })
+      });
+      return res.ok;
+    } catch (e) {
+      console.warn('[CloudStore] Supabase save error:', e.message);
+      return false;
+    }
   }
 
   logEvent(action, details) {
@@ -320,31 +376,43 @@ function sendJson(res, statusCode, data, cacheControl = null, req = null) {
     'Content-Type': 'application/json; charset=UTF-8',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, If-None-Match',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+    'Pragma': 'no-cache',
+    'Expires': '0'
   };
 
-  if (cacheControl) {
-    headers['Cache-Control'] = cacheControl;
-  } else {
-    headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-    headers['Pragma'] = 'no-cache';
-    headers['Expires'] = '0';
-  }
-
   const jsonStr = JSON.stringify(data);
-
-  // ETag conditional validation (HTTP 304 Not Modified)
-  if (req && req.headers && req.method === 'GET') {
-    const etag = 'W/"' + jsonStr.length + '-' + (data.state ? (data.state.status + '-' + (data.state.startedAt || '')) : '') + '"';
-    headers['ETag'] = etag;
-    if (req.headers['if-none-match'] === etag) {
-      res.writeHead(304, headers);
-      return res.end();
-    }
-  }
-
   res.writeHead(statusCode, headers);
   res.end(jsonStr);
+}
+
+// ─────────────────────────────────────────────────────────────
+// Real-Time Server-Sent Events (SSE) Broadcast Engine
+// ─────────────────────────────────────────────────────────────
+const sseClients = new Set();
+
+function broadcastEvent(eventData) {
+  const payload = 'data: ' + JSON.stringify(eventData) + '\n\n';
+  for (const client of sseClients) {
+    try {
+      client.write(payload);
+    } catch (e) {
+      sseClients.delete(client);
+    }
+  }
+}
+
+if (!global._ssePingInterval) {
+  global._ssePingInterval = setInterval(() => {
+    for (const client of sseClients) {
+      try {
+        client.write(': ping\n\n');
+      } catch (e) {
+        sseClients.delete(client);
+      }
+    }
+  }, 20000);
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -393,9 +461,9 @@ module.exports = async (req, res) => {
         uptime: process.uptime(),
         timestamp: new Date().toISOString(),
         cloudSync: {
-          active: false,
-          mode: 'OFFLINE_LOCAL_DOCUMENT_ENGINE',
-          lastSynced: new Date().toISOString()
+          active: true,
+          mode: 'SUPABASE_CLOUD_PERSISTENCE',
+          lastSynced: new Date(memoryStore.lastSynced || Date.now()).toISOString()
         },
         monitoring: {
           sentry: {
@@ -406,7 +474,7 @@ module.exports = async (req, res) => {
           }
         },
         database: {
-          provider: atlasDb ? 'MongoDB Local/Atlas' : 'Pure Local Document Engine (Zero Cloud / Offline)',
+          provider: 'Supabase PostgreSQL Cloud + Memory Store',
           counts: {
             teamsTotal: teams.length,
             teamsApproved: teams.filter(t => t.isApproved).length,
@@ -425,9 +493,24 @@ module.exports = async (req, res) => {
     }
 
     // ─────────────────────────────────────────────────────────
-    // 1. POST /api/auth/register
+    // 0b. GET /api/events (Real-Time 0ms Server-Sent Events Stream)
     // ─────────────────────────────────────────────────────────
-    if (pathname === '/api/auth/register' && req.method === 'POST') {
+    if (pathname === '/api/events' && req.method === 'GET') {
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': '*'
+      });
+      res.write('data: ' + JSON.stringify({ type: 'CONNECTED', timestamp: Date.now() }) + '\n\n');
+      sseClients.add(res);
+      req.on('close', () => {
+        sseClients.delete(res);
+      });
+      return;
+    }
+    // ─────────────────────────────────────────────────────────
+    if ((pathname === '/api/auth/register' || pathname === '/api/register') && req.method === 'POST') {
       const body = await parseBody(req);
       const { role, name, callsign, password, zoneId, zoneLabel } = body;
 
@@ -601,7 +684,7 @@ module.exports = async (req, res) => {
     // ─────────────────────────────────────────────────────────
     // 2. POST /api/auth/login
     // ─────────────────────────────────────────────────────────
-    if (pathname === '/api/auth/login' && req.method === 'POST') {
+    if ((pathname === '/api/auth/login' || pathname === '/api/login') && req.method === 'POST') {
       const body = await parseBody(req);
       const { callsign, password, requestedRole } = body;
 
@@ -927,6 +1010,7 @@ module.exports = async (req, res) => {
 
         if (approvedAny) {
           memoryStore.logEvent('APPROVE_CLEARANCE', 'Clearance authorized: ' + approvedName + ' (' + cleanId + ')');
+          broadcastEvent({ type: 'APPROVAL_UPDATE', entityId: cleanId, name: approvedName, timestamp: Date.now() });
           return sendJson(res, 200, { success: true, message: approvedName + ' approved successfully.', entityId: cleanId });
         }
 
@@ -1004,6 +1088,7 @@ module.exports = async (req, res) => {
           ? 'Field Marshal authorized: "' + approvedName + '" (' + cleanId + ')'
           : 'Squad authorized: "' + approvedName + '" (' + cleanId + ')';
         memoryStore.logEvent(logAction, logMsg);
+        broadcastEvent({ type: 'APPROVAL_UPDATE', entityId: cleanId, name: approvedName, timestamp: Date.now() });
         return sendJson(res, 200, { success: true, message: approvedName + ' authorized successfully.', entityId: cleanId });
       }
 
@@ -1036,6 +1121,7 @@ module.exports = async (req, res) => {
 
       memoryStore.save();
       memoryStore.logEvent('APPROVE_ALL', 'Game Master batch-authorized all pending squads and field marshals (' + approvedCount + ' total).');
+      broadcastEvent({ type: 'APPROVAL_UPDATE', batch: true, count: approvedCount, timestamp: Date.now() });
       return sendJson(res, 200, { success: true, count: approvedCount, message: 'Successfully authorized all ' + approvedCount + ' pending clearances.' });
     }
 
@@ -1113,6 +1199,7 @@ module.exports = async (req, res) => {
       memoryStore.collections.checkins = (memoryStore.collections.checkins || []).filter(c => c.teamId !== teamId && c.team !== teamId);
       memoryStore.save();
       memoryStore.logEvent('RESET_POINTS', `Game Master reset points (was ${prevScore} PTS) and progress for squad: "${team.name}" (${team._id})`);
+      broadcastEvent({ type: 'CHECKIN_AWARD', teamId: team._id, teamScore: 0, currentClueIndex: 0, reset: true, timestamp: Date.now() });
       return sendJson(res, 200, { success: true, message: `Points and progress reset to 0 for squad "${team.name}".` });
     }
 
@@ -1138,6 +1225,7 @@ module.exports = async (req, res) => {
       memoryStore.collections.checkins = [];
       memoryStore.save();
       memoryStore.logEvent('RESET_ALL_POINTS', `Game Master reset all points, cards, and checkpoint progress to 0 for ${teamCount} squads.`);
+      broadcastEvent({ type: 'CHECKIN_AWARD', resetAll: true, timestamp: Date.now() });
       return sendJson(res, 200, { success: true, message: `All squad scores and progress reset to 0 (${teamCount} squads affected).` }, 'no-store, no-cache, max-age=0');
     }
 
@@ -1207,7 +1295,7 @@ module.exports = async (req, res) => {
     // 6d. GET /api/admin/logs
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/admin/logs' && req.method === 'GET') {
-      const limit = parseInt(urlObj.searchParams.get('limit'), 10) || 200;
+      const limit = parseInt(query.limit, 10) || 200;
       if (atlasDb) {
         const logs = await atlasDb.collection('system_logs').find().sort({ timestamp: -1 }).limit(limit).toArray();
         return sendJson(res, 200, { success: true, logs: logs, total: logs.length });
@@ -1442,6 +1530,16 @@ module.exports = async (req, res) => {
         } else if (gs.status === 'ENDED') {
           remainingSeconds = 0;
         }
+
+        broadcastEvent({
+          type: 'GAME_STATE_UPDATE',
+          status: gs.status,
+          gameState: gs,
+          countdownEndsAt: gs.countdownEndsAt,
+          remainingSeconds: remainingSeconds,
+          countdownSeconds: countdownSeconds,
+          timestamp: Date.now()
+        });
 
         return sendJson(res, 200, {
           success: true,
@@ -2318,8 +2416,13 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
           (u.callsign && u.callsign.toLowerCase() === memberId.toLowerCase()) ||
           u._id === memberId
         );
-        if (marshalUser && marshalUser.zoneId) {
-          zoneId = marshalUser.zoneId;
+        if (marshalUser) {
+          if (marshalUser.zoneId) {
+            zoneId = marshalUser.zoneId;
+          }
+          if (marshalUser.coneColor) {
+            cone = marshalUser.coneColor.toUpperCase();
+          }
         }
       }
 
@@ -2415,6 +2518,22 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
 
         const updatedTeam = await teamsCol.findOne({ _id: team._id });
         const nextClue = (activeClues.length > 0) ? resolveTeamTargetClue(updatedTeam, activeClues) : null;
+        
+        broadcastEvent({
+          type: 'CHECKIN_AWARD',
+          teamId: updatedTeam._id,
+          teamName: updatedTeam.name || updatedTeam.callsign,
+          pointsAwarded: totalPoints,
+          teamScore: updatedTeam.score,
+          currentClueIndex: updatedTeam.currentClueIndex,
+          nextClueIndex: updatedTeam.currentClueIndex,
+          nextZoneId: nextClue ? nextClue.zoneId : null,
+          nextZoneLabel: nextClue ? (nextClue.zoneLabel || nextClue.zoneId) : 'ALL CHECKPOINTS CLEARED',
+          nextClueText: nextClue ? nextClue.text : 'All campus beacons verified! Report to Game Master Central.',
+          allCompleted: !nextClue,
+          timestamp: Date.now()
+        });
+
         return sendJson(res, 200, {
           success: true,
           pointsAwarded: totalPoints,
@@ -2446,6 +2565,22 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
       memoryStore.logEvent('CHECKIN', 'Team "' + team.name + '" awarded +' + totalPoints + ' PTS at ' + recordedZone + ' (Total: ' + team.score + ' PTS)');
 
       const nextClue = (activeClues.length > 0) ? resolveTeamTargetClue(team, activeClues) : null;
+
+      broadcastEvent({
+        type: 'CHECKIN_AWARD',
+        teamId: team._id,
+        teamName: team.name || team.callsign,
+        pointsAwarded: totalPoints,
+        teamScore: team.score,
+        currentClueIndex: team.currentClueIndex,
+        nextClueIndex: team.currentClueIndex,
+        nextZoneId: nextClue ? nextClue.zoneId : null,
+        nextZoneLabel: nextClue ? (nextClue.zoneLabel || nextClue.zoneId) : 'ALL CHECKPOINTS CLEARED',
+        nextClueText: nextClue ? nextClue.text : 'All campus beacons verified! Report to Game Master Central.',
+        allCompleted: !nextClue,
+        timestamp: Date.now()
+      });
+
       return sendJson(res, 200, {
         success: true,
         pointsAwarded: totalPoints,

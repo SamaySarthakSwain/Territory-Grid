@@ -12,18 +12,18 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Resilient API Base Resolver (100% Offline / Local LAN Autonomous)
+    var TG_PERMANENT_CLOUD_URL = 'https://territory-grid-delta.vercel.app';
+
+    // 24/7 Permanent Cloud Architecture (Zero Laptop Dependency)
     function getGridServerUrl() {
-      try {
-        var saved = localStorage.getItem('tg_grid_server_url') || sessionStorage.getItem('tg_grid_server_url');
-        if (saved && saved.startsWith('http') && !saved.includes('127.0.0.1') && !saved.includes('localhost')) {
-          return saved.replace(/\/+$/, '');
-        }
-      } catch(e) {}
-      if (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin.startsWith('http')) {
+      if (typeof window !== 'undefined' && window.location && window.location.origin && 
+          window.location.origin.startsWith('http') && 
+          !window.location.origin.includes('127.0.0.1') && 
+          !window.location.origin.includes('localhost') && 
+          !window.location.origin.startsWith('file:')) {
         return window.location.origin;
       }
-      return 'https://individual-earrings-hawk-diagram.trycloudflare.com';
+      return TG_PERMANENT_CLOUD_URL;
     }
 
     function apiUrl(path) {
@@ -303,37 +303,20 @@
             </div>
           </div>
 
-          <!-- Extra Field 2: Assigned Checkpoint Station (Only for Marshal Registration) -->
-          <div id="field-zone-container" class="hidden space-y-3">
-            <div>
-              <label class="block text-xs font-mono text-gray-300 uppercase mb-1.5 flex items-center justify-between">
-                <span>Checkpoint Station Area</span>
-                <span class="text-[10px] text-green font-mono">Balanced Allocation</span>
-              </label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-3 text-green text-lg">location_on</span>
-                <select id="input-zone" 
-                        class="w-full bg-[#0A101D] border border-green/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-green focus:ring-1 focus:ring-green transition font-body">
-                  <option value="AUTO" selected>[🎲 Auto-Assign Distinct Area (Balanced)]</option>
-                </select>
-              </div>
+          <!-- Extra Field 2: Automatic Allocation Notice (Only for Marshal Registration) -->
+          <div id="field-zone-container" class="hidden p-3.5 rounded-xl bg-surface-container-high/60 border border-primary/40 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-white font-bold uppercase flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-primary">auto_mode</span>
+                Station Location & Cone Colour
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-primary/20 text-primary font-bold">AUTOMATIC</span>
             </div>
-            <div>
-              <label class="block text-xs font-mono text-gray-300 uppercase mb-1.5 flex items-center justify-between">
-                <span>Beacon Cone Colour</span>
-                <span class="text-[10px] text-yellow font-mono">Differently Allocated</span>
-              </label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-3 text-yellow text-lg">flag</span>
-                <select id="input-cone-color" 
-                        class="w-full bg-[#0A101D] border border-yellow/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-yellow focus:ring-1 focus:ring-yellow transition font-body">
-                  <option value="AUTO" selected>[🎲 Auto-Assign Distinct Colour (Balanced)]</option>
-                  <option value="YELLOW">🟡 Yellow Cone (+12 PTS)</option>
-                  <option value="RED">🔴 Red Cone (+10 PTS)</option>
-                  <option value="GREEN">🟢 Green Cone (+15 PTS)</option>
-                </select>
-              </div>
-            </div>
+            <p class="text-[11px] font-mono text-gray-300 leading-relaxed">
+              Your checkpoint location area and beacon cone colour will be automatically assigned by Game Central to guarantee balanced campus coverage.
+            </p>
+            <input type="hidden" id="input-zone" value="AUTO">
+            <input type="hidden" id="input-cone-color" value="AUTO">
           </div>
 
           <!-- Access Key / Password -->
@@ -364,6 +347,15 @@
             <span class="material-symbols-outlined text-lg" id="btn-submit-icon">bolt</span>
             <span id="btn-submit-text">ENTER SQUAD HUD</span>
           </button>
+
+          <!-- Mobile APK Direct Download Callout -->
+          <div class="mt-4 pt-3 border-t border-cyan/15 text-center">
+            <a href="/app.apk" download="TerritoryGrid-release.apk" 
+               class="inline-flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-xl bg-cyan/10 hover:bg-cyan/20 border border-cyan/30 text-cyan text-xs font-headline font-bold transition active:scale-95 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+              <span class="material-symbols-outlined text-base">android</span>
+              <span>Download & Install Mobile App (2.52 MB APK)</span>
+            </a>
+          </div>
         </form>
 
       </div>
@@ -428,84 +420,170 @@
           </button>
         </div>
 
+        <!-- ==================== TACTICAL HOW TO PLAY RULES ==================== -->
+        <div class="w-full max-w-md mx-auto mt-7 space-y-3 px-1 text-left">
+          
+          <!-- Rules Header -->
+          <div class="flex items-center justify-between pb-1">
+            <div class="flex items-center gap-1.5">
+              <span class="text-cyan font-mono text-2xl font-black">[</span>
+              <h2 class="text-xl sm:text-2xl font-headline font-black text-white tracking-widest uppercase drop-shadow-[0_0_12px_rgba(0,229,255,0.6)]">
+                HOW TO PLAY
+              </h2>
+              <span class="text-cyan font-mono text-2xl font-black">]</span>
+            </div>
+            <div class="px-3 py-1 rounded-full border border-cyan/50 bg-cyan/15 text-cyan text-xs font-mono font-bold tracking-wider shadow-[0_0_12px_rgba(0,229,255,0.25)]">
+              52:00 MATCH
+            </div>
+          </div>
+          
+          <!-- Cyber Hazard Diagonal Stripe Line -->
+          <div class="h-1.5 w-full bg-[repeating-linear-gradient(45deg,#00e5ff,#00e5ff_6px,transparent_6px,transparent_12px)] opacity-70 rounded-full mb-3"></div>
+
+          <!-- Step 1: SQUAD -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              1
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+              <span class="material-symbols-outlined text-[22px]">groups</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">SQUAD</h3>
+              <p class="text-xs text-gray-300 font-body">Team up: 2–4 players.</p>
+            </div>
+          </div>
+
+          <!-- Step 2: FOLLOW YOUR CLUE -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              2
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+              <span class="material-symbols-outlined text-[22px]">pin_drop</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">FOLLOW YOUR CLUE</h3>
+              <p class="text-xs text-gray-300 font-body">Go to the checkpoint in your active directive.</p>
+            </div>
+          </div>
+
+          <!-- Step 3: CHECK IN -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              3
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+              <span class="material-symbols-outlined text-[22px]">assignment_turned_in</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">CHECK IN</h3>
+              <p class="text-xs text-gray-300 font-body">Show the Marshal your live card QR or 6-digit code. It refreshes every 30 seconds.</p>
+            </div>
+          </div>
+
+          <!-- Step 4: SCORE POINTS -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              4
+            </div>
+            <!-- Traffic Cones Vector Graphic -->
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0">
+              <svg class="w-7 h-7" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Green Cone (Left) -->
+                <path d="M5 24 L10 6 L15 24 Z" fill="#00ff88" fill-opacity="0.3" stroke="#00ff88" stroke-width="1.8" stroke-linejoin="round"/>
+                <line x1="2" y1="24" x2="18" y2="24" stroke="#00ff88" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M7.5 15 L12.5 15" stroke="#00ff88" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Yellow Cone (Center) -->
+                <path d="M13 24 L18 4 L23 24 Z" fill="#FFD600" fill-opacity="0.35" stroke="#FFD600" stroke-width="1.8" stroke-linejoin="round"/>
+                <line x1="10" y1="24" x2="26" y2="24" stroke="#FFD600" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M15.5 14 L20.5 14" stroke="#FFD600" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Red Cone (Right) -->
+                <path d="M21 24 L26 6 L31 24 Z" fill="#ff3366" fill-opacity="0.3" stroke="#ff3366" stroke-width="1.8" stroke-linejoin="round"/>
+                <line x1="18" y1="24" x2="34" y2="24" stroke="#ff3366" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M23.5 15 L28.5 15" stroke="#ff3366" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">SCORE POINTS</h3>
+              <div class="flex items-center gap-1.5 my-1 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-full bg-[#00ff88]/20 border border-[#00ff88]/60 text-[#00ff88] text-[11px] font-mono font-bold shadow-[0_0_8px_rgba(0,255,136,0.3)]">Green 15</span>
+                <span class="text-gray-500 font-bold">•</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-[#FFD600]/20 border border-[#FFD600]/60 text-[#FFD600] text-[11px] font-mono font-bold shadow-[0_0_8px_rgba(255,214,0,0.3)]">Yellow 12</span>
+                <span class="text-gray-500 font-bold">•</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-[#ff3366]/20 border border-[#ff3366]/60 text-[#ff3366] text-[11px] font-mono font-bold shadow-[0_0_8px_rgba(255,51,102,0.3)]">Red 10</span>
+              </div>
+              <p class="text-[11px] text-gray-300 font-mono">Card rank: A=1, 2–10=face value, J=11, Q=12, K=13.</p>
+            </div>
+          </div>
+
+          <!-- Step 5: COLLECT & MOVE -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              5
+            </div>
+            <!-- Two Playing Cards Vector Graphic -->
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+              <svg class="w-7 h-7" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="6" width="16" height="22" rx="2.5" fill="#00e5ff" fill-opacity="0.15" stroke="#00e5ff" stroke-width="1.8" transform="rotate(-10 11 17)"/>
+                <rect x="13" y="5" width="16" height="22" rx="2.5" fill="#061220" stroke="#00e5ff" stroke-width="1.8"/>
+                <path d="M21 10 C19.8 11.2 18 12.8 18 14 C18 15.2 19 16 20.2 16 C21 16 21 15.5 21 15 C21 15.5 21 16 21.8 16 C23 16 24 15.2 24 14 C24 12.8 22.2 11.2 21 10 Z" fill="#00e5ff"/>
+                <path d="M20.5 15.5 L19.5 18.5 L22.5 18.5 L21.5 15.5 Z" fill="#00e5ff"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">COLLECT & MOVE</h3>
+              <p class="text-xs text-gray-300 font-body">Get your card, then follow the next clue. Each station scores once per squad.</p>
+            </div>
+          </div>
+
+          <!-- Step 6: PLAY FAIR -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              6
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+              <span class="material-symbols-outlined text-[22px]">verified_user</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">PLAY FAIR</h3>
+              <p class="text-xs text-gray-300 font-body">Check in only at your assigned station. Follow Marshal instructions and stay safe.</p>
+            </div>
+          </div>
+
+          <!-- WIN Hero Box -->
+          <div class="border-2 border-[#FFD600] bg-gradient-to-r from-[#FFD600]/15 via-[#FFD600]/5 to-[#070B14] rounded-2xl p-4 shadow-[0_0_30px_rgba(255,214,0,0.25)] flex items-center gap-3.5 text-left relative overflow-hidden mt-4">
+            <div class="flex items-center gap-2 shrink-0">
+              <svg class="w-9 h-9 text-[#FFD600] shrink-0 drop-shadow-[0_0_10px_rgba(255,214,0,0.8)]" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 24 C4 18 7 12 11 8 C9 12 8 18 9 24" stroke="#FFD600" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="8" cy="11" r="1.2" fill="#FFD600"/>
+                <circle cx="6.5" cy="16" r="1.2" fill="#FFD600"/>
+                <circle cx="7" cy="21" r="1.2" fill="#FFD600"/>
+                <path d="M31 24 C32 18 29 12 25 8 C27 12 28 18 27 24" stroke="#FFD600" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="28" cy="11" r="1.2" fill="#FFD600"/>
+                <circle cx="29.5" cy="16" r="1.2" fill="#FFD600"/>
+                <circle cx="29" cy="21" r="1.2" fill="#FFD600"/>
+                <path d="M12 9 H24 V17 C24 20.3 21.3 23 18 23 C14.7 23 12 20.3 12 17 V9 Z" fill="#FFD600" fill-opacity="0.3" stroke="#FFD600" stroke-width="2"/>
+                <path d="M12 11 H9 C7.9 11 7 11.9 7 13 V14 C7 15.7 8.3 17 10 17 H12" stroke="#FFD600" stroke-width="1.6"/>
+                <path d="M24 11 H27 C28.1 11 29 11.9 29 13 V14 C29 15.7 27.7 17 26 17 H24" stroke="#FFD600" stroke-width="1.6"/>
+                <path d="M18 23 V27" stroke="#FFD600" stroke-width="2"/>
+                <path d="M13 27 H23" stroke="#FFD600" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="text-2xl font-headline font-black text-[#FFD600] tracking-wider uppercase drop-shadow-[0_0_10px_rgba(255,214,0,0.6)]">WIN</span>
+            </div>
+            <div class="w-[1.5px] h-12 bg-[#FFD600]/40 shrink-0"></div>
+            <div class="text-xs sm:text-sm text-gray-100 font-body space-y-1">
+              <div class="font-bold text-white">Highest score when the 52-minute match ends.</div>
+              <div class="text-[11px] font-mono text-gray-400">Tie: most cards, then earliest final check-in.</div>
+            </div>
+          </div>
+
+        </div>
+
       </div>
     </div>
 
   </main>
-
-  <!-- Game Server LAN Connection Badge -->
-  <div class="w-full max-w-md mx-auto mb-3 px-4">
-    <div class="flex items-center justify-between p-2.5 rounded-xl bg-surface-card border border-cyan/20 text-xs font-mono shadow-md">
-      <div class="flex items-center gap-2 truncate">
-        <span class="w-2 h-2 rounded-full bg-green animate-pulse shrink-0"></span>
-        <span class="text-gray-400">Server:</span>
-        <span id="label-active-server" class="text-cyan font-bold truncate">http://127.0.0.1:8088</span>
-      </div>
-      <button type="button" onclick="openServerConfigModal()" class="px-2.5 py-1 rounded-lg bg-cyan/15 hover:bg-cyan/25 text-cyan border border-cyan/30 text-[11px] font-bold cursor-pointer transition shrink-0 ml-2">
-        Change
-      </button>
-    </div>
-  </div>
-
-  <!-- Server Configuration Modal -->
-  <div id="server-config-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="w-full max-w-sm rounded-2xl bg-surface-card border-2 border-cyan/40 p-5 shadow-2xl flex flex-col gap-4">
-      <div class="flex items-center justify-between">
-        <h3 class="font-headline font-bold text-white text-base flex items-center gap-2">
-          <span class="material-symbols-outlined text-cyan text-xl">lan</span>
-          Game Server Endpoint
-        </h3>
-        <button type="button" onclick="closeServerConfigModal()" class="text-gray-400 hover:text-white">✕</button>
-      </div>
-      <p class="text-xs text-gray-300">
-        Enter the Game Master Host IP (e.g. <span class="text-cyan font-mono">http://192.168.1.15:8088</span>) running on campus Wi-Fi / hotspot.
-      </p>
-      <div>
-        <label class="block text-[11px] font-mono text-gray-400 uppercase tracking-wider mb-1">Server Host URL</label>
-        <input type="text" id="input-server-endpoint" placeholder="https://individual-earrings-hawk-diagram.trycloudflare.com"
-               class="w-full px-3 py-2 rounded-xl bg-surface-low border border-cyan/30 text-white font-mono text-xs focus:border-cyan focus:outline-none">
-      </div>
-      <div class="flex gap-2">
-        <button type="button" onclick="setPresetServer('https://individual-earrings-hawk-diagram.trycloudflare.com')" class="flex-1 py-1.5 px-2 rounded-lg bg-cyan/15 hover:bg-cyan/25 border border-cyan/40 text-cyan text-[11px] font-mono text-center font-bold transition cursor-pointer">
-          ☁️ Live Cloud
-        </button>
-        <button type="button" onclick="setPresetServer('http://10.234.240.209:8088')" class="flex-1 py-1.5 px-2 rounded-lg bg-surface-high hover:bg-surface-high/80 border border-white/20 text-gray-200 text-[11px] font-mono text-center font-bold transition cursor-pointer">
-          🏠 Laptop Wi-Fi
-        </button>
-      </div>
-      <div id="server-test-status" class="hidden text-xs font-mono p-2 rounded-lg"></div>
-      <button type="button" onclick="startServerQrScanner()" class="w-full py-2.5 rounded-xl bg-cyan/15 hover:bg-cyan/25 text-cyan text-xs font-headline font-bold border border-cyan/40 flex items-center justify-center gap-2 transition cursor-pointer">
-        <span class="material-symbols-outlined text-base">qr_code_scanner</span>
-        Scan Server QR from Admin Screen
-      </button>
-      <div class="flex gap-2">
-        <button type="button" onclick="testServerConnection()" class="flex-1 py-2 rounded-xl bg-surface-high hover:bg-surface-high/80 text-cyan text-xs font-headline font-bold border border-cyan/30 transition">
-          Test Ping
-        </button>
-        <button type="button" onclick="saveServerConfig()" class="flex-1 py-2 rounded-xl bg-cyan text-black text-xs font-headline font-bold shadow-[0_0_12px_rgba(0,240,255,0.4)] transition">
-          Save & Connect
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Server QR Scanner Modal -->
-  <div id="server-qr-scanner-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
-    <div class="w-full max-w-sm rounded-2xl bg-surface-card border-2 border-cyan/40 p-5 shadow-2xl flex flex-col gap-3">
-      <div class="flex items-center justify-between">
-        <h3 class="font-headline font-bold text-white text-sm flex items-center gap-2">
-          <span class="material-symbols-outlined text-cyan text-xl">qr_code_scanner</span>
-          Scan Admin Server QR
-        </h3>
-        <button type="button" onclick="stopServerQrScanner()" class="text-gray-400 hover:text-white">✕</button>
-      </div>
-      <div id="server-camera-reader" class="w-full h-60 rounded-xl overflow-hidden bg-black border border-cyan/30"></div>
-      <p class="text-[11px] font-mono text-gray-300 text-center">Point camera at the Server QR shown on the Admin screen.</p>
-      <button type="button" onclick="stopServerQrScanner()" class="w-full py-2 rounded-xl bg-surface-high text-gray-300 text-xs font-headline font-bold cursor-pointer">
-        Cancel
-      </button>
-    </div>
-  </div>
 
   <!-- Footer Notice -->
   <footer class="w-full max-w-4xl mx-auto py-3 text-center text-[11px] font-mono text-gray-400 border-t border-cyan/10">
@@ -524,131 +602,27 @@
     var pollInterval = null;
     var currentUserId = null;
 
-    // Server Config Manager
-    function updateServerBadge() {
-      var el = document.getElementById('label-active-server');
-      if (el) el.innerText = getGridServerUrl();
-    }
-
-    function openServerConfigModal() {
-      var modal = document.getElementById('server-config-modal');
-      var input = document.getElementById('input-server-endpoint');
-      var status = document.getElementById('server-test-status');
-      if (input) input.value = getGridServerUrl();
-      if (status) status.classList.add('hidden');
-      if (modal) modal.classList.remove('hidden');
-    }
-
-    function closeServerConfigModal() {
-      var modal = document.getElementById('server-config-modal');
-      if (modal) modal.classList.add('hidden');
-    }
-
-    async function testServerConnection() {
-      var input = document.getElementById('input-server-endpoint');
-      var status = document.getElementById('server-test-status');
-      if (!input || !status) return;
-      var testUrl = (input.value || '').trim().replace(/\/+$/, '');
-      if (!testUrl.startsWith('http')) testUrl = 'http://' + testUrl;
-      input.value = testUrl;
-
-      status.className = 'text-xs font-mono p-2 rounded-lg bg-yellow/15 text-yellow border border-yellow/30';
-      status.innerText = 'Testing connection to ' + testUrl + '/api/health...';
-      status.classList.remove('hidden');
-
-      try {
-        var t0 = Date.now();
-        var res = await fetch(testUrl + '/api/health', { cache: 'no-store' });
-        var d = await res.json();
-        var ms = Date.now() - t0;
-        if (d.success || res.ok) {
-          status.className = 'text-xs font-mono p-2 rounded-lg bg-green/15 text-green border border-green/30';
-          status.innerText = '✅ Connection Verified! Latency: ' + ms + 'ms (Status: ' + (d.status || 'OK') + ')';
-        } else {
-          status.className = 'text-xs font-mono p-2 rounded-lg bg-error/15 text-error border border-error/30';
-          status.innerText = '⚠️ Server responded with error: ' + (d.error || res.statusText);
-        }
-      } catch (err) {
-        status.className = 'text-xs font-mono p-2 rounded-lg bg-error/15 text-error border border-error/30';
-        status.innerText = '❌ Failed to reach ' + testUrl + '. Verify Wi-Fi network and host IP.';
-      }
-    }
-
-    function setPresetServer(url) {
-      var input = document.getElementById('input-server-endpoint');
-      if (input) input.value = url;
-      testServerConnection();
-    }
-
-    function saveServerConfig() {
-      var input = document.getElementById('input-server-endpoint');
-      if (!input) return;
-      var val = (input.value || '').trim().replace(/\/+$/, '');
-      if (!val.startsWith('http')) val = 'http://' + val;
-      localStorage.setItem('tg_grid_server_url', val);
-      sessionStorage.setItem('tg_grid_server_url', val);
-      updateServerBadge();
-      closeServerConfigModal();
-      loadDynamicStations();
-    }
-
-    var serverQrScanner = null;
-
-    function startServerQrScanner() {
-      var modal = document.getElementById('server-qr-scanner-modal');
-      if (modal) modal.classList.remove('hidden');
-
-      if (typeof Html5Qrcode === 'undefined') {
-        alert('QR Scanner library is initializing, please try again in a moment.');
-        return;
-      }
-
-      try {
-        serverQrScanner = new Html5Qrcode("server-camera-reader");
-        serverQrScanner.start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: { width: 220, height: 220 } },
-          function onScanSuccess(decodedText) {
-            stopServerQrScanner();
-            var cleanUrl = (decodedText || '').trim();
-            if (cleanUrl.startsWith('TG_SERVER|')) {
-              cleanUrl = cleanUrl.split('|')[1] || cleanUrl;
-            }
-            if (cleanUrl.startsWith('http')) {
-              var input = document.getElementById('input-server-endpoint');
-              if (input) input.value = cleanUrl;
-              saveServerConfig();
-              if (window.tacticalFeedback?.award) window.tacticalFeedback.award();
-            } else {
-              alert('Scanned QR code does not contain a valid server URL: ' + cleanUrl);
-            }
-          },
-          function onScanFailure(error) {
-            // sweep frame
-          }
-        ).catch(function(err) {
-          console.error('Camera start error:', err);
-          alert('Could not start camera: ' + err);
-          stopServerQrScanner();
-        });
-      } catch (err) {
-        console.error('QR Scanner init error:', err);
-        stopServerQrScanner();
-      }
-    }
-
-    function stopServerQrScanner() {
-      if (serverQrScanner) {
-        serverQrScanner.stop().catch(function(){}).finally(function() {
-          serverQrScanner = null;
-        });
-      }
-      var modal = document.getElementById('server-qr-scanner-modal');
-      if (modal) modal.classList.add('hidden');
-    }
+    // Seamless 24/7 Cloud Connector (Zero Config Needed)
+    function updateServerBadge() {}
+    function openServerConfigModal() {}
+    function closeServerConfigModal() {}
+    function testServerConnection() {}
+    function setPresetServer() {}
+    function saveServerConfig() {}
+    function startServerQrScanner() {}
+    function stopServerQrScanner() {}
 
     // Initialize page
     window.addEventListener('DOMContentLoaded', function() {
+      // Auto-validate and purge dead server URLs from localStorage
+      try {
+        var saved = localStorage.getItem('tg_grid_server_url') || sessionStorage.getItem('tg_grid_server_url');
+        if (saved && (saved.includes('127.0.0.1') || saved.includes('localhost') || (saved.includes('trycloudflare.com') && !saved.includes('myself-sporting-chamber-processing')))) {
+          console.warn('[AutoHeal] Purging obsolete server URL from storage:', saved);
+          localStorage.removeItem('tg_grid_server_url');
+          sessionStorage.removeItem('tg_grid_server_url');
+        }
+      } catch (e) {}
       updateServerBadge();
       // Clear session if explicit logout requested via query parameter
       try {
@@ -703,7 +677,7 @@
         var res = await fetch(apiUrl('/api/clues?all=true&_t=' + Date.now()), { cache: 'no-store' });
         var data = await res.json();
         var sel = document.getElementById('input-zone');
-        if (!sel) return;
+        if (!sel || sel.tagName !== 'SELECT') return;
 
         var options = '<option value="AUTO" selected>[🎲 Auto-Assign Distinct Area (Balanced)]</option>';
         if (data.success && Array.isArray(data.clues) && data.clues.length > 0) {
@@ -895,18 +869,22 @@
       }
     }
 
-    function showAlert(msg, isError) {
+    function showAlert(msg, isError, allowHtml) {
       var banner = document.getElementById('alert-banner');
       var txt = document.getElementById('alert-message');
       var icon = document.getElementById('alert-icon');
       if (!banner) return;
       banner.classList.remove('hidden');
-      txt.innerText = msg;
+      if (allowHtml) {
+        txt.innerHTML = msg;
+      } else {
+        txt.innerText = msg;
+      }
       if (isError) {
-        banner.className = 'mb-4 p-3 rounded-xl border border-error/50 bg-error/10 text-error text-xs font-mono flex items-center gap-2';
+        banner.className = 'mb-4 p-3 rounded-xl border border-error/50 bg-error/10 text-error text-xs font-mono flex items-start gap-2';
         icon.innerText = 'cancel';
       } else {
-        banner.className = 'mb-4 p-3 rounded-xl border border-cyan/50 bg-cyan/10 text-cyan text-xs font-mono flex items-center gap-2';
+        banner.className = 'mb-4 p-3 rounded-xl border border-cyan/50 bg-cyan/10 text-cyan text-xs font-mono flex items-start gap-2';
         icon.innerText = 'check_circle';
       }
     }
@@ -914,6 +892,16 @@
     function hideAlert() {
       var banner = document.getElementById('alert-banner');
       if (banner) banner.classList.add('hidden');
+    }
+
+    function autoFixServerAndRetry() {
+      localStorage.removeItem('tg_grid_server_url');
+      sessionStorage.removeItem('tg_grid_server_url');
+      hideAlert();
+      var form = document.getElementById('auth-form');
+      if (form) {
+        form.dispatchEvent(new Event('submit'));
+      }
     }
 
     // Submit handler
@@ -926,8 +914,8 @@
       var name = document.getElementById('input-name').value.trim();
       var zoneElem = document.getElementById('input-zone');
       var coneElem = document.getElementById('input-cone-color');
-      var zoneId = (zoneElem && zoneElem.value) ? zoneElem.value : null;
-      var zoneLabel = (zoneElem && zoneElem.selectedIndex >= 0 && zoneElem.options[zoneElem.selectedIndex]) ? zoneElem.options[zoneElem.selectedIndex].text : null;
+      var zoneId = (zoneElem && zoneElem.value) ? zoneElem.value : 'AUTO';
+      var zoneLabel = null;
       var coneColor = (coneElem && coneElem.value) ? coneElem.value : 'AUTO';
 
       if (!callsign || !password) {
@@ -956,19 +944,44 @@
       btn.disabled = true;
       btn.classList.add('opacity-70');
 
+      var currentBase = getGridServerUrl();
+      var data = null;
+
       try {
         var controller = new AbortController();
         var timeoutId = setTimeout(function() { controller.abort(); }, 12000);
 
-        var res = await fetch(apiUrl(endpoint), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
+        var res = null;
+        try {
+          res = await fetch(apiUrl(endpoint), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+        } catch (initialErr) {
+          clearTimeout(timeoutId);
+          // AUTO-HEAL: If phone had stale cached URL, auto-switch to permanent cloud server and retry
+          if (currentBase !== TG_PERMANENT_CLOUD_URL) {
+            console.warn('[AutoHeal] Retrying on permanent cloud:', TG_PERMANENT_CLOUD_URL);
+            localStorage.setItem('tg_grid_server_url', TG_PERMANENT_CLOUD_URL);
+            sessionStorage.setItem('tg_grid_server_url', TG_PERMANENT_CLOUD_URL);
+            var retryController = new AbortController();
+            var retryTimeout = setTimeout(function() { retryController.abort(); }, 12000);
+            res = await fetch(TG_PERMANENT_CLOUD_URL + (endpoint.startsWith('/') ? '' : '/') + endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+              signal: retryController.signal
+            });
+            clearTimeout(retryTimeout);
+          } else {
+            throw initialErr;
+          }
+        }
 
-        var data = await res.json();
+        data = await res.json();
         btn.disabled = false;
         btn.classList.remove('opacity-70');
 
@@ -999,7 +1012,7 @@
       } catch (err) {
         btn.disabled = false;
         btn.classList.remove('opacity-70');
-        showAlert('Network/Server connection error: ' + err.message, true);
+        showAlert('Connecting to game server... Please ensure mobile data is active and try again.', true);
       }
     }
 
@@ -1146,3 +1159,4 @@
   </script>
 </body>
 </html>
+

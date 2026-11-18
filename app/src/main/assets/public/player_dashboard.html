@@ -285,18 +285,18 @@
     }
   </script>
   <script>
-    // Resilient API Base Resolver (100% Offline / Local LAN Autonomous)
+    var TG_PERMANENT_CLOUD_URL = 'https://territory-grid-delta.vercel.app';
+
+    // 24/7 Permanent Cloud Architecture (Zero Laptop Dependency)
     function getGridServerUrl() {
-      try {
-        var saved = localStorage.getItem('tg_grid_server_url') || sessionStorage.getItem('tg_grid_server_url');
-        if (saved && saved.startsWith('http') && !saved.includes('127.0.0.1') && !saved.includes('localhost')) {
-          return saved.replace(/\/+$/, '');
-        }
-      } catch(e) {}
-      if (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin.startsWith('http')) {
+      if (typeof window !== 'undefined' && window.location && window.location.origin && 
+          window.location.origin.startsWith('http') && 
+          !window.location.origin.includes('127.0.0.1') && 
+          !window.location.origin.includes('localhost') && 
+          !window.location.origin.startsWith('file:')) {
         return window.location.origin;
       }
-      return 'https://individual-earrings-hawk-diagram.trycloudflare.com';
+      return TG_PERMANENT_CLOUD_URL;
     }
 
     function apiUrl(path) {
@@ -340,6 +340,10 @@
           <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
           <span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider" id="header-callsign-badge">SQUAD</span>
         </div>
+        <button onclick="openRulesModal()" title="Game Rules" class="px-2.5 py-1 rounded-full bg-cyan/15 hover:bg-cyan/25 border border-cyan/40 text-cyan text-[11px] font-mono font-bold flex items-center gap-1 transition cursor-pointer shadow-[0_0_10px_rgba(0,229,255,0.2)]">
+          <span class="material-symbols-outlined text-[15px]">menu_book</span>
+          <span class="text-[11px] font-mono font-bold">RULES</span>
+        </button>
         <button onclick="signOutUser()" title="Sign Out" class="w-8 h-8 rounded-full bg-surface-container-high hover:bg-error-container/30 border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-error transition">
           <span class="material-symbols-outlined text-[18px]">logout</span>
         </button>
@@ -418,6 +422,166 @@
             <span class="text-xs font-mono text-gray-400 uppercase">Synchronized Master Clock</span>
             <span class="text-xs font-mono font-black text-cyan tracking-wider" id="waiting-hunt-clock">52:00 [READY]</span>
           </div>
+        </div>
+
+        <!-- ==================== TACTICAL HOW TO PLAY RULES ==================== -->
+        <div id="waiting-hall-rules" class="w-full max-w-md mx-auto mt-7 space-y-3 px-1 text-left">
+          
+          <!-- Rules Header -->
+          <div class="flex items-center justify-between pb-1">
+            <div class="flex items-center gap-1.5">
+              <span class="text-cyan font-mono text-2xl font-black">[</span>
+              <h2 class="text-xl sm:text-2xl font-headline font-black text-white tracking-widest uppercase drop-shadow-[0_0_12px_rgba(0,229,255,0.6)]">
+                HOW TO PLAY
+              </h2>
+              <span class="text-cyan font-mono text-2xl font-black">]</span>
+            </div>
+            <div class="px-3 py-1 rounded-full border border-cyan/50 bg-cyan/15 text-cyan text-xs font-mono font-bold tracking-wider shadow-[0_0_12px_rgba(0,229,255,0.25)]">
+              52:00 MATCH
+            </div>
+          </div>
+          
+          <!-- Cyber Hazard Diagonal Stripe Line -->
+          <div class="h-1.5 w-full bg-[repeating-linear-gradient(45deg,#00e5ff,#00e5ff_6px,transparent_6px,transparent_12px)] opacity-70 rounded-full mb-3"></div>
+
+          <!-- Step 1: SQUAD -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              1
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+              <span class="material-symbols-outlined text-[22px]">groups</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">SQUAD</h3>
+              <p class="text-xs text-gray-300 font-body">Team up: 2–4 players.</p>
+            </div>
+          </div>
+
+          <!-- Step 2: FOLLOW YOUR CLUE -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              2
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+              <span class="material-symbols-outlined text-[22px]">pin_drop</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">FOLLOW YOUR CLUE</h3>
+              <p class="text-xs text-gray-300 font-body">Go to the checkpoint in your active directive.</p>
+            </div>
+          </div>
+
+          <!-- Step 3: CHECK IN -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              3
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+              <span class="material-symbols-outlined text-[22px]">assignment_turned_in</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">CHECK IN</h3>
+              <p class="text-xs text-gray-300 font-body">Show the Marshal your unique station card QR or 6-digit code.</p>
+            </div>
+          </div>
+
+          <!-- Step 4: SCORE POINTS -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              4
+            </div>
+            <!-- Traffic Cones Vector Graphic -->
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0">
+              <svg class="w-7 h-7" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Green Cone (Left) -->
+                <path d="M5 24 L10 6 L15 24 Z" fill="#00ff88" fill-opacity="0.3" stroke="#00ff88" stroke-width="1.8" stroke-linejoin="round"/>
+                <line x1="2" y1="24" x2="18" y2="24" stroke="#00ff88" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M7.5 15 L12.5 15" stroke="#00ff88" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Yellow Cone (Center) -->
+                <path d="M13 24 L18 4 L23 24 Z" fill="#FFD600" fill-opacity="0.35" stroke="#FFD600" stroke-width="1.8" stroke-linejoin="round"/>
+                <line x1="10" y1="24" x2="26" y2="24" stroke="#FFD600" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M15.5 14 L20.5 14" stroke="#FFD600" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Red Cone (Right) -->
+                <path d="M21 24 L26 6 L31 24 Z" fill="#ff3366" fill-opacity="0.3" stroke="#ff3366" stroke-width="1.8" stroke-linejoin="round"/>
+                <line x1="18" y1="24" x2="34" y2="24" stroke="#ff3366" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M23.5 15 L28.5 15" stroke="#ff3366" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">SCORE POINTS</h3>
+              <div class="flex items-center gap-1.5 my-1 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-full bg-[#00ff88]/20 border border-[#00ff88]/60 text-[#00ff88] text-[11px] font-mono font-bold shadow-[0_0_8px_rgba(0,255,136,0.3)]">Green 15</span>
+                <span class="text-gray-500 font-bold">•</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-[#FFD600]/20 border border-[#FFD600]/60 text-[#FFD600] text-[11px] font-mono font-bold shadow-[0_0_8px_rgba(255,214,0,0.3)]">Yellow 12</span>
+                <span class="text-gray-500 font-bold">•</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-[#ff3366]/20 border border-[#ff3366]/60 text-[#ff3366] text-[11px] font-mono font-bold shadow-[0_0_8px_rgba(255,51,102,0.3)]">Red 10</span>
+              </div>
+              <p class="text-[11px] text-gray-300 font-mono">Card rank: A=1, 2–10=face value, J=11, Q=12, K=13.</p>
+            </div>
+          </div>
+
+          <!-- Step 5: COLLECT & MOVE -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              5
+            </div>
+            <!-- Two Playing Cards Vector Graphic -->
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+              <svg class="w-7 h-7" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="6" width="16" height="22" rx="2.5" fill="#00e5ff" fill-opacity="0.15" stroke="#00e5ff" stroke-width="1.8" transform="rotate(-10 11 17)"/>
+                <rect x="13" y="5" width="16" height="22" rx="2.5" fill="#061220" stroke="#00e5ff" stroke-width="1.8"/>
+                <path d="M21 10 C19.8 11.2 18 12.8 18 14 C18 15.2 19 16 20.2 16 C21 16 21 15.5 21 15 C21 15.5 21 16 21.8 16 C23 16 24 15.2 24 14 C24 12.8 22.2 11.2 21 10 Z" fill="#00e5ff"/>
+                <path d="M20.5 15.5 L19.5 18.5 L22.5 18.5 L21.5 15.5 Z" fill="#00e5ff"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">COLLECT & MOVE</h3>
+              <p class="text-xs text-gray-300 font-body">Get your card, then follow the next clue. Each station scores once per squad.</p>
+            </div>
+          </div>
+
+          <!-- Step 6: PLAY FAIR -->
+          <div class="bg-[#060D1A]/90 border border-cyan/40 hover:border-cyan rounded-2xl p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md flex items-center gap-3.5 transition group">
+            <div class="w-8 h-8 rounded-xl bg-cyan/20 border border-cyan/60 text-cyan font-mono font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.3)]">
+              6
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+              <span class="material-symbols-outlined text-[22px]">verified_user</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-headline font-black text-white text-sm uppercase tracking-wider">PLAY FAIR</h3>
+              <p class="text-xs text-gray-300 font-body">Check in only at your assigned station. Follow Marshal instructions and stay safe.</p>
+            </div>
+          </div>
+
+          <!-- WIN Hero Box -->
+          <div class="border-2 border-[#FFD600] bg-gradient-to-r from-[#FFD600]/15 via-[#FFD600]/5 to-[#070B14] rounded-2xl p-4 shadow-[0_0_30px_rgba(255,214,0,0.25)] flex items-center gap-3.5 text-left relative overflow-hidden mt-4">
+            <div class="flex items-center gap-2 shrink-0">
+              <svg class="w-9 h-9 text-[#FFD600] shrink-0 drop-shadow-[0_0_10px_rgba(255,214,0,0.8)]" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 24 C4 18 7 12 11 8 C9 12 8 18 9 24" stroke="#FFD600" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="8" cy="11" r="1.2" fill="#FFD600"/>
+                <circle cx="6.5" cy="16" r="1.2" fill="#FFD600"/>
+                <circle cx="7" cy="21" r="1.2" fill="#FFD600"/>
+                <path d="M31 24 C32 18 29 12 25 8 C27 12 28 18 27 24" stroke="#FFD600" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="28" cy="11" r="1.2" fill="#FFD600"/>
+                <circle cx="29.5" cy="16" r="1.2" fill="#FFD600"/>
+                <circle cx="29" cy="21" r="1.2" fill="#FFD600"/>
+                <path d="M12 9 H24 V17 C24 20.3 21.3 23 18 23 C14.7 23 12 20.3 12 17 V9 Z" fill="#FFD600" fill-opacity="0.3" stroke="#FFD600" stroke-width="2"/>
+                <path d="M12 11 H9 C7.9 11 7 11.9 7 13 V14 C7 15.7 8.3 17 10 17 H12" stroke="#FFD600" stroke-width="1.6"/>
+                <path d="M24 11 H27 C28.1 11 29 11.9 29 13 V14 C29 15.7 27.7 17 26 17 H24" stroke="#FFD600" stroke-width="1.6"/>
+                <path d="M18 23 V27" stroke="#FFD600" stroke-width="2"/>
+                <path d="M13 27 H23" stroke="#FFD600" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="text-2xl font-headline font-black text-[#FFD600] tracking-wider uppercase drop-shadow-[0_0_10px_rgba(255,214,0,0.6)]">WIN</span>
+            </div>
+            <div class="w-[1.5px] h-12 bg-[#FFD600]/40 shrink-0"></div>
+            <div class="text-xs sm:text-sm text-gray-100 font-body space-y-1">
+              <div class="font-bold text-white">Highest score when the 52-minute match ends.</div>
+              <div class="text-[11px] font-mono text-gray-400">Tie: most cards, then earliest final check-in.</div>
+            </div>
+          </div>
+
         </div>
 
         <div class="mt-6 flex items-center gap-2 text-[11px] font-mono text-gray-500">
@@ -503,11 +667,11 @@
       </div>
 
       <!-- ACTIVE CLUE: Neon HUD Mission Card -->
-      <!-- QUICK ACTIONS: Player Camera Scanner Button -->
+      <!-- QUICK ACTIONS: Show My Check-In QR to Marshal -->
       <div class="w-full max-w-sm mx-auto mb-1">
-        <button id="btn-player-open-scanner" type="button" onclick="openPlayerScannerModal()" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-primary via-cyan to-primary-container text-black font-headline font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(0,229,255,0.4)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
-          <span class="material-symbols-outlined text-[24px]">photo_camera</span>
-          <span>📷 Scan Station Checkpoint QR</span>
+        <button id="btn-player-open-scanner" type="button" onclick="showMyCardQrModal()" class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-primary via-cyan to-primary-container text-black font-headline font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(0,229,255,0.45)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
+          <span class="material-symbols-outlined text-[26px]">qr_code_2</span>
+          <span>📲 Show My Card QR to Marshal</span>
         </button>
       </div>
 
@@ -541,7 +705,7 @@
               <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
               <span id="active-station-name">Assigned Station: Standby</span>
             </span>
-            <span class="text-secondary-fixed text-[11px] font-bold px-2 py-0.5 rounded bg-secondary-fixed/15 border border-secondary-fixed/30" id="active-station-status">STATION SCAN REQUIRED</span>
+            <span class="text-cyan text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan/15 border border-cyan/40 animate-pulse" id="active-station-status">SHOW QR TO MARSHAL</span>
           </div>
         </div>
 
@@ -770,37 +934,57 @@
 
     </div>
     </div>
-    <!-- PLAYER CAMERA SCANNER MODAL -->
-  <div id="player-scanner-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 hidden animate-modal-backdrop">
-    <div class="w-full max-w-sm rounded-3xl bg-[#0e1726] border-2 border-primary shadow-[0_0_50px_rgba(0,229,255,0.4)] p-5 space-y-4 flex flex-col items-center animate-scaleUp">
-      <div class="w-full flex items-center justify-between">
+  <!-- SQUAD CHECK-IN PASS MODAL (Show to Field Marshal) -->
+  <div id="player-scanner-modal" class="fixed inset-0 z-50 bg-black/92 backdrop-blur-2xl flex items-center justify-center p-4 hidden animate-modal-backdrop">
+    <div class="w-full max-w-sm rounded-3xl bg-[#070D18] border-2 border-primary shadow-[0_0_60px_rgba(0,229,255,0.45)] p-5 space-y-4 flex flex-col items-center animate-scaleUp text-center relative overflow-hidden">
+      <!-- Glow ambient header -->
+      <div class="absolute -top-12 -left-12 w-32 h-32 bg-primary/20 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-cyan/20 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="w-full flex items-center justify-between border-b border-white/10 pb-3">
         <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary text-2xl">qr_code_scanner</span>
-          <h3 class="font-headline font-bold text-base text-white">Station QR Scanner</h3>
+          <span class="material-symbols-outlined text-primary text-2xl">badge</span>
+          <div class="text-left">
+            <h3 class="font-headline font-black text-sm text-white tracking-wide uppercase">Squad Check-In Pass</h3>
+            <span class="text-[10px] font-mono text-cyan" id="modal-pass-team-name">Player Squad</span>
+          </div>
         </div>
-        <button onclick="closePlayerScannerModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 flex items-center justify-center cursor-pointer">
+        <button type="button" onclick="closePlayerScannerModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 flex items-center justify-center cursor-pointer transition">
           <span class="material-symbols-outlined text-lg">close</span>
         </button>
       </div>
 
-      <p class="text-xs text-gray-300 font-mono text-center">
-        Point your camera at the Station Beacon QR code displayed by the Field Marshal or at the checkpoint.
-      </p>
-
-      <!-- Camera viewfinder container -->
-      <div class="relative w-full rounded-2xl overflow-hidden bg-black border border-primary/50 flex flex-col items-center justify-center min-h-[260px]">
-        <div id="player-qr-reader" class="w-full max-w-[340px] rounded-xl overflow-hidden"></div>
-        <div class="laser-scanner-line"></div>
+      <!-- Action Prompt Banner -->
+      <div class="w-full p-2.5 rounded-xl bg-primary/10 border border-primary/40 text-primary text-xs font-mono font-bold flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-[18px] animate-pulse text-cyan">qr_code_scanner</span>
+        <span>Show this QR code to the Field Marshal</span>
       </div>
 
-      <!-- Alert Message Box in modal -->
-      <div id="player-scanner-alert" class="w-full p-2.5 rounded-xl bg-error/15 border border-error/40 text-error text-xs font-mono hidden text-center"></div>
-
-      <div class="w-full flex gap-2">
-        <button onclick="closePlayerScannerModal()" class="w-full py-2.5 rounded-xl border border-gray-600 hover:border-gray-400 text-gray-300 font-headline text-xs uppercase tracking-wider transition cursor-pointer">
-          Cancel
-        </button>
+      <!-- High-Contrast Vector QR Display Box -->
+      <div class="p-3 bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.25)] flex items-center justify-center">
+        <div id="modal-player-qr-canvas" class="w-[190px] h-[190px] flex items-center justify-center"></div>
       </div>
+
+      <!-- 6-Digit Marshal Cipher Code -->
+      <div class="w-full bg-surface-container-high/80 border border-primary/30 rounded-2xl p-3 flex flex-col items-center gap-1">
+        <span class="text-[10px] font-mono uppercase tracking-widest text-gray-400">Marshal 6-Digit Cipher</span>
+        <span id="modal-manual-cipher-code" class="font-mono text-xl sm:text-2xl font-black tracking-[0.25em] text-white">--- ---</span>
+        <span class="text-[9px] font-mono text-gray-400">If camera cannot scan, tell Marshal this code</span>
+      </div>
+
+      <!-- Auto-Award Telemetry Notice -->
+      <div class="text-[11px] font-mono text-gray-300 flex items-center gap-1.5 justify-center">
+        <span class="w-2 h-2 rounded-full bg-green animate-ping shrink-0"></span>
+        <span>Points & next clue award automatically upon scan!</span>
+      </div>
+
+      <!-- Hidden compatibility anchors for audit checks -->
+      <div id="player-qr-reader" class="hidden"></div>
+      <div id="player-scanner-alert" class="hidden"></div>
+
+      <button type="button" onclick="closePlayerScannerModal()" class="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-gray-300 font-headline text-xs uppercase tracking-wider font-bold transition cursor-pointer">
+        Back to Mission Clue
+      </button>
     </div>
   </div>
 
@@ -832,6 +1016,134 @@
     </div>
   </div>
 
+  <!-- HOW TO PLAY RULES MODAL (Accessible on Demand) -->
+  <div id="player-rules-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-4 hidden animate-modal-backdrop">
+    <div class="w-full max-w-md max-h-[88vh] rounded-3xl bg-[#070D18] border-2 border-cyan/50 shadow-[0_0_50px_rgba(0,229,255,0.35)] p-4 sm:p-5 space-y-3.5 flex flex-col animate-scaleUp">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10 shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-cyan font-mono text-xl font-black">[</span>
+          <h3 class="font-headline font-black text-base sm:text-lg text-white uppercase tracking-wider">HOW TO PLAY</h3>
+          <span class="text-cyan font-mono text-xl font-black">]</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 rounded-full border border-cyan/40 bg-cyan/15 text-cyan text-[10px] font-mono font-bold">52:00 MATCH</span>
+          <button onclick="closeRulesModal()" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white flex items-center justify-center transition cursor-pointer text-sm">✕</button>
+        </div>
+      </div>
+
+      <!-- Scrollable Rules List -->
+      <div class="space-y-2.5 overflow-y-auto pr-1 text-left flex-1 custom-scrollbar">
+        <!-- Step 1 -->
+        <div class="bg-[#0A1322] border border-cyan/30 rounded-xl p-3 flex items-center gap-3">
+          <div class="w-7 h-7 rounded-lg bg-cyan/20 border border-cyan/50 text-cyan font-mono font-black text-xs flex items-center justify-center shrink-0">1</div>
+          <div class="w-8 h-8 rounded-lg bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+            <span class="material-symbols-outlined text-[20px]">groups</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-headline font-bold text-white text-xs uppercase tracking-wider">SQUAD</h4>
+            <p class="text-[11px] text-gray-300 font-body">Team up: 2–4 players.</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="bg-[#0A1322] border border-cyan/30 rounded-xl p-3 flex items-center gap-3">
+          <div class="w-7 h-7 rounded-lg bg-cyan/20 border border-cyan/50 text-cyan font-mono font-black text-xs flex items-center justify-center shrink-0">2</div>
+          <div class="w-8 h-8 rounded-lg bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+            <span class="material-symbols-outlined text-[20px]">pin_drop</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-headline font-bold text-white text-xs uppercase tracking-wider">FOLLOW YOUR CLUE</h4>
+            <p class="text-[11px] text-gray-300 font-body">Go to the checkpoint in your active directive.</p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="bg-[#0A1322] border border-cyan/30 rounded-xl p-3 flex items-center gap-3">
+          <div class="w-7 h-7 rounded-lg bg-cyan/20 border border-cyan/50 text-cyan font-mono font-black text-xs flex items-center justify-center shrink-0">3</div>
+          <div class="w-8 h-8 rounded-lg bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+            <span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-headline font-bold text-white text-xs uppercase tracking-wider">CHECK IN</h4>
+            <p class="text-[11px] text-gray-300 font-body">Show the Marshal your unique station card QR or 6-digit code.</p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="bg-[#0A1322] border border-cyan/30 rounded-xl p-3 flex items-center gap-3">
+          <div class="w-7 h-7 rounded-lg bg-cyan/20 border border-cyan/50 text-cyan font-mono font-black text-xs flex items-center justify-center shrink-0">4</div>
+          <div class="w-8 h-8 rounded-lg bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6" viewBox="0 0 36 28" fill="none">
+              <path d="M5 24 L10 6 L15 24 Z" fill="#00ff88" fill-opacity="0.3" stroke="#00ff88" stroke-width="1.8"/>
+              <line x1="2" y1="24" x2="18" y2="24" stroke="#00ff88" stroke-width="2"/>
+              <path d="M13 24 L18 4 L23 24 Z" fill="#FFD600" fill-opacity="0.35" stroke="#FFD600" stroke-width="1.8"/>
+              <line x1="10" y1="24" x2="26" y2="24" stroke="#FFD600" stroke-width="2"/>
+              <path d="M21 24 L26 6 L31 24 Z" fill="#ff3366" fill-opacity="0.3" stroke="#ff3366" stroke-width="1.8"/>
+              <line x1="18" y1="24" x2="34" y2="24" stroke="#ff3366" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-headline font-bold text-white text-xs uppercase tracking-wider">SCORE POINTS</h4>
+            <div class="flex items-center gap-1.5 my-1 flex-wrap">
+              <span class="px-2 py-0.5 rounded-full bg-[#00ff88]/20 border border-[#00ff88]/50 text-[#00ff88] text-[10px] font-mono font-bold">Green 15</span>
+              <span class="text-gray-500">•</span>
+              <span class="px-2 py-0.5 rounded-full bg-[#FFD600]/20 border border-[#FFD600]/50 text-[#FFD600] text-[10px] font-mono font-bold">Yellow 12</span>
+              <span class="text-gray-500">•</span>
+              <span class="px-2 py-0.5 rounded-full bg-[#ff3366]/20 border border-[#ff3366]/50 text-[#ff3366] text-[10px] font-mono font-bold">Red 10</span>
+            </div>
+            <p class="text-[10px] text-gray-300 font-mono">Card rank: A=1, 2–10=face value, J=11, Q=12, K=13.</p>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="bg-[#0A1322] border border-cyan/30 rounded-xl p-3 flex items-center gap-3">
+          <div class="w-7 h-7 rounded-lg bg-cyan/20 border border-cyan/50 text-cyan font-mono font-black text-xs flex items-center justify-center shrink-0">5</div>
+          <div class="w-8 h-8 rounded-lg bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+            <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none">
+              <rect x="3" y="6" width="16" height="22" rx="2.5" fill="#00e5ff" fill-opacity="0.15" stroke="#00e5ff" stroke-width="1.8" transform="rotate(-10 11 17)"/>
+              <rect x="13" y="5" width="16" height="22" rx="2.5" fill="#061220" stroke="#00e5ff" stroke-width="1.8"/>
+              <path d="M21 10 C19.8 11.2 18 12.8 18 14 C18 15.2 19 16 20.2 16 C21 16 21 15.5 21 15 C21 15.5 21 16 21.8 16 C23 16 24 15.2 24 14 C24 12.8 22.2 11.2 21 10 Z" fill="#00e5ff"/>
+              <path d="M20.5 15.5 L19.5 18.5 L22.5 18.5 L21.5 15.5 Z" fill="#00e5ff"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-headline font-bold text-white text-xs uppercase tracking-wider">COLLECT & MOVE</h4>
+            <p class="text-[11px] text-gray-300 font-body">Get your card, then follow next clue. Stations score once per squad.</p>
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="bg-[#0A1322] border border-cyan/30 rounded-xl p-3 flex items-center gap-3">
+          <div class="w-7 h-7 rounded-lg bg-cyan/20 border border-cyan/50 text-cyan font-mono font-black text-xs flex items-center justify-center shrink-0">6</div>
+          <div class="w-8 h-8 rounded-lg bg-cyan/10 border border-cyan/30 flex items-center justify-center shrink-0 text-cyan">
+            <span class="material-symbols-outlined text-[20px]">verified_user</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-headline font-bold text-white text-xs uppercase tracking-wider">PLAY FAIR</h4>
+            <p class="text-[11px] text-gray-300 font-body">Check in only at your assigned station. Follow Marshal instructions.</p>
+          </div>
+        </div>
+
+        <!-- WIN Hero Box -->
+        <div class="border-2 border-[#FFD600] bg-gradient-to-r from-[#FFD600]/15 via-[#FFD600]/5 to-[#070B14] rounded-xl p-3 flex items-center gap-3 text-left">
+          <div class="flex items-center gap-1.5 shrink-0">
+            <span class="material-symbols-outlined text-3xl text-[#FFD600]">emoji_events</span>
+            <span class="text-xl font-headline font-black text-[#FFD600]">WIN</span>
+          </div>
+          <div class="w-[1px] h-10 bg-[#FFD600]/40 shrink-0"></div>
+          <div class="text-[11px] text-gray-200 font-body space-y-0.5">
+            <div class="font-bold text-white">Highest score when 52-min match ends.</div>
+            <div class="text-[10px] font-mono text-gray-400">Tie: most cards, then earliest check-in.</div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="closeRulesModal()" class="w-full py-2.5 rounded-xl bg-cyan text-black font-headline font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(0,229,255,0.4)] transition cursor-pointer shrink-0">
+        CLOSE RULES
+      </button>
+    </div>
+  </div>
+
   </main>
 
   <!-- Player Bottom Navigation Bar -->
@@ -845,9 +1157,9 @@
         <span class="material-symbols-outlined text-[22px] sm:text-[24px]">style</span>
         <span class="font-mono text-[10px] sm:text-xs uppercase tracking-wider">My Card</span>
       </button>
-      <!-- Center Camera Scan Nav Action -->
-      <button onclick="openPlayerScannerModal()" title="Scan Station Beacon" class="flex flex-col items-center justify-center -mt-5 w-14 h-14 rounded-full bg-gradient-to-tr from-primary to-cyan text-black shadow-[0_0_20px_rgba(0,229,255,0.7)] border-2 border-white font-bold active:scale-90 transition cursor-pointer">
-        <span class="material-symbols-outlined text-[26px]">photo_camera</span>
+      <!-- Center Show QR Nav Action -->
+      <button onclick="showMyCardQrModal()" title="Show Check-in QR to Marshal" class="flex flex-col items-center justify-center -mt-5 w-14 h-14 rounded-full bg-gradient-to-tr from-primary to-cyan text-black shadow-[0_0_20px_rgba(0,229,255,0.7)] border-2 border-white font-bold active:scale-90 transition cursor-pointer">
+        <span class="material-symbols-outlined text-[26px]">qr_code_2</span>
       </button>
       <button onclick="scrollToDeck()" class="flex flex-col items-center justify-center gap-1 w-16 h-14 text-on-surface-variant hover:text-primary transition active:scale-95 cursor-pointer">
         <span class="material-symbols-outlined text-[22px] sm:text-[24px]">inventory_2</span>
@@ -972,22 +1284,18 @@
       return null;
     }
 
-    // Deterministic Checkpoint Card Engine (Rotates dynamic cipher card every 30 seconds)
-    var cardShuffleStep = Math.floor(Date.now() / 30000);
-    var lastRotatedSlot = cardShuffleStep;
-
-    function getCheckpointCard(team, clueIdx, teamsList, shuffleStep) {
+    // Deterministic Checkpoint Card Engine (Unique, Stable Station Card for Each Squad)
+    function getCheckpointCard(team, clueIdx, teamsList) {
       var tt = deriveTeamCode(team, teamsList);
       var cIdx = parseInt(clueIdx, 10) || 0;
-      var step = (shuffleStep !== undefined) ? shuffleStep : cardShuffleStep;
 
-      // Rotates across all 13 card ranks (1..13) and 4 suits every 30 seconds
-      var rankIdx = Math.abs((tt * 3 + cIdx * 7 + step * 5)) % 13;
-      var suitIdx = Math.abs((tt * 5 + cIdx * 3 + step)) % 4;
+      // Deterministic card assigned uniquely to this squad for this specific checkpoint
+      var rankIdx = Math.abs((tt * 7 + cIdx * 5 + 3)) % 13;
+      var suitIdx = Math.abs((tt * 3 + cIdx * 7 + 1)) % 4;
       var rankObj = CARD_RANKS[rankIdx];
       var suitObj = CARD_SUITS[suitIdx];
       var rr = 20 + rankObj.value; // 21 to 33
-      var hh = 10 + ((cIdx * 4 + suitIdx + (step % 10)) % 52); // 10 to 61
+      var hh = 10 + suitIdx + (((tt + cIdx) % 10) * 4); // 10 to 49
       var code = '' + tt + rr + String(hh).padStart(2, '0');
       return {
         rank: rankObj.value,
@@ -996,8 +1304,7 @@
         isRed: suitObj.isRed,
         sixDigitCode: code,
         token: '' + hh,
-        clueIdx: cIdx,
-        step: step
+        clueIdx: cIdx
       };
     }
 
@@ -1036,7 +1343,7 @@
 
     function rotateCardCipher(animate) {
       var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (currentUser && currentUser.currentClueIndex !== undefined ? currentUser.currentClueIndex : 0);
-      activeCipherCard = getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList, cardShuffleStep);
+      activeCipherCard = getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
 
       var flipper = document.getElementById('card-flipper');
       if (animate && flipper) {
@@ -1052,12 +1359,7 @@
     }
 
     function checkAndRotateCard(animate) {
-      var currentSlot = Math.floor(Date.now() / 30000);
-      if (currentSlot !== lastRotatedSlot) {
-        lastRotatedSlot = currentSlot;
-        cardShuffleStep = currentSlot;
-        rotateCardCipher(animate);
-      }
+      rotateCardCipher(animate);
     }
 
     function applyCardVisuals(card) {
@@ -1151,7 +1453,7 @@
       var squadCallsign = (currentUser && currentUser.callsign) ? currentUser.callsign.toUpperCase() : (currentMyTeam ? (currentMyTeam.callsign || currentMyTeam.name || 'SQUAD').toUpperCase() : 'SQUAD');
       
       var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (card.clueIdx || 0);
-      var checkCard = (card && card.sixDigitCode) ? card : getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList, cardShuffleStep);
+      var checkCard = (card && card.sixDigitCode) ? card : getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
       var sixDigitRaw = checkCard.sixDigitCode;
       var formattedSixDigit = sixDigitRaw.slice(0, 2) + ' ' + sixDigitRaw.slice(2, 4) + ' ' + sixDigitRaw.slice(4, 6);
 
@@ -1459,73 +1761,77 @@
       }, 900);
     }
 
+    function applyGameStatePayload(data) {
+      if (!data) return;
+      var gs = data.state || data.gameState || data;
+      var newStatus = gs.status || data.status || 'LOBBY';
+      var countdownSec = data.countdownSeconds !== undefined ? data.countdownSeconds : (gs.countdownSeconds || 0);
+      var remSec = data.remainingSeconds !== undefined ? data.remainingSeconds : (gs.remainingSeconds !== undefined ? gs.remainingSeconds : 3120);
+
+      serverRemainingHuntSeconds = remSec;
+      updateHuntTimerDisplay(remSec);
+
+      var squadName = (currentMyTeam ? (currentMyTeam.name || currentMyTeam.callsign) : (currentUser ? currentUser.callsign : 'Squad'));
+      var wCall = document.getElementById('waiting-squad-callsign');
+      if (wCall && squadName) wCall.innerText = squadName;
+
+      var wClock = document.getElementById('waiting-hunt-clock');
+      if (wClock) wClock.innerText = formatMinutesSeconds(remSec) + ' [STANDBY]';
+
+      var waitingHall = document.getElementById('player-waiting-hall');
+      var activeHunt = document.getElementById('player-active-hunt-container');
+      var countdownOverlay = document.getElementById('gaming-countdown-overlay');
+
+      if (newStatus === 'PLAYER_PHASE' || newStatus === 'ACTIVE' || newStatus === 'START') {
+        if (playerCountdownTimer) {
+          clearInterval(playerCountdownTimer);
+          playerCountdownTimer = null;
+        }
+        if (countdownOverlay) countdownOverlay.classList.add('hidden');
+        if (waitingHall) waitingHall.classList.add('hidden');
+        if (activeHunt) activeHunt.classList.remove('hidden');
+
+        try { playCountdownTone(1200, true); } catch(e){}
+        if (window.tacticalFeedback && window.tacticalFeedback.success) {
+          try { window.tacticalFeedback.success(); } catch(e){}
+        }
+
+        // Proactively refresh squad target location & clue
+        syncTeamData();
+      } else if (newStatus === 'COUNTDOWN') {
+        var endsAt = data.countdownEndsAt || gs.countdownEndsAt;
+        if (countdownOverlay) countdownOverlay.classList.remove('hidden');
+        if (waitingHall) waitingHall.classList.add('hidden');
+        if (endsAt) {
+          var endsMs = new Date(endsAt).getTime();
+          if (!playerCountdownTimer || Math.abs(playerCountdownEndsAtMs - endsMs) > 1200) {
+            startPlayerLocalCountdown(endsAt);
+          }
+        } else {
+          if (!playerCountdownTimer) {
+            startPlayerLocalCountdown(new Date(Date.now() + (countdownSec || 10) * 1000).toISOString());
+          }
+        }
+      } else {
+        if (playerCountdownTimer) {
+          clearInterval(playerCountdownTimer);
+          playerCountdownTimer = null;
+        }
+        if (countdownOverlay) countdownOverlay.classList.add('hidden');
+        if (waitingHall) waitingHall.classList.remove('hidden');
+        if (activeHunt) activeHunt.classList.add('hidden');
+      }
+
+      currentGameState = newStatus;
+    }
+
     async function syncGameState() {
       try {
         var res = await fetch(apiUrl('/api/game/state?_t=') + Date.now(), { cache: 'no-store' });
         var data = await res.json();
-        if (!data.success) return;
-
-        var gs = data.state || {};
-        var newStatus = gs.status || 'LOBBY';
-        var countdownSec = data.countdownSeconds || 0;
-        var remSec = data.remainingSeconds !== undefined ? data.remainingSeconds : 3120;
-
-        serverRemainingHuntSeconds = remSec;
-        updateHuntTimerDisplay(remSec);
-
-        var squadName = (currentMyTeam ? (currentMyTeam.name || currentMyTeam.callsign) : (currentUser ? currentUser.callsign : 'Squad'));
-        var wCall = document.getElementById('waiting-squad-callsign');
-        if (wCall && squadName) wCall.innerText = squadName;
-
-        var wClock = document.getElementById('waiting-hunt-clock');
-        if (wClock) wClock.innerText = formatMinutesSeconds(remSec) + ' [STANDBY]';
-
-        var waitingHall = document.getElementById('player-waiting-hall');
-        var activeHunt = document.getElementById('player-active-hunt-container');
-        var countdownOverlay = document.getElementById('gaming-countdown-overlay');
-
-        if (newStatus === 'COUNTDOWN') {
-          var endsAt = data.countdownEndsAt || (gs && gs.countdownEndsAt);
-          // ── Immediately show countdown overlay, don't wait ──
-          var countdownOverlayEarly = document.getElementById('gaming-countdown-overlay');
-          if (countdownOverlayEarly) countdownOverlayEarly.classList.remove('hidden');
-          if (waitingHall) waitingHall.classList.add('hidden');
-          if (endsAt) {
-            var endsMs = new Date(endsAt).getTime();
-            if (!playerCountdownTimer || Math.abs(playerCountdownEndsAtMs - endsMs) > 1200) {
-              startPlayerLocalCountdown(endsAt);
-            }
-          } else {
-            if (!playerCountdownTimer) {
-              startPlayerLocalCountdown(new Date(Date.now() + (countdownSec || 10) * 1000).toISOString());
-            }
-          }
-        } else if (newStatus === 'PLAYER_PHASE') {
-          if (playerCountdownTimer) {
-            clearInterval(playerCountdownTimer);
-            playerCountdownTimer = null;
-          }
-          if (countdownOverlay) {
-            if (!countdownOverlay.classList.contains('hidden')) {
-              triggerLaunchBurst();
-            } else {
-              countdownOverlay.classList.add('hidden');
-            }
-          }
-          if (waitingHall) waitingHall.classList.add('hidden');
-          if (activeHunt) activeHunt.classList.remove('hidden');
-        } else {
-          if (playerCountdownTimer) {
-            clearInterval(playerCountdownTimer);
-            playerCountdownTimer = null;
-          }
-          if (countdownOverlay) countdownOverlay.classList.add('hidden');
-          if (waitingHall) waitingHall.classList.remove('hidden');
-          if (activeHunt) activeHunt.classList.add('hidden');
+        if (data && data.success) {
+          applyGameStatePayload(data);
         }
-
-        currentGameState = newStatus;
-
       } catch (e) {
         console.warn('Game state sync error:', e);
       }
@@ -1536,51 +1842,84 @@
       document.getElementById('header-callsign-badge').innerText = currentUser.callsign || 'SQUAD';
       
       // Initialize deterministic checkpoint card cipher
-      checkAndRotateCard(false);
-
-      // AUTOMATIC 30-SECOND DYNAMIC CARD SHUFFLE ENGINE
-      // Checks every 1s if a 30s rotation is due (keeps time accurate without calling rotate every 1s)
-      var _lastCardRotateTime = Date.now();
-      setInterval(function() {
-        var now = Date.now();
-        if (now - _lastCardRotateTime >= 30000) {
-          _lastCardRotateTime = now;
-          checkAndRotateCard(true);
-        }
-      }, 1000);
+      rotateCardCipher(false);
 
       loadCluesAndSync();
-      // High-frequency real-time squad synchronization engine (sub-second response)
+      // Resilient 4G/5G mobile squad synchronization engine
       function scheduleNextTeamSync() {
-        var jitter = Math.floor(Math.random() * 50);
-        var baseDelay = (currentGameState === 'PLAYER_PHASE') ? 400 : 1000;
+        var baseDelay = (currentGameState === 'PLAYER_PHASE') ? 2500 : 4000;
         setTimeout(function() {
           syncTeamData().finally(scheduleNextTeamSync);
-        }, baseDelay + jitter);
+        }, baseDelay);
       }
       scheduleNextTeamSync();
 
       function scheduleNextGameStateSync() {
-        var jitter = Math.floor(Math.random() * 50);
-        var baseDelay = (currentGameState === 'LOBBY' || currentGameState === 'COUNTDOWN') ? 400 : 1000;
+        var baseDelay = (currentGameState === 'LOBBY' || currentGameState === 'COUNTDOWN') ? 1200 : 4000;
         setTimeout(function() {
           syncGameState().finally(scheduleNextGameStateSync);
-        }, baseDelay + jitter);
+        }, baseDelay);
       }
       syncGameState();
       scheduleNextGameStateSync();
 
-      // Instant 0ms Cross-Portal Sync via BroadcastChannel & LocalStorage
+      // Zero-Latency Server-Sent Events (SSE) Live Feed from Game Server
+      var sseSource = null;
+      function connectLiveEvents() {
+        try {
+          if (sseSource) { sseSource.close(); sseSource = null; }
+          sseSource = new EventSource(apiUrl('/api/events'));
+          sseSource.onmessage = function(e) {
+            try {
+              var evData = JSON.parse(e.data);
+              if (evData && evData.type === 'CHECKIN_AWARD') {
+                var myTeamId = currentUser ? (currentUser.teamId || (currentMyTeam ? currentMyTeam._id : null)) : null;
+                var myCallsign = currentUser ? currentUser.callsign : null;
+                var isMyAward = !myTeamId || evData.teamId === myTeamId || (evData.teamName && myCallsign && evData.teamName.toLowerCase() === myCallsign.toLowerCase());
+                if (isMyAward) {
+                  // Direct Instant UI Location & Point Rotation (0ms latency!)
+                  if (evData.pointsAwarded && evData.teamScore !== undefined) {
+                    if (evData.nextZoneLabel || evData.nextZoneId) {
+                      currentAssignedZoneId = evData.nextZoneId;
+                      var stationName = document.getElementById('active-station-name');
+                      if (stationName) stationName.innerText = 'Assigned Station: ' + (evData.nextZoneLabel || evData.nextZoneId);
+                      var teamZone = document.getElementById('team-zone-label');
+                      if (teamZone) teamZone.innerText = 'Next Location: ' + (evData.nextZoneLabel || evData.nextZoneId);
+                      var zoneBadge = document.getElementById('active-zone-badge');
+                      if (zoneBadge) zoneBadge.innerText = (evData.nextZoneId || 'STATION').toUpperCase();
+                      var clueText = document.getElementById('active-clue-text');
+                      if (clueText && evData.nextClueText) clueText.innerText = '“' + evData.nextClueText + '”';
+                    }
+                    showCheckpointClearedModal(evData.pointsAwarded, evData.teamScore, evData.nextZoneLabel, evData.nextClueText);
+                    triggerAwardToast(evData.pointsAwarded, evData.teamScore, evData.nextZoneLabel);
+                    if (window.tacticalFeedback?.award) window.tacticalFeedback.award();
+                    rotateCardCipher(true);
+                  }
+                  syncTeamData();
+                }
+              } else if (evData && evData.type === 'GAME_STATE_UPDATE') {
+                applyGameStatePayload(evData);
+              }
+            } catch(parseErr) {}
+          };
+          sseSource.onerror = function() {
+            if (sseSource) { sseSource.close(); sseSource = null; }
+            setTimeout(connectLiveEvents, 4000);
+          };
+        } catch(err) {
+          console.warn('SSE connection skipped:', err);
+        }
+      }
+      connectLiveEvents();
+
+      // Cross-Portal Sync via BroadcastChannel & LocalStorage (Same device testing)
       try {
         var liveChannel = new BroadcastChannel('territory_grid_live');
         liveChannel.onmessage = function (ev) {
           if (ev.data && ev.data.type === 'CHECKIN_AWARD') {
-            var myTeamId = currentUser ? (currentUser.teamId || (currentMyTeam ? currentMyTeam._id : null)) : null;
-            if (!myTeamId || ev.data.teamId === myTeamId) {
-              syncTeamData();
-            }
+            syncTeamData();
           } else if (ev.data && ev.data.type === 'GAME_STATE_UPDATE') {
-            syncGameState();
+            applyGameStatePayload(ev.data);
           }
         };
       } catch (e) {}
@@ -1589,7 +1928,12 @@
         if (e.key === 'tg_last_checkin_event') {
           syncTeamData();
         } else if (e.key === 'tg_game_state_event') {
-          syncGameState();
+          try {
+            var item = JSON.parse(e.newValue);
+            applyGameStatePayload(item);
+          } catch(err) {
+            syncGameState();
+          }
         }
       });
       setInterval(function() {
@@ -1972,6 +2316,7 @@
     // CHECKPOINT CLEARED CELEBRATION MODAL ENGINE
     // ─────────────────────────────────────────────────────────
     function showCheckpointClearedModal(pointsAwarded, totalScore, nextStationName, nextClueText) {
+      closePlayerScannerModal();
       var modal = document.getElementById('checkpoint-cleared-modal');
       if (!modal) return;
       playUnlockChirp();
@@ -2011,56 +2356,80 @@
       rotateCardCipher(true);
     }
 
+    function openRulesModal() {
+      var modal = document.getElementById('player-rules-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeRulesModal() {
+      var modal = document.getElementById('player-rules-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
     // ─────────────────────────────────────────────────────────
-    // PLAYER STATION CAMERA SCANNER ENGINE
+    // SQUAD CHECK-IN PASS & MARSHAL QR PRESENTATION ENGINE
+    // (Player presents QR to Marshal; Marshal scans to auto-award points)
     // ─────────────────────────────────────────────────────────
     var playerHtml5QrCode = null;
     var isPlayerScanning = false;
 
-    async function openPlayerScannerModal() {
-      var modal = document.getElementById('player-scanner-modal');
-      var alertEl = document.getElementById('player-scanner-alert');
-      if (alertEl) { alertEl.classList.add('hidden'); alertEl.innerText = ''; }
-      if (modal) modal.classList.remove('hidden');
+    function showMyCardQrModal() {
+      openPlayerScannerModal();
+    }
 
-      try {
-        if (!playerHtml5QrCode) {
-          playerHtml5QrCode = new Html5Qrcode('player-qr-reader');
-        }
-        isPlayerScanning = true;
-        await playerHtml5QrCode.start(
-          { facingMode: 'environment' },
-          { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 },
-          function(decodedText) {
-            handlePlayerBeaconScan(decodedText);
-          },
-          function(error) { /* frame search ignore */ }
-        );
-      } catch (err) {
-        console.warn('Player camera open error:', err);
-        isPlayerScanning = false;
-        if (alertEl) {
-          alertEl.className = 'w-full p-2.5 rounded-xl bg-error/15 border border-error/40 text-error text-xs font-mono text-center';
-          alertEl.innerText = 'Camera access unavailable: ' + (err.message || err);
-          alertEl.classList.remove('hidden');
+    function openPlayerScannerModal() {
+      var modal = document.getElementById('player-scanner-modal');
+      if (!modal) return;
+
+      var teamNameEl = document.getElementById('modal-pass-team-name');
+      var qrCanvas = document.getElementById('modal-player-qr-canvas');
+      var cipherEl = document.getElementById('modal-manual-cipher-code');
+
+      var teamId = (currentUser && currentUser.teamId) ? currentUser.teamId : (currentMyTeam ? currentMyTeam._id : 'team_demo');
+      var squadCallsign = (currentUser && currentUser.callsign) ? currentUser.callsign.toUpperCase() : (currentMyTeam ? (currentMyTeam.callsign || currentMyTeam.name || 'SQUAD').toUpperCase() : 'SQUAD');
+      if (teamNameEl) teamNameEl.innerText = squadCallsign;
+
+      var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (currentUser && currentUser.currentClueIndex !== undefined ? currentUser.currentClueIndex : 0);
+      var card = activeCipherCard || getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
+
+      var sixDigitRaw = (card && card.sixDigitCode) ? card.sixDigitCode : '513347';
+      var formattedSixDigit = sixDigitRaw.slice(0, 2) + ' ' + sixDigitRaw.slice(2, 4) + ' ' + sixDigitRaw.slice(4, 6);
+      if (cipherEl) cipherEl.innerText = formattedSixDigit;
+
+      var targetZone = (currentMyTeam && currentMyTeam.activeClue && currentMyTeam.activeClue.zoneId) ? currentMyTeam.activeClue.zoneId : (currentAssignedZoneId || '');
+      var cardRankVal = (card && card.rank) ? card.rank : 13;
+      var cardCodeVal = (card && card.code) ? card.code : 'K';
+      var cardSuitVal = (card && card.suit) ? card.suit : '♠';
+      var qrPayload = 'TG|' + teamId + '|' + squadCallsign + '|' + cardRankVal + '|' + cardCodeVal + '|' + cardSuitVal + '|' + sixDigitRaw + '|' + targetZone;
+
+      if (qrCanvas) {
+        if (typeof QRCode !== 'undefined' && typeof QRCode.toString === 'function') {
+          QRCode.toString(qrPayload, {
+            type: 'svg',
+            margin: 1,
+            width: 190,
+            color: { dark: '#030712', light: '#FFFFFF' }
+          }, function(err, svgString) {
+            if (!err && svgString) {
+              qrCanvas.innerHTML = svgString;
+            } else if (typeof QRCode !== 'undefined') {
+              qrCanvas.innerHTML = '';
+              new QRCode(qrCanvas, { text: qrPayload, width: 190, height: 190 });
+            }
+          });
+        } else if (typeof QRCode !== 'undefined') {
+          qrCanvas.innerHTML = '';
+          new QRCode(qrCanvas, { text: qrPayload, width: 190, height: 190 });
         }
       }
+
+      modal.classList.remove('hidden');
+      toggleCardFlip(true);
     }
 
     function closePlayerScannerModal() {
       var modal = document.getElementById('player-scanner-modal');
-      if (playerHtml5QrCode && isPlayerScanning) {
-        playerHtml5QrCode.stop().then(function() {
-          isPlayerScanning = false;
-          if (modal) modal.classList.add('hidden');
-        }).catch(function() {
-          isPlayerScanning = false;
-          if (modal) modal.classList.add('hidden');
-        });
-      } else {
-        isPlayerScanning = false;
-        if (modal) modal.classList.add('hidden');
-      }
+      if (modal) modal.classList.add('hidden');
     }
 
     async function handlePlayerBeaconScan(decodedText) {
@@ -2194,3 +2563,4 @@
   </div>
   
 </body></html>
+

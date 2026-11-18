@@ -523,7 +523,9 @@ async function runAudit() {
     });
     report('Web assets in public/ are 100% in sync with app/src/main/assets/public/', assetMismatches.length === 0, assetMismatches.length > 0 ? assetMismatches.join(', ') : 'All 6 HTML files match');
 
-    const apkPath = 'C:/Users/LENOVO/Desktop/TerritoryGrid-debug.apk';
+    const releaseApk = 'C:/Users/LENOVO/Desktop/TerritoryGrid-release.apk';
+    const debugApk = 'C:/Users/LENOVO/Desktop/TerritoryGrid-debug.apk';
+    const apkPath = fs.existsSync(releaseApk) ? releaseApk : debugApk;
     const apkExists = fs.existsSync(apkPath);
     report(`Compiled Android APK exists at Desktop location (${apkPath})`, apkExists);
     if (apkExists) {

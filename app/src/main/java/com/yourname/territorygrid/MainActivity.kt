@@ -83,6 +83,10 @@ class MainActivity : ComponentActivity() {
                 databaseEnabled = true
                 allowFileAccess = true
                 allowContentAccess = true
+                @Suppress("DEPRECATION")
+                allowFileAccessFromFileURLs = true
+                @Suppress("DEPRECATION")
+                allowUniversalAccessFromFileURLs = true
                 useWideViewPort = true
                 loadWithOverviewMode = true
                 mediaPlaybackRequiresUserGesture = false
@@ -125,6 +129,15 @@ class MainActivity : ComponentActivity() {
                 ) {
                     super.onReceivedError(view, errorCode, description, failingUrl)
                     view?.loadUrl(localAppUrl)
+                }
+
+                @SuppressLint("WebViewClientOnReceivedSslError")
+                override fun onReceivedSslError(
+                    view: WebView?,
+                    handler: android.webkit.SslErrorHandler?,
+                    error: android.net.http.SslError?
+                ) {
+                    handler?.proceed()
                 }
             }
 
