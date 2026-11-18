@@ -293,6 +293,9 @@ class MemoryStore {
           updated_at: new Date().toISOString()
         })
       });
+      if (res.ok) {
+        this.lastSynced = Date.now();
+      }
       return res.ok;
     } catch (e) {
       console.warn('[CloudStore] Supabase save error:', e.message);
@@ -660,7 +663,7 @@ module.exports = async (req, res) => {
       };
 
       memoryStore.collections.users.push(newUser);
-      memoryStore.save();
+      await memoryStore.saveAsync();
       memoryStore.logEvent('REGISTER', `${newUser.role} "${newUser.callsign}" registered.`);
 
       return sendJson(res, 201, {
@@ -1082,7 +1085,7 @@ module.exports = async (req, res) => {
       }
 
       if (approvedAny) {
-        memoryStore.save();
+        await memoryStore.saveAsync();
         const logAction = approvedRole === 'MEMBER' ? 'APPROVE_USER' : 'APPROVE_TEAM';
         const logMsg = approvedRole === 'MEMBER'
           ? 'Field Marshal authorized: "' + approvedName + '" (' + cleanId + ')'
@@ -1119,7 +1122,7 @@ module.exports = async (req, res) => {
         }
       });
 
-      memoryStore.save();
+      await memoryStore.saveAsync();
       memoryStore.logEvent('APPROVE_ALL', 'Game Master batch-authorized all pending squads and field marshals (' + approvedCount + ' total).');
       broadcastEvent({ type: 'APPROVAL_UPDATE', batch: true, count: approvedCount, timestamp: Date.now() });
       return sendJson(res, 200, { success: true, count: approvedCount, message: 'Successfully authorized all ' + approvedCount + ' pending clearances.' });
@@ -1149,7 +1152,7 @@ module.exports = async (req, res) => {
       } else {
         memoryStore.collections.users = memoryStore.collections.users.filter(u => u._id !== cleanId);
       }
-      memoryStore.save();
+      await memoryStore.saveAsync();
       return sendJson(res, 200, { success: true, message: 'Entity removed.' });
     }
 
@@ -1223,7 +1226,7 @@ module.exports = async (req, res) => {
         t.updatedAt = new Date().toISOString();
       });
       memoryStore.collections.checkins = [];
-      memoryStore.save();
+      await memoryStore.saveAsync();
       memoryStore.logEvent('RESET_ALL_POINTS', `Game Master reset all points, cards, and checkpoint progress to 0 for ${teamCount} squads.`);
       broadcastEvent({ type: 'CHECKIN_AWARD', resetAll: true, timestamp: Date.now() });
       return sendJson(res, 200, { success: true, message: `All squad scores and progress reset to 0 (${teamCount} squads affected).` }, 'no-store, no-cache, max-age=0');
@@ -1243,7 +1246,7 @@ module.exports = async (req, res) => {
       memoryStore.collections.teams = [];
       memoryStore.collections.users = (memoryStore.collections.users || []).filter(u => u.role === 'ADMIN');
       memoryStore.collections.checkins = [];
-      memoryStore.save();
+      await memoryStore.saveAsync();
       memoryStore.logEvent('PURGE_ALL_TEAMS', `Game Master permanently purged all squads (${purgedTeamsCount}) and non-admin operatives.`);
       return sendJson(res, 200, { success: true, message: `All ${purgedTeamsCount} squads and operative accounts purged successfully.` }, 'no-store, no-cache, max-age=0');
     }
@@ -2283,7 +2286,7 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
         const route = resolveTeamRoute(t, targetClues, i);
         t.clueOrder = route.map(c => c._id);
       }
-      memoryStore.save();
+      await memoryStore.saveAsync();
       return sendJson(res, 200, { success: true, message: `Re-balanced routes for ${teams.length} squads across ${rawClues.length} stations.` });
     }
 
