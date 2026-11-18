@@ -190,7 +190,8 @@ class MemoryStore {
           details: 'Territory Grid Cloud Engine active.',
           timestamp: new Date().toISOString()
         }
-      ]
+      ],
+      savePoints: []
     };
     this.lastSynced = 0;
     this.lastModified = 0;
@@ -208,6 +209,9 @@ class MemoryStore {
         if (parsed && typeof parsed === 'object' && Array.isArray(parsed.users) && parsed.users.length > 0) {
           if (!Array.isArray(parsed.clues) || parsed.clues.length < 12) {
             parsed.clues = JSON.parse(JSON.stringify(INITIAL_CAMPUS_PLACES));
+          }
+          if (!Array.isArray(parsed.savePoints)) {
+            parsed.savePoints = [];
           }
           this.collections = parsed;
           this.isLoaded = true;
@@ -266,6 +270,11 @@ class MemoryStore {
           if (Array.isArray(cloudData.system_logs)) {
             this.collections.system_logs = cloudData.system_logs;
           }
+          if (Array.isArray(cloudData.savePoints)) {
+            this.collections.savePoints = cloudData.savePoints;
+          } else if (!Array.isArray(this.collections.savePoints)) {
+            this.collections.savePoints = [];
+          }
           this.lastSynced = Date.now();
           this.isLoaded = true;
           this.save(); // Local warm cache
@@ -315,6 +324,64 @@ class MemoryStore {
     });
     if (this.collections.system_logs.length > 300) this.collections.system_logs.pop();
     this.save();
+  }
+
+  createSavePoint(name, type = 'MANUAL', createdBy = 'Game Master Samay') {
+    if (!Array.isArray(this.collections.savePoints)) {
+      this.collections.savePoints = [];
+    }
+    const now = Date.now();
+    const teams = this.collections.teams || [];
+    const gs = this.collections.gameState || {};
+    const sortedTeams = [...teams].sort((a, b) => (b.score || 0) - (a.score || 0));
+    const topTeam = sortedTeams[0] ? `${sortedTeams[0].name || sortedTeams[0].callsign} (${sortedTeams[0].score || 0} pts)` : 'None';
+    const totalPoints = teams.reduce((sum, t) => sum + (t.score || 0), 0);
+
+    const sp = {
+      _id: 'sp_' + now + '_' + Math.random().toString(36).substr(2, 4),
+      name: name || `Save Point - ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+      type: type, // 'MANUAL', 'AUTO_CHECKIN', 'GAME_START', 'AUTO_PERIODIC'
+      timestamp: new Date().toISOString(),
+      createdBy: createdBy,
+      summary: {
+        phase: gs.status || 'LOBBY',
+        teamsCount: teams.length,
+        topTeam: topTeam,
+        totalPointsAwarded: totalPoints,
+        checkinsCount: (this.collections.checkins || []).length
+      },
+      snapshot: {
+        gameState: JSON.parse(JSON.stringify(gs)),
+        teams: JSON.parse(JSON.stringify(teams)),
+        users: JSON.parse(JSON.stringify(this.collections.users || [])),
+        checkins: JSON.parse(JSON.stringify(this.collections.checkins || [])),
+        clues: JSON.parse(JSON.stringify(this.collections.clues || []))
+      }
+    };
+
+    this.collections.savePoints.unshift(sp);
+    if (this.collections.savePoints.length > 50) {
+      this.collections.savePoints = this.collections.savePoints.slice(0, 50);
+    }
+    this.save();
+    return sp;
+  }
+
+  async restoreSavePoint(spId) {
+    if (!Array.isArray(this.collections.savePoints)) return null;
+    const sp = this.collections.savePoints.find(p => p._id === spId || p.id === spId);
+    if (!sp || !sp.snapshot) return null;
+
+    const snap = sp.snapshot;
+    if (snap.gameState) this.collections.gameState = JSON.parse(JSON.stringify(snap.gameState));
+    if (Array.isArray(snap.teams)) this.collections.teams = JSON.parse(JSON.stringify(snap.teams));
+    if (Array.isArray(snap.users)) this.collections.users = JSON.parse(JSON.stringify(snap.users));
+    if (Array.isArray(snap.checkins)) this.collections.checkins = JSON.parse(JSON.stringify(snap.checkins));
+    if (Array.isArray(snap.clues)) this.collections.clues = JSON.parse(JSON.stringify(snap.clues));
+
+    this.logEvent('SAVE_POINT_RESTORED', `Restored grid state from save point "${sp.name}" (${sp.timestamp})`);
+    await this.saveAsync();
+    return sp;
   }
 }
 
@@ -1408,6 +1475,123 @@ module.exports = async (req, res) => {
     }
 
     // ─────────────────────────────────────────────────────────
+    // 8.1. TACTICAL SAVE POINTS API (Create, List, Restore, Export, Delete)
+    // ─────────────────────────────────────────────────────────
+    if (pathname === '/api/savepoints' && req.method === 'GET') {
+      await memoryStore.syncFromCloud(false);
+      const points = memoryStore.collections.savePoints || [];
+      const list = points.map(p => ({
+        _id: p._id,
+        name: p.name,
+        type: p.type,
+        timestamp: p.timestamp,
+        createdBy: p.createdBy,
+        summary: p.summary
+      }));
+      return sendJson(res, 200, { success: true, count: list.length, savePoints: list });
+    }
+
+    if (pathname === '/api/savepoints/export' && req.method === 'GET') {
+      await memoryStore.syncFromCloud(false);
+      const spId = parsedUrl.query.id;
+      const points = memoryStore.collections.savePoints || [];
+      const sp = points.find(p => p._id === spId || p.id === spId);
+      if (!sp) return sendJson(res, 404, { success: false, error: 'Save point not found.' });
+
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Content-Disposition': `attachment; filename="savepoint_${sp._id}.json"`
+      });
+      return res.end(JSON.stringify(sp, null, 2));
+    }
+
+    if (pathname === '/api/savepoints' && req.method === 'POST') {
+      await memoryStore.syncFromCloud(true);
+      const body = await parseBody(req);
+      const spName = body.name || `Save Point - ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      const spType = body.type || 'MANUAL';
+      const createdBy = body.createdBy || 'Game Master Samay';
+
+      const sp = memoryStore.createSavePoint(spName, spType, createdBy);
+      memoryStore.logEvent('SAVE_POINT_CREATED', `Created save point "${sp.name}" with ${sp.summary.teamsCount} squads and ${sp.summary.totalPointsAwarded} total pts.`);
+      await memoryStore.saveAsync();
+
+      broadcastEvent({
+        type: 'SAVE_POINT_CREATED',
+        savePoint: { _id: sp._id, name: sp.name, timestamp: sp.timestamp, summary: sp.summary }
+      });
+
+      return sendJson(res, 200, { success: true, message: 'Save point created and persisted to 24/7 cloud vault.', savePoint: sp });
+    }
+
+    if (pathname === '/api/savepoints/restore' && req.method === 'POST') {
+      await memoryStore.syncFromCloud(true);
+      const body = await parseBody(req);
+      const spId = body.savePointId || body.id;
+      if (!spId) return sendJson(res, 400, { success: false, error: 'savePointId parameter is required.' });
+
+      const restoredSp = await memoryStore.restoreSavePoint(spId);
+      if (!restoredSp) return sendJson(res, 404, { success: false, error: 'Save point not found or invalid snapshot data.' });
+
+      broadcastEvent({
+        type: 'SAVE_POINT_RESTORED',
+        savePointId: restoredSp._id,
+        savePointName: restoredSp.name,
+        timestamp: new Date().toISOString()
+      });
+
+      return sendJson(res, 200, {
+        success: true,
+        message: `Grid successfully restored to "${restoredSp.name}"!`,
+        savePoint: { _id: restoredSp._id, name: restoredSp.name, timestamp: restoredSp.timestamp, summary: restoredSp.summary }
+      });
+    }
+
+    if (pathname === '/api/savepoints' && req.method === 'DELETE') {
+      await memoryStore.syncFromCloud(true);
+      const body = await parseBody(req);
+      const spId = body.id || parsedUrl.query.id;
+      if (!spId) return sendJson(res, 400, { success: false, error: 'id parameter is required.' });
+
+      if (Array.isArray(memoryStore.collections.savePoints)) {
+        memoryStore.collections.savePoints = memoryStore.collections.savePoints.filter(p => p._id !== spId && p.id !== spId);
+        await memoryStore.saveAsync();
+      }
+
+      return sendJson(res, 200, { success: true, message: 'Save point removed.' });
+    }
+
+    // Squad Verification Save Point Endpoint
+    if (pathname === '/api/team/savepoint' && req.method === 'POST') {
+      await memoryStore.syncFromCloud(false);
+      const body = await parseBody(req);
+      const { callsign, teamId } = body;
+
+      const teams = memoryStore.collections.teams || [];
+      const team = teams.find(t => 
+        (teamId && (t._id === teamId || t.id === teamId)) ||
+        (callsign && t.callsign && t.callsign.toLowerCase() === callsign.toLowerCase())
+      );
+
+      if (!team) return sendJson(res, 404, { success: false, error: 'Squad record not found.' });
+
+      const nowIso = new Date().toISOString();
+      team.lastSavePointAt = nowIso;
+      await memoryStore.saveAsync();
+
+      return sendJson(res, 200, {
+        success: true,
+        message: 'Squad save point confirmed and persisted in 24/7 cloud vault.',
+        savedAt: nowIso,
+        teamName: team.name || team.callsign,
+        score: team.score || 0,
+        currentClueIndex: team.currentClueIndex || 0,
+        cardsCount: (team.cards || []).length,
+        visitedZonesCount: (team.visitedZones || []).length
+      });
+    }
+
+    // ─────────────────────────────────────────────────────────
     // 9. GET & POST /api/game/state (Synchronized 52-Minute Hunt & 10-Second Countdown Engine)
     // ─────────────────────────────────────────────────────────
     if (pathname === '/api/game/state') {
@@ -1487,6 +1671,7 @@ module.exports = async (req, res) => {
           gs.totalPausedMs = 0;
           gs.endedAt = null;
 
+          memoryStore.createSavePoint('Match Countdown Initiated', 'GAME_START', 'System AutoSave');
           await memoryStore.saveAsync();
         } else if (reqStatus === 'START' || reqStatus === 'PLAYER_PHASE' || reqStatus === 'ACTIVE') {
           const durMins = parseInt(body.durationMinutes, 10) || 52;
@@ -1503,6 +1688,7 @@ module.exports = async (req, res) => {
           gs.totalPausedMs = 0;
           gs.endedAt = null;
 
+          memoryStore.createSavePoint('Match Live Phase Active', 'GAME_START', 'System AutoSave');
           await memoryStore.saveAsync();
         } else if (reqStatus === 'PAUSE' || reqStatus === 'PAUSED') {
           gs.status = 'PAUSED';
@@ -2582,9 +2768,16 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
       }
       team.currentClueIndex = (team.currentClueIndex || 0) + 1;
       team.updatedAt = new Date().toISOString();
+      team.lastSavePointAt = team.updatedAt;
+      team.lastSavePointStation = recordedZone;
+
+      // Auto-milestone save point every 5 check-ins across campus
+      if (memoryStore.collections.checkins.length % 5 === 0) {
+        memoryStore.createSavePoint(`Milestone: ${memoryStore.collections.checkins.length} Total Check-ins`, 'AUTO_MILESTONE', 'System AutoSave');
+      }
 
       await memoryStore.saveAsync();
-      memoryStore.logEvent('CHECKIN', 'Team "' + team.name + '" awarded +' + totalPoints + ' PTS at ' + recordedZone + ' (Total: ' + team.score + ' PTS)');
+      memoryStore.logEvent('CHECKIN', 'Team "' + team.name + '" awarded +' + totalPoints + ' PTS at ' + recordedZone + ' (Total: ' + team.score + ' PTS) [Save Point Locked]');
 
       const nextClue = (activeClues.length > 0) ? resolveTeamTargetClue(team, activeClues) : null;
 
@@ -2600,6 +2793,9 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
         nextZoneLabel: nextClue ? (nextClue.zoneLabel || nextClue.zoneId) : 'ALL CHECKPOINTS CLEARED',
         nextClueText: nextClue ? nextClue.text : 'All campus beacons verified! Report to Game Master Central.',
         allCompleted: !nextClue,
+        savePointCreated: true,
+        lastSavePointStation: recordedZone,
+        lastSavePointAt: team.lastSavePointAt,
         timestamp: Date.now()
       });
 
@@ -2613,7 +2809,10 @@ function resolveTeamTargetClue(team, activeClues, teamIndex = 0) {
         nextZoneId: nextClue ? nextClue.zoneId : null,
         nextZoneLabel: nextClue ? (nextClue.zoneLabel || nextClue.zoneId) : 'ALL CHECKPOINTS CLEARED',
         nextClueText: nextClue ? nextClue.text : 'All campus beacons verified! Report to Game Master Central.',
-        allCompleted: !nextClue
+        allCompleted: !nextClue,
+        savePointCreated: true,
+        lastSavePointStation: recordedZone,
+        lastSavePointAt: team.lastSavePointAt
       });
     }
 

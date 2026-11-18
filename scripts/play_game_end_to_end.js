@@ -66,7 +66,7 @@ async function play() {
     // ─────────────────────────────────────────────────────────
     console.log('--- ACT 1: ADMIN LOGIN & RESET ---');
     attachPageListeners(page, 'Login_Admin');
-    await page.goto(`${BASE_URL}/login.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/login.html`, { waitUntil: 'domcontentloaded' });
     console.log('   Navigated to login.html');
 
     // Select Game Master portal
@@ -78,7 +78,7 @@ async function play() {
     console.log('   Filled Admin credentials (samay/samay)');
 
     await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 }).catch(() => {}),
+      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {}),
       page.evaluate(() => {
         const form = document.getElementById('auth-form');
         if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
@@ -88,7 +88,7 @@ async function play() {
 
     // If on admin panel or game master, reset points and purge old test teams
     attachPageListeners(page, 'Admin_Panel');
-    await page.goto(`${BASE_URL}/admin_panel.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/admin_panel.html`, { waitUntil: 'domcontentloaded' });
     await sleep(1500);
 
     // Call reset and purge
@@ -104,7 +104,7 @@ async function play() {
     // ACT 2: PLAYER 1 SQUAD REGISTRATION
     // ─────────────────────────────────────────────────────────
     console.log('\n--- ACT 2: SQUAD REGISTRATION (Alpha Squad) ---');
-    await page.goto(`${BASE_URL}/login.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/login.html`, { waitUntil: 'domcontentloaded' });
     attachPageListeners(page, 'Player_Reg');
 
     const regResult = await page.evaluate(async () => {
@@ -156,7 +156,7 @@ async function play() {
     // ACT 4: ADMIN APPROVAL & START COUNTDOWN
     // ─────────────────────────────────────────────────────────
     console.log('\n--- ACT 4: ADMIN APPROVAL & START HUNT ---');
-    await page.goto(`${BASE_URL}/admin_panel.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/admin_panel.html`, { waitUntil: 'domcontentloaded' });
     await sleep(1500);
 
     const startResult = await page.evaluate(async () => {
@@ -196,7 +196,7 @@ async function play() {
     // ─────────────────────────────────────────────────────────
     console.log('\n--- ACT 5: SQUAD LOGS IN & VIEWS CARD (Player Portal) ---');
     // Set localStorage as player "alpha"
-    await page.goto(`${BASE_URL}/login.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/login.html`, { waitUntil: 'domcontentloaded' });
     await page.evaluate(() => {
       selectPortal('PLAYER');
       document.getElementById('input-callsign').value = 'alpha';
@@ -204,7 +204,7 @@ async function play() {
     });
 
     await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 }).catch(() => {}),
+      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {}),
       page.evaluate(() => {
         const form = document.getElementById('auth-form');
         if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
@@ -213,7 +213,7 @@ async function play() {
     console.log(`   Player Login Destination: ${page.url()}`);
 
     attachPageListeners(page, 'Player_Dashboard');
-    await page.goto(`${BASE_URL}/player_dashboard.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/player_dashboard.html`, { waitUntil: 'domcontentloaded' });
     await sleep(2500);
 
     // Inspect Player UI elements
@@ -243,7 +243,7 @@ async function play() {
     // ─────────────────────────────────────────────────────────
     console.log('\n--- ACT 6: FIELD MARSHAL ENTERS CODE (Marshal Portal) ---');
     // Login as Marshal
-    await page.goto(`${BASE_URL}/login.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/login.html`, { waitUntil: 'domcontentloaded' });
     await page.evaluate(() => {
       selectPortal('MEMBER');
       document.getElementById('input-callsign').value = 'marshal1';
@@ -251,7 +251,7 @@ async function play() {
     });
 
     await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 }).catch(() => {}),
+      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {}),
       page.evaluate(() => {
         const form = document.getElementById('auth-form');
         if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
@@ -260,7 +260,7 @@ async function play() {
     console.log(`   Marshal Login Destination: ${page.url()}`);
 
     attachPageListeners(page, 'Marshal_Portal');
-    await page.goto(`${BASE_URL}/member_checkin.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/member_checkin.html`, { waitUntil: 'domcontentloaded' });
     await sleep(2500);
 
     const marshalStationInfo = await page.evaluate(() => {
@@ -315,21 +315,21 @@ async function play() {
     // ─────────────────────────────────────────────────────────
     console.log('\n--- ACT 7: VERIFYING PLAYER DASHBOARD SCORE UPDATE ---');
     // Restore player session
-    await page.goto(`${BASE_URL}/login.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/login.html`, { waitUntil: 'domcontentloaded' });
     await page.evaluate(() => {
       selectPortal('PLAYER');
       document.getElementById('input-callsign').value = 'alpha';
       document.getElementById('input-password').value = 'pass';
     });
     await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 }).catch(() => {}),
+      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {}),
       page.evaluate(() => {
         const form = document.getElementById('auth-form');
         if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
       })
     ]);
 
-    await page.goto(`${BASE_URL}/player_dashboard.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/player_dashboard.html`, { waitUntil: 'domcontentloaded' });
     await sleep(3000);
 
     const postAwardTelemetry = await page.evaluate(() => {
@@ -346,7 +346,7 @@ async function play() {
     // ─────────────────────────────────────────────────────────
     console.log('\n--- ACT 8: LIVE CHAMPIONSHIP LEADERBOARD ---');
     attachPageListeners(page, 'Leaderboard');
-    await page.goto(`${BASE_URL}/leaderboard.html`, { waitUntil: 'networkidle2' });
+    await page.goto(`${BASE_URL}/leaderboard.html`, { waitUntil: 'domcontentloaded' });
     await sleep(3500);
 
     const leaderboardTelemetry = await page.evaluate(() => {

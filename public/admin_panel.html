@@ -210,6 +210,13 @@
         <span>History</span>
         <span id="badge-logs-count" class="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 ml-0.5">0</span>
       </button>
+
+      <button onclick="switchTab('savepoints')" id="nav-btn-savepoints" 
+              class="px-3.5 py-1.5 text-xs font-headline font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition whitespace-nowrap">
+        <span class="material-symbols-outlined text-base">bookmark_manager</span>
+        <span>Save Points</span>
+        <span id="badge-savepoints-count" class="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold bg-cyan/20 text-cyan border border-cyan/40 ml-0.5">0</span>
+      </button>
     </div>
 
     <!-- Right Actions -->
@@ -291,6 +298,12 @@
                   class="flex-1 md:flex-initial px-3.5 py-2.5 rounded-xl border border-cyan/40 bg-cyan/15 hover:bg-cyan/25 text-cyan text-xs font-headline font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-[0_0_15px_rgba(0,240,255,0.25)]" title="Display Server Connection QR for Mobile APKs">
             <span class="material-symbols-outlined text-base">qr_code_2</span>
             <span>SERVER QR</span>
+          </button>
+
+          <button onclick="promptCreateSavePoint()" 
+                  class="flex-1 md:flex-initial px-3.5 py-2.5 rounded-xl border border-cyan/60 bg-cyan/20 hover:bg-cyan/30 text-cyan text-xs font-headline font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-[0_0_20px_rgba(0,240,255,0.35)]" title="Capture instant game snapshot & save point to 24/7 cloud vault">
+            <span class="material-symbols-outlined text-base">bookmark_add</span>
+            <span>SAVE POINT</span>
           </button>
 
           <button onclick="openAdminActionModal('reset-points')" 
@@ -816,6 +829,79 @@
 
     </div>
 
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- TAB 6: TACTICAL GAME SAVE POINTS & RECOVERY VAULT -->
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <div id="tab-content-savepoints" class="hidden space-y-6">
+      
+      <div class="neon-card rounded-2xl p-6 border-cyan/40 bg-[#080d1a]">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-cyan/20 pb-4 mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-cyan/20 border border-cyan/50 flex items-center justify-center text-cyan shadow-[0_0_16px_rgba(0,240,255,0.35)]">
+              <span class="material-symbols-outlined text-2xl">bookmark_manager</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-xl font-headline font-bold text-white">Tactical Game Save Points & Recovery Vault</h2>
+                <span id="badge-savepoints-total" class="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-cyan/20 text-cyan border border-cyan/40">
+                  0 SAVED
+                </span>
+              </div>
+              <p class="text-xs font-mono text-gray-400 mt-1">
+                Freeze, snapshot, and restore match state at any second. Backed up to 24/7 Supabase cloud vault with zero data loss.
+              </p>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="promptCreateSavePoint()" class="px-4 py-2 rounded-xl bg-cyan text-black font-headline font-bold text-xs flex items-center gap-1.5 hover:shadow-[0_0_15px_rgba(0,240,255,0.6)] transition cursor-pointer active:scale-95">
+              <span class="material-symbols-outlined text-base">add_box</span>
+              <span>Create New Save Point</span>
+            </button>
+            <button onclick="loadSavePoints()" class="p-2 rounded-xl border border-cyan/30 text-cyan hover:bg-cyan/10 transition cursor-pointer" title="Refresh Save Points">
+              <span class="material-symbols-outlined text-base">refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          <div class="bg-[#050a14] border border-cyan/20 rounded-xl p-3.5 flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-mono text-gray-400 uppercase">Save Vault Status</span>
+              <div class="text-sm font-headline font-bold text-green flex items-center gap-1.5 mt-0.5">
+                <span class="w-2 h-2 rounded-full bg-green animate-pulse"></span>
+                <span>24/7 Cloud Active</span>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-cyan text-2xl">cloud_sync</span>
+          </div>
+
+          <div class="bg-[#050a14] border border-cyan/20 rounded-xl p-3.5 flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-mono text-gray-400 uppercase">Total Snapshots</span>
+              <div class="text-base font-headline font-bold text-white mt-0.5" id="stat-savepoints-count">0</div>
+            </div>
+            <span class="material-symbols-outlined text-cyan text-2xl">history</span>
+          </div>
+
+          <div class="bg-[#050a14] border border-cyan/20 rounded-xl p-3.5 flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-mono text-gray-400 uppercase">Auto-Save Milestones</span>
+              <div class="text-sm font-headline font-bold text-cyan mt-0.5">Every 5 Check-ins</div>
+            </div>
+            <span class="material-symbols-outlined text-cyan text-2xl">auto_mode</span>
+          </div>
+        </div>
+
+        <!-- Save Points List Container -->
+        <div id="savepoints-list-container" class="space-y-3 max-h-[580px] overflow-y-auto pr-1">
+          <div class="text-center py-12 text-gray-400 font-mono text-xs">Loading save points...</div>
+        </div>
+      </div>
+
+    </div>
+
   </main>
 
   <!-- Tactical Audio & Network Resilience HUD -->
@@ -1000,7 +1086,7 @@
 
     function switchTab(tab) {
       activeTab = tab;
-      ['ops', 'approvals', 'places', 'database', 'history'].forEach(function(t) {
+      ['ops', 'approvals', 'places', 'database', 'history', 'savepoints'].forEach(function(t) {
         var content = document.getElementById('tab-content-' + t);
         var btn = document.getElementById('nav-btn-' + t);
         if (content && btn) {
@@ -1022,6 +1108,7 @@
       if (tab === 'approvals') { lastRenderedPendingHash = ''; lastRenderedApprovedHash = ''; loadPendingApprovals(); loadApprovedRoster(); }
       if (tab === 'ops') { lastRenderedRegisteredTeamsHash = ''; loadLeaderboard(); }
       if (tab === 'history') { lastRenderedLogsHash = ''; loadAdminLogs(); }
+      if (tab === 'savepoints') { loadSavePoints(); }
     }
 
     async function rebalanceAllSquadRoutes() {
@@ -1635,6 +1722,8 @@
             await loadPlaces();
           } else if (activeTab === 'history') {
             await loadAdminLogs();
+          } else if (activeTab === 'savepoints') {
+            await loadSavePoints();
           }
         } catch(e) {
           console.warn('Tab poll error:', e);
@@ -2774,6 +2863,153 @@
       downloadAnchor.click();
       downloadAnchor.remove();
       showAdminToast('Audit logs exported to JSON', 'info');
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // TACTICAL SAVE POINTS & RECOVERY VAULT CONTROLLER
+    // ─────────────────────────────────────────────────────────────
+    async function loadSavePoints() {
+      try {
+        var res = await fetch(apiUrl('/api/savepoints?_t=' + Date.now()), { cache: 'no-store' });
+        var data = await res.json();
+        var container = document.getElementById('savepoints-list-container');
+        var badge = document.getElementById('badge-savepoints-count');
+        var badgeTotal = document.getElementById('badge-savepoints-total');
+        var statCount = document.getElementById('stat-savepoints-count');
+
+        if (!data.success || !Array.isArray(data.savePoints) || data.savePoints.length === 0) {
+          if (badge) badge.innerText = '0';
+          if (badgeTotal) badgeTotal.innerText = '0 SAVED';
+          if (statCount) statCount.innerText = '0';
+          if (container) {
+            container.innerHTML = '<div class="text-center py-12 text-gray-500 font-mono text-xs border border-dashed border-gray-800 rounded-xl">' +
+              '<span class="material-symbols-outlined text-3xl mb-2 text-gray-600 block">bookmark_border</span>' +
+              'No save points recorded yet.<br><span class="text-[11px] text-gray-600 mt-1 block">Click "Create New Save Point" or start the match to generate automatic checkpoint snapshots.</span>' +
+              '</div>';
+          }
+          return;
+        }
+
+        var list = data.savePoints;
+        if (badge) badge.innerText = list.length;
+        if (badgeTotal) badgeTotal.innerText = list.length + ' SAVED';
+        if (statCount) statCount.innerText = list.length;
+
+        if (container) {
+          container.innerHTML = list.map(function(sp) {
+            var timeFormatted = new Date(sp.timestamp).toLocaleString();
+            var typeColor = (sp.type === 'GAME_START') ? 'bg-green/20 text-green border-green/30' :
+                            (sp.type === 'AUTO_MILESTONE') ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' :
+                            'bg-cyan/20 text-cyan border-cyan/30';
+            var safeName = (sp.name || 'Save Point').replace(/'/g, "\\'");
+            var summary = sp.summary || {};
+
+            return '<div class="bg-[#050a14] border border-cyan/25 hover:border-cyan/50 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition shadow-sm">' +
+              '<div class="flex items-start gap-3.5">' +
+                '<div class="w-10 h-10 rounded-xl bg-cyan/15 border border-cyan/30 flex items-center justify-center text-cyan shrink-0 mt-0.5">' +
+                  '<span class="material-symbols-outlined text-xl">bookmark</span>' +
+                '</div>' +
+                '<div>' +
+                  '<div class="flex items-center gap-2">' +
+                    '<span class="font-headline font-bold text-sm text-white">' + sp.name + '</span>' +
+                    '<span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ' + typeColor + ' border">' + sp.type + '</span>' +
+                  '</div>' +
+                  '<div class="text-xs font-mono text-gray-400 flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">' +
+                    '<span>🕒 ' + timeFormatted + '</span>' +
+                    '<span>👥 ' + (summary.teamsCount || 0) + ' Squads</span>' +
+                    '<span>⚡ Total: ' + (summary.totalPointsAwarded || 0) + ' PTS</span>' +
+                    '<span>🏆 Top: ' + (summary.topTeam || 'None') + '</span>' +
+                    '<span>📍 Check-ins: ' + (summary.checkinsCount || 0) + '</span>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="flex items-center gap-2 self-end md:self-center shrink-0">' +
+                '<button onclick="confirmRestoreSavePoint(\'' + sp._id + '\', \'' + safeName + '\')" class="px-3 py-1.5 rounded-lg bg-yellow/15 hover:bg-yellow/25 border border-yellow/40 text-yellow text-xs font-headline font-bold flex items-center gap-1 transition cursor-pointer active:scale-95" title="Restore game state to this exact snapshot">' +
+                  '<span class="material-symbols-outlined text-sm">settings_backup_restore</span>' +
+                  '<span>Restore</span>' +
+                '</button>' +
+                '<button onclick="downloadSavePointJSON(\'' + sp._id + '\')" class="p-1.5 rounded-lg border border-cyan/30 text-cyan hover:bg-cyan/15 transition cursor-pointer" title="Export JSON File">' +
+                  '<span class="material-symbols-outlined text-sm">download</span>' +
+                '</button>' +
+                '<button onclick="confirmDeleteSavePoint(\'' + sp._id + '\', \'' + safeName + '\')" class="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/15 transition cursor-pointer" title="Delete Save Point">' +
+                  '<span class="material-symbols-outlined text-sm">delete</span>' +
+                '</button>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load save points:', err);
+      }
+    }
+
+    async function promptCreateSavePoint() {
+      var defaultName = 'Save Point - ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var name = prompt('💾 CREATE GAME SAVE POINT\n\nEnter a label for this snapshot (or leave default):', defaultName);
+      if (name === null) return;
+      name = name.trim() || defaultName;
+
+      try {
+        var res = await fetch(apiUrl('/api/savepoints'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name, type: 'MANUAL', createdBy: 'Game Master Samay' })
+        });
+        var data = await res.json();
+        if (data.success) {
+          showAdminToast('💾 Save Point "' + name + '" created & persisted to cloud!', 'success');
+          loadSavePoints();
+        } else {
+          alert('Error: ' + (data.error || 'Failed to create save point'));
+        }
+      } catch (err) {
+        alert('Network error creating save point: ' + err.message);
+      }
+    }
+
+    async function confirmRestoreSavePoint(spId, spName) {
+      if (!confirm('⚠️ RESTORE GAME STATE FROM SAVE POINT?\n\nAre you sure you want to restore the entire grid to:\n"' + spName + '"?\n\nThis will restore all squads, points, cleared checkpoints, and game timer back to that exact snapshot moment!')) {
+        return;
+      }
+      try {
+        var res = await fetch(apiUrl('/api/savepoints/restore'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ savePointId: spId })
+        });
+        var data = await res.json();
+        if (data.success) {
+          showAdminToast('✅ Grid restored to "' + spName + '" successfully!', 'success');
+          loadLeaderboard();
+          loadApprovedRoster();
+          syncAdminGameState();
+          loadSavePoints();
+        } else {
+          alert('Error: ' + (data.error || 'Failed to restore save point'));
+        }
+      } catch (err) {
+        alert('Network error restoring save point: ' + err.message);
+      }
+    }
+
+    function downloadSavePointJSON(spId) {
+      window.open(apiUrl('/api/savepoints/export?id=' + encodeURIComponent(spId)), '_blank');
+    }
+
+    async function confirmDeleteSavePoint(spId, spName) {
+      if (!confirm('Delete save point "' + spName + '"?')) return;
+      try {
+        var res = await fetch(apiUrl('/api/savepoints'), {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: spId })
+        });
+        var data = await res.json();
+        if (data.success) {
+          showAdminToast('Save point deleted', 'info');
+          loadSavePoints();
+        }
+      } catch (err) {}
     }
 
     // ─────────────────────────────────────────────────────────────

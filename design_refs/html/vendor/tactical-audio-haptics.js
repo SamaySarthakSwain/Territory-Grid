@@ -216,13 +216,24 @@
     }
   };
 
+  function safeVibrate(pattern) {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        if (navigator.userActivation && !navigator.userActivation.hasBeenActive) {
+          return;
+        }
+        navigator.vibrate(pattern);
+      }
+    } catch (e) {}
+  }
+
   const tacticalHaptics = {
     light: function () {
       try {
         if (window.Capacitor?.Plugins?.Haptics) {
           window.Capacitor.Plugins.Haptics.impact({ style: 'LIGHT' }).catch(() => {});
-        } else if (navigator.vibrate) {
-          navigator.vibrate(15);
+        } else {
+          safeVibrate(15);
         }
       } catch (e) {}
     },
@@ -231,8 +242,8 @@
       try {
         if (window.Capacitor?.Plugins?.Haptics) {
           window.Capacitor.Plugins.Haptics.impact({ style: 'MEDIUM' }).catch(() => {});
-        } else if (navigator.vibrate) {
-          navigator.vibrate(30);
+        } else {
+          safeVibrate(30);
         }
       } catch (e) {}
     },
@@ -241,8 +252,8 @@
       try {
         if (window.Capacitor?.Plugins?.Haptics) {
           window.Capacitor.Plugins.Haptics.notification({ type: 'SUCCESS' }).catch(() => {});
-        } else if (navigator.vibrate) {
-          navigator.vibrate([30, 40, 60]);
+        } else {
+          safeVibrate([30, 40, 60]);
         }
       } catch (e) {}
     },
@@ -251,8 +262,8 @@
       try {
         if (window.Capacitor?.Plugins?.Haptics) {
           window.Capacitor.Plugins.Haptics.notification({ type: 'ERROR' }).catch(() => {});
-        } else if (navigator.vibrate) {
-          navigator.vibrate([60, 50, 80]);
+        } else {
+          safeVibrate([60, 50, 80]);
         }
       } catch (e) {}
     }

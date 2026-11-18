@@ -666,6 +666,30 @@
         </div>
       </div>
 
+      <!-- TACTICAL SQUAD SAVE POINT & CLOUD PERSISTENCE HUD -->
+      <div class="bg-surface-container/90 backdrop-blur-xl p-3.5 rounded-xl border border-primary/30 flex items-center justify-between gap-3 shadow-[0_0_15px_rgba(0,229,255,0.08)] relative overflow-hidden mb-1">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 rounded-xl bg-primary/15 border border-primary/40 flex items-center justify-center text-primary shrink-0 shadow-[0_0_10px_rgba(0,229,255,0.25)]">
+            <span class="material-symbols-outlined text-lg" id="savepoint-icon">cloud_done</span>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[10px] font-mono uppercase tracking-widest text-primary font-bold">SAVE POINT // CLOUD SECURED</span>
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-green animate-pulse" id="savepoint-dot"></span>
+            </div>
+            <div class="text-xs font-body font-semibold text-gray-200 truncate mt-0.5" id="savepoint-status-label">
+              Station Progress Locked to 24/7 Cloud
+            </div>
+          </div>
+        </div>
+        <button onclick="triggerSquadSavePointSync()" id="btn-squad-savepoint" 
+                class="px-3 py-1.5 rounded-lg border border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-headline font-bold flex items-center gap-1 transition active:scale-95 cursor-pointer shrink-0" 
+                title="Verify that your score & cards are 100% saved in the 24/7 Cloud Vault">
+          <span class="material-symbols-outlined text-sm" id="savepoint-btn-icon">sync</span>
+          <span id="savepoint-btn-text">Save Point</span>
+        </button>
+      </div>
+
       <!-- ACTIVE CLUE: Neon HUD Mission Card -->
       <!-- QUICK ACTIONS: Show My Check-In QR to Marshal -->
       <div class="w-full max-w-sm mx-auto mb-1">
@@ -1527,6 +1551,63 @@
       container.innerHTML = '<img src="' + qrImgUrl + '" alt="QR Cipher" class="w-full h-full object-contain rounded" onerror="this.onerror=null; this.parentElement.innerHTML=\'<div class=\\\'font-mono text-[10px] text-gray-800 font-bold text-center p-1 leading-tight\\\'>CIPHER KEY<br><span class=\\\'text-xs font-black\\\'>' + cardInfo.code + cardInfo.suit + '</span><br>' + cardInfo.token + '</div>\';" />';
     }
 
+    // ─────────────────────────────────────────────────────────────
+    // TACTICAL SQUAD SAVE POINT & SYNC VERIFIER
+    // ─────────────────────────────────────────────────────────────
+    async function triggerSquadSavePointSync() {
+      var btn = document.getElementById('btn-squad-savepoint');
+      var btnIcon = document.getElementById('savepoint-btn-icon');
+      var btnText = document.getElementById('savepoint-btn-text');
+      var label = document.getElementById('savepoint-status-label');
+
+      if (!currentUser) return;
+      if (btnIcon) btnIcon.classList.add('animate-spin');
+      if (btnText) btnText.innerText = 'Syncing...';
+
+      try {
+        var res = await fetch(apiUrl('/api/team/savepoint'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            callsign: currentUser.callsign,
+            teamId: currentUser.teamId || (currentMyTeam ? currentMyTeam._id : null)
+          })
+        });
+        var data = await res.json();
+        if (data.success) {
+          if (btn) {
+            btn.classList.remove('border-primary/40', 'bg-primary/10', 'text-primary');
+            btn.classList.add('border-green', 'bg-green/20', 'text-green');
+          }
+          if (btnIcon) {
+            btnIcon.classList.remove('animate-spin');
+            btnIcon.innerText = 'verified';
+          }
+          if (btnText) btnText.innerText = 'Saved!';
+          if (label) {
+            var timeStr = new Date(data.savedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            label.innerText = 'Verified at ' + timeStr + ' (' + (data.score || 0) + ' PTS Secured)';
+          }
+
+          if (window.tacticalFeedback && window.tacticalFeedback.success) {
+            window.tacticalFeedback.success();
+          }
+
+          setTimeout(function() {
+            if (btn) {
+              btn.classList.remove('border-green', 'bg-green/20', 'text-green');
+              btn.classList.add('border-primary/40', 'bg-primary/10', 'text-primary');
+            }
+            if (btnIcon) btnIcon.innerText = 'sync';
+            if (btnText) btnText.innerText = 'Save Point';
+          }, 3000);
+        }
+      } catch (err) {
+        if (btnIcon) btnIcon.classList.remove('animate-spin');
+        if (btnText) btnText.innerText = 'Save Point';
+      }
+    }
+
     // 1. Role Guard
     (function enforceClearance() {
       try {
@@ -1897,6 +1978,10 @@
                       var clueText = document.getElementById('active-clue-text');
                       if (clueText && evData.nextClueText) clueText.innerText = '“' + evData.nextClueText + '”';
                     }
+                    var spLabel = document.getElementById('savepoint-status-label');
+                    if (spLabel) {
+                      spLabel.innerText = 'Save Point Created: +' + evData.pointsAwarded + ' PTS (Total: ' + evData.teamScore + ' PTS)';
+                    }
                     showCheckpointClearedModal(evData.pointsAwarded, evData.teamScore, evData.nextZoneLabel, evData.nextClueText);
                     triggerAwardToast(evData.pointsAwarded, evData.teamScore, evData.nextZoneLabel);
                     if (window.tacticalFeedback?.award) window.tacticalFeedback.award();
@@ -1904,6 +1989,11 @@
                   }
                   syncTeamData();
                 }
+              } else if (evData && evData.type === 'SAVE_POINT_RESTORED') {
+                syncTeamData();
+                syncGameState();
+                var spLabel = document.getElementById('savepoint-status-label');
+                if (spLabel) spLabel.innerText = 'Grid Restored: ' + (evData.savePointName || 'Checkpoint');
               } else if (evData && evData.type === 'GAME_STATE_UPDATE') {
                 applyGameStatePayload(evData);
               }
@@ -2166,6 +2256,16 @@
       if (ring) ring.setAttribute('stroke-dashoffset', strokeOffset);
       var bar = document.getElementById('score-progress-bar');
       if (bar) bar.style.width = Math.max(Math.round(pct * 100), 5) + '%';
+
+      var spLabel = document.getElementById('savepoint-status-label');
+      if (spLabel) {
+        var clearedCount = (data.visitedZones || []).length;
+        if (clearedCount > 0) {
+          spLabel.innerText = 'Secured: ' + clearedCount + ' Checkpoint' + (clearedCount > 1 ? 's' : '') + ' (' + currentScore + ' PTS Locked)';
+        } else {
+          spLabel.innerText = 'Initial Save Point // 0% Data Loss Guaranteed';
+        }
+      }
 
       // 2. Cards Inventory
       var cards = data.cards || [];
