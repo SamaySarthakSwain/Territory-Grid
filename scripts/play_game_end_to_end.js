@@ -163,12 +163,12 @@ async function play() {
       try {
         // Approve all
         await fetch(apiUrl('/api/admin/approve-all'), { method: 'POST', body: '{}' });
-        // Start countdown (10s countdown -> PLAYER_PHASE)
+        // Start countdown (3s countdown -> PLAYER_PHASE)
         const res = await fetch(apiUrl('/api/game/state'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            action: 'start_countdown',
+            status: 'COUNTDOWN',
             countdownSeconds: 3,
             durationMinutes: 52
           })

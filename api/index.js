@@ -1469,7 +1469,7 @@ module.exports = async (req, res) => {
 
       if (req.method === 'POST') {
         const body = await parseBody(req);
-        const reqStatus = body.status || body.action;
+        const reqStatus = String(body.status || body.action || '').toUpperCase();
 
         if (reqStatus === 'START_COUNTDOWN' || reqStatus === 'COUNTDOWN') {
           const cdMs = (parseInt(body.countdownSeconds, 10) || 10) * 1000;
