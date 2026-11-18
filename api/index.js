@@ -441,8 +441,10 @@ module.exports = async (req, res) => {
     pathname = '/api' + (pathname.startsWith('/') ? '' : '/') + pathname;
   }
 
-  // Sync fresh state from Supabase Cloud Store on cold start or non-mutating reads
-  if (req.method === 'GET' || req.method === 'HEAD' || memoryStore.lastSynced === 0) {
+  // Sync fresh state from Supabase Cloud Store (Force fresh sync for mutating requests)
+  if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE' || memoryStore.lastSynced === 0) {
+    await memoryStore.syncFromCloud(true);
+  } else {
     await memoryStore.syncFromCloud(false);
   }
 

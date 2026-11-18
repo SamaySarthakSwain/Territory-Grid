@@ -15,6 +15,14 @@ async function run() {
   const health = await healthRes.json();
   console.log(`   Health: ${health.status}, Teams: ${health.database?.counts?.teamsTotal}, Marshals: ${health.database?.counts?.marshals}`);
 
+  // Step 1b: Clean slate
+  console.log('   Resetting scores to 0 for test...');
+  await fetch(`${BASE_URL}/api/admin/teams/reset-all-points`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
+  });
+
   // Step 2: Fetch Squad & Target Station
   console.log('\n2️⃣ Fetching Squad Telemetry...');
   const teamsRes = await fetch(`${BASE_URL}/api/teams`);
