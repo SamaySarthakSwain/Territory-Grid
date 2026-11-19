@@ -1,17 +1,17 @@
-# Graph Report - Territory Grid  (2026-11-17)
+# Graph Report - Territory Grid  (2026-11-19)
 
 ## Corpus Check
-- 371 files · ~300,680 words
+- 383 files · ~350,729 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 35 file(s) not represented in the graph (top: .xml 18, (none) 5, .properties 4)
+- Unclassified: 40 file(s) not represented in the graph (top: .xml 18, (none) 5, .properties 4)
 
 ## Summary
-- 6948 nodes · 12719 edges · 419 communities (173 shown, 246 thin omitted)
+- 6900 nodes · 12669 edges · 423 communities (166 shown, 257 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 290 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `95c0affc`
+- Built from commit: `d9c0c3c3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -86,7 +86,7 @@
 - reset_app.sh script
 - run_website.sh script
 - shot.sh script
-- rt
+- ne
 - p
 - p
 - p
@@ -120,7 +120,7 @@
 - xe
 - xe
 - er
-- UserProfile
+- xe
 - ae
 - be
 - xt
@@ -145,7 +145,7 @@
 - ft
 - public/vendor/qrcode.bundle.js
 - public/vendor/qrcode.min.js
-- wt
+- ie
 - et
 - et
 - ee
@@ -153,9 +153,9 @@
 - et
 - ht
 - pe
-- ar
+- dt
 - ee
-- ie
+- et
 - ht
 - pe
 - x
@@ -173,7 +173,7 @@
 - gr
 - je
 - ze
-- with
+- a
 - or
 - je
 - ze
@@ -189,43 +189,43 @@
 - j
 - it
 - gr
-- ne
+- rt
 - j
 - we
 - ve
 - gr
 - ve
-- pr
+- j
 - lt
 - we
 - ve
 - gr
 - lt
 - fe
-- steps
+- w
 - R
 - ve
 - lt
 - w
-- ce
+- ne
 - lt
 - w
 - we
-- .encode
-- Vr
+- at
+- fe
 - y
-- m
+- I
 - ot
 - ar
 - we
 - ot
 - at
-- b
-- b
+- fe
+- at
 - me
 - wr
 - at
-- oe
+- m
 - me
 - wr
 - me
@@ -235,14 +235,16 @@
 - apply_all_fixes.js
 - b
 - l
+- T
+- b
 - y
-- bt
+- l
 - ae
-- le
-- ne
-- zt
+- oe
+- l
+- T
 - ExampleInstrumentedTest.java
-- Qe
+- bt
 - y
 - y
 - ref_http
@@ -250,20 +252,20 @@
 - pe
 - R
 - ye
-- Qe
 - Nr
 - pe
 - ye
 - Nr
 - Nr
 - ye
-- R
+- ct
 - fr
-- xe
+- he
 - Qe
-- O
+- ct
 - fr
-- xt
+- O
+- Qe
 - fr
 - ye
 - fr
@@ -280,6 +282,7 @@
 - update_api_robust_approvals.js
 - ut
 - kt
+- pt
 - xt
 - ut
 - kt
@@ -291,6 +294,7 @@
 - ut
 - replace_api_auth_status.js
 - update_backend_endpoints.js
+- yt
 - CloudBackedStore
 - update_admin_and_marshal_clocks.js
 - k
@@ -442,7 +446,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (419 total, 246 thin omitted)
+## Communities (423 total, 257 thin omitted)
 
 ### Community 0 - "LoginScreen.kt"
 Cohesion: 0.07
@@ -457,24 +461,24 @@ Cohesion: 0.07
 Nodes (13): ComponentGalleryScreen(), ComponentGalleryScreenPreview(), OfflineBanner(), OfflineBannerPreview(), PendingSyncBadge(), EmptyState(), ErrorState(), LoadingOverlay() (+5 more)
 
 ### Community 4 - "SettingsManager.kt"
-Cohesion: 0.11
-Nodes (3): SettingsManager, SettingsManagerImpl, SettingsModule
+Cohesion: 0.08
+Nodes (4): SettingsManager, SettingsManagerImpl, SettingsModule, FakeSettingsManager
 
 ### Community 5 - "BottomNavBar.kt"
 Cohesion: 0.10
 Nodes (9): BottomNavBar(), BottomNavBarPreview(), BottomNavItem, BeaconCone, GREEN, RED, YELLOW, ConeChip() (+1 more)
 
 ### Community 6 - "Clue"
-Cohesion: 0.10
-Nodes (5): toClue(), ClueRepository, Clue, FakeClueRepository, MemberCheckinViewModelTest
+Cohesion: 0.09
+Nodes (6): toClue(), ClueRepository, Clue, CalculatePointsUseCase, FakeClueRepository, MemberCheckinViewModelTest
 
 ### Community 7 - "SettingsScreen.kt"
 Cohesion: 0.16
 Nodes (3): RolePill(), SettingsScreen(), SettingToggleRow()
 
 ### Community 8 - "GameStatus"
-Cohesion: 0.09
-Nodes (11): toGameState(), GameRepository, GameRepositoryImpl, GameState, GameStatus, ENDED, LOBBY, MEMBER_PHASE (+3 more)
+Cohesion: 0.07
+Nodes (17): toGameState(), GameRepository, GameRepositoryImpl, GameState, GameStatus, ENDED, LOBBY, MEMBER_PHASE (+9 more)
 
 ### Community 9 - "ConfirmDialog.kt"
 Cohesion: 0.17
@@ -483,6 +487,10 @@ Nodes (3): ConfirmDialog(), ConfirmDialogPreview(), ChamferedShape
 ### Community 10 - "PlayerRootScreen.kt"
 Cohesion: 0.09
 Nodes (17): GlassCard(), GlassCardPreview(), ActiveCardCipherSection(), ActiveMissionDirectiveCard(), CardsTabScreen(), CollectedDeckMiniLog(), HuntTabScreen(), LeaderboardRow() (+9 more)
+
+### Community 11 - "MemberCheckinViewModelTest.kt"
+Cohesion: 0.09
+Nodes (10): AuthState, Error, Loading, Network, NoRole, NoUserDocument, SignedIn, SignedOut (+2 more)
 
 ### Community 12 - "f"
 Cohesion: 0.06
@@ -504,49 +512,57 @@ Nodes (15): toCheckin(), toTeam(), CheckinRepository, CheckinRepositoryImpl, Che
 Cohesion: 0.06
 Nodes (4): bt, ee, ne, rt
 
+### Community 18 - "sr"
+Cohesion: 0.04
+Nodes (3): b, O, sr
+
 ### Community 19 - "PlayingCardTile.kt"
 Cohesion: 0.11
 Nodes (5): GlowingScoreRing(), GlowingScoreRingPreview(), PlayingCardTile(), PlayingCardTilePreview(), TacticalColors
 
-### Community 20 - "CheckinRepositoryImpl.kt"
-Cohesion: 0.07
-Nodes (4): toUserProfile(), AuthRepositoryImpl, ClueRepositoryImpl, TeamRepositoryImpl
-
 ### Community 21 - "f"
-Cohesion: 0.06
-Nodes (3): a, f, l
+Cohesion: 0.08
+Nodes (3): a, f, n()
 
 ### Community 22 - "AuthRepository"
 Cohesion: 0.05
-Nodes (14): AuthRepository, AuthState, Error, Loading, Network, NoRole, NoUserDocument, SignedIn (+6 more)
+Nodes (5): AuthRepository, MemberCheckinViewModel, PlayerViewModel, SettingsUiState, SettingsViewModel
 
 ### Community 24 - "_"
-Cohesion: 0.06
-Nodes (12): _, d, e(), I, K, n(), oe, r() (+4 more)
+Cohesion: 0.05
+Nodes (13): _, ar, constructor(), d, e(), I, K, lr (+5 more)
+
+### Community 25 - "sr"
+Cohesion: 0.05
+Nodes (3): b, O, sr
 
 ### Community 26 - "UserProfile"
-Cohesion: 0.06
-Nodes (15): Role, ADMIN, MEMBER, PLAYER, AdminTab, CLUES, CONTROL, LIVE (+7 more)
+Cohesion: 0.05
+Nodes (18): toUserProfile(), AuthRepositoryImpl, Role, ADMIN, MEMBER, PLAYER, UserProfile, AdminTab (+10 more)
 
 ### Community 27 - "AdminRootScreen.kt"
 Cohesion: 0.12
 Nodes (15): AddClueDialog(), AddTeamDialog(), AddUserDialog(), AdminRootScreen(), ClueOrderPreviewDialog(), CluesTabContent(), ControlTabContent(), FilterRoleChip() (+7 more)
 
 ### Community 28 - "_"
-Cohesion: 0.04
-Nodes (14): _, ar, constructor(), d, e(), gt, K, lr (+6 more)
+Cohesion: 0.05
+Nodes (13): _, d, e(), I, K, n(), oe, r() (+5 more)
 
 ### Community 30 - "N"
 Cohesion: 0.05
 Nodes (3): ce, le, N
 
 ### Community 31 - "Team"
-Cohesion: 0.10
-Nodes (17): Team, MemberCheckinUiState, TeamArrivalStatus, ALREADY_CHECKED_IN, FINISHED, NONE_SELECTED, NOT_APPROVED, NOT_DUE (+9 more)
+Cohesion: 0.09
+Nodes (12): Team, MemberCheckinUiState, TeamArrivalStatus, ALREADY_CHECKED_IN, FINISHED, NONE_SELECTED, NOT_APPROVED, NOT_DUE (+4 more)
+
+### Community 32 - "N"
+Cohesion: 0.05
+Nodes (3): ce, le, N
 
 ### Community 33 - "c"
-Cohesion: 0.11
-Nodes (3): c, Q, Z
+Cohesion: 0.06
+Nodes (7): c, dr, encode(), Ir, Q, xe, Z
 
 ### Community 34 - "server.js"
 Cohesion: 0.17
@@ -557,20 +573,20 @@ Cohesion: 0.09
 Nodes (4): MainActivity, OnBackPressedCallback, WebChromeClient, WebViewClient
 
 ### Community 36 - "E"
-Cohesion: 0.09
-Nodes (3): E, te, ue
+Cohesion: 0.07
+Nodes (4): E, ie, te, ue
 
 ### Community 37 - "cr"
 Cohesion: 0.07
 Nodes (3): cr, mr, pr
 
 ### Community 38 - "N"
-Cohesion: 0.09
-Nodes (4): encode(), Ir, N, Xr
+Cohesion: 0.06
+Nodes (3): ce, le, N
 
 ### Community 40 - "_"
-Cohesion: 0.05
-Nodes (9): _, d, e(), g, le, n(), r(), t() (+1 more)
+Cohesion: 0.06
+Nodes (12): _, d, e(), I, K, n(), oe, r() (+4 more)
 
 ### Community 41 - "firestore-tests/package.json"
 Cohesion: 0.13
@@ -581,7 +597,7 @@ Cohesion: 0.17
 Nodes (6): DEFAULT_ADMIN, DEFAULT_CLUES, fs, memoryStore, path, url
 
 ### Community 43 - "N"
-Cohesion: 0.05
+Cohesion: 0.06
 Nodes (3): ce, le, N
 
 ### Community 44 - "cr"
@@ -598,11 +614,15 @@ Nodes (9): author, description, keywords, license, main, name, scripts, start (+
 
 ### Community 48 - "_"
 Cohesion: 0.07
-Nodes (11): _, d, e(), I, K, n(), r(), s (+3 more)
+Nodes (12): _, ar, constructor(), d, e(), gt, K, lr (+4 more)
 
 ### Community 50 - "Screen"
 Cohesion: 0.22
 Nodes (8): AdminRoot, Gallery, Login, MemberRoot, PlayerRoot, Screen, Settings, Splash
+
+### Community 51 - "cr"
+Cohesion: 0.08
+Nodes (3): cr, mr, pr
 
 ### Community 53 - "E"
 Cohesion: 0.08
@@ -621,96 +641,92 @@ Cohesion: 0.05
 Nodes (32): adminPath, content, fs, path, apiPath, approveImplementation, bIdx, content (+24 more)
 
 ### Community 60 - "E"
-Cohesion: 0.05
-Nodes (4): E, j, te, ue
+Cohesion: 0.09
+Nodes (3): E, te, ue
 
 ### Community 63 - "vercel.json"
 Cohesion: 0.50
 Nodes (3): cleanUrls, rewrites, version
 
 ### Community 64 - "ne"
-Cohesion: 0.08
+Cohesion: 0.09
+Nodes (3): bt, ne, rt
+
+### Community 72 - "ne"
+Cohesion: 0.09
 Nodes (3): bt, ne, rt
 
 ### Community 84 - "er"
-Cohesion: 0.08
-Nodes (4): er, I, tr, Xr
-
-### Community 85 - "f"
-Cohesion: 0.06
-Nodes (3): a, f, l
+Cohesion: 0.09
+Nodes (4): constructor(), er, ge, lr
 
 ### Community 86 - "Vr"
 Cohesion: 0.07
 Nodes (6): br(), ir(), or, rr(), Rr, Vr
 
 ### Community 87 - "c"
-Cohesion: 0.08
+Cohesion: 0.10
 Nodes (6): c, dr, encode(), Ir, Q, Z
 
 ### Community 88 - "Vr"
-Cohesion: 0.12
-Nodes (4): ir(), or, rr(), Rr
+Cohesion: 0.07
+Nodes (6): br(), ir(), or, rr(), Rr, Vr
 
 ### Community 90 - "Vr"
-Cohesion: 0.06
+Cohesion: 0.07
 Nodes (6): br(), ir(), or, rr(), Rr, Vr
 
 ### Community 91 - "c"
-Cohesion: 0.05
-Nodes (8): c, dr, encode(), he, Ir, Q, xe, Z
+Cohesion: 0.10
+Nodes (6): c, dr, encode(), Ir, Q, Z
 
 ### Community 92 - "c"
 Cohesion: 0.10
 Nodes (6): c, dr, encode(), Ir, Q, Z
 
 ### Community 93 - "x"
-Cohesion: 0.05
-Nodes (4): et, h, T, x
-
-### Community 101 - "it"
-Cohesion: 0.08
-Nodes (3): at, fe, it
+Cohesion: 0.07
+Nodes (3): h, T, x
 
 ### Community 103 - "wt"
-Cohesion: 0.07
-Nodes (5): ie, mt, pt, wt, yt
+Cohesion: 0.09
+Nodes (4): ie, mt, pt, wt
+
+### Community 104 - "m"
+Cohesion: 0.09
+Nodes (3): m, R, u
 
 ### Community 105 - "wt"
 Cohesion: 0.09
 Nodes (4): ie, mt, pt, wt
 
-### Community 113 - "er"
-Cohesion: 0.07
-Nodes (5): er, ge, I, tr, Xr
+### Community 106 - "m"
+Cohesion: 0.09
+Nodes (3): m, R, u
 
-### Community 114 - "UserProfile"
-Cohesion: 0.07
-Nodes (4): UserProfile, FakeAuthRepository, FakeTeamRepository, FakeSettingsManager
+### Community 108 - "T"
+Cohesion: 0.08
+Nodes (3): br(), T, Vr
 
 ### Community 115 - "ae"
 Cohesion: 0.07
 Nodes (3): ae, oe, se
 
-### Community 118 - "ar"
-Cohesion: 0.09
-Nodes (5): ar, constructor(), ge, gt, lr
+### Community 117 - "xt"
+Cohesion: 0.12
+Nodes (4): Qt, vt, xt, zt
 
-### Community 120 - "it"
-Cohesion: 0.08
-Nodes (3): at, fe, it
+### Community 118 - "ar"
+Cohesion: 0.11
+Nodes (4): ar, constructor(), gt, lr
 
 ### Community 121 - "x"
-Cohesion: 0.11
+Cohesion: 0.10
 Nodes (3): gt, h, x
 
-### Community 122 - "sr"
-Cohesion: 0.05
-Nodes (3): b, O, sr
-
 ### Community 123 - "x"
-Cohesion: 0.07
-Nodes (3): h, T, x
+Cohesion: 0.10
+Nodes (3): gt, h, x
 
 ### Community 124 - "ct"
 Cohesion: 0.10
@@ -719,6 +735,10 @@ Nodes (3): ct, ot, st
 ### Community 125 - "ct"
 Cohesion: 0.10
 Nodes (3): ct, ot, st
+
+### Community 126 - "tt"
+Cohesion: 0.11
+Nodes (3): de, nt, tt
 
 ### Community 128 - "assets/public/vendor/qrcode.bundle.js"
 Cohesion: 0.11
@@ -729,7 +749,7 @@ Cohesion: 0.11
 Nodes (11): An(), Ce(), en(), he(), je(), Mt(), nn(), Oe() (+3 more)
 
 ### Community 130 - "tt"
-Cohesion: 0.13
+Cohesion: 0.12
 Nodes (3): de, nt, tt
 
 ### Community 132 - "html/vendor/qrcode.bundle.js"
@@ -748,10 +768,6 @@ Nodes (11): An(), Ce(), en(), he(), je(), Mt(), nn(), Oe() (+3 more)
 Cohesion: 0.11
 Nodes (11): An(), Ce(), en(), he(), je(), Mt(), nn(), Oe() (+3 more)
 
-### Community 136 - "ft"
-Cohesion: 0.08
-Nodes (4): de, dt, ft, re
-
 ### Community 137 - "public/vendor/qrcode.bundle.js"
 Cohesion: 0.11
 Nodes (11): An(), Ce(), en(), he(), je(), Mt(), nn(), Oe() (+3 more)
@@ -760,45 +776,17 @@ Nodes (11): An(), Ce(), en(), he(), je(), Mt(), nn(), Oe() (+3 more)
 Cohesion: 0.11
 Nodes (11): An(), Ce(), en(), he(), je(), Mt(), nn(), Oe() (+3 more)
 
-### Community 139 - "wt"
-Cohesion: 0.08
-Nodes (4): ie, mt, pt, wt
-
-### Community 147 - "ar"
-Cohesion: 0.10
-Nodes (4): ar, constructor(), ge, lr
-
-### Community 149 - "ie"
-Cohesion: 0.12
-Nodes (4): constructor(), ge, ie, lr
-
-### Community 153 - "ae"
-Cohesion: 0.08
-Nodes (3): ae, oe, se
-
-### Community 160 - "tt"
-Cohesion: 0.12
-Nodes (3): de, nt, tt
+### Community 139 - "ie"
+Cohesion: 0.11
+Nodes (3): ie, mt, yt
 
 ### Community 162 - "pt"
 Cohesion: 0.11
 Nodes (3): mt, pt, yt
 
-### Community 167 - "with"
-Cohesion: 0.09
-Nodes (25): name, needs, runs-on, steps, jobs, android-build-check, web-and-system-audit, name (+17 more)
-
 ### Community 168 - "or"
-Cohesion: 0.07
-Nodes (6): br(), ir(), or, rr(), Rr, Vr
-
-### Community 180 - "j"
-Cohesion: 0.09
-Nodes (3): j, K, s
-
-### Community 183 - "ne"
-Cohesion: 0.08
-Nodes (3): bt, ne, rt
+Cohesion: 0.12
+Nodes (4): ir(), or, rr(), Rr
 
 ### Community 190 - "lt"
 Cohesion: 0.12
@@ -808,14 +796,6 @@ Nodes (3): jt, Jt(), lt
 Cohesion: 0.12
 Nodes (3): jt, Jt(), lt
 
-### Community 196 - "steps"
-Cohesion: 0.09
-Nodes (21): name, runs-on, steps, jobs, auto-heal-and-sync, name, on, push (+13 more)
-
-### Community 197 - "R"
-Cohesion: 0.09
-Nodes (3): m, R, u
-
 ### Community 199 - "lt"
 Cohesion: 0.12
 Nodes (3): jt, Jt(), lt
@@ -824,13 +804,9 @@ Nodes (3): jt, Jt(), lt
 Cohesion: 0.12
 Nodes (3): jt, Jt(), lt
 
-### Community 209 - "ot"
-Cohesion: 0.10
-Nodes (3): ct, ot, st
-
-### Community 212 - "ot"
-Cohesion: 0.10
-Nodes (3): ct, ot, st
+### Community 208 - "I"
+Cohesion: 0.18
+Nodes (3): I, tr, Xr
 
 ### Community 226 - "apply_all_fixes.js"
 Cohesion: 0.14
@@ -1138,23 +1114,23 @@ Nodes (3): http, invokeHandler(), runSquadTest()
 
 ## Knowledge Gaps
 - **44 isolated node(s):** `Loading`, `Network`, `NoRole`, `NoUserDocument`, `SignedOut` (+39 more)
-  These have ≤1 connection - possible missing edges. (Counts symbols only; 2927 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **246 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges. (Counts symbols only; 2900 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **257 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `_` connect `_` to `O`, `fr`, `ye`, `ee`, `et`, `ht`, `pe`, `ar`, `sr`, `f`, `kt`, `xt`, `ut`, `zt`, `cr`, `N`, `re`, `je`, `tt`, `ze`, `it`, `E`, `ne`, `gr`, `j`, `ve`, `we`, `lt`, `w`, `Vr`, `m`, `at`, `b`, `Vr`, `p`, `c`, `me`, `wr`, `be`, `ft`, `ke`, `wt`, `m`, `ae`, `zt`, `er`, `Nr`, `xe`, `Qe`, `y`, `x`, `ct`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
+- **Why does `_` connect `_` to `fr`, `ye`, `ee`, `et`, `ht`, `sr`, `pe`, `f`, `kt`, `xt`, `ut`, `zt`, `yt`, `cr`, `N`, `re`, `je`, `tt`, `ze`, `it`, `E`, `gr`, `j`, `rt`, `ve`, `we`, `lt`, `w`, `ne`, `at`, `fe`, `Vr`, `p`, `c`, `me`, `wr`, `be`, `ft`, `ke`, `wt`, `m`, `ae`, `oe`, `l`, `T`, `er`, `bt`, `xe`, `Nr`, `y`, `x`, `ct`?**
+  _High betweenness centrality (0.040) - this node is a cross-community bridge._
 - **What connects `Loading`, `Network`, `NoRole` to the rest of the system?**
   _44 weakly-connected nodes found - possible missing edges._
 - **Should `LoginScreen.kt` be split into smaller, more focused modules?**
   _Cohesion score 0.06704260651629072 - nodes in this community are weakly interconnected._
-- **Why does `_` connect `_` to `xt`, `ft`, `fr`, `f`, `ee`, `ht`, `pe`, `sr`, `ae`, `N`, `kt`, `ut`, `cr`, `je`, `ze`, `gr`, `E`, `ve`, `rt`, `lt`, `w`, `we`, `p`, `R`, `b`, `Vr`, `c`, `oe`, `x`, `Qe`, `me`, `wr`, `it`, `ke`, `bt`, `wt`, `m`, `ne`, `er`, `y`, `xt`, `be`, `ye`, `Nr`, `ct`, `tt`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+- **Why does `_` connect `_` to `ct`, `tt`, `fr`, `ft`, `O`, `Qe`, `et`, `ee`, `ae`, `dt`, `ht`, `kt`, `ut`, `xt`, `N`, `zt`, `pt`, `E`, `a`, `or`, `je`, `ze`, `cr`, `j`, `ne`, `gr`, `lt`, `fe`, `w`, `R`, `ve`, `p`, `ar`, `we`, `er`, `f`, `ot`, `c`, `at`, `m`, `me`, `wr`, `ke`, `pe`, `b`, `y`, `l`, `ye`, `T`, `xe`, `be`, `Nr`, `x`, `sr`, `it`?**
+  _High betweenness centrality (0.036) - this node is a cross-community bridge._
 - **Should `MemberRootScreen.kt` be split into smaller, more focused modules?**
   _Cohesion score 0.14408602150537633 - nodes in this community are weakly interconnected._
-- **Why does `_` connect `_` to `xe`, `Qe`, `O`, `wt`, `et`, `ee`, `ut`, `kt`, `f`, `x`, `xt`, `re`, `zt`, `m`, `tt`, `c`, `gr`, `je`, `N`, `ze`, `w`, `ht`, `cr`, `j`, `E`, `pr`, `lt`, `we`, `ve`, `ce`, `.encode`, `y`, `ot`, `p`, `Vr`, `me`, `wr`, `be`, `ft`, `ke`, `b`, `l`, `le`, `sr`, `er`, `ae`, `Nr`, `pe`, `ar`, `R`, `it`, `ye`, `fr`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+- **Why does `_` connect `_` to `he`, `Qe`, `O`, `ie`, `et`, `ee`, `ut`, `kt`, `pt`, `f`, `x`, `xt`, `re`, `zt`, `m`, `tt`, `c`, `gr`, `je`, `N`, `ze`, `w`, `ht`, `cr`, `j`, `E`, `lt`, `we`, `ve`, `at`, `fe`, `y`, `I`, `ot`, `p`, `Vr`, `me`, `wr`, `be`, `ft`, `ke`, `b`, `l`, `T`, `sr`, `er`, `ae`, `Nr`, `pe`, `R`, `ye`, `it`, `ct`, `fr`?**
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
 - **Should `AdminViewModel` be split into smaller, more focused modules?**
-  _Cohesion score 0.050505050505050504 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0553306342780027 - nodes in this community are weakly interconnected._

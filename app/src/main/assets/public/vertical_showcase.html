@@ -286,10 +286,7 @@
 
           <!-- Video Portal (Circular Aperture) -->
           <div class="w-[210px] h-[210px] rounded-full overflow-hidden border-2 border-cyan-400/70 shadow-[inset_0_0_25px_rgba(0,229,255,0.6),0_0_40px_rgba(44,241,0,0.35)] relative bg-black flex items-center justify-center">
-            <video id="hybrid-video" playsinline webkit-playsinline muted autoplay loop class="w-full h-full object-cover">
-              <source src="assets/rec_intro_vertical_hybrid.mp4" type="video/mp4"/>
-              <source src="assets/rec_intro_vertical_glossy.mp4" type="video/mp4"/>
-            </video>
+            <video id="hybrid-video" src="assets/rec_intro_vertical_hybrid.mp4" playsinline webkit-playsinline muted autoplay loop class="w-full h-full object-cover"></video>
             <!-- High-Gloss Glass Reflection on Video Portal -->
             <div class="crystal-specular-crescent"></div>
             <div class="gloss-sheen-sweep"></div>
@@ -419,7 +416,7 @@
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
     <div id="view-design4" class="design-view absolute inset-0 z-20 flex flex-col items-center justify-center hidden">
       <video id="vert-video" playsinline webkit-playsinline muted loop class="w-full h-full object-cover">
-        <source src="assets/rec_intro_vertical_glossy.mp4" type="video/mp4"/>
+        <source src="assets/rec_intro_vertical_hybrid.mp4" type="video/mp4"/>
       </video>
     </div>
 

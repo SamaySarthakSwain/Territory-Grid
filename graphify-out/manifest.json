@@ -1,8 +1,8 @@
 {
   "api/index.js": {
-    "mtime": 1794900111.2653549,
-    "seen": 1794900358.027685,
-    "ast_hash": "bde403005592cc8c7e1f41f02fe56500",
+    "mtime": 1795031410.1382027,
+    "seen": 1795088542.3669722,
+    "ast_hash": "74abbcf7a979c99dce9e9ab3004dd2b0",
     "semantic_hash": ""
   },
   "app/build.gradle.kts": {
@@ -19,9 +19,9 @@
     "ast_empty": true
   },
   "app/src/main/java/com/yourname/territorygrid/MainActivity.kt": {
-    "mtime": 1794549802.1194546,
-    "seen": 1794550649.3632457,
-    "ast_hash": "630653cfbfcc3c2bbaa842b56d356cfb",
+    "mtime": 1794978149.3554077,
+    "seen": 1795088542.3669722,
+    "ast_hash": "e5468aba35d2ba4e99f16f5188971bfe",
     "semantic_hash": ""
   },
   "app/src/main/java/com/yourname/territorygrid/TerritoryGridApp.kt": {
@@ -609,9 +609,9 @@
     "semantic_hash": "06719e908c6d721a891e7bce585939b8"
   },
   "web_server/data/territory_grid_mongodb.json": {
-    "mtime": 1794900135.2673693,
-    "seen": 1794900358.027685,
-    "ast_hash": "0f3da50ab8b40acc8ec75cc4a7aa7f23",
+    "mtime": 1794986771.327933,
+    "seen": 1795088542.3669722,
+    "ast_hash": "5bbbab27ac7dbce24a6ea700b5c1c192",
     "semantic_hash": ""
   },
   "web_server/package.json": {
@@ -621,9 +621,9 @@
     "semantic_hash": "b262d831e1b4f00e61c5809dcd66ae3b"
   },
   "web_server/server.js": {
-    "mtime": 1794819848.1918542,
-    "seen": 1794900358.027685,
-    "ast_hash": "e651056542329a18b0749b9e23234d74",
+    "mtime": 1794979435.4724703,
+    "seen": 1795088542.3669722,
+    "ast_hash": "33d0fb1373bc959594cf6e877d7e38ad",
     "semantic_hash": ""
   },
   "android/app/build.gradle": {
@@ -1461,39 +1461,39 @@
     "semantic_hash": ""
   },
   "app/src/main/assets/public/admin_panel.html": {
-    "mtime": 1794899242.0915668,
-    "seen": 1794900358.027685,
-    "ast_hash": "ae73ef7ba41117916cdbe4161bcc342f",
+    "mtime": 1795031647.7526314,
+    "seen": 1795088542.3683786,
+    "ast_hash": "c5f8f12f9b203cc78316518fdf044c84",
     "semantic_hash": ""
   },
   "app/src/main/assets/public/index.html": {
-    "mtime": 1794843277.2436883,
-    "seen": 1794900358.027685,
-    "ast_hash": "ad8ade920d4a6d6e3e6eaf632ac501f7",
+    "mtime": 1794986535.4575298,
+    "seen": 1795088542.3683786,
+    "ast_hash": "025b7d8d470783825eeac2d6c3b1c5ae",
     "semantic_hash": ""
   },
   "app/src/main/assets/public/leaderboard.html": {
-    "mtime": 1794842819.9086413,
-    "seen": 1794900358.027685,
-    "ast_hash": "6e87b7985b34e53efc2d5c16aa785466",
+    "mtime": 1795057720.9114256,
+    "seen": 1795088542.3683786,
+    "ast_hash": "59cfe5833d942acbdce9c20cf47dc002",
     "semantic_hash": ""
   },
   "app/src/main/assets/public/login.html": {
-    "mtime": 1794898919.223968,
-    "seen": 1794900358.027685,
-    "ast_hash": "2ac223b11d0fc67a5b4b070ff15ef69a",
+    "mtime": 1795086666.3106072,
+    "seen": 1795088542.3683786,
+    "ast_hash": "136484d6725b0f685a97df27218f7e50",
     "semantic_hash": ""
   },
   "app/src/main/assets/public/member_checkin.html": {
-    "mtime": 1794899103.0869582,
-    "seen": 1794900358.027685,
-    "ast_hash": "7ba654c2f49ae21d24f42c84cc28725b",
+    "mtime": 1795057778.7180483,
+    "seen": 1795088542.3683786,
+    "ast_hash": "8191cb395e506c62cc3964c6c095cb71",
     "semantic_hash": ""
   },
   "app/src/main/assets/public/player_dashboard.html": {
-    "mtime": 1794899271.725222,
-    "seen": 1794900358.027685,
-    "ast_hash": "42de7630bf4e7c5da4d2b242b6d74aac",
+    "mtime": 1795057744.0350494,
+    "seen": 1795088542.3683786,
+    "ast_hash": "0af1cac7c724d28ad4db2db57507fd26",
     "semantic_hash": ""
   },
   "design_refs/DESIGN.md": {
@@ -1503,39 +1503,39 @@
     "semantic_hash": ""
   },
   "design_refs/html/admin_panel.html": {
-    "mtime": 1794899242.0915668,
-    "seen": 1794900358.027685,
-    "ast_hash": "ae73ef7ba41117916cdbe4161bcc342f",
+    "mtime": 1795031647.7526314,
+    "seen": 1795088542.3683786,
+    "ast_hash": "c5f8f12f9b203cc78316518fdf044c84",
     "semantic_hash": ""
   },
   "design_refs/html/index.html": {
-    "mtime": 1794843277.2436883,
-    "seen": 1794900358.027685,
-    "ast_hash": "ad8ade920d4a6d6e3e6eaf632ac501f7",
+    "mtime": 1794986535.4575298,
+    "seen": 1795088542.3683786,
+    "ast_hash": "025b7d8d470783825eeac2d6c3b1c5ae",
     "semantic_hash": ""
   },
   "design_refs/html/leaderboard.html": {
-    "mtime": 1794842819.9086413,
-    "seen": 1794900358.027685,
-    "ast_hash": "6e87b7985b34e53efc2d5c16aa785466",
+    "mtime": 1795024932.4417193,
+    "seen": 1795088542.3683786,
+    "ast_hash": "0a82e80e533cab82b25c7987321b6a40",
     "semantic_hash": ""
   },
   "design_refs/html/login.html": {
-    "mtime": 1794898919.223968,
-    "seen": 1794900358.027685,
-    "ast_hash": "2ac223b11d0fc67a5b4b070ff15ef69a",
+    "mtime": 1795026355.2442229,
+    "seen": 1795088542.3683786,
+    "ast_hash": "ac3f7dd4e0ece8d77991344c9b6c799a",
     "semantic_hash": ""
   },
   "design_refs/html/member_checkin.html": {
-    "mtime": 1794899103.0869582,
-    "seen": 1794900358.027685,
-    "ast_hash": "7ba654c2f49ae21d24f42c84cc28725b",
+    "mtime": 1795031806.003744,
+    "seen": 1795088542.3683786,
+    "ast_hash": "0b5cba0d3f4e7b693e07f04518625411",
     "semantic_hash": ""
   },
   "design_refs/html/player_dashboard.html": {
-    "mtime": 1794899271.725222,
-    "seen": 1794900358.027685,
-    "ast_hash": "42de7630bf4e7c5da4d2b242b6d74aac",
+    "mtime": 1795054989.2620747,
+    "seen": 1795088542.3683786,
+    "ast_hash": "81b8d9f9d97ca827c71a76e1fcb4bf6c",
     "semantic_hash": ""
   },
   "docs/ARCHITECTURE.md": {
@@ -1575,39 +1575,39 @@
     "semantic_hash": ""
   },
   "public/admin_panel.html": {
-    "mtime": 1794899242.0915668,
-    "seen": 1794900358.027685,
-    "ast_hash": "ae73ef7ba41117916cdbe4161bcc342f",
+    "mtime": 1795031647.7526314,
+    "seen": 1795088542.3683786,
+    "ast_hash": "c5f8f12f9b203cc78316518fdf044c84",
     "semantic_hash": ""
   },
   "public/index.html": {
-    "mtime": 1794843277.2436883,
-    "seen": 1794900358.027685,
-    "ast_hash": "ad8ade920d4a6d6e3e6eaf632ac501f7",
+    "mtime": 1794986535.4575298,
+    "seen": 1795088542.3683786,
+    "ast_hash": "025b7d8d470783825eeac2d6c3b1c5ae",
     "semantic_hash": ""
   },
   "public/leaderboard.html": {
-    "mtime": 1794842819.9086413,
-    "seen": 1794900358.027685,
-    "ast_hash": "6e87b7985b34e53efc2d5c16aa785466",
+    "mtime": 1795057712.4288266,
+    "seen": 1795088542.3683786,
+    "ast_hash": "59cfe5833d942acbdce9c20cf47dc002",
     "semantic_hash": ""
   },
   "public/login.html": {
-    "mtime": 1794898919.223968,
-    "seen": 1794900358.027685,
-    "ast_hash": "2ac223b11d0fc67a5b4b070ff15ef69a",
+    "mtime": 1795086666.3106072,
+    "seen": 1795088542.3683786,
+    "ast_hash": "136484d6725b0f685a97df27218f7e50",
     "semantic_hash": ""
   },
   "public/member_checkin.html": {
-    "mtime": 1794899103.0869582,
-    "seen": 1794900358.027685,
-    "ast_hash": "7ba654c2f49ae21d24f42c84cc28725b",
+    "mtime": 1795057770.2854357,
+    "seen": 1795088542.3683786,
+    "ast_hash": "8191cb395e506c62cc3964c6c095cb71",
     "semantic_hash": ""
   },
   "public/player_dashboard.html": {
-    "mtime": 1794899271.725222,
-    "seen": 1794900358.027685,
-    "ast_hash": "42de7630bf4e7c5da4d2b242b6d74aac",
+    "mtime": 1795057735.1711857,
+    "seen": 1795088542.3683786,
+    "ast_hash": "0af1cac7c724d28ad4db2db57507fd26",
     "semantic_hash": ""
   },
   "android/app/src/main/res/drawable-land-hdpi/splash.png": {
@@ -1850,18 +1850,6 @@
     "ast_hash": "b6806343f37f7f1e630587f3d8f12da4",
     "semantic_hash": ""
   },
-  ".github/workflows/autofix.yml": {
-    "mtime": 1794897616.14611,
-    "seen": 1794900358.027685,
-    "ast_hash": "883f2118059acb457771ffb2f46641db",
-    "semantic_hash": ""
-  },
-  ".github/workflows/ci.yml": {
-    "mtime": 1794897577.2470748,
-    "seen": 1794900358.027685,
-    "ast_hash": "d3fbf60b2847fe09890ef73e8c492b06",
-    "semantic_hash": ""
-  },
   "app/src/main/assets/public/vendor/canvas-confetti.min.js": {
     "mtime": 1794827576.901127,
     "seen": 1794900358.027685,
@@ -1875,9 +1863,9 @@
     "semantic_hash": ""
   },
   "app/src/main/assets/public/vendor/tactical-audio-haptics.js": {
-    "mtime": 1794841514.5363574,
-    "seen": 1794900358.027685,
-    "ast_hash": "df481ff12f8f63636831cc074cef5535",
+    "mtime": 1795026240.5317423,
+    "seen": 1795088542.3669722,
+    "ast_hash": "3e32994da980714f03b400f41ce9a7fa",
     "semantic_hash": ""
   },
   "app/src/main/assets/public/vendor/territory-geo.js": {
@@ -1899,9 +1887,9 @@
     "semantic_hash": ""
   },
   "design_refs/html/vendor/tactical-audio-haptics.js": {
-    "mtime": 1794841514.5363574,
-    "seen": 1794900358.027685,
-    "ast_hash": "df481ff12f8f63636831cc074cef5535",
+    "mtime": 1795026240.5317423,
+    "seen": 1795088542.3669722,
+    "ast_hash": "3e32994da980714f03b400f41ce9a7fa",
     "semantic_hash": ""
   },
   "design_refs/html/vendor/territory-geo.js": {
@@ -1923,9 +1911,9 @@
     "semantic_hash": ""
   },
   "public/vendor/tactical-audio-haptics.js": {
-    "mtime": 1794841514.5363574,
-    "seen": 1794900358.027685,
-    "ast_hash": "df481ff12f8f63636831cc074cef5535",
+    "mtime": 1795026240.5317423,
+    "seen": 1795088542.3669722,
+    "ast_hash": "3e32994da980714f03b400f41ce9a7fa",
     "semantic_hash": ""
   },
   "public/vendor/territory-geo.js": {
@@ -2541,9 +2529,9 @@
     "semantic_hash": ""
   },
   "scripts/system_health_audit.js": {
-    "mtime": 1794899297.801351,
-    "seen": 1794900358.027685,
-    "ast_hash": "8949f1b6401479bb9e316b0201c18291",
+    "mtime": 1794927063.2699208,
+    "seen": 1795088542.3669722,
+    "ast_hash": "2e7003715f1f0f082738745b6a1d56e2",
     "semantic_hash": ""
   },
   "scripts/test_full_approval_pipeline.js": {
@@ -2655,15 +2643,1017 @@
     "semantic_hash": ""
   },
   ".github/pull_request_template.md": {
-    "mtime": 1794897564.74783,
-    "seen": 1794900358.027685,
-    "ast_hash": "a9207fd72d40813ffc53b11c0a8d2a5f",
+    "mtime": 1795054881.9139907,
+    "seen": 1795088542.3669722,
+    "ast_hash": "a2bd254e4fc28eaee58fbee84475276c",
     "semantic_hash": ""
   },
   "GEMINI.md": {
     "mtime": 1794550666.196504,
     "seen": 1794900358.027685,
     "ast_hash": "67d88e9d0760c3ba54c75dfd9551c1c5",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/catalog.json": {
+    "mtime": 1795088370.5702636,
+    "seen": 1795088542.3669722,
+    "ast_hash": "72adab6f354ec46f5f5cee5ff2987541",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/catalog.json": {
+    "mtime": 1795088370.5702636,
+    "seen": 1795088542.3669722,
+    "ast_hash": "72adab6f354ec46f5f5cee5ff2987541",
+    "semantic_hash": ""
+  },
+  "scripts/apply_52s_card_rotation.js": {
+    "mtime": 1795054984.9451945,
+    "seen": 1795088542.3669722,
+    "ast_hash": "28addaeb7fdf93a680c7ed668c73ff5b",
+    "semantic_hash": ""
+  },
+  "scripts/play_game_end_to_end.js": {
+    "mtime": 1795026728.0725324,
+    "seen": 1795088542.3669722,
+    "ast_hash": "99c1514d5fc7436832883ac567c49f69",
+    "semantic_hash": ""
+  },
+  "scripts/seed_12_stations.js": {
+    "mtime": 1795015873.0828786,
+    "seen": 1795088542.3669722,
+    "ast_hash": "87d8b458f09c048c2587cb8b68b5710d",
+    "semantic_hash": ""
+  },
+  "scripts/test_52s_card_rotation.js": {
+    "mtime": 1795054963.7983487,
+    "seen": 1795088542.3669722,
+    "ast_hash": "74349d4189e0770a536b5cb062be8871",
+    "semantic_hash": ""
+  },
+  "scripts/test_cloud_speed.js": {
+    "mtime": 1794905474.2730093,
+    "seen": 1795088542.3669722,
+    "ast_hash": "8261816b4f3a1dd601f8dd34ebfa3f38",
+    "semantic_hash": ""
+  },
+  "scripts/test_complete_lan_gameplay.js": {
+    "mtime": 1794908754.2047436,
+    "seen": 1795088542.3669722,
+    "ast_hash": "54a7b26f803e067f3d862a37f9297407",
+    "semantic_hash": ""
+  },
+  "scripts/test_instant_award_and_location_sync.js": {
+    "mtime": 1794921011.0109851,
+    "seen": 1795088542.3669722,
+    "ast_hash": "d6c50661f647b5ca7c0442016861c948",
+    "semantic_hash": ""
+  },
+  "scripts/test_instant_game_start_all_portals.js": {
+    "mtime": 1794978435.602336,
+    "seen": 1795088542.3669722,
+    "ast_hash": "ab8a8421fa4230651b90028581467b4c",
+    "semantic_hash": ""
+  },
+  "scripts/test_marshal_code_checkin_and_leaderboard.js": {
+    "mtime": 1795025107.5646815,
+    "seen": 1795088542.3669722,
+    "ast_hash": "c948b0d99fd6f8d1723e4f8decfe4951",
+    "semantic_hash": ""
+  },
+  "scripts/test_save_points.js": {
+    "mtime": 1795031820.267466,
+    "seen": 1795088542.3669722,
+    "ast_hash": "0c9d386c023c376fe0eb4495cc80a6c3",
+    "semantic_hash": ""
+  },
+  "scripts/test_supabase_sync.js": {
+    "mtime": 1795015803.6633685,
+    "seen": 1795088542.3669722,
+    "ast_hash": "4065d24fbfe07964e852348aeada2925",
+    "semantic_hash": ""
+  },
+  "scripts/verify_all_components_detailed.js": {
+    "mtime": 1794976368.1692948,
+    "seen": 1795088542.3669722,
+    "ast_hash": "04dee445a90d31c7841010df9928b364",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/download.html": {
+    "mtime": 1794986535.4525232,
+    "seen": 1795088542.3683786,
+    "ast_hash": "eca47c31584e3c75f660a4e77f453f4a",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/rec_intro_video_player.html": {
+    "mtime": 1795082101.141358,
+    "seen": 1795088542.3683786,
+    "ast_hash": "b3dc6e44429321abc1aeb47c13d2bbab",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/sound_audition.html": {
+    "mtime": 1795088301.2025263,
+    "seen": 1795088542.3683786,
+    "ast_hash": "7a1f8a301eaa839b43f4bce92d18f203",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/startup_splash_preview.html": {
+    "mtime": 1795082114.9871287,
+    "seen": 1795088542.3683786,
+    "ast_hash": "bc709717fb44389fb1423cdbfd411ea0",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/vertical_showcase.html": {
+    "mtime": 1795086160.3226748,
+    "seen": 1795088542.3683786,
+    "ast_hash": "f8b4e06391e714b1f3496125d716657e",
+    "semantic_hash": ""
+  },
+  "design_refs/html/download.html": {
+    "mtime": 1794986535.4525232,
+    "seen": 1795088542.3683786,
+    "ast_hash": "eca47c31584e3c75f660a4e77f453f4a",
+    "semantic_hash": ""
+  },
+  "public/download.html": {
+    "mtime": 1794986535.4525232,
+    "seen": 1795088542.3683786,
+    "ast_hash": "eca47c31584e3c75f660a4e77f453f4a",
+    "semantic_hash": ""
+  },
+  "public/rec_intro_video_player.html": {
+    "mtime": 1795082101.141358,
+    "seen": 1795088542.3683786,
+    "ast_hash": "b3dc6e44429321abc1aeb47c13d2bbab",
+    "semantic_hash": ""
+  },
+  "public/sound_audition.html": {
+    "mtime": 1795088301.2025263,
+    "seen": 1795088542.3683786,
+    "ast_hash": "7a1f8a301eaa839b43f4bce92d18f203",
+    "semantic_hash": ""
+  },
+  "public/startup_splash_preview.html": {
+    "mtime": 1795082114.9871287,
+    "seen": 1795088542.3683786,
+    "ast_hash": "bc709717fb44389fb1423cdbfd411ea0",
+    "semantic_hash": ""
+  },
+  "public/vertical_showcase.html": {
+    "mtime": 1795086199.0227993,
+    "seen": 1795088542.3683786,
+    "ast_hash": "e04a4532ca45319745c88a20f4e244d9",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/00_master_celestial_crystal.mp3": {
+    "mtime": 1795088217.1375744,
+    "seen": 1795088542.3683786,
+    "ast_hash": "7e09ae3fde11984a662e1664e50538b4",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/00_master_celestial_crystal.wav": {
+    "mtime": 1795088217.1362696,
+    "seen": 1795088542.3683786,
+    "ast_hash": "2433ce1513e06a8cb71c7d9b861d7f45",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/00_master_cyberpunk_matrix.mp3": {
+    "mtime": 1795088216.6527703,
+    "seen": 1795088542.3683786,
+    "ast_hash": "25f3a5151fe3f02a0f114084cdc3ab8c",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/00_master_cyberpunk_matrix.wav": {
+    "mtime": 1795088216.6527703,
+    "seen": 1795088542.3683786,
+    "ast_hash": "d1d915c8b22a3e8fccaedb1e47b043a9",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/00_master_epic_thunder_anthem.mp3": {
+    "mtime": 1795088217.6171684,
+    "seen": 1795088542.3683786,
+    "ast_hash": "7dcf943de4e195d54900b18ffa4f5a78",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/00_master_epic_thunder_anthem.wav": {
+    "mtime": 1795088217.6171684,
+    "seen": 1795088542.3683786,
+    "ast_hash": "c8aa2b2fd45a8e591d632da6de966188",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/00_master_theatrical_slam.mp3": {
+    "mtime": 1795088216.118695,
+    "seen": 1795088542.3683786,
+    "ast_hash": "9d8ce63e92159554b2ab23779cc8e8f6",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/00_master_theatrical_slam.wav": {
+    "mtime": 1795088216.118695,
+    "seen": 1795088542.3683786,
+    "ast_hash": "74bec677ba73b9abb1a8dc063d33dfa3",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/01_sting_tech_long.mp3": {
+    "mtime": 1795088181.4605367,
+    "seen": 1795088542.3683786,
+    "ast_hash": "a84e3cc5897389a153659bb506aeb16a",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/01_sting_tech_long.wav": {
+    "mtime": 1795088181.4649527,
+    "seen": 1795088542.3683786,
+    "ast_hash": "c10e4af2ed6cd5a34e59eddcf02b5057",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/02_sting_tech_short.mp3": {
+    "mtime": 1795088181.4671688,
+    "seen": 1795088542.3683786,
+    "ast_hash": "24098ebdc0acfd0276aa1c0f43b7924a",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/02_sting_tech_short.wav": {
+    "mtime": 1795088181.4697354,
+    "seen": 1795088542.3683786,
+    "ast_hash": "f5aa8e7047be5b840087285e946c6caa",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/03_sting_bold_long.mp3": {
+    "mtime": 1795088181.4697354,
+    "seen": 1795088542.3683786,
+    "ast_hash": "6a0f2af1434a35a47359941d3604ef17",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/03_sting_bold_long.wav": {
+    "mtime": 1795088181.4758744,
+    "seen": 1795088542.3683786,
+    "ast_hash": "a057b20f131722d84670f7654c9d3468",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/04_sting_bold_short.mp3": {
+    "mtime": 1795088181.4778588,
+    "seen": 1795088542.3683786,
+    "ast_hash": "49d203ca300136d5a76f18b2abe9cdf4",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/04_sting_bold_short.wav": {
+    "mtime": 1795088181.481536,
+    "seen": 1795088542.3683786,
+    "ast_hash": "16f28c1381e9c82cd54854d72e4562a0",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/05_sting_bright_long.mp3": {
+    "mtime": 1795088181.481536,
+    "seen": 1795088542.3683786,
+    "ast_hash": "47bbf7c00c562614299042f249f27115",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/05_sting_bright_long.wav": {
+    "mtime": 1795088181.4836898,
+    "seen": 1795088542.3683786,
+    "ast_hash": "0d1b43e43316fd5cd6c4a397ee80bc5b",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/06_sting_airy_long.mp3": {
+    "mtime": 1795088181.4836898,
+    "seen": 1795088542.3683786,
+    "ast_hash": "08edee678185aaaa305bb1c7444ee830",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/06_sting_airy_long.wav": {
+    "mtime": 1795088181.4862914,
+    "seen": 1795088542.3683786,
+    "ast_hash": "dfd200a7ea15ef730d5b16491a8cb485",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/07_sting_minimal_long.mp3": {
+    "mtime": 1795088181.4862914,
+    "seen": 1795088542.3683786,
+    "ast_hash": "4291d3358d465bfe845403264d85de40",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/07_sting_minimal_long.wav": {
+    "mtime": 1795088181.4862914,
+    "seen": 1795088542.3683786,
+    "ast_hash": "11bc1b015bd5c5f090a56df62637131a",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/08_sting_warm_long.mp3": {
+    "mtime": 1795088181.4906068,
+    "seen": 1795088542.3683786,
+    "ast_hash": "1d95f9e6e8752225c96ece14484b9e6b",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/08_sting_warm_long.wav": {
+    "mtime": 1795088181.4906068,
+    "seen": 1795088542.3683786,
+    "ast_hash": "773e90cbcac521054ee1e4eedfd8bb53",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/09_cinematic_slam_massive.mp3": {
+    "mtime": 1795088181.4931674,
+    "seen": 1795088542.3683786,
+    "ast_hash": "9e6cfe69bb399af53958555822e9525d",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/09_cinematic_slam_massive.wav": {
+    "mtime": 1795088181.4931674,
+    "seen": 1795088542.3683786,
+    "ast_hash": "c3183fa6ea334c3c33baba940235cb8c",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/10_cinematic_drum_massive.mp3": {
+    "mtime": 1795088181.4931674,
+    "seen": 1795088542.3683786,
+    "ast_hash": "71dfb9f7df95e57dc6eee7692031a1af",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/10_cinematic_drum_massive.wav": {
+    "mtime": 1795088181.4931674,
+    "seen": 1795088542.3683786,
+    "ast_hash": "c41334d4c58012dd4c8d6d143cdf2283",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/11_cinematic_thunder_massive.mp3": {
+    "mtime": 1795088181.4975932,
+    "seen": 1795088542.3683786,
+    "ast_hash": "db8c9de43707412c45ebf3106b8de48d",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/11_cinematic_thunder_massive.wav": {
+    "mtime": 1795088181.5001638,
+    "seen": 1795088542.3683786,
+    "ast_hash": "a8bc77d1d08ce498749d74214d4ae6bf",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/12_cinematic_metal_massive.mp3": {
+    "mtime": 1795088181.5001638,
+    "seen": 1795088542.3683786,
+    "ast_hash": "04447f09f3e0a3e64b9354bdff2803be",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/12_cinematic_metal_massive.wav": {
+    "mtime": 1795088181.5001638,
+    "seen": 1795088542.3683786,
+    "ast_hash": "cb85efcd8aca297e4f216808fd78a454",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/13_boom_drop_strong.mp3": {
+    "mtime": 1795088181.5001638,
+    "seen": 1795088542.3683786,
+    "ast_hash": "f3c383d62b4e39c472977fd0a1c609fc",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/13_boom_drop_strong.wav": {
+    "mtime": 1795088181.5044749,
+    "seen": 1795088542.3683786,
+    "ast_hash": "0c225afb0f68b8769df1a443caa1d047",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/14_bass_sub_drop_long.mp3": {
+    "mtime": 1795088181.5044749,
+    "seen": 1795088542.3683786,
+    "ast_hash": "1902ceb6f236b5d99257a7e19498c6fa",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/14_bass_sub_drop_long.wav": {
+    "mtime": 1795088181.5059814,
+    "seen": 1795088542.3683786,
+    "ast_hash": "1b5236532615e3c91feb448af0c12fa4",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/15_bass_rumble_long.mp3": {
+    "mtime": 1795088181.507022,
+    "seen": 1795088542.3683786,
+    "ast_hash": "c376e2fe7f5d5440c3f69f8f24ca1576",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/15_bass_rumble_long.wav": {
+    "mtime": 1795088181.507022,
+    "seen": 1795088542.3683786,
+    "ast_hash": "3abbd1cecbde6429ee465964414ddc2f",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/16_bass_808_long.mp3": {
+    "mtime": 1795088181.507022,
+    "seen": 1795088542.3683786,
+    "ast_hash": "21259469d5c5fcc09f75599ff672de16",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/16_bass_808_long.wav": {
+    "mtime": 1795088181.5117948,
+    "seen": 1795088542.3683786,
+    "ast_hash": "d7a17a51066470730023de0c1fb36fc1",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/17_riser_4s_strong.mp3": {
+    "mtime": 1795088181.5117948,
+    "seen": 1795088542.3683786,
+    "ast_hash": "9bb8cd8696ea8403efa8faf2c00b78e1",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/17_riser_4s_strong.wav": {
+    "mtime": 1795088181.5117948,
+    "seen": 1795088542.3683786,
+    "ast_hash": "465c158cf9e3f75d8e3ea3aaa35e1911",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/18_riser_4s_soft.mp3": {
+    "mtime": 1795088181.5140195,
+    "seen": 1795088542.3683786,
+    "ast_hash": "ebd62a13c350dd7076d9424911aa9820",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/18_riser_4s_soft.wav": {
+    "mtime": 1795088181.5140195,
+    "seen": 1795088542.3683786,
+    "ast_hash": "586f8d13b1504afa5eec7007b02d1f04",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/19_reverse_whoosh_long_strong.mp3": {
+    "mtime": 1795088181.5140195,
+    "seen": 1795088542.3683786,
+    "ast_hash": "181c5a944a958a023b2b3953bc9d88bb",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/19_reverse_whoosh_long_strong.wav": {
+    "mtime": 1795088181.5140195,
+    "seen": 1795088542.3683786,
+    "ast_hash": "4890d3b15ad1ac986f6862a8c8b95167",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/20_reverse_whoosh_medium_strong.mp3": {
+    "mtime": 1795088181.5184336,
+    "seen": 1795088542.3683786,
+    "ast_hash": "7722caf6c4aaf263e190d3f285345327",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/20_reverse_whoosh_medium_strong.wav": {
+    "mtime": 1795088181.5184336,
+    "seen": 1795088542.3683786,
+    "ast_hash": "92c9871eee85a09755226b80dda8acf5",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/21_whoosh_medium_hard.mp3": {
+    "mtime": 1795088181.5184336,
+    "seen": 1795088542.3683786,
+    "ast_hash": "e54399aefc20598b6c4eed0942d597ae",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/21_whoosh_medium_hard.wav": {
+    "mtime": 1795088181.5184336,
+    "seen": 1795088542.3683786,
+    "ast_hash": "46dffbf3ecb68ead6c47437063a5724c",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/22_whoosh_slow_hard.mp3": {
+    "mtime": 1795088181.5209534,
+    "seen": 1795088542.3683786,
+    "ast_hash": "469cb1162b6753b9872f1777c9d971fb",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/22_whoosh_slow_hard.wav": {
+    "mtime": 1795088181.5209534,
+    "seen": 1795088542.368896,
+    "ast_hash": "6a41360c3e21724e3ac766db64a79a8f",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/23_shimmer_long_sparkle.mp3": {
+    "mtime": 1795088181.5209534,
+    "seen": 1795088542.368896,
+    "ast_hash": "5cfd0e5f0c662cad177300cab813b62c",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/23_shimmer_long_sparkle.wav": {
+    "mtime": 1795088181.5209534,
+    "seen": 1795088542.368896,
+    "ast_hash": "64d0f3bde527c25836755db7543a5b39",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/24_shimmer_long_bright.mp3": {
+    "mtime": 1795088181.5209534,
+    "seen": 1795088542.368896,
+    "ast_hash": "9a4c085b65047ea4e21ccc68ff5cce51",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/24_shimmer_long_bright.wav": {
+    "mtime": 1795088181.5253646,
+    "seen": 1795088542.368896,
+    "ast_hash": "1b854e89200959f63d5c67cdcc972a8e",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/25_digital_power_up.mp3": {
+    "mtime": 1795088181.526914,
+    "seen": 1795088542.368896,
+    "ast_hash": "1c79f3e2c36e201a9609f6f7af1df505",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/25_digital_power_up.wav": {
+    "mtime": 1795088181.5275722,
+    "seen": 1795088542.368896,
+    "ast_hash": "2a0472804cf7dfe5caf9367ed6348b51",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/26_digital_breach.mp3": {
+    "mtime": 1795088181.5279076,
+    "seen": 1795088542.368896,
+    "ast_hash": "087381de677d74d0df3ebcfd973ac646",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/26_digital_breach.wav": {
+    "mtime": 1795088181.5279076,
+    "seen": 1795088542.368896,
+    "ast_hash": "6ce580acfbf81c56fe0c228fc4857225",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/27_digital_scan_clear.mp3": {
+    "mtime": 1795088181.5279076,
+    "seen": 1795088542.368896,
+    "ast_hash": "a0a5e6f5501c89db2ece636d5f56fa45",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/27_digital_scan_clear.wav": {
+    "mtime": 1795088181.5279076,
+    "seen": 1795088542.368896,
+    "ast_hash": "9a49831bba5aa3621b94e10c1dce0993",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/28_notification_alert_clear.mp3": {
+    "mtime": 1795088181.5279076,
+    "seen": 1795088542.368896,
+    "ast_hash": "981c7c6ba1c717194cab92a00b674452",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/audio_library/28_notification_alert_clear.wav": {
+    "mtime": 1795088181.5279076,
+    "seen": 1795088542.368896,
+    "ast_hash": "b8c81ace8f7771124f30e2bd77efafeb",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/rec_club_intro_10s_clean.mp4": {
+    "mtime": 1795082078.8320005,
+    "seen": 1795088542.368896,
+    "ast_hash": "943295800b21bae24b59d8409f50fd44",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/rec_club_intro_clean.mp4": {
+    "mtime": 1795081773.4305584,
+    "seen": 1795088542.368896,
+    "ast_hash": "27e5b0eb4951f61f85eda7ed581a4099",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/rec_intro_sound.mp3": {
+    "mtime": 1795087843.6119566,
+    "seen": 1795088542.368896,
+    "ast_hash": "47b26cb5e9302388bd5f2c76c32621b9",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/rec_intro_sound.wav": {
+    "mtime": 1795087843.6137793,
+    "seen": 1795088542.368896,
+    "ast_hash": "e2472e2e06d741d1c714c16d0ffdebb2",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/rec_intro_vertical_glossy.mp4": {
+    "mtime": 1795082728.4775715,
+    "seen": 1795088542.368896,
+    "ast_hash": "287dd17bbe0c8cb57ebd060d6fbcb4ba",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/rec_intro_vertical_hybrid.mp4": {
+    "mtime": 1795087845.788842,
+    "seen": 1795088542.368896,
+    "ast_hash": "85e823a0079e401333ff9c4fad31b4d5",
+    "semantic_hash": ""
+  },
+  "app/src/main/assets/public/assets/rec_intro_vertical_mobile.mp4": {
+    "mtime": 1795082302.2206452,
+    "seen": 1795088542.368896,
+    "ast_hash": "3e469205e430822668232a5c33508bad",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/00_master_celestial_crystal.mp3": {
+    "mtime": 1795088217.1303768,
+    "seen": 1795088542.368896,
+    "ast_hash": "7e09ae3fde11984a662e1664e50538b4",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/00_master_celestial_crystal.wav": {
+    "mtime": 1795088216.953942,
+    "seen": 1795088542.368896,
+    "ast_hash": "2433ce1513e06a8cb71c7d9b861d7f45",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/00_master_cyberpunk_matrix.mp3": {
+    "mtime": 1795088216.6457987,
+    "seen": 1795088542.368896,
+    "ast_hash": "25f3a5151fe3f02a0f114084cdc3ab8c",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/00_master_cyberpunk_matrix.wav": {
+    "mtime": 1795088216.486797,
+    "seen": 1795088542.368896,
+    "ast_hash": "d1d915c8b22a3e8fccaedb1e47b043a9",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/00_master_epic_thunder_anthem.mp3": {
+    "mtime": 1795088217.6101067,
+    "seen": 1795088542.368896,
+    "ast_hash": "7dcf943de4e195d54900b18ffa4f5a78",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/00_master_epic_thunder_anthem.wav": {
+    "mtime": 1795088217.428278,
+    "seen": 1795088542.368896,
+    "ast_hash": "c8aa2b2fd45a8e591d632da6de966188",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/00_master_theatrical_slam.mp3": {
+    "mtime": 1795088216.1087897,
+    "seen": 1795088542.368896,
+    "ast_hash": "9d8ce63e92159554b2ab23779cc8e8f6",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/00_master_theatrical_slam.wav": {
+    "mtime": 1795088215.9228344,
+    "seen": 1795088542.368896,
+    "ast_hash": "74bec677ba73b9abb1a8dc063d33dfa3",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/01_sting_tech_long.mp3": {
+    "mtime": 1795088179.5668318,
+    "seen": 1795088542.368896,
+    "ast_hash": "a84e3cc5897389a153659bb506aeb16a",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/01_sting_tech_long.wav": {
+    "mtime": 1795088159.3236759,
+    "seen": 1795088542.368896,
+    "ast_hash": "c10e4af2ed6cd5a34e59eddcf02b5057",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/02_sting_tech_short.mp3": {
+    "mtime": 1795088179.6246054,
+    "seen": 1795088542.368896,
+    "ast_hash": "24098ebdc0acfd0276aa1c0f43b7924a",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/02_sting_tech_short.wav": {
+    "mtime": 1795088159.3269393,
+    "seen": 1795088542.368896,
+    "ast_hash": "f5aa8e7047be5b840087285e946c6caa",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/03_sting_bold_long.mp3": {
+    "mtime": 1795088179.687434,
+    "seen": 1795088542.368896,
+    "ast_hash": "6a0f2af1434a35a47359941d3604ef17",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/03_sting_bold_long.wav": {
+    "mtime": 1795088159.3298295,
+    "seen": 1795088542.368896,
+    "ast_hash": "a057b20f131722d84670f7654c9d3468",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/04_sting_bold_short.mp3": {
+    "mtime": 1795088179.7473984,
+    "seen": 1795088542.368896,
+    "ast_hash": "49d203ca300136d5a76f18b2abe9cdf4",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/04_sting_bold_short.wav": {
+    "mtime": 1795088159.3317358,
+    "seen": 1795088542.368896,
+    "ast_hash": "16f28c1381e9c82cd54854d72e4562a0",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/05_sting_bright_long.mp3": {
+    "mtime": 1795088179.8605704,
+    "seen": 1795088542.368896,
+    "ast_hash": "47bbf7c00c562614299042f249f27115",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/05_sting_bright_long.wav": {
+    "mtime": 1795088159.3335762,
+    "seen": 1795088542.368896,
+    "ast_hash": "0d1b43e43316fd5cd6c4a397ee80bc5b",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/06_sting_airy_long.mp3": {
+    "mtime": 1795088179.951042,
+    "seen": 1795088542.368896,
+    "ast_hash": "08edee678185aaaa305bb1c7444ee830",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/06_sting_airy_long.wav": {
+    "mtime": 1795088159.3359244,
+    "seen": 1795088542.368896,
+    "ast_hash": "dfd200a7ea15ef730d5b16491a8cb485",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/07_sting_minimal_long.mp3": {
+    "mtime": 1795088180.0124283,
+    "seen": 1795088542.368896,
+    "ast_hash": "4291d3358d465bfe845403264d85de40",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/07_sting_minimal_long.wav": {
+    "mtime": 1795088159.3382633,
+    "seen": 1795088542.368896,
+    "ast_hash": "11bc1b015bd5c5f090a56df62637131a",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/08_sting_warm_long.mp3": {
+    "mtime": 1795088180.0903504,
+    "seen": 1795088542.368896,
+    "ast_hash": "1d95f9e6e8752225c96ece14484b9e6b",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/08_sting_warm_long.wav": {
+    "mtime": 1795088159.3394108,
+    "seen": 1795088542.368896,
+    "ast_hash": "773e90cbcac521054ee1e4eedfd8bb53",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/09_cinematic_slam_massive.mp3": {
+    "mtime": 1795088180.19877,
+    "seen": 1795088542.368896,
+    "ast_hash": "9e6cfe69bb399af53958555822e9525d",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/09_cinematic_slam_massive.wav": {
+    "mtime": 1795088159.3412898,
+    "seen": 1795088542.368896,
+    "ast_hash": "c3183fa6ea334c3c33baba940235cb8c",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/10_cinematic_drum_massive.mp3": {
+    "mtime": 1795088180.2821362,
+    "seen": 1795088542.368896,
+    "ast_hash": "71dfb9f7df95e57dc6eee7692031a1af",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/10_cinematic_drum_massive.wav": {
+    "mtime": 1795088159.3419108,
+    "seen": 1795088542.368896,
+    "ast_hash": "c41334d4c58012dd4c8d6d143cdf2283",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/11_cinematic_thunder_massive.mp3": {
+    "mtime": 1795088180.3675866,
+    "seen": 1795088542.368896,
+    "ast_hash": "db8c9de43707412c45ebf3106b8de48d",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/11_cinematic_thunder_massive.wav": {
+    "mtime": 1795088159.3433583,
+    "seen": 1795088542.368896,
+    "ast_hash": "a8bc77d1d08ce498749d74214d4ae6bf",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/12_cinematic_metal_massive.mp3": {
+    "mtime": 1795088180.45116,
+    "seen": 1795088542.368896,
+    "ast_hash": "04447f09f3e0a3e64b9354bdff2803be",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/12_cinematic_metal_massive.wav": {
+    "mtime": 1795088159.3458035,
+    "seen": 1795088542.368896,
+    "ast_hash": "cb85efcd8aca297e4f216808fd78a454",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/13_boom_drop_strong.mp3": {
+    "mtime": 1795088180.532302,
+    "seen": 1795088542.368896,
+    "ast_hash": "f3c383d62b4e39c472977fd0a1c609fc",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/13_boom_drop_strong.wav": {
+    "mtime": 1795088159.347545,
+    "seen": 1795088542.368896,
+    "ast_hash": "0c225afb0f68b8769df1a443caa1d047",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/14_bass_sub_drop_long.mp3": {
+    "mtime": 1795088180.5830655,
+    "seen": 1795088542.368896,
+    "ast_hash": "1902ceb6f236b5d99257a7e19498c6fa",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/14_bass_sub_drop_long.wav": {
+    "mtime": 1795088159.3488169,
+    "seen": 1795088542.368896,
+    "ast_hash": "1b5236532615e3c91feb448af0c12fa4",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/15_bass_rumble_long.mp3": {
+    "mtime": 1795088180.6733027,
+    "seen": 1795088542.368896,
+    "ast_hash": "c376e2fe7f5d5440c3f69f8f24ca1576",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/15_bass_rumble_long.wav": {
+    "mtime": 1795088159.3510401,
+    "seen": 1795088542.368896,
+    "ast_hash": "3abbd1cecbde6429ee465964414ddc2f",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/16_bass_808_long.mp3": {
+    "mtime": 1795088180.7222903,
+    "seen": 1795088542.368896,
+    "ast_hash": "21259469d5c5fcc09f75599ff672de16",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/16_bass_808_long.wav": {
+    "mtime": 1795088159.3526309,
+    "seen": 1795088542.368896,
+    "ast_hash": "d7a17a51066470730023de0c1fb36fc1",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/17_riser_4s_strong.mp3": {
+    "mtime": 1795088180.8183506,
+    "seen": 1795088542.368896,
+    "ast_hash": "9bb8cd8696ea8403efa8faf2c00b78e1",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/17_riser_4s_strong.wav": {
+    "mtime": 1795088159.3540525,
+    "seen": 1795088542.368896,
+    "ast_hash": "465c158cf9e3f75d8e3ea3aaa35e1911",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/18_riser_4s_soft.mp3": {
+    "mtime": 1795088180.907768,
+    "seen": 1795088542.368896,
+    "ast_hash": "ebd62a13c350dd7076d9424911aa9820",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/18_riser_4s_soft.wav": {
+    "mtime": 1795088159.3563566,
+    "seen": 1795088542.368896,
+    "ast_hash": "586f8d13b1504afa5eec7007b02d1f04",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/19_reverse_whoosh_long_strong.mp3": {
+    "mtime": 1795088180.9702702,
+    "seen": 1795088542.368896,
+    "ast_hash": "181c5a944a958a023b2b3953bc9d88bb",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/19_reverse_whoosh_long_strong.wav": {
+    "mtime": 1795088159.3575692,
+    "seen": 1795088542.368896,
+    "ast_hash": "4890d3b15ad1ac986f6862a8c8b95167",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/20_reverse_whoosh_medium_strong.mp3": {
+    "mtime": 1795088181.0308924,
+    "seen": 1795088542.368896,
+    "ast_hash": "7722caf6c4aaf263e190d3f285345327",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/20_reverse_whoosh_medium_strong.wav": {
+    "mtime": 1795088159.3581083,
+    "seen": 1795088542.368896,
+    "ast_hash": "92c9871eee85a09755226b80dda8acf5",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/21_whoosh_medium_hard.mp3": {
+    "mtime": 1795088181.0741262,
+    "seen": 1795088542.368896,
+    "ast_hash": "e54399aefc20598b6c4eed0942d597ae",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/21_whoosh_medium_hard.wav": {
+    "mtime": 1795088159.3594396,
+    "seen": 1795088542.368896,
+    "ast_hash": "46dffbf3ecb68ead6c47437063a5724c",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/22_whoosh_slow_hard.mp3": {
+    "mtime": 1795088181.1239011,
+    "seen": 1795088542.368896,
+    "ast_hash": "469cb1162b6753b9872f1777c9d971fb",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/22_whoosh_slow_hard.wav": {
+    "mtime": 1795088159.3600135,
+    "seen": 1795088542.368896,
+    "ast_hash": "6a41360c3e21724e3ac766db64a79a8f",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/23_shimmer_long_sparkle.mp3": {
+    "mtime": 1795088181.1856909,
+    "seen": 1795088542.368896,
+    "ast_hash": "5cfd0e5f0c662cad177300cab813b62c",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/23_shimmer_long_sparkle.wav": {
+    "mtime": 1795088159.361608,
+    "seen": 1795088542.368896,
+    "ast_hash": "64d0f3bde527c25836755db7543a5b39",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/24_shimmer_long_bright.mp3": {
+    "mtime": 1795088181.2500074,
+    "seen": 1795088542.368896,
+    "ast_hash": "9a4c085b65047ea4e21ccc68ff5cce51",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/24_shimmer_long_bright.wav": {
+    "mtime": 1795088159.363603,
+    "seen": 1795088542.368896,
+    "ast_hash": "1b854e89200959f63d5c67cdcc972a8e",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/25_digital_power_up.mp3": {
+    "mtime": 1795088181.2902079,
+    "seen": 1795088542.368896,
+    "ast_hash": "1c79f3e2c36e201a9609f6f7af1df505",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/25_digital_power_up.wav": {
+    "mtime": 1795088159.364172,
+    "seen": 1795088542.368896,
+    "ast_hash": "2a0472804cf7dfe5caf9367ed6348b51",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/26_digital_breach.mp3": {
+    "mtime": 1795088181.331665,
+    "seen": 1795088542.368896,
+    "ast_hash": "087381de677d74d0df3ebcfd973ac646",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/26_digital_breach.wav": {
+    "mtime": 1795088159.3646922,
+    "seen": 1795088542.368896,
+    "ast_hash": "6ce580acfbf81c56fe0c228fc4857225",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/27_digital_scan_clear.mp3": {
+    "mtime": 1795088181.375074,
+    "seen": 1795088542.368896,
+    "ast_hash": "a0a5e6f5501c89db2ece636d5f56fa45",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/27_digital_scan_clear.wav": {
+    "mtime": 1795088159.3658948,
+    "seen": 1795088542.368896,
+    "ast_hash": "9a49831bba5aa3621b94e10c1dce0993",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/28_notification_alert_clear.mp3": {
+    "mtime": 1795088181.421062,
+    "seen": 1795088542.368896,
+    "ast_hash": "981c7c6ba1c717194cab92a00b674452",
+    "semantic_hash": ""
+  },
+  "public/assets/audio_library/28_notification_alert_clear.wav": {
+    "mtime": 1795088159.3664162,
+    "seen": 1795088542.368896,
+    "ast_hash": "b8c81ace8f7771124f30e2bd77efafeb",
+    "semantic_hash": ""
+  },
+  "public/assets/rec_club_intro_10s_clean.mp4": {
+    "mtime": 1795082078.8251812,
+    "seen": 1795088542.368896,
+    "ast_hash": "943295800b21bae24b59d8409f50fd44",
+    "semantic_hash": ""
+  },
+  "public/assets/rec_club_intro_clean.mp4": {
+    "mtime": 1795081773.4305584,
+    "seen": 1795088542.368896,
+    "ast_hash": "27e5b0eb4951f61f85eda7ed581a4099",
+    "semantic_hash": ""
+  },
+  "public/assets/rec_intro_sound.mp3": {
+    "mtime": 1795087843.6097858,
+    "seen": 1795088542.368896,
+    "ast_hash": "47b26cb5e9302388bd5f2c76c32621b9",
+    "semantic_hash": ""
+  },
+  "public/assets/rec_intro_sound.wav": {
+    "mtime": 1795087843.6114137,
+    "seen": 1795088542.368896,
+    "ast_hash": "e2472e2e06d741d1c714c16d0ffdebb2",
+    "semantic_hash": ""
+  },
+  "public/assets/rec_intro_vertical_glossy.mp4": {
+    "mtime": 1795082728.4775715,
+    "seen": 1795088542.368896,
+    "ast_hash": "287dd17bbe0c8cb57ebd060d6fbcb4ba",
+    "semantic_hash": ""
+  },
+  "public/assets/rec_intro_vertical_hybrid.mp4": {
+    "mtime": 1795087845.7353191,
+    "seen": 1795088542.368896,
+    "ast_hash": "85e823a0079e401333ff9c4fad31b4d5",
+    "semantic_hash": ""
+  },
+  "public/assets/rec_intro_vertical_mobile.mp4": {
+    "mtime": 1795082302.216886,
+    "seen": 1795088542.368896,
+    "ast_hash": "3e469205e430822668232a5c33508bad",
     "semantic_hash": ""
   },
   "firestore-tests/package-lock.json": {
