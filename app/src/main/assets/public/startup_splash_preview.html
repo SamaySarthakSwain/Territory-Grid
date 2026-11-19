@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <title>Renewable Energy Club // Cinematic Startup Sequence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #02050a;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* Ambient CRT Scanline & Grain Overlay */
+    .cyber-vignette {
+      background: radial-gradient(circle at center, transparent 35%, rgba(2, 5, 10, 0.85) 90%, #000 100%);
+      pointer-events: none;
+    }
+
+    /* Rings Rotation */
+    @keyframes spinClockwise {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes spinCounterClockwise {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+    @keyframes pulseRingGlow {
+      0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.65)); }
+      50% { opacity: 1; filter: drop-shadow(0 0 28px rgba(44, 241, 0, 0.85)) drop-shadow(0 0 45px rgba(0, 229, 255, 0.5)); }
+    }
+    @keyframes lightningPulse {
+      0%, 100% { opacity: 0.6; }
+      20% { opacity: 0.95; }
+      40% { opacity: 0.4; }
+      60% { opacity: 1; }
+      80% { opacity: 0.7; }
+    }
+
+    .ring-rotate-cw {
+      animation: spinClockwise 18s linear infinite;
+    }
+    .ring-rotate-ccw {
+      animation: spinCounterClockwise 12s linear infinite;
+    }
+    .ring-pulse-aura {
+      animation: pulseRingGlow 3.6s ease-in-out infinite;
+    }
+    .lightning-aura {
+      animation: lightningPulse 0.18s ease-in-out infinite alternate;
+    }
+
+    /* Laser Comet Beam Sweep */
+    @keyframes laserSweep {
+      0% {
+        left: -35%;
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      85% {
+        opacity: 1;
+      }
+      100% {
+        left: 135%;
+        opacity: 0;
+      }
+    }
+    .laser-comet-beam {
+      position: absolute;
+      top: 50%;
+      height: 3px;
+      width: 140px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.4) 30%, #ffffff 75%, #a6ff00 95%, #ffffff 100%);
+      box-shadow: 0 0 15px #00e5ff, 0 0 30px #2cf100, 0 0 50px #ffffff;
+      border-radius: 999px;
+      pointer-events: none;
+      filter: blur(0.5px);
+    }
+    .laser-comet-head {
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 20px #ffffff, 0 0 40px #00e5ff, 0 0 60px #2cf100;
+    }
+
+    /* Reveal Clip Path for Logo Driven by Light Sweep */
+    @keyframes logoRevealMask {
+      0% {
+        clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+        filter: brightness(0.2) blur(8px);
+        transform: scale(0.92);
+        opacity: 0;
+      }
+      40% {
+        clip-path: polygon(0 0, 45% 0, 35% 100%, 0 100%);
+        filter: brightness(1.6) blur(2px);
+        opacity: 0.9;
+      }
+      75% {
+        clip-path: polygon(0 0, 85% 0, 75% 100%, 0 100%);
+        filter: brightness(1.3) blur(0px);
+        opacity: 1;
+      }
+      100% {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        filter: brightness(1) blur(0px) drop-shadow(0 0 25px rgba(0, 229, 255, 0.35));
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .logo-animate-reveal {
+      animation: logoRevealMask 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      will-change: clip-path, filter, transform, opacity;
+    }
+
+    /* Twinkling 4-point Stars */
+    @keyframes starTwinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(90deg); filter: drop-shadow(0 0 8px #ffffff) drop-shadow(0 0 14px #00e5ff); }
+    }
+    .twinkle-star {
+      animation: starTwinkle 2.4s ease-in-out infinite;
+    }
+
+    /* Futuristic HUD Status Typography */
+    .hud-glow {
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.7), 0 0 20px rgba(0, 229, 255, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-[#02050A] text-white flex flex-col items-center justify-between min-h-screen relative overflow-hidden">
+
+  <!-- Interactive 60FPS Ambient Particle Vortex & Lightning Canvas -->
+  <canvas id="ambient-canvas" class="absolute inset-0 w-full h-full z-0 pointer-events-none"></canvas>
+
+  <!-- Cyber Vignette Overlay -->
+  <div class="cyber-vignette absolute inset-0 z-10"></div>
+
+  <!-- TOP HUD: Cinematic Status Bar -->
+  <header class="w-full max-w-md px-6 pt-8 pb-4 flex items-center justify-between z-20 transition-opacity duration-1000" id="top-hud">
+    <div class="flex items-center gap-2">
+      <div class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00e5ff]"></div>
+      <span class="font-mono text-[10px] tracking-widest text-cyan-300 font-bold uppercase">REC // SYS.ONLINE</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="font-mono text-[10px] tracking-widest text-gray-400" id="phase-indicator">INIT VORTEX [01/04]</span>
+    </div>
+  </header>
+
+  <!-- CENTER STAGE: The Animated Energy Reactor & Official REC Crest -->
+  <main class="relative z-20 flex flex-col items-center justify-center my-auto w-full max-w-md px-4">
+    
+    <!-- Outer Containment Vessel: 360px Circular Field -->
+    <div class="relative w-[320px] h-[320px] sm:w-[360px] sm:h-[360px] flex items-center justify-center">
+
+      <!-- LAYER 1: Deep Radial Atmosphere Glow -->
+      <div class="absolute inset-4 rounded-full bg-gradient-to-tr from-cyan-900/30 via-emerald-950/20 to-teal-900/30 blur-2xl pointer-events-none animate-pulse"></div>
+
+      <!-- LAYER 2: Concentric Cyber HUD Rings (SVG) -->
+      <svg class="absolute inset-0 w-full h-full pointer-events-none ring-pulse-aura" viewBox="0 0 360 360">
+        <defs>
+          <linearGradient id="cyanGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.9"/>
+            <stop offset="50%" stop-color="#2cf100" stop-opacity="0.85"/>
+            <stop offset="100%" stop-color="#00daf3" stop-opacity="0.9"/>
+          </linearGradient>
+          <linearGradient id="neonGlowGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#2cf100" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.95"/>
+          </linearGradient>
+          <filter id="neonBlur" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3.5" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Outer Segmented Track (Clockwise) -->
+        <g class="ring-rotate-cw" style="transform-origin: 180px 180px;">
+          <circle cx="180" cy="180" r="162" fill="none" stroke="url(#cyanGreenGrad)" stroke-width="1.8" stroke-dasharray="140 30 80 40 200 45" stroke-linecap="round" opacity="0.8" filter="url(#neonBlur)"/>
+          <circle cx="180" cy="180" r="170" fill="none" stroke="#00e5ff" stroke-width="1" stroke-dasharray="4 24" opacity="0.4"/>
+        </g>
+
+        <!-- Middle Electric Arc Ring (Counter-Clockwise) -->
+        <g class="ring-rotate-ccw" style="transform-origin: 180px 180px;">
+          <circle cx="180" cy="180" r="148" fill="none" stroke="url(#neonGlowGrad)" stroke-width="2.5" stroke-dasharray="260 60 120 70" stroke-linecap="round" opacity="0.95" filter="url(#neonBlur)"/>
+          <circle cx="180" cy="180" r="138" fill="none" stroke="#2cf100" stroke-width="1.2" stroke-dasharray="60 15 15 15" opacity="0.5"/>
+        </g>
+
+        <!-- Inner Plasma Corona Ring -->
+        <circle cx="180" cy="180" r="128" fill="none" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="18 8" opacity="0.6" style="transform-origin: 180px 180px;" class="ring-rotate-cw"/>
+      </svg>
+
+      <!-- LAYER 3: Dynamic Procedural Lightning Canvas (Tesla Sparks) -->
+      <canvas id="lightning-canvas" width="360" height="360" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
+
+      <!-- LAYER 4: Twinkling Diamond Star Accents (Surrounding Perimeter) -->
+      <div class="absolute inset-0 pointer-events-none z-15">
+        <svg class="absolute top-[8%] left-[78%] w-5 h-5 text-cyan-200 twinkle-star" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0L14 9L23 11L14 13L12 22L10 13L1 11L10 9Z"/>
+        </svg>
+        <svg class="absolute top-[32%] left-[6%] w-4 h-4 text-emerald-300 twinkle-star" style="animation-delay: 0.8s;" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0L14 9L23 11L14 13L12 22L10 13L1 11L10 9Z"/>
+        </svg>
+        <svg class="absolute bottom-[14%] right-[12%] w-6 h-6 text-white twinkle-star" style="animation-delay: 1.5s;" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0L14 9L23 11L14 13L12 22L10 13L1 11L10 9Z"/>
+        </svg>
+        <svg class="absolute bottom-[20%] left-[16%] w-4 h-4 text-teal-300 twinkle-star" style="animation-delay: 2.1s;" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0L14 9L23 11L14 13L12 22L10 13L1 11L10 9Z"/>
+        </svg>
+      </div>
+
+      <!-- LAYER 5: The Official Club Logo (100% Intact Identity, Shape, and Colors) -->
+      <div class="relative z-20 w-[210px] h-[210px] sm:w-[230px] sm:h-[230px] flex items-center justify-center p-2" id="logo-container">
+        <img 
+          src="assets/rec_logo.png" 
+          alt="Renewable Energy Club" 
+          id="hero-rec-logo"
+          class="w-full h-full object-contain logo-animate-reveal filter drop-shadow-[0_0_20px_rgba(0,229,255,0.4)]"
+        />
+
+        <!-- LAYER 6: The High-Velocity Laser Comet Streak (Left to Right Sweep) -->
+        <div class="laser-comet-beam" id="laser-beam" style="animation: laserSweep 2.8s cubic-bezier(0.25, 1, 0.5, 1) 1.2s forwards;">
+          <div class="laser-comet-head"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Subtitle & Club Brand Typography (Fades in smoothly) -->
+    <div class="mt-8 text-center transition-all duration-1000 opacity-0 translate-y-3" id="brand-tagline">
+      <h2 class="text-xs font-mono font-bold tracking-[0.35em] text-cyan-400 uppercase hud-glow mb-1">
+        RENEWABLE ENERGY CLUB
+      </h2>
+      <p class="text-[11px] font-mono tracking-widest text-gray-400">
+        TERRITORY GRID // TACTICAL FIELD ENGINE
+      </p>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM HUD & INTERACTIVE CONTROLS -->
+  <footer class="w-full max-w-md px-6 pb-10 z-20 flex flex-col items-center gap-4">
+    
+    <!-- Real-time Loading & Transition Bar -->
+    <div class="w-full bg-surface-container-highest/60 backdrop-blur-md rounded-full h-1.5 overflow-hidden border border-cyan-500/20 relative">
+      <div id="progress-fill" class="h-full bg-gradient-to-r from-cyan-400 via-emerald-400 to-primary-container transition-all duration-100 ease-linear shadow-[0_0_12px_#00e5ff]" style="width: 0%;"></div>
+    </div>
+
+    <div class="flex items-center justify-between w-full text-[11px] font-mono text-gray-400">
+      <span id="system-status-text">INITIALIZING QUANTUM MATRIX...</span>
+      <span id="countdown-text" class="text-cyan-400 font-bold">5.0s</span>
+    </div>
+
+    <!-- Action Buttons (Replay / Enter App) -->
+    <div class="flex items-center gap-3 w-full mt-2">
+      <button 
+        type="button" 
+        onclick="replayCinematicSequence()" 
+        class="flex-1 py-3 px-4 rounded-xl border border-cyan-500/40 bg-cyan-950/30 hover:bg-cyan-900/40 text-cyan-300 font-mono text-xs font-bold transition flex items-center justify-center gap-2 active:scale-95 shadow-[0_0_15px_rgba(0,229,255,0.15)]"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        <span>REPLAY SEQUENCE</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="enterMainApplication()" 
+        class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 hover:from-cyan-300 hover:to-emerald-300 text-black font-headline font-bold text-xs tracking-wider transition flex items-center justify-center gap-2 active:scale-95 shadow-[0_0_20px_rgba(0,229,255,0.4)]"
+      >
+        <span>ENTER SQUAD HUD</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </button>
+    </div>
+
+  </footer>
+
+  <script>
+    // ─────────────────────────────────────────────────────────────────────────
+    // 1. PROCEDURAL 60FPS AMBIENT PARTICLE VORTEX
+    // ─────────────────────────────────────────────────────────────────────────
+    const canvas = document.getElementById('ambient-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationFrameId;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class AmbientParticle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.5 + 0.8;
+        this.baseAlpha = Math.random() * 0.7 + 0.2;
+        this.alpha = this.baseAlpha;
+        this.speedX = (Math.random() - 0.5) * 0.6;
+        this.speedY = (Math.random() - 0.5) * 0.6 - 0.3; // subtle upward drift
+        const palette = ['#00e5ff', '#2cf100', '#c3f5ff', '#ffffff', '#79ff5b'];
+        this.color = palette[Math.floor(Math.random() * palette.length)];
+        this.pulseSpeed = Math.random() * 0.03 + 0.01;
+        this.pulseAngle = Math.random() * Math.PI * 2;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.pulseAngle += this.pulseSpeed;
+        this.alpha = this.baseAlpha + Math.sin(this.pulseAngle) * 0.25;
+
+        // Wrap around bounds
+        if (this.x < 0) this.x = canvas.width;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.y < 0) this.y = canvas.height;
+        if (this.y > canvas.height) this.y = 0;
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, this.alpha));
+        ctx.fillStyle = this.color;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = this.size * 4;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const count = Math.min(120, Math.floor((canvas.width * canvas.height) / 8000));
+      for (let i = 0; i < count; i++) {
+        particles.push(new AmbientParticle());
+      }
+    }
+    initParticles();
+
+    function renderParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
+      animationFrameId = requestAnimationFrame(renderParticles);
+    }
+    renderParticles();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // 2. PROCEDURAL TESLA LIGHTNING ARCS (AROUND CIRCULAR PERIMETER)
+    // ─────────────────────────────────────────────────────────────────────────
+    const lightCanvas = document.getElementById('lightning-canvas');
+    const lightCtx = lightCanvas.getContext('2d');
+    let lightningFrameId;
+
+    function drawLightningArc(cx, cy, radius, startAngle, endAngle, color) {
+      const steps = 14;
+      const angleStep = (endAngle - startAngle) / steps;
+      lightCtx.beginPath();
+      
+      for (let i = 0; i <= steps; i++) {
+        const angle = startAngle + i * angleStep;
+        const jitter = (Math.random() - 0.5) * 12; // radial lightning jitter
+        const r = radius + jitter;
+        const px = cx + Math.cos(angle) * r;
+        const py = cy + Math.sin(angle) * r;
+        if (i === 0) lightCtx.moveTo(px, py);
+        else lightCtx.lineTo(px, py);
+      }
+
+      lightCtx.strokeStyle = color;
+      lightCtx.lineWidth = Math.random() * 2 + 1;
+      lightCtx.shadowColor = color;
+      lightCtx.shadowBlur = 10;
+      lightCtx.stroke();
+    }
+
+    function renderLightning() {
+      lightCtx.clearRect(0, 0, lightCanvas.width, lightCanvas.height);
+      const cx = lightCanvas.width / 2;
+      const cy = lightCanvas.height / 2;
+      const radius = 148;
+
+      // Randomly spawn 1 to 3 lightning sparks
+      if (Math.random() > 0.3) {
+        const arcLength = Math.PI * 0.45;
+        const randStart = Math.random() * Math.PI * 2;
+        drawLightningArc(cx, cy, radius, randStart, randStart + arcLength, 'rgba(0, 229, 255, 0.85)');
+      }
+      if (Math.random() > 0.5) {
+        const arcLength = Math.PI * 0.3;
+        const randStart = Math.random() * Math.PI * 2;
+        drawLightningArc(cx, cy, radius - 10, randStart, randStart + arcLength, 'rgba(44, 241, 0, 0.75)');
+      }
+
+      lightningFrameId = requestAnimationFrame(renderLightning);
+    }
+    renderLightning();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // 3. SYNTHESIZED SCI-FI AUDIO ENGINE (ZERO EXTERNAL MP3 REQUIRED)
+    // ─────────────────────────────────────────────────────────────────────────
+    let audioCtx = null;
+    function playSciFiIgnitionSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+
+        // Sub-bass resonance rumble
+        const subOsc = audioCtx.createOscillator();
+        const subGain = audioCtx.createGain();
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(45, now);
+        subOsc.frequency.exponentialRampToValueAtTime(110, now + 1.2);
+        subGain.gain.setValueAtTime(0.01, now);
+        subGain.gain.linearRampToValueAtTime(0.25, now + 0.3);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+        subOsc.connect(subGain);
+        subGain.connect(audioCtx.destination);
+        subOsc.start(now);
+        subOsc.stop(now + 2.6);
+
+        // High laser frequency sweep at 1.2s (Comet arrival)
+        setTimeout(() => {
+          if (!audioCtx) return;
+          const laserNow = audioCtx.currentTime;
+          const laserOsc = audioCtx.createOscillator();
+          const laserGain = audioCtx.createGain();
+          laserOsc.type = 'triangle';
+          laserOsc.frequency.setValueAtTime(320, laserNow);
+          laserOsc.frequency.exponentialRampToValueAtTime(1600, laserNow + 0.8);
+          laserGain.gain.setValueAtTime(0.01, laserNow);
+          laserGain.gain.linearRampToValueAtTime(0.18, laserNow + 0.2);
+          laserGain.gain.exponentialRampToValueAtTime(0.001, laserNow + 1.4);
+          laserOsc.connect(laserGain);
+          laserGain.connect(audioCtx.destination);
+          laserOsc.start(laserNow);
+          laserOsc.stop(laserNow + 1.5);
+        }, 1200);
+
+      } catch (e) {
+        // Audio synthesis fallback (silent mode safe)
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // 4. ANIMATION TIMELINE & PROGRESS SYNCHRONIZATION (EXACT 10.0s DURATION)
+    // ─────────────────────────────────────────────────────────────────────────
+    const TOTAL_DURATION_MS = 10000; // 10.0 seconds cinematic startup
+    let startTime = null;
+
+    function updateTimeline(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(1, elapsed / TOTAL_DURATION_MS);
+
+      // Update progress bar
+      const pFill = document.getElementById('progress-fill');
+      const cText = document.getElementById('countdown-text');
+      const phaseInd = document.getElementById('phase-indicator');
+      const statusText = document.getElementById('system-status-text');
+      const brandTagline = document.getElementById('brand-tagline');
+
+      if (pFill) pFill.style.width = (progress * 100) + '%';
+      if (cText) cText.innerText = Math.max(0, ((TOTAL_DURATION_MS - elapsed) / 1000)).toFixed(1) + 's';
+
+      // Coordinated Phases across 10 seconds:
+      if (elapsed < 2500) {
+        if (phaseInd) phaseInd.innerText = 'INIT VORTEX [01/04]';
+        if (statusText) statusText.innerText = 'IGNITING PLASMA CONTAINMENT...';
+      } else if (elapsed < 5500) {
+        if (phaseInd) phaseInd.innerText = 'LASER SWEEP [02/04]';
+        if (statusText) statusText.innerText = 'PHOTON BEAM REVEALING REC CREST...';
+      } else if (elapsed < 8500) {
+        if (phaseInd) phaseInd.innerText = 'STABILIZATION [03/04]';
+        if (statusText) statusText.innerText = 'HARMONIZING RENEWABLE MATRIX...';
+        if (brandTagline) {
+          brandTagline.style.opacity = '1';
+          brandTagline.style.transform = 'translateY(0px)';
+        }
+      } else {
+        if (phaseInd) phaseInd.innerText = 'READY [04/04]';
+        if (statusText) statusText.innerText = 'GRID TELEMETRY LINK ESTABLISHED.';
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(updateTimeline);
+      } else {
+        // Auto-transition to main application after 10s
+        setTimeout(() => {
+          enterMainApplication();
+        }, 500);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      requestAnimationFrame(updateTimeline);
+      // Play sound on first user touch if browser allows
+      document.body.addEventListener('click', () => {
+        playSciFiIgnitionSound();
+      }, { once: true });
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // 5. INTERACTIVE ACTIONS (REPLAY & NAVIGATE)
+    // ─────────────────────────────────────────────────────────────────────────
+    function replayCinematicSequence() {
+      const logo = document.getElementById('hero-rec-logo');
+      const laser = document.getElementById('laser-beam');
+      const tagline = document.getElementById('brand-tagline');
+
+      if (logo) {
+        logo.classList.remove('logo-animate-reveal');
+        void logo.offsetWidth; // trigger reflow
+        logo.classList.add('logo-animate-reveal');
+      }
+
+      if (laser) {
+        laser.style.animation = 'none';
+        void laser.offsetWidth;
+        laser.style.animation = 'laserSweep 2.8s cubic-bezier(0.25, 1, 0.5, 1) 1.2s forwards';
+      }
+
+      if (tagline) {
+        tagline.style.opacity = '0';
+        tagline.style.transform = 'translateY(12px)';
+      }
+
+      startTime = null;
+      requestAnimationFrame(updateTimeline);
+      playSciFiIgnitionSound();
+    }
+
+    function enterMainApplication() {
+      // Smooth fade to black transition
+      document.body.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+      document.body.style.opacity = '0';
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 600);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <title>Renewable Energy Club // 10-Second HD Video Startup Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000000;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    video {
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      max-height: 82vh;
+    }
+  </style>
+</head>
+<body class="bg-black text-white flex flex-col items-center justify-between min-h-screen relative overflow-hidden transition-opacity duration-700" id="splash-body">
+
+  <!-- TOP HEADER -->
+  <header class="w-full max-w-lg px-6 pt-6 flex items-center justify-between z-20">
+    <div class="flex items-center gap-2">
+      <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#00e5ff]"></div>
+      <span class="font-mono text-xs tracking-widest text-cyan-300 font-bold uppercase">REC // 10s CINEMATIC INTRO</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="font-mono text-[10px] tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-1 rounded-full">
+        WATERMARK-FREE
+      </span>
+      <button 
+        type="button" 
+        onclick="proceedToApp()" 
+        class="font-mono text-[10px] tracking-wider text-gray-400 hover:text-white bg-white/5 border border-white/10 px-2.5 py-1 rounded-full transition active:scale-95"
+      >
+        SKIP INTRO ✕
+      </button>
+    </div>
+  </header>
+
+  <!-- CENTER VIDEO CONTAINER -->
+  <main class="relative z-10 w-full max-w-2xl flex-1 flex items-center justify-center p-4">
+    <div class="relative w-full aspect-video rounded-2xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(0,229,255,0.25)] bg-black">
+      <video id="intro-video" playsinline webkit-playsinline autoplay muted>
+        <source src="assets/rec_club_intro_10s_clean.mp4" type="video/mp4"/>
+        Your browser does not support HTML5 video.
+      </video>
+
+      <!-- Video Control Overlay on Touch -->
+      <div id="play-overlay" onclick="togglePlay()" class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+        <div class="w-16 h-16 rounded-full bg-cyan-500/30 border border-cyan-400 flex items-center justify-center text-white backdrop-blur-md shadow-[0_0_20px_#00e5ff]">
+          <svg id="play-icon" class="w-8 h-8 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOTTOM CONTROLS & TIMELINE -->
+  <footer class="w-full max-w-lg px-6 pb-8 z-20 flex flex-col gap-3">
+    
+    <!-- Progress Bar -->
+    <div class="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+      <div id="video-progress-bar" class="h-full bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-300 transition-all duration-100" style="width: 0%;"></div>
+    </div>
+
+    <div class="flex items-center justify-between text-xs font-mono text-gray-400">
+      <span>10.0s CINEMATIC SEQUENCE</span>
+      <span id="current-time-display" class="text-cyan-400 font-bold">10.0s remaining</span>
+    </div>
+
+    <div class="flex items-center gap-3 w-full">
+      <button 
+        type="button" 
+        onclick="toggleAudio()" 
+        id="btn-audio"
+        class="py-3 px-4 rounded-xl border border-cyan-500/40 bg-cyan-950/30 hover:bg-cyan-900/40 text-cyan-300 font-mono text-xs font-bold transition flex items-center justify-center gap-2 active:scale-95 shadow-[0_0_15px_rgba(0,229,255,0.15)]"
+      >
+        <span id="audio-label">🔇 UNMUTE</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="restartVideo()" 
+        class="py-3 px-4 rounded-xl border border-emerald-500/40 bg-emerald-950/30 hover:bg-emerald-900/40 text-emerald-300 font-mono text-xs font-bold transition flex items-center justify-center gap-2 active:scale-95 shadow-[0_0_15px_rgba(44,241,0,0.15)]"
+      >
+        <span>↺ RESTART</span>
+      </button>
+
+      <button 
+        type="button"
+        onclick="proceedToApp()" 
+        class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 hover:from-cyan-300 hover:to-emerald-300 text-black font-headline font-bold text-xs tracking-wider transition flex items-center justify-center gap-2 active:scale-95 shadow-[0_0_20px_rgba(0,229,255,0.4)] text-center"
+      >
+        <span>ENTER SQUAD HUD</span>
+        <span>→</span>
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    const video = document.getElementById('intro-video');
+    const timeDisplay = document.getElementById('current-time-display');
+    const progressBar = document.getElementById('video-progress-bar');
+    const audioBtn = document.getElementById('btn-audio');
+    const audioLabel = document.getElementById('audio-label');
+    const splashBody = document.getElementById('splash-body');
+    const INTRO_DURATION = 10.0;
+
+    video.addEventListener('timeupdate', () => {
+      const current = Math.min(INTRO_DURATION, video.currentTime);
+      const remaining = Math.max(0, INTRO_DURATION - current);
+      const progressPercent = (current / INTRO_DURATION) * 100;
+
+      progressBar.style.width = progressPercent + '%';
+      timeDisplay.innerText = remaining.toFixed(1) + 's remaining';
+
+      // Auto-transition when video completes 10 seconds
+      if (current >= 9.9) {
+        proceedToApp();
+      }
+    });
+
+    video.addEventListener('ended', () => {
+      proceedToApp();
+    });
+
+    function togglePlay() {
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    }
+
+    function toggleAudio() {
+      video.muted = !video.muted;
+      if (video.muted) {
+        audioLabel.innerText = '🔇 UNMUTE';
+      } else {
+        audioLabel.innerText = '🔊 MUTE';
+      }
+    }
+
+    function restartVideo() {
+      video.currentTime = 0;
+      video.play();
+    }
+
+    function proceedToApp() {
+      splashBody.style.opacity = '0';
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 700);
+    }
+  </script>
+</body>
+</html>

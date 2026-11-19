@@ -175,9 +175,222 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+
+    /* ── FIRST-TIME APP LAUNCH 10s CINEMATIC INTRO ANIMATION ── */
+    @keyframes spinCW { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes spinCCW { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+    @keyframes pulseAura {
+      0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.7)); }
+      50% { opacity: 1; filter: drop-shadow(0 0 28px rgba(44, 241, 0, 0.85)) drop-shadow(0 0 45px rgba(0, 229, 255, 0.6)); }
+    }
+    .splash-ring-cw { animation: spinCW 16s linear infinite; }
+    .splash-ring-ccw { animation: spinCCW 11s linear infinite; }
+    .splash-pulse-aura { animation: pulseAura 3.2s ease-in-out infinite; }
+
+    .splash-glass-lens {
+      background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.16) 0%, rgba(0, 229, 255, 0.06) 45%, rgba(2, 5, 10, 0.85) 90%);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border-top-color: rgba(255, 255, 255, 0.65);
+      border-bottom-color: rgba(0, 229, 255, 0.2);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.45),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.7),
+        0 0 35px rgba(0, 229, 255, 0.35),
+        0 0 60px rgba(44, 241, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .splash-specular-crescent {
+      position: absolute;
+      top: -30%;
+      left: 10%;
+      width: 80%;
+      height: 70%;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+      transform: rotate(-15deg);
+      pointer-events: none;
+    }
+    @keyframes splashGlassSheen {
+      0% { transform: translate3d(-180%, -180%, 0) rotate(45deg); opacity: 0; }
+      20% { opacity: 0.85; }
+      50% { transform: translate3d(180%, 180%, 0) rotate(45deg); opacity: 0; }
+      100% { transform: translate3d(180%, 180%, 0) rotate(45deg); opacity: 0; }
+    }
+    .splash-sheen-sweep {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        115deg,
+        transparent 35%,
+        rgba(255, 255, 255, 0.05) 44%,
+        rgba(255, 255, 255, 0.65) 50%,
+        rgba(0, 229, 255, 0.35) 54%,
+        transparent 65%
+      );
+      animation: splashGlassSheen 4.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+    }
+    @keyframes splashLaserSweep {
+      0% { left: -40%; opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { left: 140%; opacity: 0; }
+    }
+    .splash-laser-beam {
+      position: absolute;
+      top: 50%;
+      height: 2.5px;
+      width: 100px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.5) 30%, #ffffff 75%, #a6ff00 95%, #ffffff 100%);
+      box-shadow: 0 0 15px #00e5ff, 0 0 30px #2cf100, 0 0 45px #ffffff;
+      border-radius: 999px;
+      pointer-events: none;
+      animation: splashLaserSweep 2.5s cubic-bezier(0.25, 1, 0.45, 1) 0.8s forwards;
+    }
+    @keyframes splashLogoReveal {
+      0% {
+        clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+        filter: brightness(0.2) blur(6px);
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      45% {
+        clip-path: polygon(0 0, 52% 0, 42% 100%, 0 100%);
+        filter: brightness(1.7) blur(1.5px);
+        opacity: 0.95;
+      }
+      100% {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        filter: brightness(1) blur(0px) drop-shadow(0 0 20px rgba(0, 229, 255, 0.4));
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .splash-logo-reveal {
+      animation: splashLogoReveal 2.8s cubic-bezier(0.18, 1, 0.32, 1) forwards;
+      will-change: clip-path, filter, transform, opacity;
+    }
+    @keyframes splashStarTwinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(90deg); filter: drop-shadow(0 0 8px #ffffff) drop-shadow(0 0 14px #00e5ff); }
+    }
+    .splash-star-twinkle { animation: splashStarTwinkle 2.2s ease-in-out infinite; }
   </style>
 </head>
 <body class="hex-bg flex flex-col justify-between p-3 sm:p-6 selection:bg-cyan selection:text-black">
+
+  <!-- FIRST-TIME APP LAUNCH 10-SECOND CINEMATIC INTRO OVERLAY -->
+  <div id="first-launch-splash" class="fixed inset-0 z-[9999] bg-[#02050A] flex flex-col justify-between items-center overflow-hidden transition-opacity duration-700 hidden">
+    <!-- Ambient CRT Vignette -->
+    <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_35%,rgba(2,5,10,0.85)_85%,#000_100%)] z-10"></div>
+    
+    <!-- 60FPS Ambient Particle Canvas -->
+    <canvas id="splash-canvas-particles" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- TOP HEADER -->
+    <header class="w-full max-w-md px-6 pt-6 flex items-center justify-between z-20">
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-cyan animate-pulse shadow-[0_0_8px_#00e5ff]"></div>
+        <span class="font-mono text-[10px] tracking-widest text-cyan font-bold uppercase">REC // FIRST LAUNCH SYNC</span>
+      </div>
+      <button type="button" onclick="completeFirstLaunchIntro()" class="text-gray-400 hover:text-white bg-white/5 border border-white/10 px-2.5 py-1 rounded-full text-[10px] font-mono transition active:scale-95 cursor-pointer">
+        SKIP INTRO ✕
+      </button>
+    </header>
+
+    <!-- CENTER ASSEMBLY: COMPACT ULTRA-GLOSSY QUANTUM LENS -->
+    <main class="relative z-20 flex flex-col items-center justify-center my-auto w-full max-w-md px-4">
+      <div class="relative w-[250px] h-[250px] flex items-center justify-center">
+        <!-- Radial Atmosphere Glow -->
+        <div class="absolute inset-2 rounded-full bg-gradient-to-tr from-cyan-900/35 via-emerald-950/25 to-teal-900/35 blur-xl pointer-events-none animate-pulse"></div>
+
+        <!-- SVG Concentric Cyber HUD Rings -->
+        <svg class="absolute inset-0 w-full h-full pointer-events-none splash-pulse-aura" viewBox="0 0 250 250">
+          <defs>
+            <linearGradient id="splGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00e5ff"/>
+              <stop offset="50%" stop-color="#2cf100"/>
+              <stop offset="100%" stop-color="#00daf3"/>
+            </linearGradient>
+            <linearGradient id="splGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#2cf100"/>
+              <stop offset="100%" stop-color="#00e5ff"/>
+            </linearGradient>
+          </defs>
+          <!-- Outer Segmented Ring -->
+          <g class="splash-ring-cw" style="transform-origin: 125px 125px;">
+            <circle cx="125" cy="125" r="118" fill="none" stroke="url(#splGrad1)" stroke-width="1.8" stroke-dasharray="90 28 50 30 140 40" stroke-linecap="round"/>
+            <circle cx="125" cy="125" r="123" fill="none" stroke="#00e5ff" stroke-width="0.8" stroke-dasharray="3 16" opacity="0.4"/>
+          </g>
+          <!-- Middle Counter-Rotating Ring -->
+          <g class="splash-ring-ccw" style="transform-origin: 125px 125px;">
+            <circle cx="125" cy="125" r="105" fill="none" stroke="url(#splGrad2)" stroke-width="2.2" stroke-dasharray="160 48 70 42" stroke-linecap="round"/>
+          </g>
+          <!-- Inner Corona Ring -->
+          <circle cx="125" cy="125" r="92" fill="none" stroke="#00e5ff" stroke-width="1" stroke-dasharray="12 6" opacity="0.75" class="splash-ring-cw" style="transform-origin: 125px 125px;"/>
+        </svg>
+
+        <!-- Tesla Lightning Canvas Overlay -->
+        <canvas id="splash-canvas-lightning" width="250" height="250" class="absolute inset-0 w-full h-full pointer-events-none z-15"></canvas>
+
+        <!-- ULTRA-GLOSSY CRYSTAL GLASS LENS (Backing Disc for Logo) -->
+        <div class="splash-glass-lens w-[172px] h-[172px] rounded-full flex items-center justify-center relative z-20">
+          <div class="splash-specular-crescent"></div>
+          <div class="splash-sheen-sweep"></div>
+
+          <!-- Official REC Logo (Compact 132px) -->
+          <div class="relative z-30 w-[132px] h-[132px] flex items-center justify-center p-1">
+            <img src="assets/rec_logo.png" alt="REC Logo" class="w-full h-full object-contain splash-logo-reveal drop-shadow-[0_0_18px_rgba(0,229,255,0.55)]" id="splash-hero-logo"/>
+            <!-- Laser Comet Sweep -->
+            <div class="splash-laser-beam" id="splash-laser-beam">
+              <div class="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-white shadow-[0_0_18px_#ffffff,0_0_32px_#00e5ff,0_0_48px_#2cf100]"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Diamond Twinkle Stars -->
+        <div class="absolute inset-0 pointer-events-none z-25">
+          <div class="absolute top-[8%] right-[14%] text-cyan splash-star-twinkle text-base">✦</div>
+          <div class="absolute top-[42%] left-[3%] text-green splash-star-twinkle text-xs" style="animation-delay: 0.7s;">✦</div>
+          <div class="absolute bottom-[8%] right-[12%] text-white splash-star-twinkle text-lg" style="animation-delay: 1.4s;">✦</div>
+          <div class="absolute bottom-[24%] left-[12%] text-cyan splash-star-twinkle text-xs" style="animation-delay: 1.9s;">✦</div>
+        </div>
+      </div>
+
+      <!-- Brand Typography -->
+      <div class="mt-7 text-center px-4 z-20">
+        <h1 class="text-xs font-mono font-bold tracking-[0.35em] text-cyan uppercase drop-shadow-[0_0_12px_rgba(0,229,255,0.7)]">
+          RENEWABLE ENERGY CLUB
+        </h1>
+        <p class="text-[9.5px] font-mono tracking-widest text-green mt-1">
+          TERRITORY GRID // TACTICAL FIELD ENGINE
+        </p>
+      </div>
+    </main>
+
+    <!-- BOTTOM CONTROLS & TIMELINE -->
+    <footer class="w-full max-w-md px-6 pb-8 z-20 flex flex-col gap-3">
+      <div class="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+        <div id="splash-countdown-bar" class="h-full bg-gradient-to-r from-cyan via-green to-cyan transition-all duration-100 shadow-[0_0_8px_#00e5ff]" style="width: 0%;"></div>
+      </div>
+      <div class="flex items-center justify-between text-[11px] font-mono text-gray-400">
+        <span id="splash-phase-status">QUANTUM REACTOR IGNITING...</span>
+        <span id="splash-countdown-display" class="text-cyan font-bold">10.0s remaining</span>
+      </div>
+      <button type="button" onclick="completeFirstLaunchIntro()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan to-green text-black font-headline font-bold text-xs tracking-wider transition flex items-center justify-center gap-1.5 active:scale-95 shadow-[0_0_18px_rgba(0,229,255,0.4)] cursor-pointer">
+        <span>ENTER SQUAD HUD</span>
+        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      </button>
+    </footer>
+  </div>
 
   <!-- Top Telemetry Header -->
   <header class="w-full max-w-4xl mx-auto flex items-center justify-between py-2 border-b border-cyan/20 text-xs font-mono">
@@ -185,9 +398,15 @@
       <span class="w-2 h-2 rounded-full bg-green animate-ping"></span>
       <span class="tracking-widest font-bold">GRID.SYS ONLINE // CLUB FEST MATRIX</span>
     </div>
-    <div class="flex items-center gap-2 text-gray-400">
-      <span class="material-symbols-outlined text-sm text-cyan">database</span>
-      <span>MONGODB STORE: ACTIVE</span>
+    <div class="flex items-center gap-3 text-gray-400">
+      <button type="button" onclick="replayClubIntroManual()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-cyan/10 hover:bg-cyan/20 border border-cyan/30 text-cyan font-mono text-[10px] transition active:scale-95 cursor-pointer" title="Replay 10-Second Startup Animation">
+        <span class="material-symbols-outlined text-[13px]">play_circle</span>
+        <span>INTRO</span>
+      </button>
+      <div class="flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm text-cyan">database</span>
+        <span>MONGODB STORE: ACTIVE</span>
+      </div>
     </div>
   </header>
 
@@ -617,6 +836,165 @@
     var pollInterval = null;
     var currentUserId = null;
 
+    // ─────────────────────────────────────────────────────────
+    // FIRST-LAUNCH 10-SECOND CINEMATIC STARTUP ENGINE
+    // ─────────────────────────────────────────────────────────
+    var splashParticles = [];
+    var splashAnimId = null;
+    var splashLightningId = null;
+    var splashTimerStart = null;
+    var SPLASH_TOTAL_SEC = 10.0;
+
+    function checkAndTriggerFirstLaunchIntro() {
+      try {
+        var hasSeen = localStorage.getItem('rec_intro_seen_v1');
+        if (!hasSeen) {
+          launchFirstTimeIntro();
+        }
+      } catch (e) {}
+    }
+
+    function launchFirstTimeIntro() {
+      var splash = document.getElementById('first-launch-splash');
+      if (!splash) return;
+      splash.classList.remove('hidden');
+      splash.style.opacity = '1';
+      splashTimerStart = Date.now();
+      
+      initSplashParticles();
+      renderSplashParticles();
+      renderSplashLightning();
+      requestAnimationFrame(updateSplashCountdown);
+    }
+
+    function completeFirstLaunchIntro() {
+      try {
+        localStorage.setItem('rec_intro_seen_v1', 'true');
+      } catch (e) {}
+
+      var splash = document.getElementById('first-launch-splash');
+      if (!splash) return;
+      splash.style.transition = 'opacity 0.6s ease';
+      splash.style.opacity = '0';
+      setTimeout(function() {
+        splash.classList.add('hidden');
+        if (splashAnimId) cancelAnimationFrame(splashAnimId);
+        if (splashLightningId) cancelAnimationFrame(splashLightningId);
+      }, 600);
+    }
+
+    function replayClubIntroManual() {
+      var logo = document.getElementById('splash-hero-logo');
+      var laser = document.getElementById('splash-laser-beam');
+      if (logo) {
+        logo.classList.remove('splash-logo-reveal');
+        void logo.offsetWidth;
+        logo.classList.add('splash-logo-reveal');
+      }
+      if (laser) {
+        laser.style.animation = 'none';
+        void laser.offsetWidth;
+        laser.style.animation = 'splashLaserSweep 2.5s cubic-bezier(0.25, 1, 0.45, 1) 0.8s forwards';
+      }
+      launchFirstTimeIntro();
+    }
+
+    function initSplashParticles() {
+      var canvas = document.getElementById('splash-canvas-particles');
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      splashParticles = [];
+      for (var i = 0; i < 75; i++) {
+        splashParticles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 2.2 + 0.6,
+          alpha: Math.random() * 0.7 + 0.2,
+          speedY: -Math.random() * 0.7 - 0.2,
+          color: Math.random() > 0.4 ? '#00e5ff' : '#2cf100'
+        });
+      }
+    }
+
+    function renderSplashParticles() {
+      var canvas = document.getElementById('splash-canvas-particles');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (var i = 0; i < splashParticles.length; i++) {
+        var p = splashParticles[i];
+        p.y += p.speedY;
+        if (p.y < 0) p.y = canvas.height;
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      splashAnimId = requestAnimationFrame(renderSplashParticles);
+    }
+
+    function renderSplashLightning() {
+      var canvas = document.getElementById('splash-canvas-lightning');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (Math.random() > 0.32) {
+        var cx = 125, cy = 125, r = 105;
+        var start = Math.random() * Math.PI * 2;
+        var span = Math.PI * 0.45;
+        var steps = 10;
+        ctx.beginPath();
+        for (var i = 0; i <= steps; i++) {
+          var a = start + (i / steps) * span;
+          var jitter = (Math.random() - 0.5) * 10;
+          var px = cx + Math.cos(a) * (r + jitter);
+          var py = cy + Math.sin(a) * (r + jitter);
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = Math.random() > 0.5 ? 'rgba(0,229,255,0.92)' : 'rgba(44,241,0,0.85)';
+        ctx.lineWidth = Math.random() * 1.8 + 0.8;
+        ctx.shadowColor = '#00e5ff';
+        ctx.shadowBlur = 10;
+        ctx.stroke();
+      }
+      splashLightningId = requestAnimationFrame(renderSplashLightning);
+    }
+
+    function updateSplashCountdown() {
+      if (!splashTimerStart) return;
+      var elapsed = (Date.now() - splashTimerStart) / 1000;
+      var progress = Math.min(1, elapsed / SPLASH_TOTAL_SEC);
+      var remaining = Math.max(0, SPLASH_TOTAL_SEC - elapsed);
+
+      var bar = document.getElementById('splash-countdown-bar');
+      var disp = document.getElementById('splash-countdown-display');
+      var status = document.getElementById('splash-phase-status');
+
+      if (bar) bar.style.width = (progress * 100) + '%';
+      if (disp) disp.innerText = remaining.toFixed(1) + 's remaining';
+
+      if (elapsed < 2.5) {
+        if (status) status.innerText = 'INITIALIZING QUANTUM MATRIX...';
+      } else if (elapsed < 5.5) {
+        if (status) status.innerText = 'PHOTON BEAM REVEALING REC CREST...';
+      } else if (elapsed < 8.5) {
+        if (status) status.innerText = 'STABILIZING ENERGY GRID TELEMETRY...';
+      } else {
+        if (status) status.innerText = 'GRID TELEMETRY LINK READY.';
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(updateSplashCountdown);
+      } else {
+        completeFirstLaunchIntro();
+      }
+    }
+
     // Seamless 24/7 Cloud Connector (Zero Config Needed)
     function updateServerBadge() {}
     function openServerConfigModal() {}
@@ -629,6 +1007,7 @@
 
     // Initialize page
     window.addEventListener('DOMContentLoaded', function() {
+      checkAndTriggerFirstLaunchIntro();
       // Auto-validate and purge dead or obsolete server URLs from storage
       try {
         ['tg_grid_server_url', 'tg_server_url', 'tg_custom_server', 'server_url', 'grid_server_url'].forEach(function(k) {
