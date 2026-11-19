@@ -287,7 +287,7 @@
 </head>
 <body class="hex-bg flex flex-col justify-between p-3 sm:p-6 selection:bg-cyan selection:text-black">
 
-  <!-- FIRST-TIME APP LAUNCH 10-SECOND CINEMATIC INTRO OVERLAY -->
+  <!-- APP STARTUP / RESTART 10-SECOND HYBRID CINEMATIC INTRO OVERLAY -->
   <div id="first-launch-splash" class="fixed inset-0 z-[9999] bg-[#02050A] flex flex-col justify-between items-center overflow-hidden transition-opacity duration-700 hidden">
     <!-- Ambient CRT Vignette -->
     <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_35%,rgba(2,5,10,0.85)_85%,#000_100%)] z-10"></div>
@@ -296,65 +296,45 @@
     <canvas id="splash-canvas-particles" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
 
     <!-- TOP HEADER -->
-    <header class="w-full max-w-md px-6 pt-6 flex items-center justify-between z-20">
+    <header class="w-full max-w-md px-6 pt-6 flex items-center justify-between z-30">
       <div class="flex items-center gap-2">
         <div class="w-2 h-2 rounded-full bg-cyan animate-pulse shadow-[0_0_8px_#00e5ff]"></div>
-        <span class="font-mono text-[10px] tracking-widest text-cyan font-bold uppercase">REC // FIRST LAUNCH SYNC</span>
+        <span class="font-mono text-[10px] tracking-widest text-cyan font-bold uppercase">REC // QUANTUM LINK ACTIVE</span>
       </div>
-      <button type="button" onclick="completeFirstLaunchIntro()" class="text-gray-400 hover:text-white bg-white/5 border border-white/10 px-2.5 py-1 rounded-full text-[10px] font-mono transition active:scale-95 cursor-pointer">
-        SKIP INTRO ✕
-      </button>
+      <div class="flex items-center gap-2">
+        <!-- Audio Toggle Button -->
+        <button type="button" onclick="toggleSplashAudio()" id="splash-btn-audio" class="flex items-center gap-1 text-cyan bg-cyan/10 border border-cyan/30 px-2 py-0.5 rounded-full text-[9.5px] font-mono transition active:scale-95 cursor-pointer shadow-[0_0_8px_rgba(0,229,255,0.25)]">
+          <span id="splash-audio-icon">🔊</span>
+          <span id="splash-audio-label">SOUND ON</span>
+        </button>
+        <button type="button" onclick="completeFirstLaunchIntro()" class="text-gray-400 hover:text-white bg-white/5 border border-white/10 px-2.5 py-1 rounded-full text-[10px] font-mono transition active:scale-95 cursor-pointer">
+          SKIP INTRO ✕
+        </button>
+      </div>
     </header>
 
-    <!-- CENTER ASSEMBLY: COMPACT ULTRA-GLOSSY QUANTUM LENS -->
+    <!-- CENTER ASSEMBLY: HYBRID MASTER (D4 INTRO VIDEO → D1 QUANTUM TOKAMAK GLOSS CORE) -->
     <main class="relative z-20 flex flex-col items-center justify-center my-auto w-full max-w-md px-4">
+      
+      <!-- Video Element (Plays the synthesized master hybrid video) -->
       <div class="relative w-[250px] h-[250px] flex items-center justify-center">
         <!-- Radial Atmosphere Glow -->
-        <div class="absolute inset-2 rounded-full bg-gradient-to-tr from-cyan-900/35 via-emerald-950/25 to-teal-900/35 blur-xl pointer-events-none animate-pulse"></div>
+        <div class="absolute inset-2 rounded-full bg-gradient-to-tr from-cyan-900/40 via-emerald-950/30 to-teal-900/40 blur-xl pointer-events-none animate-pulse"></div>
 
-        <!-- SVG Concentric Cyber HUD Rings -->
-        <svg class="absolute inset-0 w-full h-full pointer-events-none splash-pulse-aura" viewBox="0 0 250 250">
-          <defs>
-            <linearGradient id="splGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00e5ff"/>
-              <stop offset="50%" stop-color="#2cf100"/>
-              <stop offset="100%" stop-color="#00daf3"/>
-            </linearGradient>
-            <linearGradient id="splGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#2cf100"/>
-              <stop offset="100%" stop-color="#00e5ff"/>
-            </linearGradient>
-          </defs>
-          <!-- Outer Segmented Ring -->
-          <g class="splash-ring-cw" style="transform-origin: 125px 125px;">
-            <circle cx="125" cy="125" r="118" fill="none" stroke="url(#splGrad1)" stroke-width="1.8" stroke-dasharray="90 28 50 30 140 40" stroke-linecap="round"/>
-            <circle cx="125" cy="125" r="123" fill="none" stroke="#00e5ff" stroke-width="0.8" stroke-dasharray="3 16" opacity="0.4"/>
-          </g>
-          <!-- Middle Counter-Rotating Ring -->
-          <g class="splash-ring-ccw" style="transform-origin: 125px 125px;">
-            <circle cx="125" cy="125" r="105" fill="none" stroke="url(#splGrad2)" stroke-width="2.2" stroke-dasharray="160 48 70 42" stroke-linecap="round"/>
-          </g>
-          <!-- Inner Corona Ring -->
-          <circle cx="125" cy="125" r="92" fill="none" stroke="#00e5ff" stroke-width="1" stroke-dasharray="12 6" opacity="0.75" class="splash-ring-cw" style="transform-origin: 125px 125px;"/>
-        </svg>
-
-        <!-- Tesla Lightning Canvas Overlay -->
-        <canvas id="splash-canvas-lightning" width="250" height="250" class="absolute inset-0 w-full h-full pointer-events-none z-15"></canvas>
-
-        <!-- ULTRA-GLOSSY CRYSTAL GLASS LENS (Backing Disc for Logo) -->
-        <div class="splash-glass-lens w-[172px] h-[172px] rounded-full flex items-center justify-center relative z-20">
+        <!-- Video Player Display with Circular Glass Framing -->
+        <div class="w-[240px] h-[240px] rounded-full overflow-hidden border-2 border-cyan/60 shadow-[inset_0_0_25px_rgba(0,229,255,0.6),0_0_40px_rgba(44,241,0,0.35)] relative bg-black flex items-center justify-center">
+          <video id="splash-hybrid-video" src="assets/rec_intro_vertical_hybrid.mp4" playsinline webkit-playsinline muted class="w-full h-full object-cover"></video>
+          <!-- Specular Curved Glint on Top -->
           <div class="splash-specular-crescent"></div>
+          <!-- Dynamic Glass Sheen Light Sweep -->
           <div class="splash-sheen-sweep"></div>
-
-          <!-- Official REC Logo (Compact 132px) -->
-          <div class="relative z-30 w-[132px] h-[132px] flex items-center justify-center p-1">
-            <img src="assets/rec_logo.png" alt="REC Logo" class="w-full h-full object-contain splash-logo-reveal drop-shadow-[0_0_18px_rgba(0,229,255,0.55)]" id="splash-hero-logo"/>
-            <!-- Laser Comet Sweep -->
-            <div class="splash-laser-beam" id="splash-laser-beam">
-              <div class="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-white shadow-[0_0_18px_#ffffff,0_0_32px_#00e5ff,0_0_48px_#2cf100]"></div>
-            </div>
-          </div>
         </div>
+
+        <!-- Subtle Concentric Cyber Ring Overlay -->
+        <svg class="absolute inset-[-10px] w-[270px] h-[270px] pointer-events-none splash-pulse-aura" viewBox="0 0 270 270">
+          <circle cx="135" cy="135" r="130" fill="none" stroke="#00e5ff" stroke-width="1.2" stroke-dasharray="80 30 120 40" stroke-linecap="round" class="splash-ring-cw" style="transform-origin: 135px 135px;"/>
+          <circle cx="135" cy="135" r="122" fill="none" stroke="#00ff88" stroke-width="1.8" stroke-dasharray="140 40 60 30" stroke-linecap="round" class="splash-ring-ccw" style="transform-origin: 135px 135px;"/>
+        </svg>
 
         <!-- Diamond Twinkle Stars -->
         <div class="absolute inset-0 pointer-events-none z-25">
@@ -370,8 +350,8 @@
         <h1 class="text-xs font-mono font-bold tracking-[0.35em] text-cyan uppercase drop-shadow-[0_0_12px_rgba(0,229,255,0.7)]">
           RENEWABLE ENERGY CLUB
         </h1>
-        <p class="text-[9.5px] font-mono tracking-widest text-green mt-1">
-          TERRITORY GRID // TACTICAL FIELD ENGINE
+        <p id="splash-brand-subtitle" class="text-[9.5px] font-mono tracking-widest text-green mt-1">
+          CINEMATIC QUANTUM INGRESS // D4 LIVE
         </p>
       </div>
     </main>
@@ -382,7 +362,7 @@
         <div id="splash-countdown-bar" class="h-full bg-gradient-to-r from-cyan via-green to-cyan transition-all duration-100 shadow-[0_0_8px_#00e5ff]" style="width: 0%;"></div>
       </div>
       <div class="flex items-center justify-between text-[11px] font-mono text-gray-400">
-        <span id="splash-phase-status">QUANTUM REACTOR IGNITING...</span>
+        <span id="splash-phase-status">INITIALIZING QUANTUM MATRIX...</span>
         <span id="splash-countdown-display" class="text-cyan font-bold">10.0s remaining</span>
       </div>
       <button type="button" onclick="completeFirstLaunchIntro()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan to-green text-black font-headline font-bold text-xs tracking-wider transition flex items-center justify-center gap-1.5 active:scale-95 shadow-[0_0_18px_rgba(0,229,255,0.4)] cursor-pointer">
@@ -837,21 +817,79 @@
     var currentUserId = null;
 
     // ─────────────────────────────────────────────────────────
-    // FIRST-LAUNCH 10-SECOND CINEMATIC STARTUP ENGINE
+    // APP RESTART & STARTUP 10-SECOND HYBRID CINEMATIC ENGINE
+    // (Design 4 Intro → Design 1 Tokamak Climax + Sound Effects)
     // ─────────────────────────────────────────────────────────
     var splashParticles = [];
     var splashAnimId = null;
-    var splashLightningId = null;
     var splashTimerStart = null;
     var SPLASH_TOTAL_SEC = 10.0;
+    var splashAudioObj = null;
+    var isSplashAudioMuted = false;
+
+    function initSplashAudio() {
+      if (!splashAudioObj) {
+        splashAudioObj = new Audio('assets/rec_intro_sound.mp3');
+        splashAudioObj.preload = 'auto';
+      }
+    }
+
+    function playSplashAudio() {
+      initSplashAudio();
+      if (isSplashAudioMuted || !splashAudioObj) return;
+      splashAudioObj.currentTime = 0;
+      var p = splashAudioObj.play();
+      if (p !== undefined) {
+        p.catch(function(err) {
+          console.warn('[AudioEngine] Autoplay waiting for user gesture:', err);
+        });
+      }
+    }
+
+    function stopSplashAudio() {
+      if (splashAudioObj) {
+        try {
+          splashAudioObj.pause();
+          splashAudioObj.currentTime = 0;
+        } catch (e) {}
+      }
+    }
+
+    function toggleSplashAudio() {
+      isSplashAudioMuted = !isSplashAudioMuted;
+      var icon = document.getElementById('splash-audio-icon');
+      var label = document.getElementById('splash-audio-label');
+      var btn = document.getElementById('splash-btn-audio');
+
+      if (isSplashAudioMuted) {
+        stopSplashAudio();
+        if (icon) icon.innerText = '🔇';
+        if (label) label.innerText = 'MUTED';
+        if (btn) {
+          btn.classList.remove('text-cyan', 'border-cyan/30');
+          btn.classList.add('text-gray-400', 'border-white/20');
+        }
+      } else {
+        if (icon) icon.innerText = '🔊';
+        if (label) label.innerText = 'SOUND ON';
+        if (btn) {
+          btn.classList.remove('text-gray-400', 'border-white/20');
+          btn.classList.add('text-cyan', 'border-cyan/30');
+        }
+        playSplashAudio();
+      }
+    }
 
     function checkAndTriggerFirstLaunchIntro() {
       try {
-        var hasSeen = localStorage.getItem('rec_intro_seen_v1');
-        if (!hasSeen) {
+        // Show on initial launch and every app restart (sessionStorage resets on restart)
+        var hasSeenThisSession = sessionStorage.getItem('rec_intro_session_v2');
+        if (!hasSeenThisSession) {
           launchFirstTimeIntro();
         }
-      } catch (e) {}
+      } catch (e) {
+        launchFirstTimeIntro();
+      }
     }
 
     function launchFirstTimeIntro() {
@@ -863,14 +901,30 @@
       
       initSplashParticles();
       renderSplashParticles();
-      renderSplashLightning();
+
+      // Start hybrid video
+      var video = document.getElementById('splash-hybrid-video');
+      if (video) {
+        video.currentTime = 0;
+        video.play().catch(function() {});
+      }
+
+      // Play audio soundtrack
+      playSplashAudio();
+
       requestAnimationFrame(updateSplashCountdown);
     }
 
     function completeFirstLaunchIntro() {
       try {
-        localStorage.setItem('rec_intro_seen_v1', 'true');
+        sessionStorage.setItem('rec_intro_session_v2', 'true');
       } catch (e) {}
+
+      stopSplashAudio();
+      var video = document.getElementById('splash-hybrid-video');
+      if (video) {
+        try { video.pause(); } catch (e) {}
+      }
 
       var splash = document.getElementById('first-launch-splash');
       if (!splash) return;
@@ -879,23 +933,10 @@
       setTimeout(function() {
         splash.classList.add('hidden');
         if (splashAnimId) cancelAnimationFrame(splashAnimId);
-        if (splashLightningId) cancelAnimationFrame(splashLightningId);
       }, 600);
     }
 
     function replayClubIntroManual() {
-      var logo = document.getElementById('splash-hero-logo');
-      var laser = document.getElementById('splash-laser-beam');
-      if (logo) {
-        logo.classList.remove('splash-logo-reveal');
-        void logo.offsetWidth;
-        logo.classList.add('splash-logo-reveal');
-      }
-      if (laser) {
-        laser.style.animation = 'none';
-        void laser.offsetWidth;
-        laser.style.animation = 'splashLaserSweep 2.5s cubic-bezier(0.25, 1, 0.45, 1) 0.8s forwards';
-      }
       launchFirstTimeIntro();
     }
 
@@ -928,41 +969,11 @@
         if (p.y < 0) p.y = canvas.height;
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 6;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
       }
       splashAnimId = requestAnimationFrame(renderSplashParticles);
-    }
-
-    function renderSplashLightning() {
-      var canvas = document.getElementById('splash-canvas-lightning');
-      if (!canvas) return;
-      var ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (Math.random() > 0.32) {
-        var cx = 125, cy = 125, r = 105;
-        var start = Math.random() * Math.PI * 2;
-        var span = Math.PI * 0.45;
-        var steps = 10;
-        ctx.beginPath();
-        for (var i = 0; i <= steps; i++) {
-          var a = start + (i / steps) * span;
-          var jitter = (Math.random() - 0.5) * 10;
-          var px = cx + Math.cos(a) * (r + jitter);
-          var py = cy + Math.sin(a) * (r + jitter);
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-        }
-        ctx.strokeStyle = Math.random() > 0.5 ? 'rgba(0,229,255,0.92)' : 'rgba(44,241,0,0.85)';
-        ctx.lineWidth = Math.random() * 1.8 + 0.8;
-        ctx.shadowColor = '#00e5ff';
-        ctx.shadowBlur = 10;
-        ctx.stroke();
-      }
-      splashLightningId = requestAnimationFrame(renderSplashLightning);
     }
 
     function updateSplashCountdown() {
@@ -974,18 +985,21 @@
       var bar = document.getElementById('splash-countdown-bar');
       var disp = document.getElementById('splash-countdown-display');
       var status = document.getElementById('splash-phase-status');
+      var subtitle = document.getElementById('splash-brand-subtitle');
 
       if (bar) bar.style.width = (progress * 100) + '%';
       if (disp) disp.innerText = remaining.toFixed(1) + 's remaining';
 
-      if (elapsed < 2.5) {
-        if (status) status.innerText = 'INITIALIZING QUANTUM MATRIX...';
-      } else if (elapsed < 5.5) {
-        if (status) status.innerText = 'PHOTON BEAM REVEALING REC CREST...';
-      } else if (elapsed < 8.5) {
-        if (status) status.innerText = 'STABILIZING ENERGY GRID TELEMETRY...';
+      // HYBRID CHOREOGRAPHY TIMELINE
+      if (elapsed < 4.0) {
+        if (status) status.innerText = 'PHASE 1: COSMIC QUANTUM INGRESS...';
+        if (subtitle) subtitle.innerText = 'CINEMATIC QUANTUM INGRESS // D4 LIVE';
+      } else if (elapsed < 8.0) {
+        if (status) status.innerText = 'PHASE 2: ULTRA-GLOSSY TOKAMAK STABILIZED';
+        if (subtitle) subtitle.innerText = 'QUANTUM TOKAMAK GLOSS CORE // D1 APEX';
       } else {
-        if (status) status.innerText = 'GRID TELEMETRY LINK READY.';
+        if (status) status.innerText = 'GRID TELEMETRY LINK READY // FIELD OPS CLEARED';
+        if (subtitle) subtitle.innerText = 'TERRITORY GRID // TACTICAL FIELD ENGINE';
       }
 
       if (progress < 1) {

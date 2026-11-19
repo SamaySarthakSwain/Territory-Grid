@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
-  <title>Renewable Energy Club // Ultra-Glossy Vertical Mobile Startup</title>
+  <title>Renewable Energy Club // Hybrid Master Startup (Design 4 Intro → Design 1 Ending)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -63,17 +63,17 @@
 
     /* Ultra-Glossy Crystal Glass Disc */
     .crystal-glass-lens {
-      background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.16) 0%, rgba(0, 229, 255, 0.06) 45%, rgba(2, 5, 10, 0.85) 90%);
-      border: 1.5px solid rgba(255, 255, 255, 0.25);
-      border-top-color: rgba(255, 255, 255, 0.65);
-      border-bottom-color: rgba(0, 229, 255, 0.2);
+      background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.18) 0%, rgba(0, 229, 255, 0.08) 45%, rgba(2, 5, 10, 0.85) 90%);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: rgba(255, 255, 255, 0.75);
+      border-bottom-color: rgba(0, 229, 255, 0.25);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       box-shadow: 
-        inset 0 2px 4px rgba(255, 255, 255, 0.45),
-        inset 0 -4px 8px rgba(0, 0, 0, 0.7),
-        0 0 35px rgba(0, 229, 255, 0.35),
-        0 0 60px rgba(44, 241, 0, 0.15);
+        inset 0 2px 5px rgba(255, 255, 255, 0.5),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.75),
+        0 0 35px rgba(0, 229, 255, 0.4),
+        0 0 65px rgba(44, 241, 0, 0.2);
       position: relative;
       overflow: hidden;
     }
@@ -86,7 +86,7 @@
       width: 80%;
       height: 70%;
       border-radius: 50%;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%);
       transform: rotate(-15deg);
       pointer-events: none;
     }
@@ -98,7 +98,7 @@
         opacity: 0;
       }
       20% {
-        opacity: 0.85;
+        opacity: 0.9;
       }
       50% {
         transform: translate3d(180%, 180%, 0) rotate(45deg);
@@ -118,12 +118,12 @@
       background: linear-gradient(
         115deg,
         transparent 35%,
-        rgba(255, 255, 255, 0.05) 44%,
-        rgba(255, 255, 255, 0.65) 50%,
-        rgba(0, 229, 255, 0.35) 54%,
+        rgba(255, 255, 255, 0.06) 44%,
+        rgba(255, 255, 255, 0.75) 50%,
+        rgba(0, 229, 255, 0.4) 54%,
         transparent 65%
       );
-      animation: glassSheen 4.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+      animation: glassSheen 3.8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
       pointer-events: none;
       mix-blend-mode: overlay;
     }
@@ -149,13 +149,13 @@
       position: absolute;
       top: 50%;
       height: 2.5px;
-      width: 100px;
+      width: 110px;
       transform: translateY(-50%);
       background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.5) 30%, #ffffff 75%, #a6ff00 95%, #ffffff 100%);
       box-shadow: 0 0 15px #00e5ff, 0 0 30px #2cf100, 0 0 45px #ffffff;
       border-radius: 999px;
       pointer-events: none;
-      animation: laserSweepBeam 2.5s cubic-bezier(0.25, 1, 0.45, 1) 0.8s forwards;
+      animation: laserSweepBeam 2.4s cubic-bezier(0.25, 1, 0.45, 1) forwards;
     }
     .laser-comet-head {
       position: absolute;
@@ -184,13 +184,13 @@
       }
       100% {
         clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-        filter: brightness(1) blur(0px) drop-shadow(0 0 20px rgba(0, 229, 255, 0.4));
+        filter: brightness(1) blur(0px) drop-shadow(0 0 20px rgba(0, 229, 255, 0.45));
         transform: scale(1);
         opacity: 1;
       }
     }
     .logo-reveal-active {
-      animation: logoRevealMask 2.8s cubic-bezier(0.18, 1, 0.32, 1) forwards;
+      animation: logoRevealMask 2.5s cubic-bezier(0.18, 1, 0.32, 1) forwards;
       will-change: clip-path, filter, transform, opacity;
     }
 
@@ -200,6 +200,26 @@
       50% { opacity: 1; transform: scale(1.3) rotate(90deg); filter: drop-shadow(0 0 8px #ffffff) drop-shadow(0 0 14px #00e5ff); }
     }
     .anim-twinkle { animation: starTwinkle 2.2s ease-in-out infinite; }
+
+    /* Quantum Transition Shockwave Pulse */
+    @keyframes quantumWarpShockwave {
+      0% {
+        transform: scale(0.85);
+        opacity: 0;
+        box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.8), 0 0 0 0 rgba(44, 241, 0, 0.5);
+      }
+      30% {
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.4);
+        opacity: 0;
+        box-shadow: 0 0 80px 40px rgba(0, 229, 255, 0), 0 0 120px 60px rgba(44, 241, 0, 0);
+      }
+    }
+    .warp-shockwave-active {
+      animation: quantumWarpShockwave 1.2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen bg-black">
@@ -211,140 +231,193 @@
     <div class="cyber-vignette absolute inset-0 z-10 pointer-events-none"></div>
 
     <!-- TOP HEADER: SELECTOR TABS -->
-    <header class="w-full px-4 pt-5 pb-2 z-40 bg-gradient-to-b from-black/95 via-black/75 to-transparent">
+    <header class="w-full px-4 pt-5 pb-2 z-40 bg-gradient-to-b from-black/95 via-black/80 to-transparent">
       
-      <!-- Toggle Tabs for the Two Approved Directions -->
-      <div class="flex items-center justify-between gap-1.5 p-1 rounded-xl bg-surface-container-high/60 backdrop-blur-md border border-white/10 text-[11px] font-mono">
-        <button onclick="switchView('design1')" id="tab-design1" class="flex-1 py-1.5 px-3 rounded-lg font-bold transition text-center bg-cyan-400 text-black shadow-[0_0_12px_#00e5ff]">
-          DESIGN 1: QUANTUM GLOSS (CODE)
+      <!-- Toggle Tabs -->
+      <div class="flex items-center justify-between gap-1 p-1 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 text-[10px] font-mono">
+        <button onclick="switchView('hybrid')" id="tab-hybrid" class="flex-1 py-1.5 px-2 rounded-lg font-bold transition text-center bg-cyan-400 text-black shadow-[0_0_12px_#00e5ff]">
+          ★ HYBRID (D4 → D1)
         </button>
-        <button onclick="switchView('design4')" id="tab-design4" class="flex-1 py-1.5 px-3 rounded-lg font-bold transition text-center text-gray-400 hover:text-white">
-          DESIGN 4: GLOSSY HD VIDEO
+        <button onclick="switchView('design1')" id="tab-design1" class="flex-1 py-1.5 px-2 rounded-lg font-bold transition text-center text-gray-400 hover:text-white">
+          D1: QUANTUM GLOSS
+        </button>
+        <button onclick="switchView('design4')" id="tab-design4" class="flex-1 py-1.5 px-2 rounded-lg font-bold transition text-center text-gray-400 hover:text-white">
+          D4: HD VIDEO
         </button>
       </div>
 
-      <!-- Status Header -->
+      <!-- Telemetry Bar & Audio Control -->
       <div class="flex items-center justify-between mt-3 px-1 text-[11px] font-mono">
         <div class="flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00e5ff]"></span>
           <span class="text-cyan-300 font-bold uppercase tracking-widest text-[9.5px]" id="current-title">
-            DESIGN 1 // QUANTUM TOKAMAK GLOSS CORE
+            HYBRID // D4 INTRO → D1 QUANTUM GLOSS ENDING
           </span>
         </div>
-        <button onclick="enterApplication()" class="text-gray-400 hover:text-white bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full text-[9.5px] transition active:scale-95">
-          SKIP INTRO ✕
-        </button>
+        <div class="flex items-center gap-2">
+          <!-- Audio Toggle Button -->
+          <button type="button" onclick="toggleAudio()" id="btn-audio-toggle" class="flex items-center gap-1 text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded-full text-[9px] transition active:scale-95 cursor-pointer shadow-[0_0_8px_rgba(0,229,255,0.3)]">
+            <span id="audio-icon">🔊</span>
+            <span id="audio-label">SOUND ON</span>
+          </button>
+          <button onclick="enterApplication()" class="text-gray-400 hover:text-white bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full text-[9.5px] transition active:scale-95">
+            SKIP INTRO ✕
+          </button>
+        </div>
       </div>
     </header>
 
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <!-- VIEW 1: ENHANCED DESIGN 1 — ULTRA-GLOSSY QUANTUM REACTOR CORE          -->
-    <!-- (Scaled down to 240px compact luxury size, with crystal glass lens)     -->
+    <!-- MASTER VIEW: HYBRID (DESIGN 4 INTRO 0-4.2s → DESIGN 1 ENDING 4.2-10s)  -->
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <div id="view-design1" class="design-view absolute inset-0 z-20 flex flex-col items-center justify-center">
+    <div id="view-hybrid" class="design-view absolute inset-0 z-20 flex flex-col items-center justify-center">
       
       <!-- 60FPS Ambient Particle Canvas -->
-      <canvas id="canvas-particles" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+      <canvas id="hybrid-canvas-particles" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
 
-      <!-- Center Compact Assembly (240px x 240px — refined, high-density size) -->
-      <div class="relative w-[250px] h-[250px] flex items-center justify-center">
-
-        <!-- Outer Atmospheric Glow -->
-        <div class="absolute inset-2 rounded-full bg-gradient-to-tr from-cyan-900/35 via-emerald-950/25 to-teal-900/35 blur-xl pointer-events-none animate-pulse"></div>
-
-        <!-- SVG Concentric Cyber HUD Rings -->
-        <svg class="absolute inset-0 w-full h-full pointer-events-none ring-pulse-aura" viewBox="0 0 250 250">
-          <defs>
-            <linearGradient id="qGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00e5ff"/>
-              <stop offset="50%" stop-color="#2cf100"/>
-              <stop offset="100%" stop-color="#00daf3"/>
-            </linearGradient>
-            <linearGradient id="qGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#2cf100"/>
-              <stop offset="100%" stop-color="#00e5ff"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Outer Segmented Track (Clockwise) -->
-          <g class="ring-rotate-cw" style="transform-origin: 125px 125px;">
-            <circle cx="125" cy="125" r="118" fill="none" stroke="url(#qGrad1)" stroke-width="1.8" stroke-dasharray="90 28 50 30 140 40" stroke-linecap="round"/>
-            <circle cx="125" cy="125" r="123" fill="none" stroke="#00e5ff" stroke-width="0.8" stroke-dasharray="3 16" opacity="0.4"/>
-          </g>
-
-          <!-- Middle Electric Arc Ring (Counter-Clockwise) -->
-          <g class="ring-rotate-ccw" style="transform-origin: 125px 125px;">
-            <circle cx="125" cy="125" r="105" fill="none" stroke="url(#qGrad2)" stroke-width="2.2" stroke-dasharray="160 48 70 42" stroke-linecap="round"/>
-          </g>
-
-          <!-- Inner Corona Ring -->
-          <circle cx="125" cy="125" r="92" fill="none" stroke="#00e5ff" stroke-width="1" stroke-dasharray="12 6" opacity="0.75" class="ring-rotate-cw" style="transform-origin: 125px 125px;"/>
-        </svg>
-
-        <!-- Tesla Lightning Canvas Overlay -->
-        <canvas id="canvas-lightning" width="250" height="250" class="absolute inset-0 w-full h-full pointer-events-none z-15"></canvas>
-
-        <!-- ULTRA-GLOSSY CRYSTAL GLASS LENS (Backing Disc for Logo) -->
-        <div class="crystal-glass-lens w-[172px] h-[172px] rounded-full flex items-center justify-center relative z-20">
+      <!-- PHASE 1: DESIGN 4 INTRO VIDEO LAYER (0.0s - 4.2s) -->
+      <div id="hybrid-video-layer" class="absolute z-20 flex flex-col items-center justify-center transition-all duration-700 ease-out">
+        <div class="relative w-[250px] h-[250px] flex items-center justify-center">
+          <!-- Ambient Radial Aura -->
+          <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-900/40 via-emerald-950/30 to-teal-900/40 blur-xl pointer-events-none animate-pulse"></div>
           
-          <!-- Curved Specular Crescent Highlight (Glass curvature) -->
-          <div class="crystal-specular-crescent"></div>
+          <!-- Outer Neon Border Ring -->
+          <div class="absolute inset-[-4px] rounded-full border border-cyan-400/40 shadow-[0_0_25px_rgba(0,229,255,0.4)] pointer-events-none ring-rotate-cw" style="border-style: dashed;"></div>
 
-          <!-- Dynamic Glass Sheen Light Sweep -->
-          <div class="gloss-sheen-sweep"></div>
+          <!-- Video Portal (Circular Aperture) -->
+          <div class="w-[210px] h-[210px] rounded-full overflow-hidden border-2 border-cyan-400/70 shadow-[inset_0_0_25px_rgba(0,229,255,0.6),0_0_40px_rgba(44,241,0,0.35)] relative bg-black flex items-center justify-center">
+            <video id="hybrid-video" src="assets/rec_intro_vertical_hybrid.mp4" playsinline webkit-playsinline muted autoplay loop class="w-full h-full object-cover"></video>
+            <!-- High-Gloss Glass Reflection on Video Portal -->
+            <div class="crystal-specular-crescent"></div>
+            <div class="gloss-sheen-sweep"></div>
+          </div>
+        </div>
 
-          <!-- High-Res Official REC Club Logo (Compact 132px) -->
-          <div class="relative z-30 w-[132px] h-[132px] flex items-center justify-center p-1">
-            <img 
-              src="assets/rec_logo.png" 
-              alt="REC Logo" 
-              class="w-full h-full object-contain logo-reveal-active drop-shadow-[0_0_18px_rgba(0,229,255,0.55)]" 
-              id="hero-logo-q"
-            />
+        <!-- Typography during Phase 1 -->
+        <div class="mt-7 text-center px-4 z-20">
+          <h1 class="text-xs font-mono font-bold tracking-[0.35em] text-cyan-300 uppercase drop-shadow-[0_0_12px_rgba(0,229,255,0.7)]">
+            RENEWABLE ENERGY CLUB
+          </h1>
+          <p class="text-[9.5px] font-mono tracking-widest text-emerald-400 mt-1">
+            CINEMATIC QUANTUM INGRESS // D4 LIVE
+          </p>
+        </div>
+      </div>
 
-            <!-- Laser Comet Sweep -->
-            <div class="laser-comet-beam" id="laser-beam">
-              <div class="laser-comet-head"></div>
+      <!-- TRANSITION WARP SHOCKWAVE DISC -->
+      <div id="hybrid-shockwave" class="absolute z-22 w-[260px] h-[260px] rounded-full pointer-events-none opacity-0"></div>
+
+      <!-- PHASE 2: DESIGN 1 QUANTUM TOKAMAK GLOSS CORE LAYER (Reveals at 4.2s) -->
+      <div id="hybrid-d1-layer" class="relative z-25 flex flex-col items-center justify-center transition-all duration-700 ease-out opacity-0 scale-90">
+        
+        <!-- Center Assembly (Compact 250px x 250px) -->
+        <div class="relative w-[250px] h-[250px] flex items-center justify-center">
+          
+          <!-- Outer Atmospheric Glow -->
+          <div class="absolute inset-2 rounded-full bg-gradient-to-tr from-cyan-900/40 via-emerald-950/30 to-teal-900/40 blur-xl pointer-events-none animate-pulse"></div>
+
+          <!-- SVG Concentric Cyber HUD Rings -->
+          <svg class="absolute inset-0 w-full h-full pointer-events-none ring-pulse-aura" viewBox="0 0 250 250">
+            <defs>
+              <linearGradient id="hybGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00e5ff"/>
+                <stop offset="50%" stop-color="#2cf100"/>
+                <stop offset="100%" stop-color="#00daf3"/>
+              </linearGradient>
+              <linearGradient id="hybGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#2cf100"/>
+                <stop offset="100%" stop-color="#00e5ff"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Outer Segmented Track (Clockwise) -->
+            <g class="ring-rotate-cw" style="transform-origin: 125px 125px;">
+              <circle cx="125" cy="125" r="118" fill="none" stroke="url(#hybGrad1)" stroke-width="1.8" stroke-dasharray="90 28 50 30 140 40" stroke-linecap="round"/>
+              <circle cx="125" cy="125" r="123" fill="none" stroke="#00e5ff" stroke-width="0.8" stroke-dasharray="3 16" opacity="0.4"/>
+            </g>
+
+            <!-- Middle Electric Arc Ring (Counter-Clockwise) -->
+            <g class="ring-rotate-ccw" style="transform-origin: 125px 125px;">
+              <circle cx="125" cy="125" r="105" fill="none" stroke="url(#hybGrad2)" stroke-width="2.2" stroke-dasharray="160 48 70 42" stroke-linecap="round"/>
+            </g>
+
+            <!-- Inner Corona Ring -->
+            <circle cx="125" cy="125" r="92" fill="none" stroke="#00e5ff" stroke-width="1" stroke-dasharray="12 6" opacity="0.75" class="ring-rotate-cw" style="transform-origin: 125px 125px;"/>
+          </svg>
+
+          <!-- Tesla Lightning Canvas Overlay -->
+          <canvas id="hybrid-canvas-lightning" width="250" height="250" class="absolute inset-0 w-full h-full pointer-events-none z-15"></canvas>
+
+          <!-- ULTRA-GLOSSY CRYSTAL GLASS LENS (Backing Disc for Logo) -->
+          <div class="crystal-glass-lens w-[172px] h-[172px] rounded-full flex items-center justify-center relative z-20">
+            <!-- Curved Specular Crescent Highlight -->
+            <div class="crystal-specular-crescent"></div>
+            <!-- Dynamic Glass Sheen Light Sweep -->
+            <div class="gloss-sheen-sweep"></div>
+
+            <!-- High-Res Official REC Club Logo (132px) -->
+            <div class="relative z-30 w-[132px] h-[132px] flex items-center justify-center p-1">
+              <img 
+                src="assets/rec_logo.png" 
+                alt="REC Logo" 
+                class="w-full h-full object-contain logo-reveal-active drop-shadow-[0_0_20px_rgba(0,229,255,0.6)]" 
+                id="hybrid-hero-logo"
+              />
+              <!-- Laser Comet Sweep -->
+              <div class="laser-comet-beam" id="hybrid-laser-beam">
+                <div class="laser-comet-head"></div>
+              </div>
             </div>
+          </div>
+
+          <!-- Twinkling Diamond Sparkles -->
+          <div class="absolute inset-0 pointer-events-none z-25">
+            <div class="absolute top-[8%] right-[14%] text-cyan-200 anim-twinkle text-base">✦</div>
+            <div class="absolute top-[42%] left-[3%] text-emerald-300 anim-twinkle text-xs" style="animation-delay: 0.7s;">✦</div>
+            <div class="absolute bottom-[8%] right-[12%] text-white anim-twinkle text-lg" style="animation-delay: 1.4s;">✦</div>
+            <div class="absolute bottom-[24%] left-[12%] text-teal-300 anim-twinkle text-xs" style="animation-delay: 1.9s;">✦</div>
           </div>
 
         </div>
 
-        <!-- Twinkling Diamond Sparkles -->
-        <div class="absolute inset-0 pointer-events-none z-25">
-          <div class="absolute top-[8%] right-[14%] text-cyan-200 anim-twinkle text-base">✦</div>
-          <div class="absolute top-[42%] left-[3%] text-emerald-300 anim-twinkle text-xs" style="animation-delay: 0.7s;">✦</div>
-          <div class="absolute bottom-[8%] right-[12%] text-white anim-twinkle text-lg" style="animation-delay: 1.4s;">✦</div>
-          <div class="absolute bottom-[24%] left-[12%] text-teal-300 anim-twinkle text-xs" style="animation-delay: 1.9s;">✦</div>
+        <!-- Typography -->
+        <div class="mt-7 text-center px-4 z-20">
+          <h1 class="text-xs font-mono font-bold tracking-[0.35em] text-cyan-300 uppercase drop-shadow-[0_0_12px_rgba(0,229,255,0.7)]">
+            RENEWABLE ENERGY CLUB
+          </h1>
+          <p class="text-[9.5px] font-mono tracking-widest text-emerald-400 mt-1">
+            TERRITORY GRID // TACTICAL FIELD ENGINE
+          </p>
         </div>
 
-      </div>
-
-      <!-- Typography -->
-      <div class="mt-7 text-center px-4 z-20" id="tagline-q">
-        <h1 class="text-xs font-mono font-bold tracking-[0.35em] text-cyan-300 uppercase drop-shadow-[0_0_12px_rgba(0,229,255,0.7)]">
-          RENEWABLE ENERGY CLUB
-        </h1>
-        <p class="text-[9.5px] font-mono tracking-widest text-emerald-400 mt-1">
-          TOKAMAK FUSION CORE // 100% GLOSS
-        </p>
       </div>
 
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <!-- VIEW 2: ENHANCED DESIGN 4 — GLOSSY COMPACT VERTICAL VIDEO              -->
-    <!-- (1080x1920 video with glossy glass portal & zero watermark)             -->
+    <!-- VIEW 2: DESIGN 1 STANDALONE (QUANTUM GLOSS)                             -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="view-design1" class="design-view absolute inset-0 z-20 flex flex-col items-center justify-center hidden">
+      <div class="relative w-[250px] h-[250px] flex items-center justify-center">
+        <div class="crystal-glass-lens w-[172px] h-[172px] rounded-full flex items-center justify-center relative z-20">
+          <div class="crystal-specular-crescent"></div>
+          <div class="gloss-sheen-sweep"></div>
+          <img src="assets/rec_logo.png" alt="REC Logo" class="w-[132px] h-[132px] object-contain drop-shadow-[0_0_20px_rgba(0,229,255,0.6)]"/>
+        </div>
+      </div>
+      <div class="mt-7 text-center px-4 z-20">
+        <h1 class="text-xs font-mono font-bold tracking-[0.35em] text-cyan-300 uppercase">RENEWABLE ENERGY CLUB</h1>
+        <p class="text-[9.5px] font-mono tracking-widest text-emerald-400 mt-1">STANDALONE QUANTUM CORE</p>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 3: DESIGN 4 STANDALONE (HD VIDEO)                                  -->
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
     <div id="view-design4" class="design-view absolute inset-0 z-20 flex flex-col items-center justify-center hidden">
       <video id="vert-video" playsinline webkit-playsinline muted loop class="w-full h-full object-cover">
         <source src="assets/rec_intro_vertical_glossy.mp4" type="video/mp4"/>
       </video>
-      <div class="absolute bottom-28 text-center z-20 pointer-events-none">
-        <span class="font-mono text-[9.5px] uppercase tracking-widest text-cyan-300 bg-black/70 px-3 py-1 rounded-full border border-cyan-500/30 backdrop-blur-md shadow-[0_0_15px_rgba(0,229,255,0.25)]">
-          COMPACT GLOSSY CIRCULAR PORTAL // 1080x1920
-        </span>
-      </div>
     </div>
 
     <!-- BOTTOM CONTROLS & TIMELINE -->
@@ -356,16 +429,16 @@
       </div>
 
       <div class="flex items-center justify-between text-[11px] font-mono text-gray-400">
-        <span id="phase-status">QUANTUM REACTOR IGNITING...</span>
+        <span id="phase-status">INITIALIZING QUANTUM MATRIX...</span>
         <span id="countdown-display" class="text-cyan-400 font-bold">10.0s remaining</span>
       </div>
 
       <!-- Action Buttons -->
       <div class="flex items-center gap-2 mt-1">
-        <button onclick="replayCurrent()" class="py-2.5 px-3.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-white font-mono text-[11px] font-bold transition flex items-center justify-center gap-1.5 active:scale-95 shrink-0">
+        <button onclick="replayCurrent()" class="py-2.5 px-3.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-white font-mono text-[11px] font-bold transition flex items-center justify-center gap-1.5 active:scale-95 shrink-0 cursor-pointer">
           ↺ REPLAY
         </button>
-        <button onclick="enterApplication()" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-black font-headline font-bold text-xs tracking-wider transition flex items-center justify-center gap-1.5 active:scale-95 shadow-[0_0_18px_rgba(0,229,255,0.4)]">
+        <button onclick="enterApplication()" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-black font-headline font-bold text-xs tracking-wider transition flex items-center justify-center gap-1.5 active:scale-95 shadow-[0_0_18px_rgba(0,229,255,0.4)] cursor-pointer">
           <span>ENTER SQUAD HUD</span>
           <span>→</span>
         </button>
@@ -377,60 +450,242 @@
 
   <script>
     // ─────────────────────────────────────────────────────────────────────────
-    // 1. VIEW SWITCHER
+    // AUDIO ENGINE: CINEMATIC HOLLYWOOD SOUNDTRACK (MP3 + WEB AUDIO SYNTH)
     // ─────────────────────────────────────────────────────────────────────────
-    let currentView = 'design1';
+    var introAudio = null;
+    var isAudioMuted = false;
+    var audioContext = null;
+
+    function initAudioEngine() {
+      if (!introAudio) {
+        introAudio = new Audio('assets/rec_intro_sound.mp3');
+        introAudio.preload = 'auto';
+      }
+    }
+
+    function playCinematicAudio() {
+      initAudioEngine();
+      if (isAudioMuted || !introAudio) return;
+      introAudio.currentTime = 0;
+      var playPromise = introAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function(err) {
+          console.warn('[AudioEngine] Autoplay waiting for user gesture:', err);
+        });
+      }
+    }
+
+    function stopCinematicAudio() {
+      if (introAudio) {
+        try {
+          introAudio.pause();
+          introAudio.currentTime = 0;
+        } catch (e) {}
+      }
+    }
+
+    function toggleAudio() {
+      isAudioMuted = !isAudioMuted;
+      var btn = document.getElementById('btn-audio-toggle');
+      var icon = document.getElementById('audio-icon');
+      var label = document.getElementById('audio-label');
+      if (isAudioMuted) {
+        stopCinematicAudio();
+        icon.innerText = '🔇';
+        label.innerText = 'MUTED';
+        btn.classList.remove('text-cyan-300', 'border-cyan-500/40');
+        btn.classList.add('text-gray-400', 'border-white/20');
+      } else {
+        icon.innerText = '🔊';
+        label.innerText = 'SOUND ON';
+        btn.classList.remove('text-gray-400', 'border-white/20');
+        btn.classList.add('text-cyan-300', 'border-cyan-500/40');
+        playCinematicAudio();
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // VIEW SWITCHER & HYBRID TIMELINE ORCHESTRATION
+    // ─────────────────────────────────────────────────────────────────────────
+    var currentView = 'hybrid';
+    var DURATION = 10.0;
+    var timerStart = Date.now();
+    var timerAnimId = null;
+    var hasTransitionedToD1 = false;
 
     function switchView(viewName) {
       currentView = viewName;
-      document.querySelectorAll('.design-view').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.design-view').forEach(function(el) { el.classList.add('hidden'); });
 
-      const tab1 = document.getElementById('tab-design1');
-      const tab4 = document.getElementById('tab-design4');
-      const title = document.getElementById('current-title');
+      var tabH = document.getElementById('tab-hybrid');
+      var tab1 = document.getElementById('tab-design1');
+      var tab4 = document.getElementById('tab-design4');
+      var title = document.getElementById('current-title');
 
-      if (viewName === 'design1') {
+      [tabH, tab1, tab4].forEach(function(t) {
+        t.classList.remove('bg-cyan-400', 'text-black', 'shadow-[0_0_12px_#00e5ff]');
+        t.classList.add('text-gray-400');
+      });
+
+      if (viewName === 'hybrid') {
+        document.getElementById('view-hybrid').classList.remove('hidden');
+        tabH.classList.add('bg-cyan-400', 'text-black', 'shadow-[0_0_12px_#00e5ff]');
+        tabH.classList.remove('text-gray-400');
+        title.innerText = 'HYBRID // D4 INTRO → D1 QUANTUM GLOSS ENDING';
+      } else if (viewName === 'design1') {
         document.getElementById('view-design1').classList.remove('hidden');
         tab1.classList.add('bg-cyan-400', 'text-black', 'shadow-[0_0_12px_#00e5ff]');
         tab1.classList.remove('text-gray-400');
-        tab4.classList.remove('bg-cyan-400', 'text-black', 'shadow-[0_0_12px_#00e5ff]');
-        tab4.classList.add('text-gray-400');
         title.innerText = 'DESIGN 1 // QUANTUM TOKAMAK GLOSS CORE';
-        document.getElementById('vert-video').pause();
-        replayCurrent();
       } else {
         document.getElementById('view-design4').classList.remove('hidden');
         tab4.classList.add('bg-cyan-400', 'text-black', 'shadow-[0_0_12px_#00e5ff]');
         tab4.classList.remove('text-gray-400');
-        tab1.classList.remove('bg-cyan-400', 'text-black', 'shadow-[0_0_12px_#00e5ff]');
-        tab1.classList.add('text-gray-400');
         title.innerText = 'DESIGN 4 // GLOSSY 1080x1920 VIDEO';
-        const vid = document.getElementById('vert-video');
-        vid.currentTime = 0;
-        vid.play().catch(() => {});
       }
-      resetTimer();
+      replayCurrent();
+    }
+
+    function replayCurrent() {
+      timerStart = Date.now();
+      hasTransitionedToD1 = false;
+
+      // Reset Hybrid Elements
+      var videoLayer = document.getElementById('hybrid-video-layer');
+      var d1Layer = document.getElementById('hybrid-d1-layer');
+      var shockwave = document.getElementById('hybrid-shockwave');
+      var video = document.getElementById('hybrid-video');
+
+      if (videoLayer) {
+        videoLayer.style.opacity = '1';
+        videoLayer.style.transform = 'scale(1)';
+        videoLayer.style.filter = 'none';
+      }
+      if (d1Layer) {
+        d1Layer.style.opacity = '0';
+        d1Layer.style.transform = 'scale(0.85)';
+      }
+      if (shockwave) {
+        shockwave.classList.remove('warp-shockwave-active');
+      }
+
+      if (video) {
+        video.currentTime = 0;
+        video.play().catch(function() {});
+      }
+
+      // Re-trigger logo animations in D1
+      var logo = document.getElementById('hybrid-hero-logo');
+      var laser = document.getElementById('hybrid-laser-beam');
+      if (logo) {
+        logo.classList.remove('logo-reveal-active');
+        void logo.offsetWidth;
+        logo.classList.add('logo-reveal-active');
+      }
+      if (laser) {
+        laser.style.animation = 'none';
+        void laser.offsetWidth;
+        laser.style.animation = 'laserSweepBeam 2.4s cubic-bezier(0.25, 1, 0.45, 1) 4.3s forwards';
+      }
+
+      // Play Sound
+      playCinematicAudio();
+
+      if (timerAnimId) cancelAnimationFrame(timerAnimId);
+      updateTimer();
+    }
+
+    function updateTimer() {
+      var elapsed = (Date.now() - timerStart) / 1000;
+      var progress = Math.min(1, elapsed / DURATION);
+      var remaining = Math.max(0, DURATION - elapsed);
+
+      var bar = document.getElementById('countdown-bar');
+      var disp = document.getElementById('countdown-display');
+      var status = document.getElementById('phase-status');
+
+      if (bar) bar.style.width = (progress * 100) + '%';
+      if (disp) disp.innerText = remaining.toFixed(1) + 's remaining';
+
+      // HYBRID CHOREOGRAPHY
+      if (currentView === 'hybrid') {
+        var videoLayer = document.getElementById('hybrid-video-layer');
+        var d1Layer = document.getElementById('hybrid-d1-layer');
+        var shockwave = document.getElementById('hybrid-shockwave');
+
+        if (elapsed < 3.8) {
+          // PHASE 1: D4 INTRO VIDEO
+          if (status) status.innerText = 'PHASE 1: COSMIC QUANTUM INGRESS...';
+        } else if (elapsed >= 3.8 && elapsed < 4.4 && !hasTransitionedToD1) {
+          // TRANSITION WARP (At 4.0s)
+          hasTransitionedToD1 = true;
+          if (status) status.innerText = 'QUANTUM CONVERGENCE // TOKAMAK IGNITION...';
+
+          if (shockwave) {
+            shockwave.classList.remove('warp-shockwave-active');
+            void shockwave.offsetWidth;
+            shockwave.classList.add('warp-shockwave-active');
+          }
+
+          if (videoLayer) {
+            videoLayer.style.transition = 'all 0.55s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            videoLayer.style.opacity = '0';
+            videoLayer.style.transform = 'scale(1.1)';
+            videoLayer.style.filter = 'blur(10px) brightness(2.2)';
+          }
+
+          if (d1Layer) {
+            d1Layer.style.transition = 'all 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
+            d1Layer.style.opacity = '1';
+            d1Layer.style.transform = 'scale(1.0)';
+          }
+        } else if (elapsed >= 4.4 && elapsed < 7.8) {
+          // PHASE 2: D1 ULTRA-GLOSSY CLIMAX
+          if (status) status.innerText = 'PHASE 2: ULTRA-GLOSSY TOKAMAK STABILIZED';
+        } else if (elapsed >= 7.8) {
+          // PHASE 3: TELEMETRY READY
+          if (status) status.innerText = 'GRID TELEMETRY LINK READY // FIELD OPS CLEARED';
+        }
+      } else {
+        if (elapsed < 2.5) {
+          if (status) status.innerText = 'INITIALIZING QUANTUM MATRIX...';
+        } else if (elapsed < 5.5) {
+          if (status) status.innerText = 'PHOTON BEAM REVEALING REC CREST...';
+        } else if (elapsed < 8.5) {
+          if (status) status.innerText = 'STABILIZING ENERGY GRID TELEMETRY...';
+        } else {
+          if (status) status.innerText = 'GRID TELEMETRY LINK READY.';
+        }
+      }
+
+      if (progress < 1) {
+        timerAnimId = requestAnimationFrame(updateTimer);
+      } else {
+        setTimeout(enterApplication, 600);
+      }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 2. PROCEDURAL TESLA LIGHTNING (SCALED FOR 250px)
+    // TESLA LIGHTNING ENGINE
     // ─────────────────────────────────────────────────────────────────────────
-    const cL = document.getElementById('canvas-lightning');
-    const ctxL = cL.getContext('2d');
+    var cL = document.getElementById('hybrid-canvas-lightning');
+    var ctxL = cL ? cL.getContext('2d') : null;
 
     function renderLightning() {
+      if (!ctxL || !cL) return;
       ctxL.clearRect(0, 0, cL.width, cL.height);
-      if (currentView === 'design1' && Math.random() > 0.32) {
-        const cx = 125, cy = 125, r = 105;
-        const start = Math.random() * Math.PI * 2;
-        const span = Math.PI * 0.45;
-        const steps = 10;
+      var elapsed = (Date.now() - timerStart) / 1000;
+      if (elapsed > 4.0 && Math.random() > 0.28) {
+        var cx = 125, cy = 125, r = 105;
+        var start = Math.random() * Math.PI * 2;
+        var span = Math.PI * 0.45;
+        var steps = 10;
         ctxL.beginPath();
-        for (let i = 0; i <= steps; i++) {
-          const a = start + (i / steps) * span;
-          const jitter = (Math.random() - 0.5) * 10;
-          const px = cx + Math.cos(a) * (r + jitter);
-          const py = cy + Math.sin(a) * (r + jitter);
+        for (var i = 0; i <= steps; i++) {
+          var a = start + (i / steps) * span;
+          var jitter = (Math.random() - 0.5) * 10;
+          var px = cx + Math.cos(a) * (r + jitter);
+          var py = cy + Math.sin(a) * (r + jitter);
           if (i === 0) ctxL.moveTo(px, py);
           else ctxL.lineTo(px, py);
         }
@@ -445,17 +700,18 @@
     renderLightning();
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 3. AMBIENT PARTICLES
+    // AMBIENT PARTICLES
     // ─────────────────────────────────────────────────────────────────────────
-    const cP = document.getElementById('canvas-particles');
-    const ctxP = cP.getContext('2d');
-    let particles = [];
+    var cP = document.getElementById('hybrid-canvas-particles');
+    var ctxP = cP ? cP.getContext('2d') : null;
+    var particles = [];
 
     function resizeParticles() {
+      if (!cP) return;
       cP.width = cP.parentElement.clientWidth;
       cP.height = cP.parentElement.clientHeight;
       particles = [];
-      for (let i = 0; i < 80; i++) {
+      for (var i = 0; i < 70; i++) {
         particles.push({
           x: Math.random() * cP.width,
           y: Math.random() * cP.height,
@@ -470,8 +726,10 @@
     resizeParticles();
 
     function renderParticles() {
+      if (!ctxP || !cP) return;
       ctxP.clearRect(0, 0, cP.width, cP.height);
-      for (let p of particles) {
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
         p.y += p.speedY;
         if (p.y < 0) p.y = cP.height;
         ctxP.fillStyle = p.color;
@@ -486,72 +744,21 @@
     }
     renderParticles();
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // 4. 10-SECOND TIMER
-    // ─────────────────────────────────────────────────────────────────────────
-    const DURATION = 10.0;
-    let timerStart = Date.now();
-
-    function updateTimer() {
-      const elapsed = (Date.now() - timerStart) / 1000;
-      const progress = Math.min(1, elapsed / DURATION);
-      const remaining = Math.max(0, DURATION - elapsed);
-
-      const bar = document.getElementById('countdown-bar');
-      const disp = document.getElementById('countdown-display');
-      const status = document.getElementById('phase-status');
-
-      if (bar) bar.style.width = (progress * 100) + '%';
-      if (disp) disp.innerText = remaining.toFixed(1) + 's remaining';
-
-      if (elapsed < 2.5) {
-        if (status) status.innerText = 'INITIALIZING QUANTUM MATRIX...';
-      } else if (elapsed < 5.5) {
-        if (status) status.innerText = 'PHOTON BEAM REVEALING REC CREST...';
-      } else if (elapsed < 8.5) {
-        if (status) status.innerText = 'STABILIZING ENERGY GRID TELEMETRY...';
-      } else {
-        if (status) status.innerText = 'GRID TELEMETRY LINK READY.';
-      }
-
-      if (progress < 1) {
-        requestAnimationFrame(updateTimer);
-      } else {
-        setTimeout(enterApplication, 600);
-      }
-    }
-    updateTimer();
-
-    function resetTimer() {
-      timerStart = Date.now();
-    }
-
-    function replayCurrent() {
-      resetTimer();
-      const logo = document.getElementById('hero-logo-q');
-      const laser = document.getElementById('laser-beam');
-
-      if (logo) {
-        logo.classList.remove('logo-reveal-active');
-        void logo.offsetWidth;
-        logo.classList.add('logo-reveal-active');
-      }
-
-      if (laser) {
-        laser.style.animation = 'none';
-        void laser.offsetWidth;
-        laser.style.animation = 'laserSweepBeam 2.5s cubic-bezier(0.25, 1, 0.45, 1) 0.8s forwards';
-      }
-    }
-
     function enterApplication() {
-      const root = document.getElementById('app-root');
+      stopCinematicAudio();
+      var root = document.getElementById('app-root');
       root.style.transition = 'opacity 0.6s ease';
       root.style.opacity = '0';
-      setTimeout(() => {
+      setTimeout(function() {
         window.location.href = 'login.html';
       }, 600);
     }
+
+    // Auto-init on load
+    window.addEventListener('DOMContentLoaded', function() {
+      initAudioEngine();
+      replayCurrent();
+    });
   </script>
 </body>
 </html>
