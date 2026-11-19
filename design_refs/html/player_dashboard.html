@@ -750,6 +750,20 @@
             </button>
           </div>
 
+          <!-- 52-Second Dynamic Card Rotation HUD Pill -->
+          <div class="flex items-center justify-between w-full max-w-[260px] px-3 py-1.5 mb-2.5 rounded-xl bg-surface-container-high/70 border border-primary/30 text-xs font-mono shadow-sm">
+            <div class="flex items-center gap-1.5 text-primary">
+              <span class="material-symbols-outlined text-[14px] animate-spin" style="animation-duration: 4s;">autorenew</span>
+              <span class="font-bold tracking-wider uppercase text-[10px]">52s DECK SHUFFLE</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="card-cycle-countdown" class="text-cyan font-bold font-mono text-[11px]">52s</span>
+              <div class="w-14 h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/10">
+                <div id="card-cycle-progress-bar" class="h-full bg-gradient-to-r from-primary via-cyan to-secondary-fixed transition-all duration-300" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+
           <div id="player-card-section" class="card-3d-wrap relative group select-none cursor-pointer w-[240px] sm:w-[260px] h-[375px] sm:h-[395px] card-ambient-float" onclick="toggleCardFlip()">
             
             <!-- Dynamic Ambient Backing Blur Glow (Cyan for ♠/♣, Crimson for ♥/♦) -->
@@ -1308,27 +1322,40 @@
       return null;
     }
 
-    // Deterministic Checkpoint Card Engine (Unique, Stable Station Card for Each Squad)
-    function getCheckpointCard(team, clueIdx, teamsList) {
+    // Deterministic Checkpoint Card Engine (Rotates dynamic cipher card every 52 seconds)
+    var CARD_CYCLE_SECONDS = 52;
+    var cardShuffleStep = Math.floor(Date.now() / (CARD_CYCLE_SECONDS * 1000));
+    var lastRotatedSlot = cardShuffleStep;
+
+    function getCheckpointCard(team, clueIdx, teamsList, shuffleStep) {
       var tt = deriveTeamCode(team, teamsList);
       var cIdx = parseInt(clueIdx, 10) || 0;
+      var step = (shuffleStep !== undefined) ? shuffleStep : cardShuffleStep;
 
-      // Deterministic card assigned uniquely to this squad for this specific checkpoint
-      var rankIdx = Math.abs((tt * 7 + cIdx * 5 + 3)) % 13;
-      var suitIdx = Math.abs((tt * 3 + cIdx * 7 + 1)) % 4;
+      // Unique card index across full 52-card standard deck (0..51)
+      // Cycles seamlessly every 52 seconds, uniquely staggered per squad and checkpoint
+      var cardIndex = Math.abs((tt * 17 + cIdx * 7 + step * 1)) % 52;
+      var rankIdx = cardIndex % 13; // 0..12 -> Ace to King
+      var suitIdx = Math.floor(cardIndex / 13); // 0..3 -> Spades, Hearts, Diamonds, Clubs
+
       var rankObj = CARD_RANKS[rankIdx];
       var suitObj = CARD_SUITS[suitIdx];
-      var rr = 20 + rankObj.value; // 21 to 33
-      var hh = 10 + suitIdx + (((tt + cIdx) % 10) * 4); // 10 to 49
+      var rr = 20 + rankObj.value; // 21 to 33 (A=21..K=33)
+      var hh = 10 + suitIdx + (((tt + cIdx + step) % 10) * 4); // 10 to 49
       var code = '' + tt + rr + String(hh).padStart(2, '0');
+
       return {
         rank: rankObj.value,
         code: rankObj.code,
+        name: rankObj.name,
         suit: suitObj.symbol,
+        suitName: suitObj.name,
         isRed: suitObj.isRed,
         sixDigitCode: code,
         token: '' + hh,
-        clueIdx: cIdx
+        clueIdx: cIdx,
+        step: step,
+        cardIndex: cardIndex
       };
     }
 
@@ -1367,12 +1394,12 @@
 
     function rotateCardCipher(animate) {
       var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (currentUser && currentUser.currentClueIndex !== undefined ? currentUser.currentClueIndex : 0);
-      activeCipherCard = getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
+      activeCipherCard = getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList, cardShuffleStep);
 
       var flipper = document.getElementById('card-flipper');
       if (animate && flipper) {
         flipper.style.transition = 'filter 0.3s ease, transform 0.3s ease';
-        flipper.style.filter = 'brightness(1.45) drop-shadow(0 0 22px rgba(0,229,255,0.85))';
+        flipper.style.filter = 'brightness(1.5) drop-shadow(0 0 25px rgba(0,229,255,0.9))';
         setTimeout(function() {
           applyCardVisuals(activeCipherCard);
           flipper.style.filter = 'none';
@@ -1383,7 +1410,25 @@
     }
 
     function checkAndRotateCard(animate) {
-      rotateCardCipher(animate);
+      var currentSlot = Math.floor(Date.now() / (CARD_CYCLE_SECONDS * 1000));
+      var msInCycle = Date.now() % (CARD_CYCLE_SECONDS * 1000);
+      var secondsLeft = Math.ceil((CARD_CYCLE_SECONDS * 1000 - msInCycle) / 1000);
+      var progressPct = (msInCycle / (CARD_CYCLE_SECONDS * 1000)) * 100;
+
+      // Update 52-second deck shuffle HUD
+      var countdownEl = document.getElementById('card-cycle-countdown');
+      if (countdownEl) countdownEl.innerText = secondsLeft + 's';
+      var barEl = document.getElementById('card-cycle-progress-bar');
+      if (barEl) barEl.style.width = (100 - progressPct) + '%';
+
+      if (currentSlot !== lastRotatedSlot) {
+        lastRotatedSlot = currentSlot;
+        cardShuffleStep = currentSlot;
+        rotateCardCipher(animate);
+        if (window.tacticalFeedback?.tick) {
+          try { window.tacticalFeedback.tick(); } catch(e){}
+        }
+      }
     }
 
     function applyCardVisuals(card) {
@@ -1477,7 +1522,7 @@
       var squadCallsign = (currentUser && currentUser.callsign) ? currentUser.callsign.toUpperCase() : (currentMyTeam ? (currentMyTeam.callsign || currentMyTeam.name || 'SQUAD').toUpperCase() : 'SQUAD');
       
       var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (card.clueIdx || 0);
-      var checkCard = (card && card.sixDigitCode) ? card : getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
+      var checkCard = (card && card.sixDigitCode) ? card : getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList, cardShuffleStep);
       var sixDigitRaw = checkCard.sixDigitCode;
       var formattedSixDigit = sixDigitRaw.slice(0, 2) + ' ' + sixDigitRaw.slice(2, 4) + ' ' + sixDigitRaw.slice(4, 6);
 
@@ -1931,6 +1976,13 @@
       
       // Initialize deterministic checkpoint card cipher
       rotateCardCipher(false);
+      checkAndRotateCard(false);
+
+      // AUTOMATIC 52-SECOND DYNAMIC CARD SHUFFLE ENGINE
+      // Ticks every second: updates countdown & progress bar, swaps card smoothly every 52 seconds
+      setInterval(function() {
+        checkAndRotateCard(true);
+      }, 1000);
 
       loadCluesAndSync();
       // Resilient 4G/5G mobile squad synchronization engine
@@ -2497,9 +2549,9 @@
       if (teamNameEl) teamNameEl.innerText = squadCallsign;
 
       var cIdx = (currentMyTeam && currentMyTeam.currentClueIndex !== undefined) ? currentMyTeam.currentClueIndex : (currentUser && currentUser.currentClueIndex !== undefined ? currentUser.currentClueIndex : 0);
-      var card = activeCipherCard || getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList);
+      var card = activeCipherCard || getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList, cardShuffleStep);
 
-      var sixDigitRaw = (card && card.sixDigitCode) ? card.sixDigitCode : (getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList).sixDigitCode);
+      var sixDigitRaw = (card && card.sixDigitCode) ? card.sixDigitCode : (getCheckpointCard(currentMyTeam || currentUser, cIdx, cachedTeamsList, cardShuffleStep).sixDigitCode);
       var formattedSixDigit = sixDigitRaw.slice(0, 2) + ' ' + sixDigitRaw.slice(2, 4) + ' ' + sixDigitRaw.slice(4, 6);
       if (cipherEl) cipherEl.innerText = formattedSixDigit;
 
