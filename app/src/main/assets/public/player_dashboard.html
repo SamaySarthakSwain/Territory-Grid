@@ -2547,6 +2547,14 @@
     var playerHtml5QrCode = null;
     var isPlayerScanning = false;
 
+    // Global Receiver for Google ML Kit Native Scan Results in Player Dashboard
+    window.handleNativeScanResult = function(decodedText) {
+      console.log('⚡ Native Google ML Kit QR Scanned in Player Dashboard:', decodedText);
+      if (typeof handlePlayerBeaconScan === 'function') {
+        handlePlayerBeaconScan(decodedText);
+      }
+    };
+
     function showMyCardQrModal() {
       openPlayerScannerModal();
     }

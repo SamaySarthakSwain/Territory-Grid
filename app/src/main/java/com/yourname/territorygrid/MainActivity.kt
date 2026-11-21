@@ -3,14 +3,20 @@ package com.yourname.territorygrid
 import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -24,6 +30,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
+import com.yourname.territorygrid.scanner.MlKitScannerActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,6 +50,17 @@ class MainActivity : ComponentActivity() {
     ) { isGranted: Boolean ->
         if (isGranted) {
             webView.reload()
+        }
+    }
+
+    private val mlKitScannerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val qrText = result.data?.getStringExtra("SCAN_RESULT")
+            if (!qrText.isNullOrBlank()) {
+                sendScanResultToWeb(qrText)
+            }
         }
     }
 
@@ -96,6 +117,9 @@ class MainActivity : ComponentActivity() {
                 }
                 userAgentString = "$userAgentString TerritoryGridApp/1.0 (Android)"
             }
+
+            // Expose Native Android Bridge for Google ML Kit Barcode Scanning
+            addJavascriptInterface(AndroidBridge(), "AndroidBridge")
 
             webViewClient = object : WebViewClient() {
                 override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -182,6 +206,95 @@ class MainActivity : ComponentActivity() {
                 }
             }
         })
+    }
+
+    fun launchMlKitCameraScanner() {
+        val intent = Intent(this, MlKitScannerActivity::class.java)
+        mlKitScannerLauncher.launch(intent)
+    }
+
+    fun launchGoogleCodeScanner() {
+        try {
+            val options = GmsBarcodeScannerOptions.Builder()
+                .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+                .enableAutoZoom()
+                .build()
+
+            val scanner = GmsBarcodeScanning.getClient(this, options)
+            scanner.startScan()
+                .addOnSuccessListener { barcode ->
+                    val rawValue = barcode.rawValue
+                    if (!rawValue.isNullOrBlank()) {
+                        triggerHapticFeedback()
+                        sendScanResultToWeb(rawValue)
+                    }
+                }
+                .addOnCanceledListener {
+                    // Canceled by user
+                }
+                .addOnFailureListener {
+                    // Fall back to embedded CameraX ML Kit scanner
+                    launchMlKitCameraScanner()
+                }
+        } catch (_: Exception) {
+            launchMlKitCameraScanner()
+        }
+    }
+
+    fun sendScanResultToWeb(qrText: String) {
+        val escaped = qrText.replace("\\", "\\\\").replace("'", "\\'").replace("\n", " ")
+        webView.post {
+            val js = """
+                (function() {
+                    if (typeof window.handleNativeScanResult === 'function') {
+                        window.handleNativeScanResult('$escaped');
+                    } else if (typeof window.handleDecodedQR === 'function') {
+                        window.handleDecodedQR('$escaped');
+                    }
+                })();
+            """.trimIndent()
+            webView.evaluateJavascript(js, null)
+        }
+    }
+
+    private fun triggerHapticFeedback() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+                vibratorManager?.defaultVibrator?.vibrate(
+                    VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+                @Suppress("DEPRECATION")
+                vibrator?.vibrate(120)
+            }
+        } catch (_: Exception) {}
+    }
+
+    inner class AndroidBridge {
+        @JavascriptInterface
+        fun isNativeScannerAvailable(): Boolean = true
+
+        @JavascriptInterface
+        fun openNativeScanner() {
+            runOnUiThread {
+                launchGoogleCodeScanner()
+            }
+        }
+
+        @JavascriptInterface
+        fun openCameraXScanner() {
+            runOnUiThread {
+                launchMlKitCameraScanner()
+            }
+        }
+
+        @JavascriptInterface
+        fun triggerHaptic() {
+            triggerHapticFeedback()
+        }
     }
 
     private fun requestCameraPermission() {

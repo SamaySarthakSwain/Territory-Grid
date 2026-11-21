@@ -16,3 +16,8 @@
 -keep,allowobfuscation,allowshrinking interface *
 -keep class dagger.hilt.** { *; }
 -keep class * extends dagger.hilt.android.internal.managers.ViewComponentManager$FragmentContextWrapper { *; }
+
+# Keep JavascriptInterface for WebView Native Bridge
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}

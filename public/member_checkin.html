@@ -339,9 +339,18 @@
         <!-- Scanner Controls: Camera Scan -->
         <div class="w-full mt-1">
           <button id="btn-toggle-camera" type="button" onclick="toggleCameraScanner()" class="w-full h-14 rounded-2xl bg-gradient-to-r from-primary via-cyan to-primary-container text-black font-headline font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-[0_0_24px_rgba(0,229,255,0.45)] hover:brightness-110 active:scale-[0.98] transition cursor-pointer">
-            <span class="material-symbols-outlined text-[26px]" id="camera-btn-icon">photo_camera</span>
-            <span id="camera-btn-text">Open Camera Scanner</span>
+            <span class="material-symbols-outlined text-[26px]" id="camera-btn-icon">qr_code_scanner</span>
+            <span id="camera-btn-text">Open Google ML Kit Scanner</span>
           </button>
+          <div id="mlkit-options-bar" class="flex items-center justify-between mt-2 px-1 text-xs font-mono text-gray-400">
+            <span class="flex items-center gap-1.5 text-cyan text-[11px] font-bold">
+              <span class="w-2 h-2 rounded-full bg-green animate-pulse"></span>
+              Google ML Kit Engine Active
+            </span>
+            <button type="button" onclick="toggleCameraScanner(true)" class="text-[11px] text-cyan-300 hover:text-white bg-cyan/15 hover:bg-cyan/25 border border-cyan/40 px-2 py-0.5 rounded transition cursor-pointer">
+              CameraX HUD Mode
+            </button>
+          </div>
           <!-- Hidden audit compatibility anchors -->
           <div id="btn-simulate-scan" class="hidden"></div>
           <div id="btn-show-beacon-qr" class="hidden"></div>
@@ -1294,13 +1303,40 @@
       } catch (e) {}
     }
 
-    async function toggleCameraScanner() {
+    async function toggleCameraScanner(forceCameraX) {
+      // ─────────────────────────────────────────────────────────
+      // GOOGLE ML KIT BARCODE SCANNING (HIGH-SPEED REAL-TIME NATIVE)
+      // ─────────────────────────────────────────────────────────
+      if (window.AndroidBridge && typeof window.AndroidBridge.isNativeScannerAvailable === 'function' && window.AndroidBridge.isNativeScannerAvailable()) {
+        try {
+          console.log('⚡ Launching Google ML Kit Barcode Scanner (forceCameraX=' + !!forceCameraX + ')...');
+          if (forceCameraX && typeof window.AndroidBridge.openCameraXScanner === 'function') {
+            window.AndroidBridge.openCameraXScanner();
+          } else {
+            window.AndroidBridge.openNativeScanner();
+          }
+          return;
+        } catch (e) {
+          console.warn('Native ML Kit launch error, falling back to web camera:', e);
+        }
+      }
+
       if (isScanning) {
         stopCameraScanner();
       } else {
         startCameraScanner();
       }
     }
+
+    // Global Receiver for Google ML Kit Native Scan Results
+    window.handleNativeScanResult = function(decodedText) {
+      console.log('⚡ Google ML Kit QR Detected:', decodedText);
+      playCyberBeep();
+      showNotification('⚡ ML Kit Decoded: ' + decodedText, false);
+      if (typeof handleDecodedQR === 'function') {
+        handleDecodedQR(decodedText);
+      }
+    };
 
     async function startCameraScanner() {
       var box = document.getElementById('camera-viewfinder-box');
